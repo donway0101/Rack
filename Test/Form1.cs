@@ -32,7 +32,7 @@ namespace Test
                 //IO.Setup();
                 //IO.SetOutput(1, 6, false);
                 //bool v = IO.GetInput(2, 6);
-                IO.SetOutput(Output.RedLight, true);
+                //IO.SetOutput(Output.RedLight, true);
                 ;
             }
             catch (Exception ex)
