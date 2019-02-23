@@ -11,10 +11,20 @@ namespace GripperStepper
 {
     public class Stepper
     {
-
         #region Private member
+        /// <summary>
+        /// RS232 communicate with Moons driver.
+        /// </summary>
         private SerialPort SerialPort;
+
+        /// <summary>
+        /// Serial port name, eg. "COM3"
+        /// </summary>
         private string PortName;
+
+        /// <summary>
+        /// Only one command sent to driver in a time.
+        /// </summary>
         private static readonly object PortWriteLocker = new object();
 
         /// <summary>
@@ -40,9 +50,12 @@ namespace GripperStepper
         /// <summary>
         /// Load is driven by gear and belt.
         /// </summary>
-        private double GearRatio = 3.75;
+        private double GearRatio = 1.0;//3.75;
 
-        private double DegreeToCountFactor = 0;
+        /// <summary>
+        /// Motor counts per degree, including transimission factor.
+        /// </summary>
+        private double CountPerDegree = 0;
         #endregion
 
         /// <summary>
@@ -52,9 +65,13 @@ namespace GripperStepper
         public Stepper(string portName)
         {
             PortName = portName;
-            DegreeToCountFactor = ElectronicGearing * GearRatio / 360;
+
+            CountPerDegree = ElectronicGearing * GearRatio / 360;
         }
 
+        /// <summary>
+        /// Open serial port.
+        /// </summary>
         public void Initialization()
         {           
             try
@@ -66,6 +83,35 @@ namespace GripperStepper
             catch (Exception)
             {
                 throw;
+            }
+        }
+
+        /// <summary>
+        /// Close serial port.
+        /// </summary>
+        public void Close()
+        {
+            try
+            {
+                SerialPort.Close();
+                SerialPort.Dispose();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Set driver feedback format to decimal.
+        /// </summary>
+        /// <param name="motor"></param>
+        public void SetFeedbackFormatDecimal(GripperMotor motor)
+        {
+            string res = SendCommand(motor, "IFD");
+            if (MotorAcknowledged(motor, res) == false)
+            {
+                throw new Exception("Drive is NOT acknowledged");
             }
         }
 
@@ -135,17 +181,17 @@ namespace GripperStepper
         /// </summary>
         /// <param name="motor"></param>
         /// <returns></returns>
-        private string GetMotorId(Motor motor)
+        private string GetMotorId(GripperMotor motor)
         {
             return Convert.ToString((int)motor);
         }
 
         /// <summary>
-        /// Send command to motor through serial port, and wait of response.
+        /// Send command to motor through serial port, and wait for response.
         /// </summary>
         /// <param name="cmd"></param>
         /// <seealso cref="SendCommand"/>
-        public string SendCommand(Motor motor,string cmd)
+        public string SendCommand(GripperMotor motor,string cmd)
         {
             lock (PortWriteLocker)
             {
@@ -168,7 +214,7 @@ namespace GripperStepper
         /// Enalbe motor.
         /// </summary>
         /// <param name="motor"></param>
-        public void Enable(Motor motor)
+        public void Enable(GripperMotor motor)
         {
             string res = SendCommand(motor, "ME");
 
@@ -184,23 +230,16 @@ namespace GripperStepper
         /// <param name="motor"></param>
         /// <param name="response"></param>
         /// <returns></returns>
-        private bool MotorAcknowledged(Motor motor, string response)
+        private bool MotorAcknowledged(GripperMotor motor, string response)
         {
-            if (response.Substring(0, 1) == GetMotorId(motor) & response.Substring(1, 1) == "%")
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            return response.Substring(0, 1) == GetMotorId(motor) & response.Substring(1, 1) == "%";
         }
 
         /// <summary>
         /// Disable motor.
         /// </summary>
         /// <param name="motor"></param>
-        public void Disable(Motor motor)
+        public void Disable(GripperMotor motor)
         {
             string res = SendCommand(motor, "MD");
 
@@ -215,16 +254,18 @@ namespace GripperStepper
         /// Must has the right sensor for homing.
         /// </summary>
         /// <param name="motor"></param>
-        public void HomeMotor(Motor motor)
+        public void HomeMotor(GripperMotor motor, double homeOffset)
         {
-            if (GetStatus(motor).Contains("R") == false)
+            if (GetStatus(motor, StatusCode.Enabled) == false)
             {
                 throw new Exception("Motor is not ready");
             }
 
             if (GetInput(motor, Input.X3) == true)
             {
-
+                //If home sensor has been triggered before homing.
+                // move out first.
+                ToPointRelative(motor, 10);           
             }
 
             string res = SendCommand(motor, "SH3L");
@@ -233,28 +274,19 @@ namespace GripperStepper
                 throw new Exception("Drive is NOT acknowledged");
             }
 
+            Thread.Sleep(50);
+            WaitCondition(motor, StatusCode.Homing, false);
+            WaitCondition(motor, StatusCode.Inpos, true);
 
-        }
+            ToPointRelative(motor, homeOffset);
 
-        /// <summary>
-        /// Move motor to specific angle.
-        /// </summary>
-        /// <param name="motor"></param>
-        /// <param name="angle"></param>
-        public void ToPoint(Motor motor, double angle)
-        {
+            res = SendCommand(motor, "EP0");
+            if (MotorAcknowledged(motor, res) == false)
+            {
+                throw new Exception("Drive is NOT acknowledged");
+            }
 
-        }
-
-        /// <summary>
-        /// Move motor to specific angle relative to current postion.
-        /// </summary>
-        /// <param name="motor"></param>
-        /// <param name="angle"></param>
-        public void ToPointRelative(Motor motor, double angle)
-        {
-            int target = Convert.ToInt32(angle * DegreeToCountFactor);
-            string res = SendCommand(motor, "FL" + target);
+            res = SendCommand(motor, "SP0");
             if (MotorAcknowledged(motor, res) == false)
             {
                 throw new Exception("Drive is NOT acknowledged");
@@ -262,59 +294,215 @@ namespace GripperStepper
         }
 
         /// <summary>
-        /// Set acceleration and deceleration of motor.
+        /// Move motor to specific angle.
         /// </summary>
         /// <param name="motor"></param>
         /// <param name="angle"></param>
-        public void SetAcceleration(Motor motor, double angle)
+        public void ToPoint(GripperMotor motor, double angle, int timeout = 10)
         {
+            double lastPos = GetPosition(motor);
 
+            int target = Convert.ToInt32(angle * CountPerDegree);
+            string res = SendCommand(motor, "FP" + target);
+            if (MotorAcknowledged(motor, res) == false)
+            {
+                throw new Exception("Drive is NOT acknowledged");
+            }
+
+            Thread.Sleep(50);
+            WaitMotionEnd(motor, timeout);
+
+            double currentPos = GetPosition(motor);
+            if (Math.Abs(currentPos - (lastPos + angle)) > 0.5)
+            {
+                throw new Exception("Position error is bigger than 0.5 degree.");
+            }
+        }
+
+        /// <summary>
+        /// Move motor to specific angle relative to current postion.
+        ///  allow error: 0.5 degree.
+        /// </summary>
+        /// <param name="motor"></param>
+        /// <param name="angle"></param>
+        public void ToPointRelative(GripperMotor motor, double angle, int timeout = 10)
+        {
+            double lastPos = GetPosition(motor);
+
+            int target = Convert.ToInt32(angle * CountPerDegree);
+            string res = SendCommand(motor, "FL" + target);
+            if (MotorAcknowledged(motor, res) == false)
+            {
+                throw new Exception("Drive is NOT acknowledged");
+            }
+
+            Thread.Sleep(50);
+            WaitMotionEnd(motor, timeout);
+
+            double currentPos = GetPosition(motor);
+            if (Math.Abs( currentPos - (lastPos+angle) ) > 0.5)
+            {
+                throw new Exception("Position error is bigger than 0.5 degree.");
+            }           
+        }
+
+        /// <summary>
+        /// Wait motor get in position.
+        /// </summary>
+        /// <param name="motor"></param>
+        /// <param name="timeout"></param>
+        private void WaitMotionEnd(GripperMotor motor, int timeout = 10)
+        {
+            Stopwatch stopwatch = new Stopwatch();
+            stopwatch.Start();
+            bool inPos = false;
+            while (inPos == false)
+            {
+                if (stopwatch.ElapsedMilliseconds > timeout * 1000) //Should response within 2 second.
+                {
+                    throw new Exception("Motor in position timeout.");
+                }
+
+                inPos = GetStatus(motor, StatusCode.Inpos);
+
+                Thread.Sleep(20);
+            }
+        }
+
+        /// <summary>
+        /// Wait motor status to be true.
+        /// </summary>
+        /// <param name="motor"></param>
+        /// <param name="code"></param>
+        /// <param name="condition"></param>
+        /// <param name="timeout"></param>
+        private void WaitCondition(GripperMotor motor, StatusCode code, bool condition,  int timeout = 20)
+        {
+            Stopwatch stopwatch = new Stopwatch();
+            stopwatch.Start();
+            bool status = false;
+            while (status != condition)
+            {
+                if (stopwatch.ElapsedMilliseconds > timeout * 1000) //Should response within 2 second.
+                {
+                    throw new Exception("Condition " + code + " timeout.");
+                }
+
+                status = GetStatus(motor, code);
+
+                Thread.Sleep(20);
+            }
+        }
+
+        /// <summary>
+        /// Set acceleration and deceleration of motor.
+        /// </summary>
+        /// <param name="motor"></param>
+        /// <param name="acceleration"> degree / sec / sec </param>
+        public void SetAcceleration(GripperMotor motor, double acceleration)
+        {
+            // rev / sec / sec
+            double acc = acceleration / 360 / GearRatio;
+            string accStr = acc.ToString("0.000");
+            string res = SendCommand(motor, "AC" + accStr);
+            if (MotorAcknowledged(motor, res) == false)
+            {
+                throw new Exception("Drive is NOT acknowledged");
+            }
+
+            res = SendCommand(motor, "DE" + accStr);
+            if (MotorAcknowledged(motor, res) == false)
+            {
+                throw new Exception("Drive is NOT acknowledged");
+            }
         }
 
         /// <summary>
         /// Set speed of motor.
         /// </summary>
         /// <param name="motor"></param>
-        /// <param name="angle"></param>
-        public void SetVelocity(Motor motor, double angle)
+        /// <param name="velocity">degree / sec</param>
+        public void SetVelocity(GripperMotor motor, double velocity)
         {
-
+            double vel = velocity / 360 / GearRatio;
+            string velStr = vel.ToString("0.0000");
+            string res = SendCommand(motor, "VE" + velStr);
+            if (MotorAcknowledged(motor, res) == false)
+            {
+                throw new Exception("Drive is NOT acknowledged");
+            }
         }
 
         /// <summary>
         /// Reset all alarm of motor.
         /// </summary>
         /// <param name="motor"></param>
-        public void ResetAlarm(Motor motor)
+        public void ResetAlarm(GripperMotor motor)
         {
+            string res = SendCommand(motor, "AR");
+            if (MotorAcknowledged(motor, res) == false)
+            {
+                throw new Exception("Drive is NOT acknowledged");
+            }
 
+            Thread.Sleep(20);
+
+            if (GetStatus(motor, StatusCode.Alarm) == true)
+            {
+                throw new Exception("Drive is still alarmed");
+            }
+
+            res = SendCommand(motor, "ME");
+            if (MotorAcknowledged(motor, res) == false)
+            {
+                throw new Exception("Drive is NOT acknowledged");
+            }
+
+            if (GetStatus(motor, StatusCode.Enabled) == false)
+            {
+                throw new Exception("Drive is can not be enabled.");
+            }
         }
 
         /// <summary>
         /// Asks the drive to respond with what it’s doing
         /// </summary>
         /// <param name="motor"></param>
-        public string GetStatus(Motor motor)
+        public bool GetStatus(GripperMotor motor, StatusCode status)
         {
-            return SendCommand(motor, "RS");
+            string info = SendCommand(motor, "SC");
+            string code = info.Substring(4, info.Length - 4);
+
+            string binaryValue = Convert.ToString(Convert.ToInt32(code, 16), 2);
+
+            bool[] result = binaryValue.Select(c => c == '1').ToArray();
+            Array.Reverse(result);
+
+            try
+            {
+                return result[(int)status];
+            }
+            catch (Exception)
+            {
+                return false;
+            }         
         }
 
-        public bool GetInput(Motor motor, Input input)
+        /// <summary>
+        /// Get state of input pin of driver.
+        /// </summary>
+        /// <param name="motor"></param>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        public bool GetInput(GripperMotor motor, Input input)
         {
-            string res = SendCommand(motor, "RS");
+            string res = SendCommand(motor, "IS");
             if (res.Length != 12)
             {
                 throw new Exception("Input status response length error");
             }
 
-            if (res.Substring(12-(int)input, 1) == "0")
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            return res.Substring(12 - (int)input, 1) == "0";
         }
 
         /// <summary>
@@ -322,9 +510,15 @@ namespace GripperStepper
         /// </summary>
         /// <param name="motor"></param>
         /// <returns></returns>
-        public double GetPosition(Motor motor)
+        public double GetPosition(GripperMotor motor)
         {
-            return 0;
+            // Response of "IP" is always hexadecimal
+            string res = SendCommand(motor, "IP");
+            string posString = res.Substring(4, res.Length - 4);
+
+            int pos = Convert.ToInt32(posString);
+
+            return pos / CountPerDegree;
         }
 
 

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace GripperStepper
 {
-    public enum Motor
+    public enum GripperMotor
     {
         One=1,
         Two=2,
@@ -24,6 +24,15 @@ namespace GripperStepper
     {
         Y1=1,
         Y2,
+    }
+
+    public enum StatusCode
+    {
+        Enabled=0,
+        Fault=2,
+        Inpos=3,
+        Alarm=9,
+        Homing=10,
     }
 
 }
