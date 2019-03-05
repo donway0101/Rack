@@ -39,22 +39,15 @@ namespace Test
             {
 
                 MessageBox.Show(ex.Message);
-
-            }
-            
+            }       
         }
-
-        Stepper stepper = new Stepper("COM3");
 
         private void button2_Click(object sender, EventArgs e)
         {
-            stepper.Initialization();
         }
 
         private void button3_Click(object sender, EventArgs e)
         {
-            //stepper.ResetAlarm(GripperMotor.One);
-            stepper.ToPointAsync1(GripperMotor.One, 90, GripperMotor.Two, 60, 10);
         }
     }
 }

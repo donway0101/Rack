@@ -50,7 +50,7 @@ namespace GripperStepper
         /// <summary>
         /// Load is driven by gear and belt.
         /// </summary>
-        private double GearRatio = 1.0;//3.75;
+        private double GearRatio = 60.0/15.0;
 
         /// <summary>
         /// Motor counts per degree, including transimission factor.
@@ -195,14 +195,12 @@ namespace GripperStepper
             while (DriverResponsed == false)
             {
                 if (stopwatch.ElapsedMilliseconds > 300) //Should response within 2 second.
-                {
-                    PartialResponse = string.Empty;
+                {                 
                     throw new Exception("Driver response timeout.");
                 }
 
                 Thread.Sleep(5);
             }
-
             return Response.Replace("\r", "");
         }
 
@@ -250,6 +248,7 @@ namespace GripperStepper
                     {
                         failCount++;
                         Thread.Sleep(50);
+                        PartialResponse = string.Empty;
                         if (failCount>5)
                         {
                             throw new Exception(command + " get no response.");
@@ -350,8 +349,6 @@ namespace GripperStepper
         /// <param name="angle"></param>
         public void ToPoint(GripperMotor motor, double angle, int timeout = 10)
         {
-            double lastPos = GetPosition(motor);
-
             int target = Convert.ToInt32(angle * CountPerDegree);
             string res = SendCommand(motor, "FP" + target);
             if (MotorAcknowledged(motor, res) == false)
@@ -363,60 +360,12 @@ namespace GripperStepper
             WaitMotionEnd(motor, timeout);
 
             double currentPos = GetPosition(motor);
-            if (Math.Abs(currentPos - (lastPos + angle)) > 0.5)
+            if (Math.Abs(currentPos - angle) > 0.5)
             {
                 throw new Exception("Position error is bigger than 0.5 degree.");
             }
         }
-
-        public bool ToPointAsync1(GripperMotor motor1, double angle1, GripperMotor motor2, double angle2,
-            int timeout = 10)
-        {
-            
-                try
-                {
-                    double lastPos1 = GetPosition(motor1);
-                    double lastPos2 = GetPosition(motor2);
-
-                    int target1 = Convert.ToInt32(angle1 * CountPerDegree);
-                    string res1 = SendCommand(motor1, "FP" + target1);
-                    if (MotorAcknowledged(motor1, res1) == false)
-                    {
-                        throw new Exception("Drive is NOT acknowledged");
-                    }
-
-                    int target2 = Convert.ToInt32(angle2 * CountPerDegree);
-                    string res2 = SendCommand(motor2, "FP" + target2);
-                    if (MotorAcknowledged(motor2, res2) == false)
-                    {
-                        throw new Exception("Drive is NOT acknowledged");
-                    }
-
-                    Thread.Sleep(50);
-                    WaitMotionEnd(motor1, timeout);
-                    WaitMotionEnd(motor2, timeout);
-
-                    double currentPos1 = GetPosition(motor1);
-                    if (Math.Abs(currentPos1 - (lastPos1 + angle1)) > 0.5)
-                    {
-                        throw new Exception("Position error is bigger than 0.5 degree.");
-                    }
-
-                    double currentPos2 = GetPosition(motor2);
-                    if (Math.Abs(currentPos2 - (lastPos2 + angle2)) > 0.5)
-                    {
-                        throw new Exception("Position error is bigger than 0.5 degree.");
-                    }
-
-                    return true;
-                }
-                catch (Exception)
-                {
-                    return false;
-                }
-           
-        }
-
+      
         public async Task<bool> ToPointAsync(GripperMotor motor1, double angle1, GripperMotor motor2, double angle2,
             int timeout = 10)
         {
@@ -424,9 +373,6 @@ namespace GripperStepper
             {
                 try
                 {
-                    double lastPos1 = GetPosition(motor1);
-                    double lastPos2 = GetPosition(motor2);
-
                     int target1 = Convert.ToInt32(angle1 * CountPerDegree);
                     string res1 = SendCommand(motor1, "FP" + target1);
                     if (MotorAcknowledged(motor1, res1) == false)
@@ -446,13 +392,13 @@ namespace GripperStepper
                     WaitMotionEnd(motor2, timeout);
 
                     double currentPos1 = GetPosition(motor1);
-                    if (Math.Abs(currentPos1 - (lastPos1 + angle1)) > 0.5)
+                    if (Math.Abs(currentPos1 - angle1) > 0.5)
                     {
                         throw new Exception("Position error is bigger than 0.5 degree.");
                     }
 
                     double currentPos2 = GetPosition(motor2);
-                    if (Math.Abs(currentPos2 - (lastPos2 + angle2)) > 0.5)
+                    if (Math.Abs(currentPos2 - angle2) > 0.5)
                     {
                         throw new Exception("Position error is bigger than 0.5 degree.");
                     }
@@ -549,7 +495,7 @@ namespace GripperStepper
         public void SetAcceleration(GripperMotor motor, double acceleration)
         {
             // rev / sec / sec
-            double acc = acceleration / 360 / GearRatio;
+            double acc = GearRatio * acceleration / 360;
             string accStr = acc.ToString("0.000");
             string res = SendCommand(motor, "AC" + accStr);
             if (MotorAcknowledged(motor, res) == false)
@@ -571,7 +517,7 @@ namespace GripperStepper
         /// <param name="velocity">degree / sec</param>
         public void SetVelocity(GripperMotor motor, double velocity)
         {
-            double vel = velocity / 360 / GearRatio;
+            double vel = GearRatio * velocity / 360;
             string velStr = vel.ToString("0.0000");
             string res = SendCommand(motor, "VE" + velStr);
             if (MotorAcknowledged(motor, res) == false)
@@ -667,7 +613,6 @@ namespace GripperStepper
 
             return pos / CountPerDegree;
         }
-
 
     }
 }
