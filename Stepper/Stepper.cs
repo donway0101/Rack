@@ -58,6 +58,12 @@ namespace GripperStepper
         private double CountPerDegree = 0;
         #endregion
 
+        public bool StepperOneIsConnected { get; set; }
+
+        public bool StepperTwoIsConnected { get; set; }
+
+        public bool StepperIsConnected { get; set; }
+
         /// <summary>
         /// Constructor
         /// </summary>
@@ -65,7 +71,6 @@ namespace GripperStepper
         public Stepper(string portName)
         {
             PortName = portName;
-
             CountPerDegree = ElectronicGearing * GearRatio / 360;
         }
 
@@ -76,13 +81,33 @@ namespace GripperStepper
         {           
             try
             {
+                Close();
+                Thread.Sleep(500);
                 SerialPort = new SerialPort(PortName, 9600, Parity.None, 8, StopBits.One);
                 SerialPort.Open();
                 SerialPort.DataReceived += SerialPort_DataReceived;
+                Thread.Sleep(300);
             }
             catch (Exception)
             {
                 throw;
+            }
+        }
+
+
+        public void Connect()
+        {
+            string res = SendCommand(GripperMotor.One, "IFD");
+            StepperOneIsConnected = MotorAcknowledged(GripperMotor.One, res);
+
+            res = SendCommand(GripperMotor.Two, "IFD");
+            StepperTwoIsConnected = MotorAcknowledged(GripperMotor.Two, res);
+
+            StepperIsConnected = StepperOneIsConnected & StepperTwoIsConnected;
+
+            if (StepperIsConnected == false)
+            {
+                throw new Exception("Not all stepper's connection is good.");
             }
         }
 
@@ -93,8 +118,11 @@ namespace GripperStepper
         {
             try
             {
-                SerialPort.Close();
-                SerialPort.Dispose();
+                if (SerialPort != null)
+                {
+                    SerialPort.Close();
+                    SerialPort.Dispose();
+                }            
             }
             catch (Exception)
             {
@@ -127,6 +155,7 @@ namespace GripperStepper
             //A whole response from driver should end with carriage return.
             if (PartialResponse.Contains("\r"))
             {
+                Console.WriteLine(PartialResponse);
                 Response = PartialResponse;
                 PartialResponse = string.Empty;
                 DriverResponsed = true;
@@ -165,8 +194,9 @@ namespace GripperStepper
             stopwatch.Start();
             while (DriverResponsed == false)
             {
-                if (stopwatch.ElapsedMilliseconds > 2*1000) //Should response within 2 second.
+                if (stopwatch.ElapsedMilliseconds > 300) //Should response within 2 second.
                 {
+                    PartialResponse = string.Empty;
                     throw new Exception("Driver response timeout.");
                 }
 
@@ -186,6 +216,16 @@ namespace GripperStepper
             return Convert.ToString((int)motor);
         }
 
+        public void Stop(GripperMotor motor)
+        {
+            string res = SendCommand(motor, "STD");
+
+            if (MotorAcknowledged(motor, res) != true)
+            {
+                throw new Exception("Drive is NOT enabled");
+            }
+        }
+
         /// <summary>
         /// Send command to motor through serial port, and wait for response.
         /// </summary>
@@ -195,18 +235,28 @@ namespace GripperStepper
         {
             lock (PortWriteLocker)
             {
-                try
+                int failCount = 0;
+                string command = GetMotorId(motor) + cmd + "\r"; //Add a carriage return.
+                byte[] buffer = Encoding.ASCII.GetBytes(command);
+                while (true)
                 {
-                    string command = GetMotorId(motor) + cmd + "\r"; //Add a carriage return.
-                    byte[] buffer = Encoding.ASCII.GetBytes(command);
-                    SerialPort.Write(buffer, 0, buffer.Length);
-                    DriverResponsed = false;
-                    return GetResponse();
+                    try
+                    {                     
+                        DriverResponsed = false;
+                        SerialPort.Write(buffer, 0, buffer.Length);
+                        return GetResponse();
+                    }
+                    catch (Exception)
+                    {
+                        failCount++;
+                        Thread.Sleep(50);
+                        if (failCount>5)
+                        {
+                            throw new Exception(command + " get no response.");
+                        }                  
+                    }
                 }
-                catch (Exception)
-                {
-                    throw;
-                }
+                
             }
         }
 
@@ -261,14 +311,14 @@ namespace GripperStepper
                 throw new Exception("Motor is not ready");
             }
 
-            if (GetInput(motor, Input.X3) == true)
+            if (GetInput(motor, Input.X1) == false)
             {
                 //If home sensor has been triggered before homing.
                 // move out first.
-                ToPointRelative(motor, 10);           
+                ToPointRelative(motor, -60);           
             }
 
-            string res = SendCommand(motor, "SH3L");
+            string res = SendCommand(motor, "SH1H");
             if (MotorAcknowledged(motor, res) == false)
             {
                 throw new Exception("Drive is NOT acknowledged");
@@ -317,6 +367,103 @@ namespace GripperStepper
             {
                 throw new Exception("Position error is bigger than 0.5 degree.");
             }
+        }
+
+        public bool ToPointAsync1(GripperMotor motor1, double angle1, GripperMotor motor2, double angle2,
+            int timeout = 10)
+        {
+            
+                try
+                {
+                    double lastPos1 = GetPosition(motor1);
+                    double lastPos2 = GetPosition(motor2);
+
+                    int target1 = Convert.ToInt32(angle1 * CountPerDegree);
+                    string res1 = SendCommand(motor1, "FP" + target1);
+                    if (MotorAcknowledged(motor1, res1) == false)
+                    {
+                        throw new Exception("Drive is NOT acknowledged");
+                    }
+
+                    int target2 = Convert.ToInt32(angle2 * CountPerDegree);
+                    string res2 = SendCommand(motor2, "FP" + target2);
+                    if (MotorAcknowledged(motor2, res2) == false)
+                    {
+                        throw new Exception("Drive is NOT acknowledged");
+                    }
+
+                    Thread.Sleep(50);
+                    WaitMotionEnd(motor1, timeout);
+                    WaitMotionEnd(motor2, timeout);
+
+                    double currentPos1 = GetPosition(motor1);
+                    if (Math.Abs(currentPos1 - (lastPos1 + angle1)) > 0.5)
+                    {
+                        throw new Exception("Position error is bigger than 0.5 degree.");
+                    }
+
+                    double currentPos2 = GetPosition(motor2);
+                    if (Math.Abs(currentPos2 - (lastPos2 + angle2)) > 0.5)
+                    {
+                        throw new Exception("Position error is bigger than 0.5 degree.");
+                    }
+
+                    return true;
+                }
+                catch (Exception)
+                {
+                    return false;
+                }
+           
+        }
+
+        public async Task<bool> ToPointAsync(GripperMotor motor1, double angle1, GripperMotor motor2, double angle2,
+            int timeout = 10)
+        {
+            return await Task.Run(() =>
+            {
+                try
+                {
+                    double lastPos1 = GetPosition(motor1);
+                    double lastPos2 = GetPosition(motor2);
+
+                    int target1 = Convert.ToInt32(angle1 * CountPerDegree);
+                    string res1 = SendCommand(motor1, "FP" + target1);
+                    if (MotorAcknowledged(motor1, res1) == false)
+                    {
+                        throw new Exception("Drive is NOT acknowledged");
+                    }
+
+                    int target2 = Convert.ToInt32(angle2 * CountPerDegree);
+                    string res2 = SendCommand(motor2, "FP" + target2);
+                    if (MotorAcknowledged(motor2, res2) == false)
+                    {
+                        throw new Exception("Drive is NOT acknowledged");
+                    }
+
+                    Thread.Sleep(50);
+                    WaitMotionEnd(motor1, timeout);
+                    WaitMotionEnd(motor2, timeout);
+
+                    double currentPos1 = GetPosition(motor1);
+                    if (Math.Abs(currentPos1 - (lastPos1 + angle1)) > 0.5)
+                    {
+                        throw new Exception("Position error is bigger than 0.5 degree.");
+                    }
+
+                    double currentPos2 = GetPosition(motor2);
+                    if (Math.Abs(currentPos2 - (lastPos2 + angle2)) > 0.5)
+                    {
+                        throw new Exception("Position error is bigger than 0.5 degree.");
+                    }
+
+                    return true;
+                }
+                catch (Exception)
+                {
+                    return false;
+                }
+            });
         }
 
         /// <summary>
