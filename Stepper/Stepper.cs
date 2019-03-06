@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace GripperStepper
 {
-    public class Stepper
+    public class Stepper : ISerialCommunication
     {
         #region Private member
         /// <summary>

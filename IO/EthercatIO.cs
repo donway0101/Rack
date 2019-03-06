@@ -7,7 +7,7 @@ using ACS.SPiiPlusNET;
 
 namespace IO
 {
-    public class EthercatIO
+    public class EthercatIO : IInputOutput
     {
         private Api Ch;
         private int BaseAddressOffset;

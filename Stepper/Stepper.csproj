@@ -42,6 +42,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DataStructure.cs" />
+    <Compile Include="ISerialCommunication.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Stepper.cs" />
   </ItemGroup>

@@ -46,6 +46,7 @@
   <ItemGroup>
     <Compile Include="DataStructure.cs" />
     <Compile Include="EthercatIO.cs" />
+    <Compile Include="IInputOutput.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
