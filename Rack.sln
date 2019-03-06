@@ -5,13 +5,15 @@ VisualStudioVersion = 15.0.28307.271
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IO", "IO\IO.csproj", "{08B41E19-BB93-4308-9BB8-53EE23ED9211}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test", "Test\Test.csproj", "{65C805CA-B1F5-4C0D-9590-315D7D855059}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MotionTool", "Test\MotionTool.csproj", "{65C805CA-B1F5-4C0D-9590-315D7D855059}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Stepper", "Stepper\Stepper.csproj", "{80BB0D71-717E-48FC-B7D5-D891537265F8}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StepperTool", "StepperTool\StepperTool.csproj", "{ADFB6B96-A923-4982-AACC-7D9198367E3E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Motion", "Motion\Motion.csproj", "{9D555F20-A4D7-4F2A-A425-3FD8F086358A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IOTool", "IOTool\IOTool.csproj", "{3AA8B988-6D36-491A-ADF2-7FD21FD9D389}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{9D555F20-A4D7-4F2A-A425-3FD8F086358A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9D555F20-A4D7-4F2A-A425-3FD8F086358A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9D555F20-A4D7-4F2A-A425-3FD8F086358A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3AA8B988-6D36-491A-ADF2-7FD21FD9D389}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3AA8B988-6D36-491A-ADF2-7FD21FD9D389}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3AA8B988-6D36-491A-ADF2-7FD21FD9D389}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3AA8B988-6D36-491A-ADF2-7FD21FD9D389}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -35,7 +35,6 @@ namespace IO
         {
             //DeclareVariable();
             DeclareVariableInDBuffer();
-            MapEtherCAT();
         }
 
         /// <summary>
@@ -84,7 +83,14 @@ namespace IO
             }
 
             Ch.AppendBuffer(DBuffer, program);
+
+            for (int i = 0; i < 9; i++)
+            {
+                Ch.ClearBuffer((ProgramBuffer)i, 1, 2000);
+            }
             Ch.CompileBuffer(DBuffer);
+
+            MapEtherCAT();
         }
 
         private void MapEtherCAT()

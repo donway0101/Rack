@@ -9,9 +9,9 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using ACS.SPiiPlusNET;
 using IO;
-using Motion;
 
-namespace Test
+
+namespace IOTool
 {
     public partial class Form1 : Form
     {
@@ -21,31 +21,30 @@ namespace Test
         }
 
         Api ch = new Api();
-        EthercatMotion Motion;
+        EthercatIO IORobot;
+        EthercatIO IOConveyor;
 
         private void button1_Click(object sender, EventArgs e)
         {
             try
             {
                 ch.OpenCommEthernet("192.168.8.18", 701);
-                Motion = new EthercatMotion(ch, 3);
-                Motion.Setup();
 
-                Motion.Test();
+                IORobot = new EthercatIO(ch, 72, 3, 2);
+                IOConveyor = new EthercatIO(ch, 88, 8, 5);
+
+                //IO.Setup();
+                IORobot.SetOutput(1, 6, false);
+                //bool v = IO.GetInput(2, 6);
+                IORobot.SetOutput(Output.RedLight, true);
+                ;
             }
             catch (Exception ex)
             {
 
                 MessageBox.Show(ex.Message);
-            }       
-        }
-
-        private void button2_Click(object sender, EventArgs e)
-        {
-        }
-
-        private void button3_Click(object sender, EventArgs e)
-        {
+            }
         }
     }
 }
+

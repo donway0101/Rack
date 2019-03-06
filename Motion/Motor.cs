@@ -12,6 +12,13 @@ namespace Motion
         public Axis Id { get; set; }
 
         /// <summary>
+        /// Ethercat position actual value address.
+        /// </summary>
+        public int EcatPosActValAddr { get; set; }
+
+        public double PowerOnPos { get; set; }
+
+        /// <summary>
         /// Encoder counts per round.
         /// </summary>
         public double EncCtsPerR { get; set; }
@@ -39,9 +46,9 @@ namespace Motion
 
         public int ErrCode { get; set; }
 
-        public Motor()
+        public Motor(Axis axis)
         {
-
+            Id = axis;
         }
 
 
