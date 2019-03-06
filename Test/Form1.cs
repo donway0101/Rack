@@ -31,7 +31,7 @@ namespace Test
                 Motion = new EthercatMotion(ch, 3);
                 Motion.Setup();
 
-                Motion.Test();
+           
             }
             catch (Exception ex)
             {
@@ -40,12 +40,18 @@ namespace Test
             }       
         }
 
-        private void button2_Click(object sender, EventArgs e)
+        private void button2_Click_1(object sender, EventArgs e)
         {
-        }
+            try
+            {
+                Motion.Test();
+            }
+            catch (Exception ex)
+            {
 
-        private void button3_Click(object sender, EventArgs e)
-        {
+                MessageBox.Show(ex.Message);
+            }
+
         }
     }
 }

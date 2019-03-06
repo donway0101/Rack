@@ -181,22 +181,48 @@ namespace Motion
 
         public void ToPoint(Motor motor, double point)
         {
-
+            Ch.ToPoint(MotionFlags.ACSC_AMF_MAXIMUM, motor.Id, point);
         }
 
-        public ACSC_WAITBLOCK ToPointAsync(Motor motor, double point)
+        public void ToPointM(Motor[] motors, double[] points)
         {
-            return Ch.ToPointAsync(MotionFlags.ACSC_AMF_MAXIMUM, motor.Id, point);       
+            Axis[] axes = new Axis[motors.Length+1];
+            for (int i = 0; i < motors.Length; i++)
+            {
+                axes[i] = motors[i].Id;
+            }
+            axes[motors.Length] = Axis.ACSC_NONE;
+
+            Ch.ToPointM(MotionFlags.ACSC_AMF_MAXIMUM, axes, points);
         }
 
         public void Test()
         {
+            //Enable(MotorX1);
+
+            //ToPoint(MotorX1, 260);
+
+            //Console.WriteLine("doing");
+
+            //Ch.WaitMotionEnd(Axis.ACSC_AXIS_1, 60000);
+
+            //Console.WriteLine("Finish");
+
             Enable(MotorX1);
+            Enable(MotorX2);
 
-            ACSC_WAITBLOCK wb = ToPointAsync(MotorX1, 270);
+            Motor[] motors = new Motor[2] { MotorX1, MotorX2 };
+            double[] pos = new double[2] { 260, 260 };
 
-            object o = Ch.GetResult(wb, 3000);
+            ToPointM(motors, pos);
 
+            Console.WriteLine("doing");
+
+            Ch.WaitMotionEnd(Axis.ACSC_AXIS_1, 60000);
+            Console.WriteLine("finis1");
+            Ch.WaitMotionEnd(Axis.ACSC_AXIS_2, 60000);
+
+            Console.WriteLine("Finish2");
         }
 
         public void Estop()
