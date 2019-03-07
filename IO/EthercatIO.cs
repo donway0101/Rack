@@ -16,7 +16,7 @@ namespace IO
         private int InputModuleAddrInc;
         private int OutputModuleAddrInc;
         private const string InputVariableName = "InputModule";
-        private const string OutputVariableName = "OnputModule";
+        private const string OutputVariableName = "OutputModule";
         private const string GlobalDefine = "GLOBAL INT ";
         private string NewLine = Environment.NewLine;
 
@@ -89,6 +89,16 @@ namespace IO
                     }
                     Ch.CompileBuffer(DBuffer);
                 }
+            }
+            else
+            {
+                Ch.AppendBuffer(DBuffer, program);
+
+                for (int i = 0; i < 9; i++)
+                {
+                    Ch.ClearBuffer((ProgramBuffer)i, 1, 2000);
+                }
+                Ch.CompileBuffer(DBuffer);
             }
 
             MapEtherCAT();
@@ -200,16 +210,16 @@ namespace IO
             int outputValue = (int)output;
             int moduleId = outputValue / 10;
             int outputPinNum = outputValue % 10;
-
+            SetOutput(moduleId, outputPinNum, value);
         }
 
-        public bool Getinput(Input input)
+        public bool GetInput(Input input)
         {
             int inputValue = (int)input;
             int moduleId = inputValue / 10;
             int inputPinNum = inputValue % 10;
 
-            return false;
+            return GetInput(moduleId, inputPinNum);
         }
 
         public void SetOutput(int output, bool value)

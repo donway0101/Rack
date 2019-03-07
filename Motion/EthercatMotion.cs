@@ -141,7 +141,17 @@ namespace Motion
                         Ch.ClearBuffer((ProgramBuffer)i, 1, 2000);
                     }
                     Ch.CompileBuffer(DBuffer);
-                }          
+                }
+            }
+            else
+            {
+                Ch.AppendBuffer(DBuffer, program);
+
+                for (int i = 0; i < 9; i++)
+                {
+                    Ch.ClearBuffer((ProgramBuffer)i, 1, 2000);
+                }
+                Ch.CompileBuffer(DBuffer);
             }
 
             MapEtherCAT();

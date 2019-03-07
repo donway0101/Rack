@@ -2,7 +2,7 @@
 {
     public interface IInputOutput
     {
-        bool Getinput(Input input);
+        bool GetInput(Input input);
         void SetOutput(Output output, bool value);
         void Setup();
     }
