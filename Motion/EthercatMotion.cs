@@ -132,19 +132,17 @@ namespace Motion
             string originProgram = Ch.UploadBuffer(DBuffer);
             if (originProgram != null)
             {
-                if (originProgram.Contains(EcatActPosName) == true)
+                if (originProgram.Contains(EcatActPosName) == false)
                 {
-                    return;
+                    Ch.AppendBuffer(DBuffer, program);
+
+                    for (int i = 0; i < 9; i++)
+                    {
+                        Ch.ClearBuffer((ProgramBuffer)i, 1, 2000);
+                    }
+                    Ch.CompileBuffer(DBuffer);
                 }          
             }
-
-            Ch.AppendBuffer(DBuffer, program);
-
-            for (int i = 0; i < 9; i++)
-            {
-                Ch.ClearBuffer((ProgramBuffer)i, 1, 2000);
-            }
-            Ch.CompileBuffer(DBuffer);
 
             MapEtherCAT();
         }
