@@ -23,7 +23,9 @@ namespace RackTool
         {
             try
             {
-                IEnumerable<XElement> xElements = XmlReaderWriter.SimpleStreamAxis("book.xml", "Box");
+               
+                string i = XmlReaderWriter.GetShiledBoxAttribute("RackData.xml", 3, ShiledBoxData.XPosition);
+                //XmlReaderWriter.CreateStorageFile("RackData.xml");
                 ;
             }
             catch (Exception ex)

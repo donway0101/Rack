@@ -11,12 +11,11 @@ namespace Rack
 {
     public class XmlReaderWriter
     {
-        private XmlReader Reader { get; set; }
 
-        public static IEnumerable<XElement> SimpleStreamAxis(string inputUrl,
-                                              string elementName)
+
+        public static IEnumerable<XElement> GetElements(string file, string elementName)
         {
-            using (XmlReader reader = XmlReader.Create(inputUrl))
+            using (XmlReader reader = XmlReader.Create(file))
             {
                 reader.MoveToContent();
                 while (reader.Read())
@@ -36,29 +35,103 @@ namespace Rack
             }
         }
 
-        public static void Save(string file)
+        public static XElement GetElement(string file, string elementName)
+        {
+            using (XmlReader reader = XmlReader.Create(file))
+            {
+                reader.MoveToContent();
+                while (reader.Read())
+                {
+                    if (reader.NodeType == XmlNodeType.Element)
+                    {
+                        if (reader.Name == elementName)
+                        {
+                            XElement el = XNode.ReadFrom(reader) as XElement;
+                            if (el != null)
+                            {
+                                return el;
+                            }
+                        }
+                    }
+                }
+                return null;
+            }
+        }
+
+        public static string GetShiledBoxAttribute(string file, int id, ShiledBoxData attribute)
+        {
+            XElement root = XElement.Load(file);
+
+            XElement elem = root
+              .Elements(ShiledBoxData.ShiledBox.ToString())
+              .Elements(ShiledBoxData.Box.ToString())
+              .Single(itemName => itemName.Attribute(ShiledBoxData.Id.ToString()).Value == id.ToString())
+              .Parent
+              .Element(ShiledBoxData.Box.ToString());
+
+            return elem.Attribute(attribute.ToString()).Value;
+        }
+
+        public static void SetShiledBox(string file, int id, ShiledBoxData attribute, object value)
+        {
+            XElement root = XElement.Load(file);
+
+            XElement elem = root
+              .Elements(ShiledBoxData.ShiledBox.ToString())
+              .Elements(ShiledBoxData.Box.ToString())
+              .Single(itemName => itemName.Attribute(ShiledBoxData.Id.ToString()).Value == id.ToString())
+              .Parent
+              .Element(ShiledBoxData.Box.ToString());
+
+            elem.Attribute(attribute.ToString()).Value = value.ToString();
+
+            root.Save(file);
+        }
+
+        public static void CreateStorageFile(string file)
         {
             XElement root;
 
-            if (File.Exists(file))
-                root = XElement.Load(file);
-            else
-                root = new XElement("Devices");
+            //if (File.Exists(file))
+            //    root = XElement.Load(file);
+            //else
+            root = new XElement(ShiledBoxData.RackData.ToString());
 
-            XElement bookParticipants =
-                new XElement("Boxs",
-                new XElement("Box",
-                new XAttribute("Id", "1"),
-                new XAttribute("CarrierHeight", "600"),
-                new XAttribute("DoorHeight", "750"),
-                new XAttribute("XPosition", "100"),
-                new XAttribute("YPosition", "300"),
-                new XElement("FirstName", "J"),
-                new XElement("LastName", "Ri")));
+            #region ShiledBox
+            XElement ShiledBox = new XElement(ShiledBoxData.ShiledBox.ToString());
 
-            
+            XElement Box1 = new XElement(ShiledBoxData.Box.ToString());
+            Box1.Add(
+                new XAttribute(ShiledBoxData.Id.ToString(), 1),
+                new XAttribute(ShiledBoxData.CarrierHeight.ToString(), 600),
+                new XAttribute(ShiledBoxData.DoorHeight .ToString(), 750),
+                new XAttribute(ShiledBoxData.XPosition.ToString(), 100),
+                new XAttribute(ShiledBoxData.YPosition.ToString(), 300)
+                );
 
-            root.Add(bookParticipants);
+            XElement Box2 = new XElement(ShiledBoxData.Box.ToString());
+            Box2.Add(
+                new XAttribute(ShiledBoxData.Id.ToString(), 2),
+                new XAttribute(ShiledBoxData.CarrierHeight.ToString(), 600),
+                new XAttribute(ShiledBoxData.DoorHeight.ToString(), 750),
+                new XAttribute(ShiledBoxData.XPosition.ToString(), 100),
+                new XAttribute(ShiledBoxData.YPosition.ToString(), 300)
+                );
+
+            ShiledBox.Add(Box1);
+            ShiledBox.Add(Box2);
+
+            #endregion
+
+            XElement Conveyor = new XElement(ConveyorData.Conveyor.ToString());
+            Conveyor.Add(new XAttribute(ConveyorData.PickConveyorHeight.ToString(), 550));
+            Conveyor.Add(new XAttribute(ConveyorData.BinConveyorHeight.ToString(), 650));
+
+
+
+            root.Add(ShiledBox);
+            root.Add(Conveyor);
+
             root.Save(file);
         }
     }
