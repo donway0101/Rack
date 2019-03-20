@@ -34,5 +34,19 @@ namespace Rack
         XPos,
         YPos,
         ZPos,
+        Pick,
+        Bin,
+        Holder1,
+        Holder2,
+        Holder3,
+        Holder4,
+        Holder5,
+        Holder6,
+        Gold1,
+        Gold2,
+        Gold3,
+        Gold4,
+        Gold5,
+        
     }
 }

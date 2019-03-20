@@ -24,8 +24,8 @@ namespace RackTool
             try
             {
                
-                string i = XmlReaderWriter.GetShiledBoxAttribute("RackData.xml", 3, ShiledBoxData.XPosition);
-                //XmlReaderWriter.CreateStorageFile("RackData.xml");
+                //string i = XmlReaderWriter.GetShiledBoxAttribute("RackData.xml", 3, ShiledBoxData.Id);
+                XmlReaderWriter.CreateStorageFile("RackData.xml");
                 ;
             }
             catch (Exception ex)

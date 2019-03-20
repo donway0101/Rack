@@ -11,11 +11,12 @@ namespace Rack
 {
     public class CQCRack
     {
-        private Api Ch;
+        private Api Ch = new Api();
         private EthercatMotion Motion;
         private string IP;
 
-        private double YIsOutLenght = 50;
+        private double YIsInBox = 50;
+        private double ConveyorWidth = 300;
 
         public bool RobotHomeComplete { get; set; }
         public bool SetupComplete { get; set; }
@@ -42,13 +43,30 @@ namespace Rack
             }
             Motion.SetSpeed(homeSpeed);
 
+            //Careful is robot is holding a phone.
+
             //Box state should either be open or close.
 
             double YPos = Motion.GetPosition(Motion.MotorY);
-            if (YPos > YIsOutLenght)
+            if (YPos > YIsInBox) //Y is dangerous
             {
                 double Xpos = Motion.GetPositionX();
+                double XRPos = Convert.ToDouble( 
+                    XmlReaderWriter.GetTeachAttribute("RackData.xml", TeachData.Pick, TeachData.XPos));
 
+                if ( Math.Abs( Xpos- XRPos) < ConveyorWidth/2) //Robot is in conveyor zone.
+                {
+                    //Conveyor homing, may need to pull up a little.
+                }
+                else //Robot in box zone.
+                {
+                    if (true) // If not in the box, tell user to pull home robot manually.
+                    {
+                        //
+                    }
+                }
+
+                
             }
             else
             {
