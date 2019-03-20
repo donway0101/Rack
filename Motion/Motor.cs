@@ -18,6 +18,8 @@ namespace Motion
 
         public double PowerOnPos { get; set; }
 
+        public double FeedbackPosition { get; set; }
+
         /// <summary>
         /// Encoder counts per round.
         /// </summary>
@@ -45,6 +47,12 @@ namespace Motion
         public double MaxTravel { get; set; }
 
         public int ErrCode { get; set; }
+
+        public double SpeedFactor { get; set; } = 1;
+
+        public double JerkFactor { get; set; } = 20;
+
+        public double FPositionDirection = 1.0;
 
         public Motor(Axis axis)
         {

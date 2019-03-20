@@ -40,7 +40,7 @@ namespace Motion
             MotorZ.EcatPosActValAddr = 144; //For Sanyo, axisAddrOffset = 18
             MotorZ.EncCtsPerR = 131072;
             MotorZ.BallScrewLead = 32;
-            MotorZ.HomeOffset = 1020.0;
+            MotorZ.HomeOffset = 800.0;
             MotorZ.CriticalErrAcc = 100;
             MotorZ.CriticalErrVel = 100;
             MotorZ.CriticalErrIdle = 5;
@@ -62,6 +62,8 @@ namespace Motion
             MotorX2.CriticalErrAcc = 100;
             MotorX2.CriticalErrVel = 100;
             MotorX2.CriticalErrIdle = 5;
+
+            MotorY.FPositionDirection = -1;
 
             //Motors = new Motor[5] { MotorZ, MotorX1, MotorX2, MotorY, MotorR };
             Motors = new Motor[3] { MotorZ, MotorX1, MotorX2 };
@@ -163,10 +165,37 @@ namespace Motion
         {
             Ch.SetVelocity(motor.Id, velocity);
         }
+
+        public void SetSpeed(double velocity)
+        {
+            foreach (var mtr in Motors)
+            {
+                Ch.SetVelocity(mtr.Id, velocity*mtr.SpeedFactor);
+                Ch.SetJerk(mtr.Id, velocity * mtr.JerkFactor);
+            }
+        }
+
+        public void SetSpeedImm(double velocity)
+        {
+            foreach (var mtr in Motors)
+            {
+                Ch.SetVelocityImm(mtr.Id, velocity * mtr.SpeedFactor);
+                Ch.SetJerkImm(mtr.Id, velocity * mtr.JerkFactor);
+            }
+        }
+
         public void SetAcceleration(Motor motor, double acceleration) { }
         public void SetDeceleration(Motor motor, double deceleration) { }
         public void SetJerk(Motor motor, double jerk) { }
-        public double GetPosition(Motor motor) { return 0; }
+        public double GetPosition(Motor motor)
+        {
+            return Ch.GetFPosition(motor.Id)*motor.FPositionDirection;
+        }
+
+        public double GetPositionX()
+        {
+            return Ch.GetFPosition(MotorX1.Id) + Ch.GetFPosition(MotorX2.Id);
+        }
         public double GetVelocity(Motor motor) { return 0; }
         public double GetAcceleration(Motor motor) { return 0; }
         public double GetDeceleration(Motor motor) { return 0; }
@@ -237,5 +266,7 @@ namespace Motion
         {
 
         }
+
+      
     }
 }

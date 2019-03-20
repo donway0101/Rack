@@ -15,8 +15,6 @@ namespace Rack
         Id,
         CarrierHeight,
         DoorHeight,
-        XPosition,
-        YPosition,
     }
 
     public enum ConveyorData
@@ -24,6 +22,17 @@ namespace Rack
         Conveyor,
         PickConveyorHeight,
         BinConveyorHeight,
+        XMinPos,
+        XMaxPos,
     }
 
+    public enum TeachData
+    {
+        Teach,
+        Pos,
+        Name,
+        XPos,
+        YPos,
+        ZPos,
+    }
 }

@@ -72,7 +72,7 @@ namespace Rack
             return elem.Attribute(attribute.ToString()).Value;
         }
 
-        public static void SetShiledBox(string file, int id, ShiledBoxData attribute, object value)
+        public static void SetShiledBoxAttribute(string file, int id, ShiledBoxData attribute, object value)
         {
             XElement root = XElement.Load(file);
 
@@ -92,10 +92,11 @@ namespace Rack
         {
             XElement root;
 
-            //if (File.Exists(file))
-            //    root = XElement.Load(file);
-            //else
-            root = new XElement(ShiledBoxData.RackData.ToString());
+            if (File.Exists(file))
+                throw new Exception(file + " already exist.");
+            //root = XElement.Load(file);
+            else
+                root = new XElement(ShiledBoxData.RackData.ToString());
 
             #region ShiledBox
             XElement ShiledBox = new XElement(ShiledBoxData.ShiledBox.ToString());
@@ -104,18 +105,14 @@ namespace Rack
             Box1.Add(
                 new XAttribute(ShiledBoxData.Id.ToString(), 1),
                 new XAttribute(ShiledBoxData.CarrierHeight.ToString(), 600),
-                new XAttribute(ShiledBoxData.DoorHeight .ToString(), 750),
-                new XAttribute(ShiledBoxData.XPosition.ToString(), 100),
-                new XAttribute(ShiledBoxData.YPosition.ToString(), 300)
+                new XAttribute(ShiledBoxData.DoorHeight .ToString(), 750)
                 );
 
             XElement Box2 = new XElement(ShiledBoxData.Box.ToString());
             Box2.Add(
                 new XAttribute(ShiledBoxData.Id.ToString(), 2),
                 new XAttribute(ShiledBoxData.CarrierHeight.ToString(), 600),
-                new XAttribute(ShiledBoxData.DoorHeight.ToString(), 750),
-                new XAttribute(ShiledBoxData.XPosition.ToString(), 100),
-                new XAttribute(ShiledBoxData.YPosition.ToString(), 300)
+                new XAttribute(ShiledBoxData.DoorHeight.ToString(), 750)         
                 );
 
             ShiledBox.Add(Box1);
@@ -127,6 +124,24 @@ namespace Rack
             Conveyor.Add(new XAttribute(ConveyorData.PickConveyorHeight.ToString(), 550));
             Conveyor.Add(new XAttribute(ConveyorData.BinConveyorHeight.ToString(), 650));
 
+            #region Teach
+            XElement Teach = new XElement(TeachData.Teach.ToString());
+
+            XElement PickPos = new XElement(TeachData.Pos.ToString());
+            PickPos.Add(
+                new XAttribute(TeachData.Name.ToString(), 1),
+                new XAttribute(TeachData.XPos.ToString(), 600),
+                new XAttribute(TeachData.YPos.ToString(), 750),
+                new XAttribute(TeachData.ZPos.ToString(), 750)
+                );
+
+            XElement BinPos = new XElement(ShiledBoxData.Box.ToString());
+       
+
+            Teach.Add(PickPos);
+            Teach.Add(BinPos); 
+
+            #endregion
 
 
             root.Add(ShiledBox);
