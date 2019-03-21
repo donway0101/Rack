@@ -7,7 +7,8 @@ using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Linq;
 
-namespace Rack
+
+namespace Tools
 {
     public class XmlReaderWriter
     {
@@ -141,12 +142,24 @@ namespace Rack
             #region Teach
             XElement Teach = new XElement(TeachData.Teach.ToString());
 
+            XElement HomePos = new XElement(TeachData.Pos.ToString());
+            HomePos.Add(
+                new XAttribute(TeachData.Name.ToString(), TeachData.Home.ToString()),
+                new XAttribute(TeachData.XPos.ToString(), 0),
+                new XAttribute(TeachData.YPos.ToString(), 0),
+                new XAttribute(TeachData.ZPos.ToString(), 1000),
+                new XAttribute(TeachData.RPos.ToString(), 0),
+                new XAttribute(TeachData.APos.ToString(), 0)
+                );
+
             XElement PickPos = new XElement(TeachData.Pos.ToString());
             PickPos.Add(
                 new XAttribute(TeachData.Name.ToString(), TeachData.Pick.ToString()),
                 new XAttribute(TeachData.XPos.ToString(), 0),
                 new XAttribute(TeachData.YPos.ToString(), 0),
-                new XAttribute(TeachData.ZPos.ToString(), 1000)
+                new XAttribute(TeachData.ZPos.ToString(), 1000),
+                new XAttribute(TeachData.RPos.ToString(), 0),
+                new XAttribute(TeachData.APos.ToString(), 0)
                 );
 
             XElement BinPos = new XElement(TeachData.Pos.ToString());
@@ -154,7 +167,9 @@ namespace Rack
                      new XAttribute(TeachData.Name.ToString(), TeachData.Bin.ToString()),
                      new XAttribute(TeachData.XPos.ToString(), 0),
                      new XAttribute(TeachData.YPos.ToString(), 0),
-                     new XAttribute(TeachData.ZPos.ToString(), 1000)
+                     new XAttribute(TeachData.ZPos.ToString(), 1000),
+                     new XAttribute(TeachData.RPos.ToString(), 0),
+                     new XAttribute(TeachData.APos.ToString(), 0)
                      );
 
             XElement Holder1 = new XElement(TeachData.Pos.ToString());
@@ -162,7 +177,9 @@ namespace Rack
                      new XAttribute(TeachData.Name.ToString(), TeachData.Holder1.ToString()),
                      new XAttribute(TeachData.XPos.ToString(), 0),
                      new XAttribute(TeachData.YPos.ToString(), 0),
-                     new XAttribute(TeachData.ZPos.ToString(), 1000)
+                     new XAttribute(TeachData.ZPos.ToString(), 1000),
+                     new XAttribute(TeachData.RPos.ToString(), 0),
+                     new XAttribute(TeachData.APos.ToString(), 0)
                      );
 
             XElement Holder2 = new XElement(TeachData.Pos.ToString());
@@ -170,7 +187,9 @@ namespace Rack
                      new XAttribute(TeachData.Name.ToString(), TeachData.Holder2.ToString()),
                      new XAttribute(TeachData.XPos.ToString(), 0),
                      new XAttribute(TeachData.YPos.ToString(), 0),
-                     new XAttribute(TeachData.ZPos.ToString(), 1000)
+                     new XAttribute(TeachData.ZPos.ToString(), 1000),
+                     new XAttribute(TeachData.RPos.ToString(), 0),
+                     new XAttribute(TeachData.APos.ToString(), 0)
                      );
 
             XElement Holder3 = new XElement(TeachData.Pos.ToString());
@@ -178,7 +197,9 @@ namespace Rack
                      new XAttribute(TeachData.Name.ToString(), TeachData.Holder3.ToString()),
                      new XAttribute(TeachData.XPos.ToString(), 0),
                      new XAttribute(TeachData.YPos.ToString(), 0),
-                     new XAttribute(TeachData.ZPos.ToString(), 1000)
+                     new XAttribute(TeachData.ZPos.ToString(), 1000),
+                     new XAttribute(TeachData.RPos.ToString(), 0),
+                     new XAttribute(TeachData.APos.ToString(), 0)
                      );
 
             XElement Holder4 = new XElement(TeachData.Pos.ToString());
@@ -186,7 +207,9 @@ namespace Rack
                      new XAttribute(TeachData.Name.ToString(), TeachData.Holder4.ToString()),
                      new XAttribute(TeachData.XPos.ToString(), 0),
                      new XAttribute(TeachData.YPos.ToString(), 0),
-                     new XAttribute(TeachData.ZPos.ToString(), 1000)
+                     new XAttribute(TeachData.ZPos.ToString(), 1000),
+                     new XAttribute(TeachData.RPos.ToString(), 0),
+                     new XAttribute(TeachData.APos.ToString(), 0)
                      );
 
             XElement Holder5 = new XElement(TeachData.Pos.ToString());
@@ -194,7 +217,9 @@ namespace Rack
                      new XAttribute(TeachData.Name.ToString(), TeachData.Holder5.ToString()),
                      new XAttribute(TeachData.XPos.ToString(), 0),
                      new XAttribute(TeachData.YPos.ToString(), 0),
-                     new XAttribute(TeachData.ZPos.ToString(), 1000)
+                     new XAttribute(TeachData.ZPos.ToString(), 1000),
+                     new XAttribute(TeachData.RPos.ToString(), 0),
+                     new XAttribute(TeachData.APos.ToString(), 0)
                      );
 
             XElement Holder6 = new XElement(TeachData.Pos.ToString());
@@ -202,7 +227,9 @@ namespace Rack
                      new XAttribute(TeachData.Name.ToString(), TeachData.Holder6.ToString()),
                      new XAttribute(TeachData.XPos.ToString(), 0),
                      new XAttribute(TeachData.YPos.ToString(), 0),
-                     new XAttribute(TeachData.ZPos.ToString(), 1000)
+                     new XAttribute(TeachData.ZPos.ToString(), 1000),
+                     new XAttribute(TeachData.RPos.ToString(), 0),
+                     new XAttribute(TeachData.APos.ToString(), 0)
                      );
 
             XElement Gold1 = new XElement(TeachData.Pos.ToString());
@@ -210,7 +237,9 @@ namespace Rack
                      new XAttribute(TeachData.Name.ToString(), TeachData.Gold1.ToString()),
                      new XAttribute(TeachData.XPos.ToString(), 0),
                      new XAttribute(TeachData.YPos.ToString(), 0),
-                     new XAttribute(TeachData.ZPos.ToString(), 1000)
+                     new XAttribute(TeachData.ZPos.ToString(), 1000),
+                     new XAttribute(TeachData.RPos.ToString(), 0),
+                     new XAttribute(TeachData.APos.ToString(), 0)
                      );
 
             XElement Gold2 = new XElement(TeachData.Pos.ToString());
@@ -218,7 +247,9 @@ namespace Rack
                      new XAttribute(TeachData.Name.ToString(), TeachData.Gold2.ToString()),
                      new XAttribute(TeachData.XPos.ToString(), 0),
                      new XAttribute(TeachData.YPos.ToString(), 0),
-                     new XAttribute(TeachData.ZPos.ToString(), 1000)
+                     new XAttribute(TeachData.ZPos.ToString(), 1000),
+                     new XAttribute(TeachData.RPos.ToString(), 0),
+                     new XAttribute(TeachData.APos.ToString(), 0)
                      );
 
             XElement Gold3 = new XElement(TeachData.Pos.ToString());
@@ -226,7 +257,9 @@ namespace Rack
                      new XAttribute(TeachData.Name.ToString(), TeachData.Gold3.ToString()),
                      new XAttribute(TeachData.XPos.ToString(), 0),
                      new XAttribute(TeachData.YPos.ToString(), 0),
-                     new XAttribute(TeachData.ZPos.ToString(), 1000)
+                     new XAttribute(TeachData.ZPos.ToString(), 1000),
+                     new XAttribute(TeachData.RPos.ToString(), 0),
+                     new XAttribute(TeachData.APos.ToString(), 0)
                      );
 
             XElement Gold4 = new XElement(TeachData.Pos.ToString());
@@ -234,7 +267,9 @@ namespace Rack
                      new XAttribute(TeachData.Name.ToString(), TeachData.Gold4.ToString()),
                      new XAttribute(TeachData.XPos.ToString(), 0),
                      new XAttribute(TeachData.YPos.ToString(), 0),
-                     new XAttribute(TeachData.ZPos.ToString(), 1000)
+                     new XAttribute(TeachData.ZPos.ToString(), 1000),
+                     new XAttribute(TeachData.RPos.ToString(), 0),
+                     new XAttribute(TeachData.APos.ToString(), 0)
                      );
 
             XElement Gold5 = new XElement(TeachData.Pos.ToString());
@@ -242,9 +277,12 @@ namespace Rack
                      new XAttribute(TeachData.Name.ToString(), TeachData.Gold5.ToString()),
                      new XAttribute(TeachData.XPos.ToString(), 0),
                      new XAttribute(TeachData.YPos.ToString(), 0),
-                     new XAttribute(TeachData.ZPos.ToString(), 1000)
+                     new XAttribute(TeachData.ZPos.ToString(), 1000),
+                     new XAttribute(TeachData.RPos.ToString(), 0),
+                     new XAttribute(TeachData.APos.ToString(), 0)
                      );
 
+            Teach.Add(HomePos);
             Teach.Add(PickPos);
             Teach.Add(BinPos);
             Teach.Add(Holder1);

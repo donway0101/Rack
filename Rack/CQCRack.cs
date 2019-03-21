@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using System.Xml;
 using ACS.SPiiPlusNET;
 using Motion;
+using GripperStepper;
+using Tools;
 
 namespace Rack
 {
@@ -13,9 +15,11 @@ namespace Rack
     {
         private Api Ch = new Api();
         private EthercatMotion Motion;
+        private Stepper Gripper;
         private string IP;
 
-        private double YIsInBox = 50;
+        private double YIsInBox = 200;
+        private double YIsNearHome = 50;
         private double ConveyorWidth = 300;
 
         public bool RobotHomeComplete { get; set; }
@@ -32,6 +36,9 @@ namespace Rack
             Motion = new EthercatMotion(Ch, 3);
             Motion.Setup();
 
+            Gripper = new Stepper("COM3");
+            Gripper.Setup();
+
             SetupComplete = true;
         }
 
@@ -47,30 +54,44 @@ namespace Rack
 
             //Box state should either be open or close.
 
-            double YPos = Motion.GetPosition(Motion.MotorY);
-            if (YPos > YIsInBox) //Y is dangerous
-            {
-                double Xpos = Motion.GetPositionX();
-                double XRPos = Convert.ToDouble( 
-                    XmlReaderWriter.GetTeachAttribute("RackData.xml", TeachData.Pick, TeachData.XPos));
+            double currentYPos = Motion.GetPosition(Motion.MotorY);
+            double currentXPos = Motion.GetPositionX();
+            double currentZPos = Motion.GetPosition(Motion.MotorZ);
+            double currentRPos = Motion.GetPosition(Motion.MotorR);
 
-                if ( Math.Abs( Xpos- XRPos) < ConveyorWidth/2) //Robot is in conveyor zone.
+            double XRPos = Convert.ToDouble(
+                  XmlReaderWriter.GetTeachAttribute(Files.RackData, TeachData.Pick, TeachData.XPos));
+
+            if (Math.Abs(currentXPos - XRPos) < ConveyorWidth / 2) //Robot is in conveyor zone.
+            {
+                //Conveyor homing, may need to pull up a little.
+            }
+            else //Robot in box zone.
+            {
+                if (currentYPos > YIsInBox) //Y is dangerous
                 {
-                    //Conveyor homing, may need to pull up a little.
+
                 }
-                else //Robot in box zone.
+                else
                 {
-                    if (true) // If not in the box, tell user to pull home robot manually.
+                    if (currentYPos < YIsNearHome)
                     {
-                        //
+                        //Z up, X move, Y move, R move gripper move, check phone left
+                        Motion.ToPoint(Motion.MotorY, Motion.HomePosition.YPos);
+                        Motion.ToPoint(Motion.MotorZ, Motion.HomePosition.ZPos);
+                        Motion.ToPointX(Motion.HomePosition.XPos);
+                        Motion.ToPoint(Motion.MotorR, Motion.HomePosition.RPos);
+
+                        //Gripper
+                        //Disable one of the motor.
+                        Gripper.HomeMotor(GripperMotor.One, 0);
+                        Gripper.HomeMotor(GripperMotor.Two, 0);
+                    }
+                    else
+                    {
+                        throw new Exception("Y motor is at unknown position, please home robot manually.");
                     }
                 }
-
-                
-            }
-            else
-            {
-
             }
 
             //Load data

@@ -77,7 +77,7 @@ namespace GripperStepper
         /// <summary>
         /// Open serial port.
         /// </summary>
-        public void Initialization()
+        public void Setup()
         {           
             try
             {
@@ -87,6 +87,8 @@ namespace GripperStepper
                 SerialPort.Open();
                 SerialPort.DataReceived += SerialPort_DataReceived;
                 Thread.Sleep(300);
+
+                Connect();
             }
             catch (Exception)
             {

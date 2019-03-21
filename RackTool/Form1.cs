@@ -23,9 +23,37 @@ namespace RackTool
         {
             try
             {
-               
+                Rack.Start();
+            }
+            catch (Exception ex)
+            {
+
+                MessageBox.Show(ex.Message);
+            }           
+        }
+
+        CQCRack Rack = new CQCRack("192.168.8.18");
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            
+            try
+            {
+                Rack.HomeRobot();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            try
+            {
+
                 //string i = XmlReaderWriter.GetShiledBoxAttribute("RackData.xml", 3, ShiledBoxData.Id);
-                XmlReaderWriter.CreateStorageFile("RackData.xml");
+                //XmlReaderWriter.CreateStorageFile("RackData.xml");
                 ;
             }
             catch (Exception ex)
@@ -33,7 +61,6 @@ namespace RackTool
 
                 MessageBox.Show(ex.Message);
             }
-           
         }
     }
 }

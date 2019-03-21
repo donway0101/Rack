@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ACS.SPiiPlusNET;
+using Tools;
 
 namespace Motion
 {
@@ -27,6 +28,8 @@ namespace Motion
         public Motor MotorR { get; set; }
 
         public Motor[] Motors { get; set; }
+
+        public TargetPosition HomePosition { get; set; } = new TargetPosition();
 
         public EthercatMotion(Api Controller, int axisNum)
         {
@@ -75,6 +78,22 @@ namespace Motion
                 SetFPosition(mtr);
                 SetSafety(mtr);
             }
+
+            LoadPosition();
+        }
+
+        private void LoadPosition()
+        {
+            HomePosition.XPos = Convert.ToDouble(
+                    XmlReaderWriter.GetTeachAttribute(Files.RackData, TeachData.Home, TeachData.XPos));
+            HomePosition.YPos = Convert.ToDouble(
+                    XmlReaderWriter.GetTeachAttribute(Files.RackData, TeachData.Home, TeachData.YPos));
+            HomePosition.ZPos = Convert.ToDouble(
+                    XmlReaderWriter.GetTeachAttribute(Files.RackData, TeachData.Home, TeachData.ZPos));
+            HomePosition.RPos = Convert.ToDouble(
+                    XmlReaderWriter.GetTeachAttribute(Files.RackData, TeachData.Home, TeachData.RPos));
+            HomePosition.APos = Convert.ToDouble(
+                    XmlReaderWriter.GetTeachAttribute(Files.RackData, TeachData.Home, TeachData.APos));
         }
 
         /// <summary>
@@ -219,6 +238,62 @@ namespace Motion
         public void ToPoint(Motor motor, double point)
         {
             Ch.ToPoint(MotionFlags.ACSC_AMF_MAXIMUM, motor.Id, point);
+        }
+
+        public void ToPointX(double point)
+        {
+            double x1Pos = GetPosition(MotorX1);
+            double x2Pos = GetPosition(MotorX2);
+            double currentPos = x1Pos + x2Pos;
+            double distance = point - currentPos;
+            double halfDistance = distance / 2;
+            double x1Target, x2Target;
+
+            if (distance>0)
+            {
+                if (MotorX1.MaxTravel - x1Pos <= halfDistance)
+                {
+                    x1Target = MotorX1.MaxTravel;
+                    x2Target = distance - (MotorX1.MaxTravel - x1Pos) + x2Pos;
+                }
+                else
+                {
+                    if (MotorX2.MaxTravel-x2Pos<=halfDistance)
+                    {
+                        x2Target = MotorX2.MaxTravel;
+                        x1Target = distance - (MotorX2.MaxTravel - x2Pos) + x1Pos;
+                    }
+                    else
+                    {
+                        x1Target = halfDistance + x1Pos;
+                        x2Target = halfDistance + x2Pos;
+                    }
+                }
+            }
+            else //Move to left.
+            {
+                if (x1Pos<Math.Abs(halfDistance))
+                {
+                    x1Target = 0;
+                    x2Target = distance;
+                }
+                else
+                {
+                    if (x2Pos < Math.Abs(halfDistance))
+                    {
+                        x2Target = 0;
+                        x1Target = distance;
+                    }
+                    else
+                    {
+                        x1Target = halfDistance + x1Pos;
+                        x2Target = halfDistance + x2Pos;
+                    }
+                }
+            }
+
+            Ch.ToPoint(MotionFlags.ACSC_AMF_MAXIMUM, MotorX1.Id, x1Target);
+            Ch.ToPoint(MotionFlags.ACSC_AMF_MAXIMUM, MotorX2.Id, x2Target);
         }
 
         public void ToPointM(Motor[] motors, double[] points)

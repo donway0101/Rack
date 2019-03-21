@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{BA6788FD-7479-47D6-B29F-118161D22071}</ProjectGuid>
+    <ProjectGuid>{4DD6CDCA-AE4C-48B6-BEF8-9070CE525AA3}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Rack</RootNamespace>
-    <AssemblyName>Rack</AssemblyName>
+    <RootNamespace>Tools</RootNamespace>
+    <AssemblyName>Tools</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
@@ -31,9 +31,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="ACS.SPiiPlusNET">
-      <HintPath>..\Motion\ACS.SPiiPlusNET.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -44,25 +41,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CQCRack.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Motion\Motion.csproj">
-      <Project>{9d555f20-a4d7-4f2a-a425-3fd8f086358a}</Project>
-      <Name>Motion</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Stepper\Stepper.csproj">
-      <Project>{80bb0d71-717e-48fc-b7d5-d891537265f8}</Project>
-      <Name>Stepper</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Tools\Tools.csproj">
-      <Project>{4dd6cdca-ae4c-48b6-bef8-9070ce525aa3}</Project>
-      <Name>Tools</Name>
-    </ProjectReference>
+    <Compile Include="RackData.cs" />
+    <Compile Include="XmlReaderWriter.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

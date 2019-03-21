@@ -4,8 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Rack
+namespace Tools
 {
+    public struct Files
+    {
+        public const string RackData = "RackData.xml";
+    }
+
     public enum ShiledBoxData
     {
         RackData,
@@ -34,14 +39,20 @@ namespace Rack
         XPos,
         YPos,
         ZPos,
+        RPos,
+        APos,
+
+        Home,
         Pick,
         Bin,
+
         Holder1,
         Holder2,
         Holder3,
         Holder4,
         Holder5,
         Holder6,
+
         Gold1,
         Gold2,
         Gold3,
