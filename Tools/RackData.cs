@@ -22,6 +22,12 @@ namespace Tools
         DoorHeight,
     }
 
+    public enum ShiledBoxId
+    {
+        One,
+        Two,Three,Four,Five,Six,
+    }
+
     public enum ConveyorData
     {
         Conveyor,
@@ -31,7 +37,7 @@ namespace Tools
         XMaxPos,
     }
 
-    public enum TeachData
+    public enum PosItem
     {
         Teach,
         Pos,
@@ -40,8 +46,11 @@ namespace Tools
         YPos,
         ZPos,
         RPos,
-        APos,
+        APos,       
+    }
 
+    public enum TeachPos
+    {
         Home,
         Pick,
         Bin,
@@ -58,6 +67,6 @@ namespace Tools
         Gold3,
         Gold4,
         Gold5,
-        
+
     }
 }

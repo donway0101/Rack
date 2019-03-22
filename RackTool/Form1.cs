@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.Linq;
 using Rack;
+using Tools;
 
 namespace RackTool
 {
@@ -39,7 +40,8 @@ namespace RackTool
             
             try
             {
-                Rack.HomeRobot();
+                //Rack.HomeRobot();
+                Rack.Test();
             }
             catch (Exception ex)
             {
@@ -52,7 +54,8 @@ namespace RackTool
             try
             {
 
-                //string i = XmlReaderWriter.GetShiledBoxAttribute("RackData.xml", 3, ShiledBoxData.Id);
+                string i = XmlReaderWriter.GetShiledBoxAttribute("RackData.xml", ShiledBoxId.Two, ShiledBoxData.CarrierHeight);
+                //string i = XmlReaderWriter.GetTeachAttribute("RackData.xml", TeachPos.Holder6, PosItem.XPos);
                 //XmlReaderWriter.CreateStorageFile("RackData.xml");
                 ;
             }

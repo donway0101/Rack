@@ -4,7 +4,7 @@
     {
         void Close();
         void Connect();
-        void Stepup();
+        void Setup();
         void SendCommand(string cmd);
     }
 }

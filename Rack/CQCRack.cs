@@ -11,6 +11,12 @@ using Tools;
 
 namespace Rack
 {
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <remarks>If estop button is on, then ethercat bus error occur, notify user, use reboot method</remarks>
+    /// Power up, Ethercat error occur, wire problem? 
     public class CQCRack
     {
         private Api Ch = new Api();
@@ -36,10 +42,17 @@ namespace Rack
             Motion = new EthercatMotion(Ch, 3);
             Motion.Setup();
 
-            Gripper = new Stepper("COM3");
-            Gripper.Setup();
+            //Gripper = new Stepper("COM3");
+            //Gripper.Setup();
 
             SetupComplete = true;
+        }
+
+        public void Test()
+        {
+            //Motion.ToPointX(700);
+            Motion.SetSpeed(20);
+            //Motion.ToPoint(Motion.MotorY, 291);
         }
 
         public void HomeRobot(double homeSpeed = 10)
@@ -60,7 +73,7 @@ namespace Rack
             double currentRPos = Motion.GetPosition(Motion.MotorR);
 
             double XRPos = Convert.ToDouble(
-                  XmlReaderWriter.GetTeachAttribute(Files.RackData, TeachData.Pick, TeachData.XPos));
+                  XmlReaderWriter.GetTeachAttribute(Files.RackData, TeachPos.Pick, PosItem.XPos));
 
             if (Math.Abs(currentXPos - XRPos) < ConveyorWidth / 2) //Robot is in conveyor zone.
             {

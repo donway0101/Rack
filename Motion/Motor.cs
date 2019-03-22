@@ -52,7 +52,7 @@ namespace Motion
 
         public double JerkFactor { get; set; } = 20;
 
-        public double FPositionDirection = 1.0;
+        public double Direction = 1.0;
 
         public Motor(Axis axis)
         {

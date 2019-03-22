@@ -40,36 +40,68 @@ namespace Motion
         public void Setup()
         {
             MotorZ = new Motor(Axis.ACSC_AXIS_0);
-            MotorZ.EcatPosActValAddr = 144; //For Sanyo, axisAddrOffset = 18
+            MotorZ.EcatPosActValAddr = 167; //For Sanyo, axisAddrOffset = 18
             MotorZ.EncCtsPerR = 131072;
             MotorZ.BallScrewLead = 32;
-            MotorZ.HomeOffset = 800.0;
+            MotorZ.HomeOffset = 365;
             MotorZ.CriticalErrAcc = 100;
             MotorZ.CriticalErrVel = 100;
             MotorZ.CriticalErrIdle = 5;
+            MotorZ.SoftLimitNagtive = -20;
+            MotorZ.SoftLimitPositive = 650;
 
             MotorX1 = new Motor(Axis.ACSC_AXIS_1);
-            MotorX1.EcatPosActValAddr = 162; //For Sanyo, axisAddrOffset = 18
+            MotorX1.EcatPosActValAddr = MotorZ.EcatPosActValAddr + 18; //For Sanyo, axisAddrOffset = 18
             MotorX1.EncCtsPerR = 131072;
             MotorX1.BallScrewLead = 16;          
-            MotorX1.HomeOffset = 5.0;
+            MotorX1.HomeOffset = 793.5;
             MotorX1.CriticalErrAcc = 100;
             MotorX1.CriticalErrVel = 100;
             MotorX1.CriticalErrIdle = 5;
+            MotorX1.SoftLimitNagtive = -4;
+            MotorX1.SoftLimitPositive = 590;
+
+            MotorX1.MaxTravel = MotorX1.SoftLimitPositive - 10;
 
             MotorX2 = new Motor(Axis.ACSC_AXIS_2);
-            MotorX2.EcatPosActValAddr = 180; //For Sanyo, axisAddrOffset = 18
+            MotorX2.EcatPosActValAddr = MotorX1.EcatPosActValAddr + 18; //For Sanyo, axisAddrOffset = 18
             MotorX2.EncCtsPerR = 131072;
             MotorX2.BallScrewLead = 16;
-            MotorX2.HomeOffset = 5.0;
+            MotorX2.HomeOffset = 12.7;
             MotorX2.CriticalErrAcc = 100;
             MotorX2.CriticalErrVel = 100;
             MotorX2.CriticalErrIdle = 5;
+            MotorX2.SoftLimitNagtive = -1;
+            MotorX2.SoftLimitPositive = 760;
 
-            MotorY.FPositionDirection = -1;
+            MotorX2.MaxTravel = MotorX2.SoftLimitPositive - 10;
 
-            //Motors = new Motor[5] { MotorZ, MotorX1, MotorX2, MotorY, MotorR };
-            Motors = new Motor[3] { MotorZ, MotorX1, MotorX2 };
+            MotorY = new Motor(Axis.ACSC_AXIS_3);
+            MotorY.EcatPosActValAddr = MotorX2.EcatPosActValAddr + 18; //For Sanyo, axisAddrOffset = 18
+            MotorY.EncCtsPerR = 131072;
+            MotorY.BallScrewLead = 16;
+            MotorY.HomeOffset = 12.4;
+            MotorY.CriticalErrAcc = 100;
+            MotorY.CriticalErrVel = 100;
+            MotorY.CriticalErrIdle = 5;
+            MotorY.SoftLimitNagtive = -330;
+            MotorY.SoftLimitPositive = 4;
+
+            MotorY.Direction = -1;
+
+            //Todo , is two gripper is 60,    MotorR.EncCtsPerR  error?
+            MotorR = new Motor(Axis.ACSC_AXIS_4);
+            MotorR.EcatPosActValAddr = 135;
+            MotorR.EncCtsPerR = 10000;
+            MotorR.BallScrewLead = 360 * 1 / 100;
+            MotorR.HomeOffset = -1.9;
+            MotorR.CriticalErrAcc = 100;
+            MotorR.CriticalErrVel = 100;
+            MotorR.CriticalErrIdle = 5;
+            MotorR.SoftLimitNagtive = -40;
+            MotorR.SoftLimitPositive = 40;
+
+            Motors = new Motor[5] { MotorZ, MotorX1, MotorX2, MotorY, MotorR };
             DeclareVariableInDBuffer();
 
             foreach (var mtr in Motors)
@@ -85,15 +117,15 @@ namespace Motion
         private void LoadPosition()
         {
             HomePosition.XPos = Convert.ToDouble(
-                    XmlReaderWriter.GetTeachAttribute(Files.RackData, TeachData.Home, TeachData.XPos));
+                    XmlReaderWriter.GetTeachAttribute(Files.RackData, TeachPos.Home, PosItem.XPos));
             HomePosition.YPos = Convert.ToDouble(
-                    XmlReaderWriter.GetTeachAttribute(Files.RackData, TeachData.Home, TeachData.YPos));
+                    XmlReaderWriter.GetTeachAttribute(Files.RackData, TeachPos.Home, PosItem.YPos));
             HomePosition.ZPos = Convert.ToDouble(
-                    XmlReaderWriter.GetTeachAttribute(Files.RackData, TeachData.Home, TeachData.ZPos));
+                    XmlReaderWriter.GetTeachAttribute(Files.RackData, TeachPos.Home, PosItem.ZPos));
             HomePosition.RPos = Convert.ToDouble(
-                    XmlReaderWriter.GetTeachAttribute(Files.RackData, TeachData.Home, TeachData.RPos));
+                    XmlReaderWriter.GetTeachAttribute(Files.RackData, TeachPos.Home, PosItem.RPos));
             HomePosition.APos = Convert.ToDouble(
-                    XmlReaderWriter.GetTeachAttribute(Files.RackData, TeachData.Home, TeachData.APos));
+                    XmlReaderWriter.GetTeachAttribute(Files.RackData, TeachPos.Home, PosItem.APos));
         }
 
         /// <summary>
@@ -115,6 +147,10 @@ namespace Motion
             Ch.WriteVariable(motor.CriticalErrVel, "CERRV", ProgramBuffer.ACSC_NONE,
                 (int)motor.Id, (int)motor.Id, -1, -1);
             Ch.WriteVariable(motor.CriticalErrIdle, "CERRI", ProgramBuffer.ACSC_NONE,
+                (int)motor.Id, (int)motor.Id, -1, -1);
+            Ch.WriteVariable(motor.SoftLimitNagtive, "SLLIMIT", ProgramBuffer.ACSC_NONE,
+                (int)motor.Id, (int)motor.Id, -1, -1);
+            Ch.WriteVariable(motor.SoftLimitPositive, "SRLIMIT", ProgramBuffer.ACSC_NONE,
                 (int)motor.Id, (int)motor.Id, -1, -1);
         }
 
@@ -190,6 +226,9 @@ namespace Motion
             foreach (var mtr in Motors)
             {
                 Ch.SetVelocity(mtr.Id, velocity*mtr.SpeedFactor);
+                Ch.SetAcceleration(mtr.Id, velocity * mtr.SpeedFactor);
+                Ch.SetDeceleration(mtr.Id, velocity * mtr.SpeedFactor);
+                Ch.SetKillDeceleration(mtr.Id, velocity * mtr.SpeedFactor);
                 Ch.SetJerk(mtr.Id, velocity * mtr.JerkFactor);
             }
         }
@@ -208,7 +247,7 @@ namespace Motion
         public void SetJerk(Motor motor, double jerk) { }
         public double GetPosition(Motor motor)
         {
-            return Ch.GetFPosition(motor.Id)*motor.FPositionDirection;
+            return Ch.GetFPosition(motor.Id)*motor.Direction;
         }
 
         public double GetPositionX()
@@ -237,6 +276,7 @@ namespace Motion
 
         public void ToPoint(Motor motor, double point)
         {
+            point *= motor.Direction;
             Ch.ToPoint(MotionFlags.ACSC_AMF_MAXIMUM, motor.Id, point);
         }
 

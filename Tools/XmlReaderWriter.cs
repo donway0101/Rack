@@ -59,30 +59,26 @@ namespace Tools
             }
         }
 
-        public static string GetShiledBoxAttribute(string file, int id, ShiledBoxData attribute)
+        public static string GetShiledBoxAttribute(string file, ShiledBoxId id, ShiledBoxData attribute)
         {
             XElement root = XElement.Load(file);
 
             XElement elem = root
               .Elements(ShiledBoxData.ShiledBox.ToString())
               .Elements(ShiledBoxData.Box.ToString())
-              .Single(itemName => itemName.Attribute(ShiledBoxData.Id.ToString()).Value == id.ToString())
-              .Parent
-              .Element(ShiledBoxData.Box.ToString());
+              .Single(itemName => itemName.Attribute(ShiledBoxData.Id.ToString()).Value == id.ToString());
 
             return elem.Attribute(attribute.ToString()).Value;
         }
 
-        public static string GetTeachAttribute(string file, TeachData PosName, TeachData attribute)
+        public static string GetTeachAttribute(string file, TeachPos PosName, PosItem attribute)
         {
             XElement root = XElement.Load(file);
 
             XElement elem = root
-              .Elements(TeachData.Teach.ToString())
-              .Elements(TeachData.Pos.ToString())
-              .Single(itemName => itemName.Attribute(TeachData.Name.ToString()).Value == PosName.ToString())
-              .Parent
-              .Element(TeachData.Pos.ToString());
+              .Elements(PosItem.Teach.ToString())
+              .Elements(PosItem.Pos.ToString())
+              .Single(itemName => itemName.Attribute(PosItem.Name.ToString()).Value == PosName.ToString());
 
             return elem.Attribute(attribute.ToString()).Value;
         }
@@ -94,9 +90,7 @@ namespace Tools
             XElement elem = root
               .Elements(ShiledBoxData.ShiledBox.ToString())
               .Elements(ShiledBoxData.Box.ToString())
-              .Single(itemName => itemName.Attribute(ShiledBoxData.Id.ToString()).Value == id.ToString())
-              .Parent
-              .Element(ShiledBoxData.Box.ToString());
+              .Single(itemName => itemName.Attribute(ShiledBoxData.Id.ToString()).Value == id.ToString());
 
             elem.Attribute(attribute.ToString()).Value = value.ToString();
 
@@ -118,14 +112,14 @@ namespace Tools
 
             XElement Box1 = new XElement(ShiledBoxData.Box.ToString());
             Box1.Add(
-                new XAttribute(ShiledBoxData.Id.ToString(), 1),
+                new XAttribute(ShiledBoxData.Id.ToString(), ShiledBoxId.One),
                 new XAttribute(ShiledBoxData.CarrierHeight.ToString(), 600),
                 new XAttribute(ShiledBoxData.DoorHeight .ToString(), 750)
                 );
 
             XElement Box2 = new XElement(ShiledBoxData.Box.ToString());
             Box2.Add(
-                new XAttribute(ShiledBoxData.Id.ToString(), 2),
+                new XAttribute(ShiledBoxData.Id.ToString(), ShiledBoxId.Two),
                 new XAttribute(ShiledBoxData.CarrierHeight.ToString(), 600),
                 new XAttribute(ShiledBoxData.DoorHeight.ToString(), 750)         
                 );
@@ -140,146 +134,146 @@ namespace Tools
             Conveyor.Add(new XAttribute(ConveyorData.BinConveyorHeight.ToString(), 650));
 
             #region Teach
-            XElement Teach = new XElement(TeachData.Teach.ToString());
+            XElement Teach = new XElement(PosItem.Teach.ToString());
 
-            XElement HomePos = new XElement(TeachData.Pos.ToString());
+            XElement HomePos = new XElement(PosItem.Pos.ToString());
             HomePos.Add(
-                new XAttribute(TeachData.Name.ToString(), TeachData.Home.ToString()),
-                new XAttribute(TeachData.XPos.ToString(), 0),
-                new XAttribute(TeachData.YPos.ToString(), 0),
-                new XAttribute(TeachData.ZPos.ToString(), 1000),
-                new XAttribute(TeachData.RPos.ToString(), 0),
-                new XAttribute(TeachData.APos.ToString(), 0)
+                new XAttribute(PosItem.Name.ToString(), TeachPos.Home.ToString()),
+                new XAttribute(PosItem.XPos.ToString(), 0),
+                new XAttribute(PosItem.YPos.ToString(), 0),
+                new XAttribute(PosItem.ZPos.ToString(), 1000),
+                new XAttribute(PosItem.RPos.ToString(), 0),
+                new XAttribute(PosItem.APos.ToString(), 0)
                 );
 
-            XElement PickPos = new XElement(TeachData.Pos.ToString());
+            XElement PickPos = new XElement(PosItem.Pos.ToString());
             PickPos.Add(
-                new XAttribute(TeachData.Name.ToString(), TeachData.Pick.ToString()),
-                new XAttribute(TeachData.XPos.ToString(), 0),
-                new XAttribute(TeachData.YPos.ToString(), 0),
-                new XAttribute(TeachData.ZPos.ToString(), 1000),
-                new XAttribute(TeachData.RPos.ToString(), 0),
-                new XAttribute(TeachData.APos.ToString(), 0)
+                new XAttribute(PosItem.Name.ToString(), TeachPos.Pick.ToString()),
+                new XAttribute(PosItem.XPos.ToString(), 0),
+                new XAttribute(PosItem.YPos.ToString(), 0),
+                new XAttribute(PosItem.ZPos.ToString(), 1000),
+                new XAttribute(PosItem.RPos.ToString(), 0),
+                new XAttribute(PosItem.APos.ToString(), 0)
                 );
 
-            XElement BinPos = new XElement(TeachData.Pos.ToString());
+            XElement BinPos = new XElement(PosItem.Pos.ToString());
             BinPos.Add(
-                     new XAttribute(TeachData.Name.ToString(), TeachData.Bin.ToString()),
-                     new XAttribute(TeachData.XPos.ToString(), 0),
-                     new XAttribute(TeachData.YPos.ToString(), 0),
-                     new XAttribute(TeachData.ZPos.ToString(), 1000),
-                     new XAttribute(TeachData.RPos.ToString(), 0),
-                     new XAttribute(TeachData.APos.ToString(), 0)
+                     new XAttribute(PosItem.Name.ToString(), TeachPos.Bin.ToString()),
+                     new XAttribute(PosItem.XPos.ToString(), 0),
+                     new XAttribute(PosItem.YPos.ToString(), 0),
+                     new XAttribute(PosItem.ZPos.ToString(), 1000),
+                     new XAttribute(PosItem.RPos.ToString(), 0),
+                     new XAttribute(PosItem.APos.ToString(), 0)
                      );
 
-            XElement Holder1 = new XElement(TeachData.Pos.ToString());
+            XElement Holder1 = new XElement(PosItem.Pos.ToString());
             Holder1.Add(
-                     new XAttribute(TeachData.Name.ToString(), TeachData.Holder1.ToString()),
-                     new XAttribute(TeachData.XPos.ToString(), 0),
-                     new XAttribute(TeachData.YPos.ToString(), 0),
-                     new XAttribute(TeachData.ZPos.ToString(), 1000),
-                     new XAttribute(TeachData.RPos.ToString(), 0),
-                     new XAttribute(TeachData.APos.ToString(), 0)
+                     new XAttribute(PosItem.Name.ToString(), TeachPos.Holder1.ToString()),
+                     new XAttribute(PosItem.XPos.ToString(), 0),
+                     new XAttribute(PosItem.YPos.ToString(), 0),
+                     new XAttribute(PosItem.ZPos.ToString(), 1000),
+                     new XAttribute(PosItem.RPos.ToString(), 0),
+                     new XAttribute(PosItem.APos.ToString(), 0)
                      );
 
-            XElement Holder2 = new XElement(TeachData.Pos.ToString());
+            XElement Holder2 = new XElement(PosItem.Pos.ToString());
             Holder2.Add(
-                     new XAttribute(TeachData.Name.ToString(), TeachData.Holder2.ToString()),
-                     new XAttribute(TeachData.XPos.ToString(), 0),
-                     new XAttribute(TeachData.YPos.ToString(), 0),
-                     new XAttribute(TeachData.ZPos.ToString(), 1000),
-                     new XAttribute(TeachData.RPos.ToString(), 0),
-                     new XAttribute(TeachData.APos.ToString(), 0)
+                     new XAttribute(PosItem.Name.ToString(), TeachPos.Holder2.ToString()),
+                     new XAttribute(PosItem.XPos.ToString(), 0),
+                     new XAttribute(PosItem.YPos.ToString(), 0),
+                     new XAttribute(PosItem.ZPos.ToString(), 1000),
+                     new XAttribute(PosItem.RPos.ToString(), 0),
+                     new XAttribute(PosItem.APos.ToString(), 0)
                      );
 
-            XElement Holder3 = new XElement(TeachData.Pos.ToString());
+            XElement Holder3 = new XElement(PosItem.Pos.ToString());
             Holder3.Add(
-                     new XAttribute(TeachData.Name.ToString(), TeachData.Holder3.ToString()),
-                     new XAttribute(TeachData.XPos.ToString(), 0),
-                     new XAttribute(TeachData.YPos.ToString(), 0),
-                     new XAttribute(TeachData.ZPos.ToString(), 1000),
-                     new XAttribute(TeachData.RPos.ToString(), 0),
-                     new XAttribute(TeachData.APos.ToString(), 0)
+                     new XAttribute(PosItem.Name.ToString(), TeachPos.Holder3.ToString()),
+                     new XAttribute(PosItem.XPos.ToString(), 0),
+                     new XAttribute(PosItem.YPos.ToString(), 0),
+                     new XAttribute(PosItem.ZPos.ToString(), 1000),
+                     new XAttribute(PosItem.RPos.ToString(), 0),
+                     new XAttribute(PosItem.APos.ToString(), 0)
                      );
 
-            XElement Holder4 = new XElement(TeachData.Pos.ToString());
+            XElement Holder4 = new XElement(PosItem.Pos.ToString());
             Holder4.Add(
-                     new XAttribute(TeachData.Name.ToString(), TeachData.Holder4.ToString()),
-                     new XAttribute(TeachData.XPos.ToString(), 0),
-                     new XAttribute(TeachData.YPos.ToString(), 0),
-                     new XAttribute(TeachData.ZPos.ToString(), 1000),
-                     new XAttribute(TeachData.RPos.ToString(), 0),
-                     new XAttribute(TeachData.APos.ToString(), 0)
+                     new XAttribute(PosItem.Name.ToString(), TeachPos.Holder4.ToString()),
+                     new XAttribute(PosItem.XPos.ToString(), 0),
+                     new XAttribute(PosItem.YPos.ToString(), 0),
+                     new XAttribute(PosItem.ZPos.ToString(), 1000),
+                     new XAttribute(PosItem.RPos.ToString(), 0),
+                     new XAttribute(PosItem.APos.ToString(), 0)
                      );
 
-            XElement Holder5 = new XElement(TeachData.Pos.ToString());
+            XElement Holder5 = new XElement(PosItem.Pos.ToString());
             Holder5.Add(
-                     new XAttribute(TeachData.Name.ToString(), TeachData.Holder5.ToString()),
-                     new XAttribute(TeachData.XPos.ToString(), 0),
-                     new XAttribute(TeachData.YPos.ToString(), 0),
-                     new XAttribute(TeachData.ZPos.ToString(), 1000),
-                     new XAttribute(TeachData.RPos.ToString(), 0),
-                     new XAttribute(TeachData.APos.ToString(), 0)
+                     new XAttribute(PosItem.Name.ToString(), TeachPos.Holder5.ToString()),
+                     new XAttribute(PosItem.XPos.ToString(), 0),
+                     new XAttribute(PosItem.YPos.ToString(), 0),
+                     new XAttribute(PosItem.ZPos.ToString(), 1000),
+                     new XAttribute(PosItem.RPos.ToString(), 0),
+                     new XAttribute(PosItem.APos.ToString(), 0)
                      );
 
-            XElement Holder6 = new XElement(TeachData.Pos.ToString());
+            XElement Holder6 = new XElement(PosItem.Pos.ToString());
             Holder6.Add(
-                     new XAttribute(TeachData.Name.ToString(), TeachData.Holder6.ToString()),
-                     new XAttribute(TeachData.XPos.ToString(), 0),
-                     new XAttribute(TeachData.YPos.ToString(), 0),
-                     new XAttribute(TeachData.ZPos.ToString(), 1000),
-                     new XAttribute(TeachData.RPos.ToString(), 0),
-                     new XAttribute(TeachData.APos.ToString(), 0)
+                     new XAttribute(PosItem.Name.ToString(), TeachPos.Holder6.ToString()),
+                     new XAttribute(PosItem.XPos.ToString(), 0),
+                     new XAttribute(PosItem.YPos.ToString(), 0),
+                     new XAttribute(PosItem.ZPos.ToString(), 1000),
+                     new XAttribute(PosItem.RPos.ToString(), 0),
+                     new XAttribute(PosItem.APos.ToString(), 0)
                      );
 
-            XElement Gold1 = new XElement(TeachData.Pos.ToString());
+            XElement Gold1 = new XElement(PosItem.Pos.ToString());
             Gold1.Add(
-                     new XAttribute(TeachData.Name.ToString(), TeachData.Gold1.ToString()),
-                     new XAttribute(TeachData.XPos.ToString(), 0),
-                     new XAttribute(TeachData.YPos.ToString(), 0),
-                     new XAttribute(TeachData.ZPos.ToString(), 1000),
-                     new XAttribute(TeachData.RPos.ToString(), 0),
-                     new XAttribute(TeachData.APos.ToString(), 0)
+                     new XAttribute(PosItem.Name.ToString(), TeachPos.Gold1.ToString()),
+                     new XAttribute(PosItem.XPos.ToString(), 0),
+                     new XAttribute(PosItem.YPos.ToString(), 0),
+                     new XAttribute(PosItem.ZPos.ToString(), 1000),
+                     new XAttribute(PosItem.RPos.ToString(), 0),
+                     new XAttribute(PosItem.APos.ToString(), 0)
                      );
 
-            XElement Gold2 = new XElement(TeachData.Pos.ToString());
+            XElement Gold2 = new XElement(PosItem.Pos.ToString());
             Gold2.Add(
-                     new XAttribute(TeachData.Name.ToString(), TeachData.Gold2.ToString()),
-                     new XAttribute(TeachData.XPos.ToString(), 0),
-                     new XAttribute(TeachData.YPos.ToString(), 0),
-                     new XAttribute(TeachData.ZPos.ToString(), 1000),
-                     new XAttribute(TeachData.RPos.ToString(), 0),
-                     new XAttribute(TeachData.APos.ToString(), 0)
+                     new XAttribute(PosItem.Name.ToString(), TeachPos.Gold2.ToString()),
+                     new XAttribute(PosItem.XPos.ToString(), 0),
+                     new XAttribute(PosItem.YPos.ToString(), 0),
+                     new XAttribute(PosItem.ZPos.ToString(), 1000),
+                     new XAttribute(PosItem.RPos.ToString(), 0),
+                     new XAttribute(PosItem.APos.ToString(), 0)
                      );
 
-            XElement Gold3 = new XElement(TeachData.Pos.ToString());
+            XElement Gold3 = new XElement(PosItem.Pos.ToString());
             Gold3.Add(
-                     new XAttribute(TeachData.Name.ToString(), TeachData.Gold3.ToString()),
-                     new XAttribute(TeachData.XPos.ToString(), 0),
-                     new XAttribute(TeachData.YPos.ToString(), 0),
-                     new XAttribute(TeachData.ZPos.ToString(), 1000),
-                     new XAttribute(TeachData.RPos.ToString(), 0),
-                     new XAttribute(TeachData.APos.ToString(), 0)
+                     new XAttribute(PosItem.Name.ToString(), TeachPos.Gold3.ToString()),
+                     new XAttribute(PosItem.XPos.ToString(), 0),
+                     new XAttribute(PosItem.YPos.ToString(), 0),
+                     new XAttribute(PosItem.ZPos.ToString(), 1000),
+                     new XAttribute(PosItem.RPos.ToString(), 0),
+                     new XAttribute(PosItem.APos.ToString(), 0)
                      );
 
-            XElement Gold4 = new XElement(TeachData.Pos.ToString());
+            XElement Gold4 = new XElement(PosItem.Pos.ToString());
             Gold4.Add(
-                     new XAttribute(TeachData.Name.ToString(), TeachData.Gold4.ToString()),
-                     new XAttribute(TeachData.XPos.ToString(), 0),
-                     new XAttribute(TeachData.YPos.ToString(), 0),
-                     new XAttribute(TeachData.ZPos.ToString(), 1000),
-                     new XAttribute(TeachData.RPos.ToString(), 0),
-                     new XAttribute(TeachData.APos.ToString(), 0)
+                     new XAttribute(PosItem.Name.ToString(), TeachPos.Gold4.ToString()),
+                     new XAttribute(PosItem.XPos.ToString(), 0),
+                     new XAttribute(PosItem.YPos.ToString(), 0),
+                     new XAttribute(PosItem.ZPos.ToString(), 1000),
+                     new XAttribute(PosItem.RPos.ToString(), 0),
+                     new XAttribute(PosItem.APos.ToString(), 0)
                      );
 
-            XElement Gold5 = new XElement(TeachData.Pos.ToString());
+            XElement Gold5 = new XElement(PosItem.Pos.ToString());
             Gold5.Add(
-                     new XAttribute(TeachData.Name.ToString(), TeachData.Gold5.ToString()),
-                     new XAttribute(TeachData.XPos.ToString(), 0),
-                     new XAttribute(TeachData.YPos.ToString(), 0),
-                     new XAttribute(TeachData.ZPos.ToString(), 1000),
-                     new XAttribute(TeachData.RPos.ToString(), 0),
-                     new XAttribute(TeachData.APos.ToString(), 0)
+                     new XAttribute(PosItem.Name.ToString(), TeachPos.Gold5.ToString()),
+                     new XAttribute(PosItem.XPos.ToString(), 0),
+                     new XAttribute(PosItem.YPos.ToString(), 0),
+                     new XAttribute(PosItem.ZPos.ToString(), 1000),
+                     new XAttribute(PosItem.RPos.ToString(), 0),
+                     new XAttribute(PosItem.APos.ToString(), 0)
                      );
 
             Teach.Add(HomePos);
