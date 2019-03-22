@@ -50,7 +50,7 @@ namespace Motion
 
         public double SpeedFactor { get; set; } = 1;
 
-        public double JerkFactor { get; set; } = 20;
+        public double JerkFactor { get; set; } = 12.5;
 
         public double Direction = 1.0;
 

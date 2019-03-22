@@ -11,32 +11,6 @@ namespace Tools
         public const string RackData = "RackData.xml";
     }
 
-    public enum ShiledBoxData
-    {
-        RackData,
-
-        ShiledBox,
-        Box,
-        Id,
-        CarrierHeight,
-        DoorHeight,
-    }
-
-    public enum ShiledBoxId
-    {
-        One,
-        Two,Three,Four,Five,Six,
-    }
-
-    public enum ConveyorData
-    {
-        Conveyor,
-        PickConveyorHeight,
-        BinConveyorHeight,
-        XMinPos,
-        XMaxPos,
-    }
-
     public enum PosItem
     {
         Teach,
@@ -46,7 +20,8 @@ namespace Tools
         YPos,
         ZPos,
         RPos,
-        APos,       
+        APos,
+        ApproachHeight,
     }
 
     public enum TeachPos

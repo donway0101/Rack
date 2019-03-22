@@ -59,18 +59,6 @@ namespace Tools
             }
         }
 
-        public static string GetShiledBoxAttribute(string file, ShiledBoxId id, ShiledBoxData attribute)
-        {
-            XElement root = XElement.Load(file);
-
-            XElement elem = root
-              .Elements(ShiledBoxData.ShiledBox.ToString())
-              .Elements(ShiledBoxData.Box.ToString())
-              .Single(itemName => itemName.Attribute(ShiledBoxData.Id.ToString()).Value == id.ToString());
-
-            return elem.Attribute(attribute.ToString()).Value;
-        }
-
         public static string GetTeachAttribute(string file, TeachPos PosName, PosItem attribute)
         {
             XElement root = XElement.Load(file);
@@ -83,20 +71,6 @@ namespace Tools
             return elem.Attribute(attribute.ToString()).Value;
         }
 
-        public static void SetShiledBoxAttribute(string file, int id, ShiledBoxData attribute, object value)
-        {
-            XElement root = XElement.Load(file);
-
-            XElement elem = root
-              .Elements(ShiledBoxData.ShiledBox.ToString())
-              .Elements(ShiledBoxData.Box.ToString())
-              .Single(itemName => itemName.Attribute(ShiledBoxData.Id.ToString()).Value == id.ToString());
-
-            elem.Attribute(attribute.ToString()).Value = value.ToString();
-
-            root.Save(file);
-        }
-
         public static void CreateStorageFile(string file)
         {
             XElement root;
@@ -105,33 +79,7 @@ namespace Tools
                 throw new Exception(file + " already exist.");
                 //root = XElement.Load(file);
             else
-                root = new XElement(ShiledBoxData.RackData.ToString());
-
-            #region ShiledBox
-            XElement ShiledBox = new XElement(ShiledBoxData.ShiledBox.ToString());
-
-            XElement Box1 = new XElement(ShiledBoxData.Box.ToString());
-            Box1.Add(
-                new XAttribute(ShiledBoxData.Id.ToString(), ShiledBoxId.One),
-                new XAttribute(ShiledBoxData.CarrierHeight.ToString(), 600),
-                new XAttribute(ShiledBoxData.DoorHeight .ToString(), 750)
-                );
-
-            XElement Box2 = new XElement(ShiledBoxData.Box.ToString());
-            Box2.Add(
-                new XAttribute(ShiledBoxData.Id.ToString(), ShiledBoxId.Two),
-                new XAttribute(ShiledBoxData.CarrierHeight.ToString(), 600),
-                new XAttribute(ShiledBoxData.DoorHeight.ToString(), 750)         
-                );
-
-            ShiledBox.Add(Box1);
-            ShiledBox.Add(Box2);
-
-            #endregion
-
-            XElement Conveyor = new XElement(ConveyorData.Conveyor.ToString());
-            Conveyor.Add(new XAttribute(ConveyorData.PickConveyorHeight.ToString(), 550));
-            Conveyor.Add(new XAttribute(ConveyorData.BinConveyorHeight.ToString(), 650));
+                root = new XElement("RackData");
 
             #region Teach
             XElement Teach = new XElement(PosItem.Teach.ToString());
@@ -139,9 +87,9 @@ namespace Tools
             XElement HomePos = new XElement(PosItem.Pos.ToString());
             HomePos.Add(
                 new XAttribute(PosItem.Name.ToString(), TeachPos.Home.ToString()),
-                new XAttribute(PosItem.XPos.ToString(), 0),
-                new XAttribute(PosItem.YPos.ToString(), 0),
-                new XAttribute(PosItem.ZPos.ToString(), 1000),
+                new XAttribute(PosItem.XPos.ToString(), 450),
+                new XAttribute(PosItem.YPos.ToString(), 10),
+                new XAttribute(PosItem.ZPos.ToString(), 600),
                 new XAttribute(PosItem.RPos.ToString(), 0),
                 new XAttribute(PosItem.APos.ToString(), 0)
                 );
@@ -166,115 +114,137 @@ namespace Tools
                      new XAttribute(PosItem.APos.ToString(), 0)
                      );
 
+            #region ShieldBoxHolder
+
+            const double defaultXPos = 0;
+            const double defaultYPos = 0;
+            const double defaultZPos = 550;
+            const double defaultRPos = 0;
+            const double defaultAPos = 0;
+            const double defaultApproachHeight = 0;
             XElement Holder1 = new XElement(PosItem.Pos.ToString());
             Holder1.Add(
                      new XAttribute(PosItem.Name.ToString(), TeachPos.Holder1.ToString()),
-                     new XAttribute(PosItem.XPos.ToString(), 0),
-                     new XAttribute(PosItem.YPos.ToString(), 0),
-                     new XAttribute(PosItem.ZPos.ToString(), 1000),
-                     new XAttribute(PosItem.RPos.ToString(), 0),
-                     new XAttribute(PosItem.APos.ToString(), 0)
+                     new XAttribute(PosItem.XPos.ToString(), defaultXPos),
+                     new XAttribute(PosItem.YPos.ToString(), defaultYPos),
+                     new XAttribute(PosItem.ZPos.ToString(), defaultZPos),
+                     new XAttribute(PosItem.RPos.ToString(), defaultRPos),
+                     new XAttribute(PosItem.APos.ToString(), defaultAPos),
+                     new XAttribute(PosItem.ApproachHeight.ToString(), defaultApproachHeight)
                      );
 
             XElement Holder2 = new XElement(PosItem.Pos.ToString());
             Holder2.Add(
                      new XAttribute(PosItem.Name.ToString(), TeachPos.Holder2.ToString()),
-                     new XAttribute(PosItem.XPos.ToString(), 0),
-                     new XAttribute(PosItem.YPos.ToString(), 0),
-                     new XAttribute(PosItem.ZPos.ToString(), 1000),
-                     new XAttribute(PosItem.RPos.ToString(), 0),
-                     new XAttribute(PosItem.APos.ToString(), 0)
+                     new XAttribute(PosItem.XPos.ToString(), defaultXPos),
+                     new XAttribute(PosItem.YPos.ToString(), defaultYPos),
+                     new XAttribute(PosItem.ZPos.ToString(), defaultZPos),
+                     new XAttribute(PosItem.RPos.ToString(), defaultRPos),
+                     new XAttribute(PosItem.APos.ToString(), defaultAPos),
+                     new XAttribute(PosItem.ApproachHeight.ToString(), defaultApproachHeight)
                      );
 
             XElement Holder3 = new XElement(PosItem.Pos.ToString());
             Holder3.Add(
                      new XAttribute(PosItem.Name.ToString(), TeachPos.Holder3.ToString()),
-                     new XAttribute(PosItem.XPos.ToString(), 0),
-                     new XAttribute(PosItem.YPos.ToString(), 0),
-                     new XAttribute(PosItem.ZPos.ToString(), 1000),
-                     new XAttribute(PosItem.RPos.ToString(), 0),
-                     new XAttribute(PosItem.APos.ToString(), 0)
+                     new XAttribute(PosItem.XPos.ToString(), defaultXPos),
+                     new XAttribute(PosItem.YPos.ToString(), defaultYPos),
+                     new XAttribute(PosItem.ZPos.ToString(), defaultZPos),
+                     new XAttribute(PosItem.RPos.ToString(), defaultRPos),
+                     new XAttribute(PosItem.APos.ToString(), defaultAPos),
+                     new XAttribute(PosItem.ApproachHeight.ToString(), defaultApproachHeight)
                      );
 
             XElement Holder4 = new XElement(PosItem.Pos.ToString());
             Holder4.Add(
                      new XAttribute(PosItem.Name.ToString(), TeachPos.Holder4.ToString()),
-                     new XAttribute(PosItem.XPos.ToString(), 0),
-                     new XAttribute(PosItem.YPos.ToString(), 0),
-                     new XAttribute(PosItem.ZPos.ToString(), 1000),
-                     new XAttribute(PosItem.RPos.ToString(), 0),
-                     new XAttribute(PosItem.APos.ToString(), 0)
+                     new XAttribute(PosItem.XPos.ToString(), defaultXPos),
+                     new XAttribute(PosItem.YPos.ToString(), defaultYPos),
+                     new XAttribute(PosItem.ZPos.ToString(), defaultZPos),
+                     new XAttribute(PosItem.RPos.ToString(), defaultRPos),
+                     new XAttribute(PosItem.APos.ToString(), defaultAPos),
+                     new XAttribute(PosItem.ApproachHeight.ToString(), defaultApproachHeight)
                      );
 
             XElement Holder5 = new XElement(PosItem.Pos.ToString());
             Holder5.Add(
                      new XAttribute(PosItem.Name.ToString(), TeachPos.Holder5.ToString()),
-                     new XAttribute(PosItem.XPos.ToString(), 0),
-                     new XAttribute(PosItem.YPos.ToString(), 0),
-                     new XAttribute(PosItem.ZPos.ToString(), 1000),
-                     new XAttribute(PosItem.RPos.ToString(), 0),
-                     new XAttribute(PosItem.APos.ToString(), 0)
+                     new XAttribute(PosItem.XPos.ToString(), defaultXPos),
+                     new XAttribute(PosItem.YPos.ToString(), defaultYPos),
+                     new XAttribute(PosItem.ZPos.ToString(), defaultZPos),
+                     new XAttribute(PosItem.RPos.ToString(), defaultRPos),
+                     new XAttribute(PosItem.APos.ToString(), defaultAPos),
+                     new XAttribute(PosItem.ApproachHeight.ToString(), defaultApproachHeight)
                      );
 
             XElement Holder6 = new XElement(PosItem.Pos.ToString());
             Holder6.Add(
                      new XAttribute(PosItem.Name.ToString(), TeachPos.Holder6.ToString()),
-                     new XAttribute(PosItem.XPos.ToString(), 0),
-                     new XAttribute(PosItem.YPos.ToString(), 0),
-                     new XAttribute(PosItem.ZPos.ToString(), 1000),
-                     new XAttribute(PosItem.RPos.ToString(), 0),
-                     new XAttribute(PosItem.APos.ToString(), 0)
+                     new XAttribute(PosItem.XPos.ToString(), defaultXPos),
+                     new XAttribute(PosItem.YPos.ToString(), defaultYPos),
+                     new XAttribute(PosItem.ZPos.ToString(), defaultZPos),
+                     new XAttribute(PosItem.RPos.ToString(), defaultRPos),
+                     new XAttribute(PosItem.APos.ToString(), defaultAPos),
+                     new XAttribute(PosItem.ApproachHeight.ToString(), defaultApproachHeight)
                      );
+            #endregion
 
+            #region GoldenPhone
             XElement Gold1 = new XElement(PosItem.Pos.ToString());
             Gold1.Add(
                      new XAttribute(PosItem.Name.ToString(), TeachPos.Gold1.ToString()),
-                     new XAttribute(PosItem.XPos.ToString(), 0),
-                     new XAttribute(PosItem.YPos.ToString(), 0),
-                     new XAttribute(PosItem.ZPos.ToString(), 1000),
-                     new XAttribute(PosItem.RPos.ToString(), 0),
-                     new XAttribute(PosItem.APos.ToString(), 0)
+                     new XAttribute(PosItem.XPos.ToString(), defaultXPos),
+                     new XAttribute(PosItem.YPos.ToString(), defaultYPos),
+                     new XAttribute(PosItem.ZPos.ToString(), defaultZPos),
+                     new XAttribute(PosItem.RPos.ToString(), defaultRPos),
+                     new XAttribute(PosItem.APos.ToString(), defaultAPos),
+                     new XAttribute(PosItem.ApproachHeight.ToString(), defaultApproachHeight)
                      );
 
             XElement Gold2 = new XElement(PosItem.Pos.ToString());
             Gold2.Add(
                      new XAttribute(PosItem.Name.ToString(), TeachPos.Gold2.ToString()),
-                     new XAttribute(PosItem.XPos.ToString(), 0),
-                     new XAttribute(PosItem.YPos.ToString(), 0),
-                     new XAttribute(PosItem.ZPos.ToString(), 1000),
-                     new XAttribute(PosItem.RPos.ToString(), 0),
-                     new XAttribute(PosItem.APos.ToString(), 0)
+                     new XAttribute(PosItem.XPos.ToString(), defaultXPos),
+                     new XAttribute(PosItem.YPos.ToString(), defaultYPos),
+                     new XAttribute(PosItem.ZPos.ToString(), defaultZPos),
+                     new XAttribute(PosItem.RPos.ToString(), defaultRPos),
+                     new XAttribute(PosItem.APos.ToString(), defaultAPos),
+                     new XAttribute(PosItem.ApproachHeight.ToString(), defaultApproachHeight)
                      );
 
             XElement Gold3 = new XElement(PosItem.Pos.ToString());
             Gold3.Add(
                      new XAttribute(PosItem.Name.ToString(), TeachPos.Gold3.ToString()),
-                     new XAttribute(PosItem.XPos.ToString(), 0),
-                     new XAttribute(PosItem.YPos.ToString(), 0),
-                     new XAttribute(PosItem.ZPos.ToString(), 1000),
-                     new XAttribute(PosItem.RPos.ToString(), 0),
-                     new XAttribute(PosItem.APos.ToString(), 0)
+                     new XAttribute(PosItem.XPos.ToString(), defaultXPos),
+                     new XAttribute(PosItem.YPos.ToString(), defaultYPos),
+                     new XAttribute(PosItem.ZPos.ToString(), defaultZPos),
+                     new XAttribute(PosItem.RPos.ToString(), defaultRPos),
+                     new XAttribute(PosItem.APos.ToString(), defaultAPos),
+                     new XAttribute(PosItem.ApproachHeight.ToString(), defaultApproachHeight)
                      );
 
             XElement Gold4 = new XElement(PosItem.Pos.ToString());
             Gold4.Add(
                      new XAttribute(PosItem.Name.ToString(), TeachPos.Gold4.ToString()),
-                     new XAttribute(PosItem.XPos.ToString(), 0),
-                     new XAttribute(PosItem.YPos.ToString(), 0),
-                     new XAttribute(PosItem.ZPos.ToString(), 1000),
-                     new XAttribute(PosItem.RPos.ToString(), 0),
-                     new XAttribute(PosItem.APos.ToString(), 0)
+                     new XAttribute(PosItem.XPos.ToString(), defaultXPos),
+                     new XAttribute(PosItem.YPos.ToString(), defaultYPos),
+                     new XAttribute(PosItem.ZPos.ToString(), defaultZPos),
+                     new XAttribute(PosItem.RPos.ToString(), defaultRPos),
+                     new XAttribute(PosItem.APos.ToString(), defaultAPos),
+                     new XAttribute(PosItem.ApproachHeight.ToString(), defaultApproachHeight)
                      );
 
             XElement Gold5 = new XElement(PosItem.Pos.ToString());
             Gold5.Add(
                      new XAttribute(PosItem.Name.ToString(), TeachPos.Gold5.ToString()),
-                     new XAttribute(PosItem.XPos.ToString(), 0),
-                     new XAttribute(PosItem.YPos.ToString(), 0),
-                     new XAttribute(PosItem.ZPos.ToString(), 1000),
-                     new XAttribute(PosItem.RPos.ToString(), 0),
-                     new XAttribute(PosItem.APos.ToString(), 0)
-                     );
+                     new XAttribute(PosItem.XPos.ToString(), defaultXPos),
+                     new XAttribute(PosItem.YPos.ToString(), defaultYPos),
+                     new XAttribute(PosItem.ZPos.ToString(), defaultZPos),
+                     new XAttribute(PosItem.RPos.ToString(), defaultRPos),
+                     new XAttribute(PosItem.APos.ToString(), defaultAPos),
+                     new XAttribute(PosItem.ApproachHeight.ToString(), defaultApproachHeight)
+                     ); 
+            #endregion
 
             Teach.Add(HomePos);
             Teach.Add(PickPos);
@@ -294,9 +264,6 @@ namespace Tools
 
             #endregion
 
-
-            root.Add(ShiledBox);
-            root.Add(Conveyor);
             root.Add(Teach);
 
             root.Save(file);

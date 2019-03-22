@@ -17,5 +17,6 @@ namespace Motion
         public double ZPos { get; set; }
         public double RPos { get; set; }
         public double APos { get; set; }
+        public double ApproachHeight { get; set; }
     }
 }

@@ -30,6 +30,7 @@ namespace Motion
         public Motor[] Motors { get; set; }
 
         public TargetPosition HomePosition { get; set; } = new TargetPosition();
+        public TargetPosition PickPosition { get; set; } = new TargetPosition();
 
         public EthercatMotion(Api Controller, int axisNum)
         {
@@ -39,6 +40,7 @@ namespace Motion
 
         public void Setup()
         {
+            #region Motor parameters setup
             MotorZ = new Motor(Axis.ACSC_AXIS_0);
             MotorZ.EcatPosActValAddr = 167; //For Sanyo, axisAddrOffset = 18
             MotorZ.EncCtsPerR = 131072;
@@ -49,17 +51,21 @@ namespace Motion
             MotorZ.CriticalErrIdle = 5;
             MotorZ.SoftLimitNagtive = -20;
             MotorZ.SoftLimitPositive = 650;
+            MotorZ.SpeedFactor = 0.9;
+            MotorZ.JerkFactor = 16;
 
             MotorX1 = new Motor(Axis.ACSC_AXIS_1);
             MotorX1.EcatPosActValAddr = MotorZ.EcatPosActValAddr + 18; //For Sanyo, axisAddrOffset = 18
             MotorX1.EncCtsPerR = 131072;
-            MotorX1.BallScrewLead = 16;          
+            MotorX1.BallScrewLead = 16;
             MotorX1.HomeOffset = 793.5;
             MotorX1.CriticalErrAcc = 100;
             MotorX1.CriticalErrVel = 100;
             MotorX1.CriticalErrIdle = 5;
             MotorX1.SoftLimitNagtive = -4;
             MotorX1.SoftLimitPositive = 590;
+            MotorX1.SpeedFactor = 0.9;
+            MotorX1.JerkFactor = 16;
 
             MotorX1.MaxTravel = MotorX1.SoftLimitPositive - 10;
 
@@ -73,6 +79,8 @@ namespace Motion
             MotorX2.CriticalErrIdle = 5;
             MotorX2.SoftLimitNagtive = -1;
             MotorX2.SoftLimitPositive = 760;
+            MotorX2.SpeedFactor = 1.0;
+            MotorX2.JerkFactor = 20;
 
             MotorX2.MaxTravel = MotorX2.SoftLimitPositive - 10;
 
@@ -86,6 +94,8 @@ namespace Motion
             MotorY.CriticalErrIdle = 5;
             MotorY.SoftLimitNagtive = -330;
             MotorY.SoftLimitPositive = 4;
+            MotorY.SpeedFactor = 0.8;
+            MotorY.JerkFactor = 20;
 
             MotorY.Direction = -1;
 
@@ -100,6 +110,9 @@ namespace Motion
             MotorR.CriticalErrIdle = 5;
             MotorR.SoftLimitNagtive = -40;
             MotorR.SoftLimitPositive = 40;
+            MotorR.SpeedFactor = 0.18;
+            MotorR.JerkFactor = 3.6; 
+            #endregion
 
             Motors = new Motor[5] { MotorZ, MotorX1, MotorX2, MotorY, MotorR };
             DeclareVariableInDBuffer();
@@ -111,21 +124,25 @@ namespace Motion
                 SetSafety(mtr);
             }
 
-            LoadPosition();
+            LoadPosition(HomePosition, TeachPos.Home);
+            LoadPosition(PickPosition, TeachPos.Home);
+            
         }
 
-        private void LoadPosition()
+        private void LoadPosition(TargetPosition target, TeachPos pos)
         {
-            HomePosition.XPos = Convert.ToDouble(
-                    XmlReaderWriter.GetTeachAttribute(Files.RackData, TeachPos.Home, PosItem.XPos));
-            HomePosition.YPos = Convert.ToDouble(
-                    XmlReaderWriter.GetTeachAttribute(Files.RackData, TeachPos.Home, PosItem.YPos));
-            HomePosition.ZPos = Convert.ToDouble(
-                    XmlReaderWriter.GetTeachAttribute(Files.RackData, TeachPos.Home, PosItem.ZPos));
-            HomePosition.RPos = Convert.ToDouble(
-                    XmlReaderWriter.GetTeachAttribute(Files.RackData, TeachPos.Home, PosItem.RPos));
-            HomePosition.APos = Convert.ToDouble(
-                    XmlReaderWriter.GetTeachAttribute(Files.RackData, TeachPos.Home, PosItem.APos));
+            target.XPos = Convert.ToDouble(
+                                XmlReaderWriter.GetTeachAttribute(Files.RackData, pos, PosItem.XPos));
+            target.YPos = Convert.ToDouble(
+                    XmlReaderWriter.GetTeachAttribute(Files.RackData, pos, PosItem.YPos));
+            target.ZPos = Convert.ToDouble(
+                    XmlReaderWriter.GetTeachAttribute(Files.RackData, pos, PosItem.ZPos));
+            target.RPos = Convert.ToDouble(
+                    XmlReaderWriter.GetTeachAttribute(Files.RackData, pos, PosItem.RPos));
+            target.APos = Convert.ToDouble(
+                    XmlReaderWriter.GetTeachAttribute(Files.RackData, pos, PosItem.APos));
+            target.ApproachHeight = Convert.ToDouble(
+                   XmlReaderWriter.GetTeachAttribute(Files.RackData, pos, PosItem.ApproachHeight));
         }
 
         /// <summary>
@@ -226,9 +243,9 @@ namespace Motion
             foreach (var mtr in Motors)
             {
                 Ch.SetVelocity(mtr.Id, velocity*mtr.SpeedFactor);
-                Ch.SetAcceleration(mtr.Id, velocity * mtr.SpeedFactor);
-                Ch.SetDeceleration(mtr.Id, velocity * mtr.SpeedFactor);
-                Ch.SetKillDeceleration(mtr.Id, velocity * mtr.SpeedFactor);
+                Ch.SetAcceleration(mtr.Id, velocity * 10);
+                Ch.SetDeceleration(mtr.Id, velocity * 10);
+                Ch.SetKillDeceleration(mtr.Id, velocity * 100);
                 Ch.SetJerk(mtr.Id, velocity * mtr.JerkFactor);
             }
         }

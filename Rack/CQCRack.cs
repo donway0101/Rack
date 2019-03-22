@@ -22,11 +22,11 @@ namespace Rack
         private Api Ch = new Api();
         private EthercatMotion Motion;
         private Stepper Gripper;
+        private bool GripperIsOnline = false;
         private string IP;
 
-        private double YIsInBox = 200;
-        private double YIsNearHome = 50;
-        private double ConveyorWidth = 300;
+        private const double YIsInBox = 200;
+        private const double YIsNearHome = 50;
 
         public bool RobotHomeComplete { get; set; }
         public bool SetupComplete { get; set; }
@@ -38,12 +38,16 @@ namespace Rack
 
         public void Start()
         {
+            GripperIsOnline = false;
             Ch.OpenCommEthernet(IP, 701);
             Motion = new EthercatMotion(Ch, 3);
             Motion.Setup();
 
-            //Gripper = new Stepper("COM3");
-            //Gripper.Setup();
+            if (GripperIsOnline==true)
+            {
+                Gripper = new Stepper("COM3");
+                Gripper.Setup();
+            }
 
             SetupComplete = true;
         }
@@ -51,8 +55,18 @@ namespace Rack
         public void Test()
         {
             //Motion.ToPointX(700);
-            Motion.SetSpeed(20);
+            SetSpeed(20);
             //Motion.ToPoint(Motion.MotorY, 291);
+        }
+
+        public void SetSpeed(double speed)
+        {
+            Motion.SetSpeed(speed);
+            if (GripperIsOnline==true)
+            {
+                Gripper.SetVelocity(GripperMotor.One, speed * 360 / 1000);
+                Gripper.SetVelocity(GripperMotor.One, speed * 360 / 1000); 
+            }
         }
 
         public void HomeRobot(double homeSpeed = 10)
@@ -72,10 +86,7 @@ namespace Rack
             double currentZPos = Motion.GetPosition(Motion.MotorZ);
             double currentRPos = Motion.GetPosition(Motion.MotorR);
 
-            double XRPos = Convert.ToDouble(
-                  XmlReaderWriter.GetTeachAttribute(Files.RackData, TeachPos.Pick, PosItem.XPos));
-
-            if (Math.Abs(currentXPos - XRPos) < ConveyorWidth / 2) //Robot is in conveyor zone.
+            if (Motion.PickPosition.XPos - 200 > currentXPos & currentXPos > Motion.PickPosition.XPos + 50) //Robot is in conveyor zone.
             {
                 //Conveyor homing, may need to pull up a little.
             }
@@ -83,6 +94,21 @@ namespace Rack
             {
                 if (currentYPos > YIsInBox) //Y is dangerous
                 {
+                    if (Motion.PickPosition.XPos - 200 > currentXPos) //On on side.
+                    {
+
+                    }
+                    else
+                    {
+                        if (currentXPos > Motion.PickPosition.XPos + 50)
+                        {
+
+                        }
+                        else
+                        {
+                            throw new Exception("Y motor is at unknown position, please home robot manually.");
+                        }
+                    }
 
                 }
                 else
