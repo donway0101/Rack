@@ -31,6 +31,12 @@ namespace Motion
 
         public TargetPosition HomePosition { get; set; } = new TargetPosition();
         public TargetPosition PickPosition { get; set; } = new TargetPosition();
+        public TargetPosition Holder1 { get; set; } = new TargetPosition();
+        public TargetPosition Holder2 { get; set; } = new TargetPosition();
+        public TargetPosition Holder3 { get; set; } = new TargetPosition();
+        public TargetPosition Holder4 { get; set; } = new TargetPosition();
+        public TargetPosition Holder5 { get; set; } = new TargetPosition();
+        public TargetPosition Holder6 { get; set; } = new TargetPosition();
 
         public EthercatMotion(Api Controller, int axisNum)
         {
@@ -126,7 +132,7 @@ namespace Motion
 
             LoadPosition(HomePosition, TeachPos.Home);
             LoadPosition(PickPosition, TeachPos.Home);
-            
+            LoadPosition(Holder1, TeachPos.Holder1);
         }
 
         private void LoadPosition(TargetPosition target, TeachPos pos)

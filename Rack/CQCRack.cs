@@ -94,22 +94,17 @@ namespace Rack
             {
                 if (currentYPos > YIsInBox) //Y is dangerous
                 {
-                    if (Motion.PickPosition.XPos - 200 > currentXPos) //On on side.
+                    //Todo, need to check X?
+                    //X Y Z tolerance 50mm. then is inside box
+
+                    if (true) //On on side.
                     {
 
                     }
                     else
                     {
-                        if (currentXPos > Motion.PickPosition.XPos + 50)
-                        {
-
-                        }
-                        else
-                        {
-                            throw new Exception("Y motor is at unknown position, please home robot manually.");
-                        }
+                        throw new Exception("Y motor is at unknown position, please home robot manually.");
                     }
-
                 }
                 else
                 {
