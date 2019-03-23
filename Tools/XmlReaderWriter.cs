@@ -75,10 +75,10 @@ namespace Tools
         {
             XElement root;
 
-            if (File.Exists(file))
-                throw new Exception(file + " already exist.");
-                //root = XElement.Load(file);
-            else
+            //if (File.Exists(file))
+            //    throw new Exception(file + " already exist.");
+            //    //root = XElement.Load(file);
+            //else
                 root = new XElement("RackData");
 
             #region Teach
@@ -93,9 +93,9 @@ namespace Tools
             XElement HomePos = new XElement(PosItem.Pos.ToString());
             HomePos.Add(
                 new XAttribute(PosItem.Name.ToString(), TeachPos.Home.ToString()),
-                new XAttribute(PosItem.XPos.ToString(), defaultXPos),
-                new XAttribute(PosItem.YPos.ToString(), defaultYPos),
-                new XAttribute(PosItem.ZPos.ToString(), defaultZPos),
+                new XAttribute(PosItem.XPos.ToString(), 400),
+                new XAttribute(PosItem.YPos.ToString(), 0),
+                new XAttribute(PosItem.ZPos.ToString(), 720),
                 new XAttribute(PosItem.RPos.ToString(), defaultRPos),
                 new XAttribute(PosItem.APos.ToString(), defaultAPos),
                 new XAttribute(PosItem.ApproachHeight.ToString(), defaultApproachHeight)
@@ -128,23 +128,23 @@ namespace Tools
             XElement Holder1 = new XElement(PosItem.Pos.ToString());
             Holder1.Add(
                      new XAttribute(PosItem.Name.ToString(), TeachPos.Holder1.ToString()),
-                     new XAttribute(PosItem.XPos.ToString(), defaultXPos),
-                     new XAttribute(PosItem.YPos.ToString(), defaultYPos),
-                     new XAttribute(PosItem.ZPos.ToString(), defaultZPos),
+                     new XAttribute(PosItem.XPos.ToString(), 1300),
+                     new XAttribute(PosItem.YPos.ToString(), 300),
+                     new XAttribute(PosItem.ZPos.ToString(), 670),
                      new XAttribute(PosItem.RPos.ToString(), defaultRPos),
                      new XAttribute(PosItem.APos.ToString(), defaultAPos),
-                     new XAttribute(PosItem.ApproachHeight.ToString(), defaultApproachHeight)
+                     new XAttribute(PosItem.ApproachHeight.ToString(), 720)
                      );
 
             XElement Holder2 = new XElement(PosItem.Pos.ToString());
             Holder2.Add(
                      new XAttribute(PosItem.Name.ToString(), TeachPos.Holder2.ToString()),
-                     new XAttribute(PosItem.XPos.ToString(), defaultXPos),
-                     new XAttribute(PosItem.YPos.ToString(), defaultYPos),
-                     new XAttribute(PosItem.ZPos.ToString(), defaultZPos),
+                     new XAttribute(PosItem.XPos.ToString(), 800),
+                     new XAttribute(PosItem.YPos.ToString(), 300),
+                     new XAttribute(PosItem.ZPos.ToString(), 670),
                      new XAttribute(PosItem.RPos.ToString(), defaultRPos),
                      new XAttribute(PosItem.APos.ToString(), defaultAPos),
-                     new XAttribute(PosItem.ApproachHeight.ToString(), defaultApproachHeight)
+                     new XAttribute(PosItem.ApproachHeight.ToString(), 720)
                      );
 
             XElement Holder3 = new XElement(PosItem.Pos.ToString());
@@ -161,23 +161,23 @@ namespace Tools
             XElement Holder4 = new XElement(PosItem.Pos.ToString());
             Holder4.Add(
                      new XAttribute(PosItem.Name.ToString(), TeachPos.Holder4.ToString()),
-                     new XAttribute(PosItem.XPos.ToString(), defaultXPos),
-                     new XAttribute(PosItem.YPos.ToString(), defaultYPos),
-                     new XAttribute(PosItem.ZPos.ToString(), defaultZPos),
+                     new XAttribute(PosItem.XPos.ToString(), 1300),
+                     new XAttribute(PosItem.YPos.ToString(), 300),
+                     new XAttribute(PosItem.ZPos.ToString(), 200),
                      new XAttribute(PosItem.RPos.ToString(), defaultRPos),
                      new XAttribute(PosItem.APos.ToString(), defaultAPos),
-                     new XAttribute(PosItem.ApproachHeight.ToString(), defaultApproachHeight)
+                     new XAttribute(PosItem.ApproachHeight.ToString(), 250)
                      );
 
             XElement Holder5 = new XElement(PosItem.Pos.ToString());
             Holder5.Add(
                      new XAttribute(PosItem.Name.ToString(), TeachPos.Holder5.ToString()),
-                     new XAttribute(PosItem.XPos.ToString(), defaultXPos),
-                     new XAttribute(PosItem.YPos.ToString(), defaultYPos),
-                     new XAttribute(PosItem.ZPos.ToString(), defaultZPos),
+                     new XAttribute(PosItem.XPos.ToString(), 800),
+                     new XAttribute(PosItem.YPos.ToString(), 300),
+                     new XAttribute(PosItem.ZPos.ToString(), 200),
                      new XAttribute(PosItem.RPos.ToString(), defaultRPos),
                      new XAttribute(PosItem.APos.ToString(), defaultAPos),
-                     new XAttribute(PosItem.ApproachHeight.ToString(), defaultApproachHeight)
+                     new XAttribute(PosItem.ApproachHeight.ToString(), 250)
                      );
 
             XElement Holder6 = new XElement(PosItem.Pos.ToString());

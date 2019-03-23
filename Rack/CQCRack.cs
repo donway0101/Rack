@@ -51,7 +51,14 @@ namespace Rack
                 Gripper.Setup();
             }
 
+            Motion.EnableAll();
+
             SetupComplete = true;
+        }
+
+        public void Stop()
+        {
+            Motion.DisableAll();
         }
 
         public void Test()
@@ -119,7 +126,7 @@ namespace Rack
                         Motion.ToPointWaitEnd(Motion.MotorY, Motion.HomePosition.YPos);
                         Motion.ToPointWaitEnd(Motion.MotorZ, Motion.HomePosition.ZPos);
                         Motion.ToPointXWaitEnd(Motion.HomePosition.XPos);
-                        Motion.ToPoint(Motion.MotorR, Motion.HomePosition.RPos);
+                        Motion.ToPointWaitEnd(Motion.MotorR, Motion.HomePosition.RPos);
                     }
                     else
                     {
@@ -130,14 +137,17 @@ namespace Rack
                 {
                     if (currentYPos < YIsNearHome)
                     {
-                        Motion.ToPointWaitEnd(Motion.MotorY, Motion.HomePosition.YPos);
-                        Motion.ToPointWaitEnd(Motion.MotorZ, Motion.HomePosition.ZPos);
-                        Motion.ToPointX(Motion.HomePosition.XPos);
-                        Motion.ToPoint(Motion.MotorR, Motion.HomePosition.RPos);
+                        //Motion.ToPointWaitEnd(Motion.MotorY, Motion.HomePosition.YPos);
+                        //Motion.ToPointWaitEnd(Motion.MotorZ, Motion.HomePosition.ZPos);
+                        //Motion.ToPointX(Motion.HomePosition.XPos);
+                        //Motion.ToPoint(Motion.MotorR, Motion.HomePosition.RPos);
 
                         //Disable one of the motor.
-                        Gripper.HomeMotor(GripperMotor.One, 0);
-                        Gripper.HomeMotor(GripperMotor.Two, 0);
+                        if (GripperIsOnline==true)
+                        {
+                            Gripper.HomeMotor(GripperMotor.One, 0);
+                            Gripper.HomeMotor(GripperMotor.Two, 0);
+                        }                      
                     }
                     else
                     {

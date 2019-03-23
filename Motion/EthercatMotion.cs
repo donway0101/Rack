@@ -135,6 +135,11 @@ namespace Motion
             LoadPosition(HomePosition, TeachPos.Home);
             LoadPosition(PickPosition, TeachPos.Home);
             LoadPosition(Holder1, TeachPos.Holder1);
+            LoadPosition(Holder2, TeachPos.Holder2);
+            LoadPosition(Holder3, TeachPos.Holder3);
+            LoadPosition(Holder4, TeachPos.Holder4);
+            LoadPosition(Holder5, TeachPos.Holder5);
+            LoadPosition(Holder6, TeachPos.Holder6);
 
             Holders = new TargetPosition[6] { Holder1, Holder2, Holder3, Holder4, Holder5, Holder6};
         }
@@ -292,11 +297,32 @@ namespace Motion
             //Wait till enabled
             Ch.WaitMotorEnabled(motor.Id, 1, timeout);
         }
+
+        public void EnableAll(int timeout = 2000)
+        {
+            foreach (var mtr in Motors)
+            {
+                Ch.Enable(mtr.Id);
+                //Wait till enabled
+                Ch.WaitMotorEnabled(mtr.Id, 1, timeout);
+            }
+        }
+
         public void Disable(Motor motor, int timeout = 2000)
         {
             Ch.Disable(motor.Id);
             //Wait till enabled
             Ch.WaitMotorEnabled(motor.Id, 0, timeout);
+        }
+
+        public void DisableAll(int timeout = 2000)
+        {
+            foreach (var mtr in Motors)
+            {
+                Ch.Disable(mtr.Id);
+                //Wait till enabled
+                Ch.WaitMotorEnabled(mtr.Id, 0, timeout);
+            }
         }
         public void Jog(Motor motor, double velocity) { }
         public void Kill(Motor motor) { }
