@@ -38,6 +38,8 @@ namespace Motion
         public TargetPosition Holder5 { get; set; } = new TargetPosition();
         public TargetPosition Holder6 { get; set; } = new TargetPosition();
 
+        public TargetPosition[] Holders { get; set; }
+
         public EthercatMotion(Api Controller, int axisNum)
         {
             Ch = Controller;
@@ -55,8 +57,8 @@ namespace Motion
             MotorZ.CriticalErrAcc = 100;
             MotorZ.CriticalErrVel = 100;
             MotorZ.CriticalErrIdle = 5;
-            MotorZ.SoftLimitNagtive = -20;
-            MotorZ.SoftLimitPositive = 650;
+            MotorZ.SoftLimitNagtive = -10;
+            MotorZ.SoftLimitPositive = 730;
             MotorZ.SpeedFactor = 0.9;
             MotorZ.JerkFactor = 16;
 
@@ -133,6 +135,8 @@ namespace Motion
             LoadPosition(HomePosition, TeachPos.Home);
             LoadPosition(PickPosition, TeachPos.Home);
             LoadPosition(Holder1, TeachPos.Holder1);
+
+            Holders = new TargetPosition[6] { Holder1, Holder2, Holder3, Holder4, Holder5, Holder6};
         }
 
         private void LoadPosition(TargetPosition target, TeachPos pos)
@@ -303,6 +307,19 @@ namespace Motion
             Ch.ToPoint(MotionFlags.ACSC_AMF_MAXIMUM, motor.Id, point);
         }
 
+        /// <summary>
+        /// Catch exception and Send kill command to motor if needed.
+        /// </summary>
+        /// <param name="motor"></param>
+        /// <param name="point"></param>
+        /// <param name="timeout"></param>
+        public void ToPointWaitEnd(Motor motor, double point, int timeout=30000)
+        {
+            point *= motor.Direction;
+            Ch.ToPoint(MotionFlags.ACSC_AMF_MAXIMUM, motor.Id, point);
+            Ch.WaitMotionEnd(motor.Id, timeout);
+        }
+
         public void ToPointX(double point)
         {
             double x1Pos = GetPosition(MotorX1);
@@ -357,6 +374,13 @@ namespace Motion
 
             Ch.ToPoint(MotionFlags.ACSC_AMF_MAXIMUM, MotorX1.Id, x1Target);
             Ch.ToPoint(MotionFlags.ACSC_AMF_MAXIMUM, MotorX2.Id, x2Target);
+        }
+
+        public void ToPointXWaitEnd(double point, int timeout = 30000)
+        {
+            ToPointX(point);
+            Ch.WaitMotionEnd(MotorX1.Id, timeout);
+            Ch.WaitMotionEnd(MotorX2.Id, timeout);
         }
 
         public void ToPointM(Motor[] motors, double[] points)

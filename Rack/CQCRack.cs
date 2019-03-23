@@ -43,6 +43,8 @@ namespace Rack
             Motion = new EthercatMotion(Ch, 3);
             Motion.Setup();
 
+            SetSpeed(10);
+
             if (GripperIsOnline==true)
             {
                 Gripper = new Stepper("COM3");
@@ -55,8 +57,9 @@ namespace Rack
         public void Test()
         {
             //Motion.ToPointX(700);
-            SetSpeed(20);
+            //SetSpeed(20);
             //Motion.ToPoint(Motion.MotorY, 291);
+            //Motion.ToPointWaitEnd(Motion.MotorY, 291,1000);
         }
 
         public void SetSpeed(double speed)
@@ -97,9 +100,26 @@ namespace Rack
                     //Todo, need to check X?
                     //X Y Z tolerance 50mm. then is inside box
 
-                    if (true) //On on side.
+                    TargetPosition currentHolder = null;
+                    double tolerance = 50;
+                    foreach (var pos in Motion.Holders)
                     {
+                        if (Math.Abs(currentXPos-pos.XPos) < tolerance & 
+                            Math.Abs(currentYPos - pos.YPos) < tolerance & 
+                            (currentZPos>pos.ZPos- tolerance & currentZPos<pos.ApproachHeight+ tolerance))
+                        {
+                            currentHolder = pos;
+                        }
+                    }
 
+                    if (currentHolder!=null)
+                    {
+                        Motion.ToPointWaitEnd(Motion.MotorZ, currentHolder.ApproachHeight);
+                        Motion.ToPointWaitEnd(Motion.MotorR, currentHolder.RPos);
+                        Motion.ToPointWaitEnd(Motion.MotorY, Motion.HomePosition.YPos);
+                        Motion.ToPointWaitEnd(Motion.MotorZ, Motion.HomePosition.ZPos);
+                        Motion.ToPointXWaitEnd(Motion.HomePosition.XPos);
+                        Motion.ToPoint(Motion.MotorR, Motion.HomePosition.RPos);
                     }
                     else
                     {
@@ -110,13 +130,11 @@ namespace Rack
                 {
                     if (currentYPos < YIsNearHome)
                     {
-                        //Z up, X move, Y move, R move gripper move, check phone left
-                        Motion.ToPoint(Motion.MotorY, Motion.HomePosition.YPos);
-                        Motion.ToPoint(Motion.MotorZ, Motion.HomePosition.ZPos);
+                        Motion.ToPointWaitEnd(Motion.MotorY, Motion.HomePosition.YPos);
+                        Motion.ToPointWaitEnd(Motion.MotorZ, Motion.HomePosition.ZPos);
                         Motion.ToPointX(Motion.HomePosition.XPos);
                         Motion.ToPoint(Motion.MotorR, Motion.HomePosition.RPos);
 
-                        //Gripper
                         //Disable one of the motor.
                         Gripper.HomeMotor(GripperMotor.One, 0);
                         Gripper.HomeMotor(GripperMotor.Two, 0);
