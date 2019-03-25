@@ -99,11 +99,11 @@ namespace GripperStepper
 
         public void Connect()
         {
-            string res = SendCommand(GripperMotor.One, "IFD");
-            StepperOneIsConnected = MotorAcknowledged(GripperMotor.One, res);
+            string res = SendCommand(Gripper.One, "IFD");
+            StepperOneIsConnected = MotorAcknowledged(Gripper.One, res);
 
-            res = SendCommand(GripperMotor.Two, "IFD");
-            StepperTwoIsConnected = MotorAcknowledged(GripperMotor.Two, res);
+            res = SendCommand(Gripper.Two, "IFD");
+            StepperTwoIsConnected = MotorAcknowledged(Gripper.Two, res);
 
             StepperIsConnected = StepperOneIsConnected & StepperTwoIsConnected;
 
@@ -136,7 +136,7 @@ namespace GripperStepper
         /// Set driver feedback format to decimal.
         /// </summary>
         /// <param name="motor"></param>
-        public void SetFeedbackFormatDecimal(GripperMotor motor)
+        public void SetFeedbackFormatDecimal(Gripper motor)
         {
             string res = SendCommand(motor, "IFD");
             if (MotorAcknowledged(motor, res) == false)
@@ -211,12 +211,12 @@ namespace GripperStepper
         /// </summary>
         /// <param name="motor"></param>
         /// <returns></returns>
-        private string GetMotorId(GripperMotor motor)
+        private string GetMotorId(Gripper motor)
         {
             return Convert.ToString((int)motor);
         }
 
-        public void Stop(GripperMotor motor)
+        public void Stop(Gripper motor)
         {
             string res = SendCommand(motor, "STD");
 
@@ -231,7 +231,7 @@ namespace GripperStepper
         /// </summary>
         /// <param name="cmd"></param>
         /// <seealso cref="SendCommand"/>
-        public string SendCommand(GripperMotor motor,string cmd)
+        public string SendCommand(Gripper motor,string cmd)
         {
             lock (PortWriteLocker)
             {
@@ -265,7 +265,7 @@ namespace GripperStepper
         /// Enalbe motor.
         /// </summary>
         /// <param name="motor"></param>
-        public void Enable(GripperMotor motor)
+        public void Enable(Gripper motor)
         {
             string res = SendCommand(motor, "ME");
 
@@ -281,7 +281,7 @@ namespace GripperStepper
         /// <param name="motor"></param>
         /// <param name="response"></param>
         /// <returns></returns>
-        private bool MotorAcknowledged(GripperMotor motor, string response)
+        private bool MotorAcknowledged(Gripper motor, string response)
         {
             return response.Substring(0, 1) == GetMotorId(motor) & response.Substring(1, 1) == "%";
         }
@@ -290,7 +290,7 @@ namespace GripperStepper
         /// Disable motor.
         /// </summary>
         /// <param name="motor"></param>
-        public void Disable(GripperMotor motor)
+        public void Disable(Gripper motor)
         {
             string res = SendCommand(motor, "MD");
 
@@ -305,7 +305,7 @@ namespace GripperStepper
         /// Must has the right sensor for homing.
         /// </summary>
         /// <param name="motor"></param>
-        public void HomeMotor(GripperMotor motor, double homeOffset)
+        public void HomeMotor(Gripper motor, double homeOffset)
         {
             if (GetStatus(motor, StatusCode.Enabled) == false)
             {
@@ -349,7 +349,7 @@ namespace GripperStepper
         /// </summary>
         /// <param name="motor"></param>
         /// <param name="angle"></param>
-        public void ToPoint(GripperMotor motor, double angle, int timeout = 10)
+        public void ToPoint(Gripper motor, double angle, int timeout = 10)
         {
             int target = Convert.ToInt32(angle * CountPerDegree);
             string res = SendCommand(motor, "FP" + target);
@@ -368,7 +368,7 @@ namespace GripperStepper
             }
         }
       
-        public async Task<bool> ToPointAsync(GripperMotor motor1, double angle1, GripperMotor motor2, double angle2,
+        public async Task<bool> ToPointAsync(Gripper motor1, double angle1, Gripper motor2, double angle2,
             int timeout = 10)
         {
             return await Task.Run(() =>
@@ -420,7 +420,7 @@ namespace GripperStepper
         /// </summary>
         /// <param name="motor"></param>
         /// <param name="angle"></param>
-        public void ToPointRelative(GripperMotor motor, double angle, int timeout = 10)
+        public void ToPointRelative(Gripper motor, double angle, int timeout = 10)
         {
             double lastPos = GetPosition(motor);
 
@@ -446,7 +446,7 @@ namespace GripperStepper
         /// </summary>
         /// <param name="motor"></param>
         /// <param name="timeout"></param>
-        private void WaitMotionEnd(GripperMotor motor, int timeout = 10)
+        private void WaitMotionEnd(Gripper motor, int timeout = 10)
         {
             Stopwatch stopwatch = new Stopwatch();
             stopwatch.Start();
@@ -471,7 +471,7 @@ namespace GripperStepper
         /// <param name="code"></param>
         /// <param name="condition"></param>
         /// <param name="timeout"></param>
-        private void WaitCondition(GripperMotor motor, StatusCode code, bool condition,  int timeout = 20)
+        private void WaitCondition(Gripper motor, StatusCode code, bool condition,  int timeout = 20)
         {
             Stopwatch stopwatch = new Stopwatch();
             stopwatch.Start();
@@ -494,7 +494,7 @@ namespace GripperStepper
         /// </summary>
         /// <param name="motor"></param>
         /// <param name="acceleration"> degree / sec / sec </param>
-        public void SetAcceleration(GripperMotor motor, double acceleration)
+        public void SetAcceleration(Gripper motor, double acceleration)
         {
             // rev / sec / sec
             double acc = GearRatio * acceleration / 360;
@@ -517,7 +517,7 @@ namespace GripperStepper
         /// </summary>
         /// <param name="motor"></param>
         /// <param name="velocity">degree / sec</param>
-        public void SetVelocity(GripperMotor motor, double velocity)
+        public void SetVelocity(Gripper motor, double velocity)
         {
             double vel = GearRatio * velocity / 360;
             string velStr = vel.ToString("0.0000");
@@ -532,7 +532,7 @@ namespace GripperStepper
         /// Reset all alarm of motor.
         /// </summary>
         /// <param name="motor"></param>
-        public void ResetAlarm(GripperMotor motor)
+        public void ResetAlarm(Gripper motor)
         {
             string res = SendCommand(motor, "AR");
             if (MotorAcknowledged(motor, res) == false)
@@ -563,7 +563,7 @@ namespace GripperStepper
         /// Asks the drive to respond with what it’s doing
         /// </summary>
         /// <param name="motor"></param>
-        public bool GetStatus(GripperMotor motor, StatusCode status)
+        public bool GetStatus(Gripper motor, StatusCode status)
         {
             string info = SendCommand(motor, "SC");
             string code = info.Substring(4, info.Length - 4);
@@ -589,7 +589,7 @@ namespace GripperStepper
         /// <param name="motor"></param>
         /// <param name="input"></param>
         /// <returns></returns>
-        public bool GetInput(GripperMotor motor, Input input)
+        public bool GetInput(Gripper motor, Input input)
         {
             string res = SendCommand(motor, "IS");
             if (res.Length != 12)
@@ -605,7 +605,7 @@ namespace GripperStepper
         /// </summary>
         /// <param name="motor"></param>
         /// <returns></returns>
-        public double GetPosition(GripperMotor motor)
+        public double GetPosition(Gripper motor)
         {
             // Response of "IP" is always hexadecimal
             string res = SendCommand(motor, "IP");

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace GripperStepper
 {
-    public enum GripperMotor
+    public enum Gripper
     {
         One=1,
         Two=2,

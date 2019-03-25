@@ -339,7 +339,7 @@ namespace Motion
         /// <param name="motor"></param>
         /// <param name="point"></param>
         /// <param name="timeout"></param>
-        public void ToPointWaitEnd(Motor motor, double point, int timeout=30000)
+        public void ToPointWaitEnd(Motor motor, double point, int timeout=60000)
         {
             point *= motor.Direction;
             Ch.ToPoint(MotionFlags.ACSC_AMF_MAXIMUM, motor.Id, point);
@@ -402,9 +402,20 @@ namespace Motion
             Ch.ToPoint(MotionFlags.ACSC_AMF_MAXIMUM, MotorX2.Id, x2Target);
         }
 
-        public void ToPointXWaitEnd(double point, int timeout = 30000)
+        public void ToPointXWaitEnd(double point, int timeout = 60000)
         {
             ToPointX(point);
+            Ch.WaitMotionEnd(MotorX1.Id, timeout);
+            Ch.WaitMotionEnd(MotorX2.Id, timeout);
+        }
+
+        public void WaitEnd(Motor motor, int timeout = 60000)
+        {
+            Ch.WaitMotionEnd(motor.Id, timeout);
+        }
+
+        public void WaitEndX(int timeout = 60000)
+        {
             Ch.WaitMotionEnd(MotorX1.Id, timeout);
             Ch.WaitMotionEnd(MotorX2.Id, timeout);
         }
