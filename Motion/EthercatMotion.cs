@@ -75,7 +75,7 @@ namespace Motion
             MotorX1.CriticalErrAcc = 100;
             MotorX1.CriticalErrVel = 100;
             MotorX1.CriticalErrIdle = 5;
-            MotorX1.SoftLimitNagtive = -4;
+            MotorX1.SoftLimitNagtive = -5;
             MotorX1.SoftLimitPositive = 590;
             MotorX1.SpeedFactor = 0.9;
             MotorX1.JerkFactor = 16;
@@ -90,7 +90,7 @@ namespace Motion
             MotorX2.CriticalErrAcc = 100;
             MotorX2.CriticalErrVel = 100;
             MotorX2.CriticalErrIdle = 5;
-            MotorX2.SoftLimitNagtive = -1;
+            MotorX2.SoftLimitNagtive = -5;
             MotorX2.SoftLimitPositive = 760;
             MotorX2.SpeedFactor = 1.0;
             MotorX2.JerkFactor = 20;

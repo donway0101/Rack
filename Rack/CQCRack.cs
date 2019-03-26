@@ -12,7 +12,6 @@ using System.Threading;
 
 namespace Rack
 {
-
     /// <summary>
     /// 
     /// </summary>
@@ -69,18 +68,23 @@ namespace Rack
 
         public void Test()
         {
-            //Motion.ToPointX(700);
-            //SetSpeed(20);
-            //Motion.ToPoint(Motion.MotorX1, 100);
-            //while (Motion.GetPosition(Motion.MotorX1)<80)
-            //{
-            //    Thread.Sleep(100);
-            //}
-            //Motion.Break(Motion.MotorX1);
-            //Motion.ToPoint(Motion.MotorX1, 150);
-            //Motion.ToPointWaitTillEnd(Motion.MotorY, 291,1000);
+            Task.Run(()=> {
+                SetSpeed(20);
+                //DemoMoveToTarget(Motion.Holder1);
+                DemoMoveToTarget(Motion.PickPosition);
+                DemoMoveToTarget(Motion.Holder2);
+                DemoMoveToTarget(Motion.PickPosition);
+                DemoMoveToTarget(Motion.Holder3);
+                DemoMoveToTarget(Motion.PickPosition);
+                DemoMoveToTarget(Motion.Holder4);
+                DemoMoveToTarget(Motion.PickPosition);
+                DemoMoveToTarget(Motion.Holder5);
+                DemoMoveToTarget(Motion.PickPosition);
+                DemoMoveToTarget(Motion.Holder6);
+                DemoMoveToTarget(Motion.PickPosition);
+            });
+           
 
-            MoveToTargetPosition(Gripper.One, Motion.Holder4);
         }
 
         public void SetSpeed(double speed)
@@ -118,10 +122,35 @@ namespace Rack
             TargetPosition CurrentPosition = new TargetPosition();
             GetRobotPose(CurrentPosition);
 
-            if (Motion.PickPosition.XPos + ConveyorCenterToRightEdge > CurrentPosition.XPos &
-                CurrentPosition.XPos > Motion.PickPosition.XPos - ConveyorCenterToLeftEdge) //Robot is in conveyor zone.
+            if (CurrentPosition.XPos < Motion.ConveyorRightPosition.XPos &
+                CurrentPosition.XPos > Motion.ConveyorLeftPosition.XPos) //Robot is in conveyor zone.
             {
-                //Conveyor homing, may need to pull up a little.
+                TargetPosition currentHolder = null;
+                double tolerance = 50;
+                foreach (var pos in Motion.Holders)
+                {
+                    if (Math.Abs(CurrentPosition.XPos - pos.XPos) < tolerance &
+                        Math.Abs(CurrentPosition.YPos - pos.YPos) < tolerance &
+                        (CurrentPosition.ZPos > pos.ZPos - tolerance & CurrentPosition.ZPos < pos.ApproachHeight + tolerance))
+                    {
+                        currentHolder = pos;
+                    }
+                }
+
+                if (currentHolder != null)
+                {
+                    Motion.ToPointWaitTillEnd(Motion.MotorZ, currentHolder.ApproachHeight);
+                    Motion.ToPointWaitTillEnd(Motion.MotorR, currentHolder.RPos);
+                    Motion.ToPointWaitTillEnd(Motion.MotorY, Motion.HomePosition.YPos);
+                    Motion.ToPointWaitTillEnd(Motion.MotorZ, Motion.HomePosition.ZPos);
+                    Motion.ToPointXWaitTillEnd(Motion.HomePosition.XPos);
+                    Motion.ToPointWaitTillEnd(Motion.MotorR, Motion.HomePosition.RPos);
+                    HomeGrippers();
+                }
+                else
+                {
+                    throw new Exception("Y motor is at unknown position, please home robot manually.");
+                }
             }
             else //Robot in box zone.
             {
@@ -201,6 +230,14 @@ namespace Rack
         {
             //If system is OK, gripper is free and opened, conveyor is ready
             //If the other gripper is holding a phone, then conveyor can not reload.
+ 
+        }
+
+        private void DemoMoveToTarget(TargetPosition target)
+        {
+            MoveToTargetPosition(Gripper.One, target);
+            Motion.ToPointWaitTillEnd(Motion.MotorZ, target.ApproachHeight);
+            Motion.ToPointWaitTillEnd(Motion.MotorY, Motion.PickPosition.YPos);
         }
 
         public void Place(Gripper gripper)

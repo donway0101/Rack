@@ -206,10 +206,10 @@ namespace Tools
                      new XAttribute(PosItem.Name.ToString(), TeachPos.Holder6.ToString()),
                      new XAttribute(PosItem.XPos.ToString(), 0),
                      new XAttribute(PosItem.YPos.ToString(), 300),
-                     new XAttribute(PosItem.ZPos.ToString(), defaultZPos),
+                     new XAttribute(PosItem.ZPos.ToString(), 200),
                      new XAttribute(PosItem.RPos.ToString(), defaultRPos),
                      new XAttribute(PosItem.APos.ToString(), defaultAPos),
-                     new XAttribute(PosItem.ApproachHeight.ToString(), defaultApproachHeight)
+                     new XAttribute(PosItem.ApproachHeight.ToString(), 250)
                      );
             #endregion
 
