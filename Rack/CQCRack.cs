@@ -57,7 +57,7 @@ namespace Rack
                 Steppers.Setup();
             }
 
-            //Motion.EnableAll();
+            Motion.EnableAll();
 
             SetupComplete = true;
         }
@@ -103,7 +103,7 @@ namespace Rack
             }
         }
 
-        public void HomeRobot(double homeSpeed = 10)
+        public void HomeRobot(double homeSpeed = 20)
         {
             if (SetupComplete == false)
             {
@@ -229,15 +229,25 @@ namespace Rack
             TargetPosition CurrentPosition = new TargetPosition();
             GetRobotPose(CurrentPosition);
 
+            //if (RobotHomeComplete==false)
+            //{
+            //    throw new Exception("Robot is not home complete");
+            //}
+
+            if (SetupComplete == false)
+            {
+                throw new Exception("Robot is not SetupComplete");
+            }
+
             if (CurrentPosition.YPos>YIsNearHome)
             {
                 throw new Exception("Y is out after previous movement");
             } //Dangerous, may have to 
 
-            if ( CurrentPosition.XPos > Motion.PickPosition.XPos + ConveyorCenterToRightEdge) //Right box.
+            if ( CurrentPosition.XPos > Motion.ConveyorRightPosition.XPos) //Now on right side.
             {
                 #region Move from right to ...
-                if (target.XPos > Motion.ConveyorRightPosition.XPos)//Right to right.
+                if (target.XPos > Motion.ConveyorRightPosition.XPos)//Now on right side.Move from Right to right. 
                 {
                     //Todo , detail exception.
                     Motion.ToPoint(Motion.MotorZ, target.ApproachHeight);
@@ -251,107 +261,351 @@ namespace Rack
                     {
                         Motion.ToPoint(Motion.MotorR, -target.RPos);
                     }
-                    
-                    Motion.WaitTillEnd(Motion.MotorZ);
+                                      
                     Motion.WaitTillEndX();
                     Motion.WaitTillEnd(Motion.MotorR);
-
-                    Motion.ToPointWaitTillEnd(Motion.MotorY, target.YPos);
-                    //if (breakApproachToZPos)
-                    //{
-                    //    Motion.BreakToPointWaitTillEnd(Motion.MotorZ, target.ZPos);
-                    //}
-                    //else
-                    //{
-                    Motion.ToPointWaitTillEnd(Motion.MotorZ, target.ZPos);
-                    //}
-
-                }
-                else //Not right to right.
-                {
-                    if (Motion.PickPosition.XPos - ConveyorCenterToLeftEdge > CurrentPosition.XPos)//Right to left
+                    if (zMoveAfterXEnd == true & target.Id>7) //Holder id <= 6, only for gold phone.
                     {
-                        if (CurrentPosition.ZPos < Motion.HomePosition.ApproachHeight)//At bottom.
+                        Motion.ToPointWaitTillEnd(Motion.MotorY, target.YPos);
+                        Motion.BreakToPointWaitTillEnd(Motion.MotorZ, target.ZPos);
+                    }
+                    else //For shield boxes.
+                    {
+                        Motion.WaitTillEnd(Motion.MotorZ);
+                        Motion.ToPointWaitTillEnd(Motion.MotorY, target.YPos);
+                        Motion.ToPointWaitTillEnd(Motion.MotorZ, target.ZPos);
+                    }
+                }
+                else 
+                {
+                    if (target.XPos < Motion.ConveyorLeftPosition.XPos)//Now on right side. Move from Right to left
+                    {
+                        if (target.ZPos > Motion.PickPosition.ApproachHeight)
+                        //Now on right side. Move from Right to left
+                        //Bottom to top.
                         {
-                            if (target.ZPos > Motion.HomePosition.ApproachHeight)//Bottom to top.
+                            if (CurrentPosition.ZPos < Motion.PickPosition.ApproachHeight)
                             {
-                                //move up
-                                //move x to edge
-                                //till height enough, move x to target
-                                //till x and z end 
-                                //move y ....
+                                Motion.ToPoint(Motion.MotorZ, target.ApproachHeight);
+                                Motion.WaitTillZBiggerThan(Motion.PickPosition.ApproachHeight - 10);
+                            }
+
+                            Motion.ToPointX(target.XPos);
+
+                            if (gripper == Gripper.One)
+                            {
+                                Motion.ToPoint(Motion.MotorR, target.RPos);
                             }
                             else
                             {
-                                if (CurrentPosition.ZPos < Motion.HomePosition.ApproachHeight)//Bottom to bottom.
-                                {
-                                    //move up to pick approach
-                                    //move x to edge
-                                    //till height enough, move x to target
-                                    //till x cross, move z
-                                    //till x and z end 
-                                    //move y ....
-                                }
-                                else
-                                {
-                                    throw new Exception("Wrong target position");
-                                }
+                                Motion.ToPoint(Motion.MotorR, -target.RPos);
+                            }
+
+                            Motion.WaitTillEndX();
+                            Motion.WaitTillEnd(Motion.MotorR);
+                            Motion.WaitTillEnd(Motion.MotorZ);
+                            Motion.ToPointWaitTillEnd(Motion.MotorY, target.YPos);
+                            Motion.ToPointWaitTillEnd(Motion.MotorZ, target.ZPos);
+                        }
+                        else
+                        {
+                            if (target.ZPos < Motion.PickPosition.ApproachHeight)
+                            //Now on right side. Move from Right to left
+                            //Bottom to bottom.
+                            {
+                                Motion.ToPoint(Motion.MotorZ, Motion.PickPosition.ApproachHeight);
+                                Motion.WaitTillZBiggerThan(Motion.PickPosition.ApproachHeight - 10);
+                                Motion.ToPointX(target.XPos);
+
+                                Motion.WaitTillXSmallerThan(Motion.ConveyorLeftPosition.XPos);
+
+                                Motion.BreakToPoint(Motion.MotorZ, target.ApproachHeight);
+
+                                Motion.WaitTillEndX();
+                                Motion.WaitTillEnd(Motion.MotorR);
+
+                                Motion.WaitTillEnd(Motion.MotorZ);
+                                Motion.ToPointWaitTillEnd(Motion.MotorY, target.YPos);
+                                Motion.ToPointWaitTillEnd(Motion.MotorZ, target.ZPos);
+                            }
+                            else
+                            {
+                                throw new Exception("MoveToTargetPosition failed! Wrong target position");
                             }
                         }
-                    }
-                    else//Right to conveyor.
-                    {
 
+                    }
+                    else
+                    //Now on right side. Move from Right to conveyor.
+                    {
+                        if (CurrentPosition.ZPos < Motion.PickPosition.ApproachHeight)
+                        {
+                            Motion.ToPoint(Motion.MotorZ, target.ApproachHeight);
+                            Motion.WaitTillZBiggerThan(Motion.PickPosition.ApproachHeight - 10);
+                        }
+
+                        Motion.ToPointX(target.XPos);
+
+                        if (gripper == Gripper.One)
+                        {
+                            Motion.ToPoint(Motion.MotorR, target.RPos);
+                        }
+                        else
+                        {
+                            Motion.ToPoint(Motion.MotorR, -target.RPos);
+                        }
+
+                        Motion.WaitTillEndX();
+                        Motion.WaitTillEnd(Motion.MotorR);
+                        Motion.WaitTillEnd(Motion.MotorZ);
+                        Motion.ToPointWaitTillEnd(Motion.MotorY, target.YPos);
+                        Motion.ToPointWaitTillEnd(Motion.MotorZ, target.ZPos);
                     }
                 } 
                 #endregion
             }
-            else //Current Not at right
-            {
-                if (CurrentPosition.XPos < Motion.ConveyorLeftPosition.XPos) //Current at Left.
+            else
+            {             
+                if (CurrentPosition.XPos < Motion.ConveyorLeftPosition.XPos) //Now on left side.  
                 {
                     #region Move from left to ...
-                    if (target.XPos > Motion.ConveyorRightPosition.XPos)//Left to right
+                    if (target.XPos > Motion.ConveyorRightPosition.XPos)//Now on left side. Move from Left to right
                     {
+                        if (target.ZPos < Motion.PickPosition.ApproachHeight)// To bottom.
+                        {
+                            Motion.ToPoint(Motion.MotorZ, Motion.PickPosition.ApproachHeight);
+                            Motion.WaitTillZBiggerThan(Motion.PickPosition.ApproachHeight - 10);
+                            Motion.ToPointX(target.XPos);
 
+                            if (gripper == Gripper.One)
+                            {
+                                Motion.ToPoint(Motion.MotorR, target.RPos);
+                            }
+                            else
+                            {
+                                Motion.ToPoint(Motion.MotorR, -target.RPos);
+                            }
+
+                            Motion.WaitTillXBiggerThan(Motion.ConveyorRightPosition.XPos);
+                            Motion.BreakToPoint(Motion.MotorZ, target.ApproachHeight);
+
+
+                            Motion.WaitTillEndX();
+                            Motion.WaitTillEnd(Motion.MotorR);
+                            if (zMoveAfterXEnd == true & target.Id > 7) //Holder id <= 6, only for gold phone.
+                            {
+                                Motion.ToPointWaitTillEnd(Motion.MotorY, target.YPos);
+                                Motion.BreakToPointWaitTillEnd(Motion.MotorZ, target.ZPos);
+                            }
+                            else //For shield boxes.
+                            {
+                                Motion.WaitTillEnd(Motion.MotorZ);
+                                Motion.ToPointWaitTillEnd(Motion.MotorY, target.YPos);
+                                Motion.ToPointWaitTillEnd(Motion.MotorZ, target.ZPos);
+                            }
+                        }
+                        else //To top.
+                        {
+                            if (CurrentPosition.ZPos < Motion.PickPosition.ApproachHeight)
+                            {
+                                Motion.ToPoint(Motion.MotorZ, target.ApproachHeight);
+                                Motion.WaitTillZBiggerThan(Motion.PickPosition.ApproachHeight - 10);
+                            }
+                            
+                            Motion.ToPointX(target.XPos);
+                          
+                            if (gripper == Gripper.One)
+                            {
+                                Motion.ToPoint(Motion.MotorR, target.RPos);
+                            }
+                            else
+                            {
+                                Motion.ToPoint(Motion.MotorR, -target.RPos);
+                            }
+
+                            Motion.WaitTillEndX();
+                            Motion.WaitTillEnd(Motion.MotorR);
+                            Motion.WaitTillEnd(Motion.MotorZ);
+                            Motion.ToPointWaitTillEnd(Motion.MotorY, target.YPos);
+                            Motion.ToPointWaitTillEnd(Motion.MotorZ, target.ZPos);
+                        }
                     }
                     else
                     {
-                        if (target.XPos < Motion.ConveyorLeftPosition.XPos )//Left to left
+                        if (target.XPos < Motion.ConveyorLeftPosition.XPos)//Now on left side. Move from Left to left
                         {
-
+                            Motion.ToPointX(target.XPos);
+                            if (gripper == Gripper.One)
+                            {
+                                Motion.ToPoint(Motion.MotorR, target.RPos);
+                            }
+                            else
+                            {
+                                Motion.ToPoint(Motion.MotorR, -target.RPos);
+                            }
+                            Motion.ToPoint(Motion.MotorZ, target.ApproachHeight);
+                            Motion.WaitTillEndX();
+                            Motion.WaitTillEnd(Motion.MotorR);
+                            Motion.WaitTillEnd(Motion.MotorZ);
+                            Motion.ToPointWaitTillEnd(Motion.MotorY, target.YPos);
+                            Motion.BreakToPointWaitTillEnd(Motion.MotorZ, target.ZPos);
                         }
-                        else//Left to conveyor.
+                        else//Now on left side. Move from Left to conveyor.
                         {
-                            
+                            if (CurrentPosition.ZPos < Motion.PickPosition.ApproachHeight)
+                            {
+                                Motion.ToPoint(Motion.MotorZ, target.ApproachHeight);
+                                Motion.WaitTillZBiggerThan(Motion.PickPosition.ApproachHeight - 10);
+                            }
+
+                            Motion.ToPointX(target.XPos);
+
+                            if (gripper == Gripper.One)
+                            {
+                                Motion.ToPoint(Motion.MotorR, target.RPos);
+                            }
+                            else
+                            {
+                                Motion.ToPoint(Motion.MotorR, -target.RPos);
+                            }
+
+                            Motion.WaitTillEndX();
+                            Motion.WaitTillEnd(Motion.MotorR);
+                            Motion.WaitTillEnd(Motion.MotorZ);
+                            Motion.ToPointWaitTillEnd(Motion.MotorY, target.YPos);
+                            Motion.ToPointWaitTillEnd(Motion.MotorZ, target.ZPos);
                         }
                     }
                     #endregion
                 }
-                else//Current at Conveyor.
+                else//Now on conveyor side.
                 {
                     #region Move from conveyor to ...
-                    if (target.XPos > Motion.ConveyorRightPosition.XPos)//Conveyor to right.
+                    if (target.XPos > Motion.ConveyorRightPosition.XPos)
+                    //Now on conveyor side. Move from Conveyor to right.
                     {
+                        if (target.ZPos < Motion.PickPosition.ApproachHeight)// To bottom.
+                        {
+                            Motion.ToPointX(target.XPos);
+                            Motion.ToPoint(Motion.MotorZ, Motion.PickPosition.ApproachHeight);
 
+                            if (gripper == Gripper.One)
+                            {
+                                Motion.ToPoint(Motion.MotorR, target.RPos);
+                            }
+                            else
+                            {
+                                Motion.ToPoint(Motion.MotorR, -target.RPos);
+                            }
+
+                            Motion.WaitTillXBiggerThan(Motion.ConveyorRightPosition.XPos);
+                            Motion.BreakToPoint(Motion.MotorZ, target.ApproachHeight);
+
+
+                            Motion.WaitTillEndX();
+                            Motion.WaitTillEnd(Motion.MotorR);
+                            if (zMoveAfterXEnd == true & target.Id > 7) //Holder id <= 6, only for gold phone.
+                            {
+                                Motion.ToPointWaitTillEnd(Motion.MotorY, target.YPos);
+                                Motion.BreakToPointWaitTillEnd(Motion.MotorZ, target.ZPos);
+                            }
+                            else //For shield boxes.
+                            {
+                                Motion.WaitTillEnd(Motion.MotorZ);
+                                Motion.ToPointWaitTillEnd(Motion.MotorY, target.YPos);
+                                Motion.ToPointWaitTillEnd(Motion.MotorZ, target.ZPos);
+                            }
+                        }
+                        else //To top.
+                        {
+                            Motion.ToPointX(target.XPos);
+                            if (gripper == Gripper.One)
+                            {
+                                Motion.ToPoint(Motion.MotorR, target.RPos);
+                            }
+                            else
+                            {
+                                Motion.ToPoint(Motion.MotorR, -target.RPos);
+                            }
+                            Motion.ToPoint(Motion.MotorZ, target.ApproachHeight);
+                            Motion.WaitTillEndX();
+                            Motion.WaitTillEnd(Motion.MotorR);
+                            Motion.WaitTillEnd(Motion.MotorZ);
+                            Motion.ToPointWaitTillEnd(Motion.MotorY, target.YPos);
+                            Motion.ToPointWaitTillEnd(Motion.MotorZ, target.ZPos);
+                        }
                     }
                     else
                     {
-                        if (target.XPos < Motion.ConveyorLeftPosition.XPos)//Conveyor to left
+                        //Now on conveyor side. Move from Conveyor to left
+                        if (target.XPos < Motion.ConveyorLeftPosition.XPos)
                         {
+                            if (target.ZPos < Motion.PickPosition.ApproachHeight)// To bottom.
+                            {
+                                Motion.ToPointX(target.XPos);
+                                Motion.ToPoint(Motion.MotorZ, Motion.PickPosition.ApproachHeight);
 
+                                if (gripper == Gripper.One)
+                                {
+                                    Motion.ToPoint(Motion.MotorR, target.RPos);
+                                }
+                                else
+                                {
+                                    Motion.ToPoint(Motion.MotorR, -target.RPos);
+                                }
+
+                                Motion.WaitTillXSmallerThan(Motion.ConveyorLeftPosition.XPos);
+                                Motion.BreakToPoint(Motion.MotorZ, target.ApproachHeight);
+
+                                Motion.WaitTillEndX();
+                                Motion.WaitTillEnd(Motion.MotorR);
+
+                                Motion.WaitTillEnd(Motion.MotorZ);
+                                Motion.ToPointWaitTillEnd(Motion.MotorY, target.YPos);
+                                Motion.ToPointWaitTillEnd(Motion.MotorZ, target.ZPos);
+                            }
+                            else //To top.
+                            {
+                                Motion.ToPointX(target.XPos);
+                                if (gripper == Gripper.One)
+                                {
+                                    Motion.ToPoint(Motion.MotorR, target.RPos);
+                                }
+                                else
+                                {
+                                    Motion.ToPoint(Motion.MotorR, -target.RPos);
+                                }
+                                Motion.ToPoint(Motion.MotorZ, target.ApproachHeight);
+                                Motion.WaitTillEndX();
+                                Motion.WaitTillEnd(Motion.MotorR);
+                                Motion.WaitTillEnd(Motion.MotorZ);
+                                Motion.ToPointWaitTillEnd(Motion.MotorY, target.YPos);
+                                Motion.ToPointWaitTillEnd(Motion.MotorZ, target.ZPos);
+                            }
                         }
-                        else//Conveyor to conveyor.
+                        else//Now on conveyor side. Move from Conveyor to conveyor.
                         {
-
+                            Motion.ToPointX(target.XPos);
+                            if (gripper == Gripper.One)
+                            {
+                                Motion.ToPoint(Motion.MotorR, target.RPos);
+                            }
+                            else
+                            {
+                                Motion.ToPoint(Motion.MotorR, -target.RPos);
+                            }
+                            Motion.ToPoint(Motion.MotorZ, target.ApproachHeight);
+                            Motion.WaitTillEndX();
+                            Motion.WaitTillEnd(Motion.MotorR);
+                            Motion.WaitTillEnd(Motion.MotorZ);
+                            Motion.ToPointWaitTillEnd(Motion.MotorY, target.YPos);
+                            Motion.BreakToPointWaitTillEnd(Motion.MotorZ, target.ZPos);
                         }
                     }
                     #endregion
                 }
             }
         }
-
-
 
         public void Unload(Gripper gripper, TargetPosition holder)
         {

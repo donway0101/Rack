@@ -58,9 +58,9 @@ namespace RackTool
                 //string i = XmlReaderWriter.GetShiledBoxAttribute("RackData.xml", ShiledBoxId.Two, ShiledBoxData.CarrierHeight);
                 //string i = XmlReaderWriter.GetTeachAttribute("RackData.xml", TeachPos.Holder6, PosItem.XPos);
 
-                XmlReaderWriter.CreateStorageFile("RackData.xml");
+                //XmlReaderWriter.CreateStorageFile("RackData.xml");
 
-                //Rack.Test();
+                Rack.Test();
                 ;
             }
             catch (Exception ex)

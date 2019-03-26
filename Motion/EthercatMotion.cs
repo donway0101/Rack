@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using ACS.SPiiPlusNET;
 using Tools;
@@ -34,12 +36,12 @@ namespace Motion
         public TargetPosition BinPosition { get; set; } = new TargetPosition();
         public TargetPosition ConveyorLeftPosition { get; set; } = new TargetPosition();
         public TargetPosition ConveyorRightPosition { get; set; } = new TargetPosition();
-        public TargetPosition Holder1 { get; set; } = new TargetPosition();
-        public TargetPosition Holder2 { get; set; } = new TargetPosition();
-        public TargetPosition Holder3 { get; set; } = new TargetPosition();
-        public TargetPosition Holder4 { get; set; } = new TargetPosition();
-        public TargetPosition Holder5 { get; set; } = new TargetPosition();
-        public TargetPosition Holder6 { get; set; } = new TargetPosition();
+        public TargetPosition Holder1 { get; set; } = new TargetPosition() { Id = 1 };
+        public TargetPosition Holder2 { get; set; } = new TargetPosition() { Id = 2 };
+        public TargetPosition Holder3 { get; set; } = new TargetPosition() { Id = 3 };
+        public TargetPosition Holder4 { get; set; } = new TargetPosition() { Id = 4 };
+        public TargetPosition Holder5 { get; set; } = new TargetPosition() { Id = 5 };
+        public TargetPosition Holder6 { get; set; } = new TargetPosition() { Id = 6 };
 
         public TargetPosition[] Holders { get; set; }
 
@@ -136,7 +138,7 @@ namespace Motion
             }
 
             LoadPosition(HomePosition, TeachPos.Home);
-            LoadPosition(PickPosition, TeachPos.Home);
+            LoadPosition(PickPosition, TeachPos.Pick);
             LoadPosition(BinPosition, TeachPos.Bin);
             LoadPosition(ConveyorLeftPosition, TeachPos.ConveyorLeft);
             LoadPosition(ConveyorRightPosition, TeachPos.ConveyorRight);
@@ -453,6 +455,48 @@ namespace Motion
         public void WaitTillEnd(Motor motor, int timeout = 60000)
         {
             Ch.WaitMotionEnd(motor.Id, timeout);
+        }
+
+        public void WaitTillXBiggerThan(double point, int timeout = 60000)
+        {
+            Stopwatch stopwatch = new Stopwatch();
+            stopwatch.Start();
+            while (GetPositionX() < point)
+            {
+                if (stopwatch.ElapsedMilliseconds>timeout)
+                {
+                    throw new Exception("WaitTillXBigger timeout");
+                }
+                Thread.Sleep(50);
+            }
+        }
+
+        public void WaitTillZBiggerThan(double point, int timeout = 60000)
+        {
+            Stopwatch stopwatch = new Stopwatch();
+            stopwatch.Start();
+            while (GetPosition(MotorZ) < point)
+            {
+                if (stopwatch.ElapsedMilliseconds > timeout)
+                {
+                    throw new Exception("WaitTillXBigger timeout");
+                }
+                Thread.Sleep(50);
+            }
+        }
+
+        public void WaitTillXSmallerThan(double point, int timeout = 60000)
+        {
+            Stopwatch stopwatch = new Stopwatch();
+            stopwatch.Start();
+            while (GetPositionX() > point)
+            {
+                if (stopwatch.ElapsedMilliseconds > timeout)
+                {
+                    throw new Exception("WaitTillXBigger timeout");
+                }
+                Thread.Sleep(50);
+            }
         }
 
         public void WaitTillEndX(int timeout = 60000)

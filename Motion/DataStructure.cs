@@ -12,7 +12,8 @@ namespace Motion
 
     public class TargetPosition
     {
-        public double XPos;
+        public int Id { get; set; } = 99;
+        public double XPos { get; set; }
         public double YPos { get; set; }
         public double ZPos { get; set; }
         public double RPos { get; set; }

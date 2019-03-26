@@ -115,11 +115,11 @@ namespace Tools
             BinPos.Add(
                      new XAttribute(PosItem.Name.ToString(), TeachPos.Bin.ToString()),
                      new XAttribute(PosItem.XPos.ToString(), 366),
-                     new XAttribute(PosItem.YPos.ToString(), 0),
-                     new XAttribute(PosItem.ZPos.ToString(), 300),
+                     new XAttribute(PosItem.YPos.ToString(), 150),
+                     new XAttribute(PosItem.ZPos.ToString(), 600),
                      new XAttribute(PosItem.RPos.ToString(), defaultRPos),
                      new XAttribute(PosItem.APos.ToString(), defaultAPos),
-                     new XAttribute(PosItem.ApproachHeight.ToString(), 300)
+                     new XAttribute(PosItem.ApproachHeight.ToString(), 600)
                      );
 
             XElement ConveyorRight = new XElement(PosItem.Pos.ToString());
