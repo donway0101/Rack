@@ -8,6 +8,7 @@ using ACS.SPiiPlusNET;
 using Motion;
 using GripperStepper;
 using Tools;
+using System.Threading;
 
 namespace Rack
 {
@@ -26,9 +27,12 @@ namespace Rack
         private string IP;
 
         private const double YIsInBox = 200;
-        private const double YIsNearHome = 50;
-        private const double ConveyorCenterToRightEdge = 200;
-        private const double ConveyorCenterToLeftEdge = 50;
+        private const double YIsNearHome = 10;
+
+        //After all motors are referenced to their home position, 
+        // move gripper to the edge of pillar on each side of conveyor
+        private const double ConveyorCenterToRightEdge = 750;
+        private const double ConveyorCenterToLeftEdge = 40;
 
         public bool RobotHomeComplete { get; set; }
         public bool SetupComplete { get; set; }
@@ -53,7 +57,7 @@ namespace Rack
                 Steppers.Setup();
             }
 
-            Motion.EnableAll();
+            //Motion.EnableAll();
 
             SetupComplete = true;
         }
@@ -67,10 +71,16 @@ namespace Rack
         {
             //Motion.ToPointX(700);
             //SetSpeed(20);
-            //Motion.ToPoint(Motion.MotorY, 291);
-            //Motion.ToPointWaitEnd(Motion.MotorY, 291,1000);
+            //Motion.ToPoint(Motion.MotorX1, 100);
+            //while (Motion.GetPosition(Motion.MotorX1)<80)
+            //{
+            //    Thread.Sleep(100);
+            //}
+            //Motion.Break(Motion.MotorX1);
+            //Motion.ToPoint(Motion.MotorX1, 150);
+            //Motion.ToPointWaitTillEnd(Motion.MotorY, 291,1000);
 
-            //Todo Break current topoint to a new topoint unstop.
+            MoveToTargetPosition(Gripper.One, Motion.Holder4);
         }
 
         public void SetSpeed(double speed)
@@ -105,7 +115,6 @@ namespace Rack
 
             //Box state should either be open or close.
 
-
             TargetPosition CurrentPosition = new TargetPosition();
             GetRobotPose(CurrentPosition);
 
@@ -135,12 +144,12 @@ namespace Rack
 
                     if (currentHolder != null)
                     {
-                        Motion.ToPointWaitEnd(Motion.MotorZ, currentHolder.ApproachHeight);
-                        Motion.ToPointWaitEnd(Motion.MotorR, currentHolder.RPos);
-                        Motion.ToPointWaitEnd(Motion.MotorY, Motion.HomePosition.YPos);
-                        Motion.ToPointWaitEnd(Motion.MotorZ, Motion.HomePosition.ZPos);
-                        Motion.ToPointXWaitEnd(Motion.HomePosition.XPos);
-                        Motion.ToPointWaitEnd(Motion.MotorR, Motion.HomePosition.RPos);
+                        Motion.ToPointWaitTillEnd(Motion.MotorZ, currentHolder.ApproachHeight);
+                        Motion.ToPointWaitTillEnd(Motion.MotorR, currentHolder.RPos);
+                        Motion.ToPointWaitTillEnd(Motion.MotorY, Motion.HomePosition.YPos);
+                        Motion.ToPointWaitTillEnd(Motion.MotorZ, Motion.HomePosition.ZPos);
+                        Motion.ToPointXWaitTillEnd(Motion.HomePosition.XPos);
+                        Motion.ToPointWaitTillEnd(Motion.MotorR, Motion.HomePosition.RPos);
                         HomeGrippers();
                     }
                     else
@@ -153,10 +162,10 @@ namespace Rack
                     if (CurrentPosition.YPos < YIsNearHome)
                     {
 
-                        Motion.ToPointWaitEnd(Motion.MotorY, Motion.HomePosition.YPos);
-                        Motion.ToPointWaitEnd(Motion.MotorZ, Motion.HomePosition.ZPos);
-                        Motion.ToPointXWaitEnd(Motion.HomePosition.XPos);
-                        Motion.ToPointWaitEnd(Motion.MotorR, Motion.HomePosition.RPos);
+                        Motion.ToPointWaitTillEnd(Motion.MotorY, Motion.HomePosition.YPos);
+                        Motion.ToPointWaitTillEnd(Motion.MotorZ, Motion.HomePosition.ZPos);
+                        Motion.ToPointXWaitTillEnd(Motion.HomePosition.XPos);
+                        Motion.ToPointWaitTillEnd(Motion.MotorR, Motion.HomePosition.RPos);
 
                         //Disable one of the motor.
                         HomeGrippers();
@@ -214,7 +223,7 @@ namespace Rack
 
         }
 
-        private void MoveToTargetPosition(Gripper gripper, TargetPosition target)
+        private void MoveToTargetPosition(Gripper gripper, TargetPosition target, bool zMoveAfterXEnd = false)
         {
 
             TargetPosition CurrentPosition = new TargetPosition();
@@ -228,7 +237,7 @@ namespace Rack
             if ( CurrentPosition.XPos > Motion.PickPosition.XPos + ConveyorCenterToRightEdge) //Right box.
             {
                 #region Move from right to ...
-                if (target.XPos > Motion.PickPosition.XPos + ConveyorCenterToRightEdge)//Within right.
+                if (target.XPos > Motion.ConveyorRightPosition.XPos)//Right to right.
                 {
                     //Todo , detail exception.
                     Motion.ToPoint(Motion.MotorZ, target.ApproachHeight);
@@ -243,15 +252,22 @@ namespace Rack
                         Motion.ToPoint(Motion.MotorR, -target.RPos);
                     }
                     
-                    Motion.WaitEnd(Motion.MotorZ);
-                    Motion.WaitEndX();
-                    Motion.WaitEnd(Motion.MotorR);
+                    Motion.WaitTillEnd(Motion.MotorZ);
+                    Motion.WaitTillEndX();
+                    Motion.WaitTillEnd(Motion.MotorR);
 
-                    Motion.ToPointWaitEnd(Motion.MotorY, target.YPos);
-                    Motion.ToPointWaitEnd(Motion.MotorZ, target.ZPos);
+                    Motion.ToPointWaitTillEnd(Motion.MotorY, target.YPos);
+                    //if (breakApproachToZPos)
+                    //{
+                    //    Motion.BreakToPointWaitTillEnd(Motion.MotorZ, target.ZPos);
+                    //}
+                    //else
+                    //{
+                    Motion.ToPointWaitTillEnd(Motion.MotorZ, target.ZPos);
+                    //}
 
                 }
-                else
+                else //Not right to right.
                 {
                     if (Motion.PickPosition.XPos - ConveyorCenterToLeftEdge > CurrentPosition.XPos)//Right to left
                     {
@@ -290,42 +306,42 @@ namespace Rack
                 } 
                 #endregion
             }
-            else
+            else //Current Not at right
             {
-                if (Motion.PickPosition.XPos - ConveyorCenterToLeftEdge > CurrentPosition.XPos) //Left box.
+                if (CurrentPosition.XPos < Motion.ConveyorLeftPosition.XPos) //Current at Left.
                 {
                     #region Move from left to ...
-                    if (target.XPos > Motion.PickPosition.XPos + ConveyorCenterToRightEdge)//Left to right
+                    if (target.XPos > Motion.ConveyorRightPosition.XPos)//Left to right
                     {
 
                     }
                     else
                     {
-                        if (Motion.PickPosition.XPos - ConveyorCenterToLeftEdge > CurrentPosition.XPos)//Within left
+                        if (target.XPos < Motion.ConveyorLeftPosition.XPos )//Left to left
                         {
 
                         }
                         else//Left to conveyor.
                         {
-
+                            
                         }
                     }
                     #endregion
                 }
-                else//Conveyor.
+                else//Current at Conveyor.
                 {
                     #region Move from conveyor to ...
-                    if (target.XPos > Motion.PickPosition.XPos + ConveyorCenterToRightEdge)//Conveyor to right.
+                    if (target.XPos > Motion.ConveyorRightPosition.XPos)//Conveyor to right.
                     {
 
                     }
                     else
                     {
-                        if (Motion.PickPosition.XPos - ConveyorCenterToLeftEdge > CurrentPosition.XPos)//Conveyor to left
+                        if (target.XPos < Motion.ConveyorLeftPosition.XPos)//Conveyor to left
                         {
 
                         }
-                        else//Within conveyor.
+                        else//Conveyor to conveyor.
                         {
 
                         }

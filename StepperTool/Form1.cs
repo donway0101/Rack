@@ -26,7 +26,7 @@ namespace StepperTool
         {
             try
             {
-                stepper.Stepup();
+                stepper.Setup();
                 stepper.Connect();
                 button1.Enabled = false;
             }

@@ -49,6 +49,7 @@ namespace RackTool
             }
         }
 
+        //Test
         private void button3_Click(object sender, EventArgs e)
         {
             try
@@ -56,6 +57,7 @@ namespace RackTool
 
                 //string i = XmlReaderWriter.GetShiledBoxAttribute("RackData.xml", ShiledBoxId.Two, ShiledBoxData.CarrierHeight);
                 //string i = XmlReaderWriter.GetTeachAttribute("RackData.xml", TeachPos.Holder6, PosItem.XPos);
+
                 XmlReaderWriter.CreateStorageFile("RackData.xml");
 
                 //Rack.Test();
@@ -70,7 +72,15 @@ namespace RackTool
 
         private void button5_Click(object sender, EventArgs e)
         {
-            Rack.Stop();
+            try
+            {
+                Rack.Stop();     
+            }
+            catch (Exception ex)
+            {
+
+                MessageBox.Show(ex.Message);
+            }
         }
     }
 }

@@ -13,7 +13,6 @@ namespace Tools
     public class XmlReaderWriter
     {
 
-
         public static IEnumerable<XElement> GetElements(string file, string elementName)
         {
             using (XmlReader reader = XmlReader.Create(file))
@@ -85,7 +84,7 @@ namespace Tools
             XElement Teach = new XElement(PosItem.Teach.ToString());
             const double defaultXPos = 800;
             const double defaultYPos = 50;
-            const double defaultZPos = 670;
+            const double defaultZPos = 720;
             const double defaultRPos = 26;
             const double defaultAPos = 0;
             const double defaultApproachHeight = 720;
@@ -104,18 +103,40 @@ namespace Tools
             XElement PickPos = new XElement(PosItem.Pos.ToString());
             PickPos.Add(
                 new XAttribute(PosItem.Name.ToString(), TeachPos.Pick.ToString()),
-                new XAttribute(PosItem.XPos.ToString(), defaultXPos),
-                new XAttribute(PosItem.YPos.ToString(), defaultYPos),
-                new XAttribute(PosItem.ZPos.ToString(), defaultZPos),
+                new XAttribute(PosItem.XPos.ToString(), 366),
+                new XAttribute(PosItem.YPos.ToString(), 0),
+                new XAttribute(PosItem.ZPos.ToString(), 300),
                 new XAttribute(PosItem.RPos.ToString(), defaultRPos),
                 new XAttribute(PosItem.APos.ToString(), defaultAPos),
-                new XAttribute(PosItem.ApproachHeight.ToString(), defaultApproachHeight)
+                new XAttribute(PosItem.ApproachHeight.ToString(), 300)
                 );
 
             XElement BinPos = new XElement(PosItem.Pos.ToString());
             BinPos.Add(
                      new XAttribute(PosItem.Name.ToString(), TeachPos.Bin.ToString()),
-                     new XAttribute(PosItem.XPos.ToString(), defaultXPos),
+                     new XAttribute(PosItem.XPos.ToString(), 366),
+                     new XAttribute(PosItem.YPos.ToString(), 0),
+                     new XAttribute(PosItem.ZPos.ToString(), 300),
+                     new XAttribute(PosItem.RPos.ToString(), defaultRPos),
+                     new XAttribute(PosItem.APos.ToString(), defaultAPos),
+                     new XAttribute(PosItem.ApproachHeight.ToString(), 300)
+                     );
+
+            XElement ConveyorRight = new XElement(PosItem.Pos.ToString());
+            ConveyorRight.Add(
+                     new XAttribute(PosItem.Name.ToString(), TeachPos.ConveyorRight.ToString()),
+                     new XAttribute(PosItem.XPos.ToString(), 745),
+                     new XAttribute(PosItem.YPos.ToString(), defaultYPos),
+                     new XAttribute(PosItem.ZPos.ToString(), defaultZPos),
+                     new XAttribute(PosItem.RPos.ToString(), defaultRPos),
+                     new XAttribute(PosItem.APos.ToString(), defaultAPos),
+                     new XAttribute(PosItem.ApproachHeight.ToString(), defaultApproachHeight)
+                     );
+
+            XElement ConveyorLeft = new XElement(PosItem.Pos.ToString());
+            ConveyorLeft.Add(
+                     new XAttribute(PosItem.Name.ToString(), TeachPos.ConveyorLeft.ToString()),
+                     new XAttribute(PosItem.XPos.ToString(), 40),
                      new XAttribute(PosItem.YPos.ToString(), defaultYPos),
                      new XAttribute(PosItem.ZPos.ToString(), defaultZPos),
                      new XAttribute(PosItem.RPos.ToString(), defaultRPos),
@@ -150,8 +171,8 @@ namespace Tools
             XElement Holder3 = new XElement(PosItem.Pos.ToString());
             Holder3.Add(
                      new XAttribute(PosItem.Name.ToString(), TeachPos.Holder3.ToString()),
-                     new XAttribute(PosItem.XPos.ToString(), defaultXPos),
-                     new XAttribute(PosItem.YPos.ToString(), defaultYPos),
+                     new XAttribute(PosItem.XPos.ToString(), 0),
+                     new XAttribute(PosItem.YPos.ToString(), 300),
                      new XAttribute(PosItem.ZPos.ToString(), defaultZPos),
                      new XAttribute(PosItem.RPos.ToString(), defaultRPos),
                      new XAttribute(PosItem.APos.ToString(), defaultAPos),
@@ -183,8 +204,8 @@ namespace Tools
             XElement Holder6 = new XElement(PosItem.Pos.ToString());
             Holder6.Add(
                      new XAttribute(PosItem.Name.ToString(), TeachPos.Holder6.ToString()),
-                     new XAttribute(PosItem.XPos.ToString(), defaultXPos),
-                     new XAttribute(PosItem.YPos.ToString(), defaultYPos),
+                     new XAttribute(PosItem.XPos.ToString(), 0),
+                     new XAttribute(PosItem.YPos.ToString(), 300),
                      new XAttribute(PosItem.ZPos.ToString(), defaultZPos),
                      new XAttribute(PosItem.RPos.ToString(), defaultRPos),
                      new XAttribute(PosItem.APos.ToString(), defaultAPos),
@@ -252,6 +273,9 @@ namespace Tools
             Teach.Add(HomePos);
             Teach.Add(PickPos);
             Teach.Add(BinPos);
+            Teach.Add(ConveyorLeft);
+            Teach.Add(ConveyorRight);
+
             Teach.Add(Holder1);
             Teach.Add(Holder2);
             Teach.Add(Holder3);

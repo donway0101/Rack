@@ -29,6 +29,8 @@ namespace Tools
         Home,
         Pick,
         Bin,
+        ConveyorLeft,
+        ConveyorRight,
 
         Holder1,
         Holder2,

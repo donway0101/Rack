@@ -31,6 +31,9 @@ namespace Motion
 
         public TargetPosition HomePosition { get; set; } = new TargetPosition();
         public TargetPosition PickPosition { get; set; } = new TargetPosition();
+        public TargetPosition BinPosition { get; set; } = new TargetPosition();
+        public TargetPosition ConveyorLeftPosition { get; set; } = new TargetPosition();
+        public TargetPosition ConveyorRightPosition { get; set; } = new TargetPosition();
         public TargetPosition Holder1 { get; set; } = new TargetPosition();
         public TargetPosition Holder2 { get; set; } = new TargetPosition();
         public TargetPosition Holder3 { get; set; } = new TargetPosition();
@@ -134,6 +137,10 @@ namespace Motion
 
             LoadPosition(HomePosition, TeachPos.Home);
             LoadPosition(PickPosition, TeachPos.Home);
+            LoadPosition(BinPosition, TeachPos.Bin);
+            LoadPosition(ConveyorLeftPosition, TeachPos.ConveyorLeft);
+            LoadPosition(ConveyorRightPosition, TeachPos.ConveyorRight);
+
             LoadPosition(Holder1, TeachPos.Holder1);
             LoadPosition(Holder2, TeachPos.Holder2);
             LoadPosition(Holder3, TeachPos.Holder3);
@@ -333,17 +340,44 @@ namespace Motion
             Ch.ToPoint(MotionFlags.ACSC_AMF_MAXIMUM, motor.Id, point);
         }
 
+        public void BreakToPoint(Motor motor, double point)
+        {
+            Break(motor);
+            point *= motor.Direction;
+            Ch.ToPoint(MotionFlags.ACSC_AMF_MAXIMUM, motor.Id, point);
+        }
+
+        public void BreakToPointWaitTillEnd(Motor motor, double point, int timeout = 60000)
+        {
+            Break(motor);
+            point *= motor.Direction;
+            Ch.ToPoint(MotionFlags.ACSC_AMF_MAXIMUM, motor.Id, point);
+            Ch.WaitMotionEnd(motor.Id, timeout);
+        }
+
+        public void Break(Motor motor)
+        {
+            Ch.Break(motor.Id);
+        }
+
         /// <summary>
         /// Catch exception and Send kill command to motor if needed.
         /// </summary>
         /// <param name="motor"></param>
         /// <param name="point"></param>
         /// <param name="timeout"></param>
-        public void ToPointWaitEnd(Motor motor, double point, int timeout=60000)
+        public void ToPointWaitTillEnd(Motor motor, double point, int timeout=60000)
         {
             point *= motor.Direction;
             Ch.ToPoint(MotionFlags.ACSC_AMF_MAXIMUM, motor.Id, point);
             Ch.WaitMotionEnd(motor.Id, timeout);
+        }
+
+        public void BreakToPointX(double point)
+        {
+            Break(MotorX1);
+            Break(MotorX2);
+            ToPointX(point);
         }
 
         public void ToPointX(double point)
@@ -402,19 +436,26 @@ namespace Motion
             Ch.ToPoint(MotionFlags.ACSC_AMF_MAXIMUM, MotorX2.Id, x2Target);
         }
 
-        public void ToPointXWaitEnd(double point, int timeout = 60000)
+        public void BreakToPointXWaitTillEnd(double point, int timeout = 60000)
+        {
+            Break(MotorX1);
+            Break(MotorX2);
+            ToPointXWaitTillEnd(point);
+        }
+
+        public void ToPointXWaitTillEnd(double point, int timeout = 60000)
         {
             ToPointX(point);
             Ch.WaitMotionEnd(MotorX1.Id, timeout);
             Ch.WaitMotionEnd(MotorX2.Id, timeout);
         }
 
-        public void WaitEnd(Motor motor, int timeout = 60000)
+        public void WaitTillEnd(Motor motor, int timeout = 60000)
         {
             Ch.WaitMotionEnd(motor.Id, timeout);
         }
 
-        public void WaitEndX(int timeout = 60000)
+        public void WaitTillEndX(int timeout = 60000)
         {
             Ch.WaitMotionEnd(MotorX1.Id, timeout);
             Ch.WaitMotionEnd(MotorX2.Id, timeout);
