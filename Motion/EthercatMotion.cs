@@ -130,6 +130,7 @@ namespace Motion
             Motors = new Motor[5] { MotorZ, MotorX1, MotorX2, MotorY, MotorR };
             DeclareVariableInDBuffer();
 
+            DisableAll();
             foreach (var mtr in Motors)
             {
                 //Todo need disable motors?
@@ -174,7 +175,7 @@ namespace Motion
         /// </summary>
         /// <param name="motor"></param>
         private void SetFPosition(Motor motor)
-        {
+        {            
             motor.EncoderFactor = motor.BallScrewLead / motor.EncCtsPerR;
             WriteVariable(motor, "EFAC", motor.EncoderFactor);
             motor.PowerOnPos = Convert.ToDouble( Ch.ReadVariable(GetEcatActPosName(motor)));
@@ -279,6 +280,9 @@ namespace Motion
             foreach (var mtr in Motors)
             {
                 Ch.SetVelocityImm(mtr.Id, velocity * mtr.SpeedFactor);
+                Ch.SetAccelerationImm(mtr.Id, velocity * 10);
+                Ch.SetDecelerationImm(mtr.Id, velocity * 10);
+                Ch.SetKillDecelerationImm(mtr.Id, velocity * 100);
                 Ch.SetJerkImm(mtr.Id, velocity * mtr.JerkFactor);
             }
         }
@@ -416,15 +420,15 @@ namespace Motion
             {
                 if (x1Pos<Math.Abs(halfDistance))
                 {
-                    x1Target = 0;
-                    x2Target = distance;
+                    x1Target = 0; //Move x1Pos
+                    x2Target = x2Pos + x1Pos + distance;
                 }
                 else
                 {
                     if (x2Pos < Math.Abs(halfDistance))
                     {
                         x2Target = 0;
-                        x1Target = distance;
+                        x1Target = x2Pos + x1Pos + distance;
                     }
                     else
                     {

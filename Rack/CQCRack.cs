@@ -45,7 +45,7 @@ namespace Rack
         {
             GripperIsOnline = false;
             Ch.OpenCommEthernet(IP, 701);
-            Motion = new EthercatMotion(Ch, 3);
+            Motion = new EthercatMotion(Ch, 5);
             Motion.Setup();
 
             SetSpeed(10);
@@ -68,9 +68,18 @@ namespace Rack
 
         public void Test()
         {
-            Task.Run(()=> {
+            DemoMoveToTarget(Motion.PickPosition);
+            DemoMoveToTarget(Motion.Holder6);
+
+            PickAndLoad();
+        }
+
+        private void PickAndLoad()
+        {
+            Task.Run(() =>
+            {
                 SetSpeed(20);
-                //DemoMoveToTarget(Motion.Holder1);
+                DemoMoveToTarget(Motion.Holder1);
                 DemoMoveToTarget(Motion.PickPosition);
                 DemoMoveToTarget(Motion.Holder2);
                 DemoMoveToTarget(Motion.PickPosition);
@@ -83,8 +92,6 @@ namespace Rack
                 DemoMoveToTarget(Motion.Holder6);
                 DemoMoveToTarget(Motion.PickPosition);
             });
-           
-
         }
 
         public void SetSpeed(double speed)
@@ -321,9 +328,9 @@ namespace Rack
                         //Now on right side. Move from Right to left
                         //Bottom to top.
                         {
+                            Motion.ToPoint(Motion.MotorZ, target.ApproachHeight);
                             if (CurrentPosition.ZPos < Motion.PickPosition.ApproachHeight)
-                            {
-                                Motion.ToPoint(Motion.MotorZ, target.ApproachHeight);
+                            {                               
                                 Motion.WaitTillZBiggerThan(Motion.PickPosition.ApproachHeight - 10);
                             }
 
@@ -375,10 +382,10 @@ namespace Rack
                     else
                     //Now on right side. Move from Right to conveyor.
                     {
+                        Motion.ToPoint(Motion.MotorZ, target.ApproachHeight);
                         if (CurrentPosition.ZPos < Motion.PickPosition.ApproachHeight)
-                        {
-                            Motion.ToPoint(Motion.MotorZ, target.ApproachHeight);
-                            Motion.WaitTillZBiggerThan(Motion.PickPosition.ApproachHeight - 10);
+                        {                          
+                            Motion.WaitTillZBiggerThan(Motion.PickPosition.ApproachHeight - 20);
                         }
 
                         Motion.ToPointX(target.XPos);
@@ -443,9 +450,9 @@ namespace Rack
                         }
                         else //To top.
                         {
+                            Motion.ToPoint(Motion.MotorZ, target.ApproachHeight);
                             if (CurrentPosition.ZPos < Motion.PickPosition.ApproachHeight)
                             {
-                                Motion.ToPoint(Motion.MotorZ, target.ApproachHeight);
                                 Motion.WaitTillZBiggerThan(Motion.PickPosition.ApproachHeight - 10);
                             }
                             
@@ -489,9 +496,9 @@ namespace Rack
                         }
                         else//Now on left side. Move from Left to conveyor.
                         {
+                            Motion.ToPoint(Motion.MotorZ, target.ApproachHeight);
                             if (CurrentPosition.ZPos < Motion.PickPosition.ApproachHeight)
                             {
-                                Motion.ToPoint(Motion.MotorZ, target.ApproachHeight);
                                 Motion.WaitTillZBiggerThan(Motion.PickPosition.ApproachHeight - 10);
                             }
 

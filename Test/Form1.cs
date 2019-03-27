@@ -44,7 +44,7 @@ namespace Test
         {
             try
             {
-                Motion.Test();
+                //Motion.Test();
             }
             catch (Exception ex)
             {
@@ -52,6 +52,12 @@ namespace Test
                 MessageBox.Show(ex.Message);
             }
 
+        }
+
+        private void trackBar1_Scroll(object sender, EventArgs e)
+        {
+            label1.Text = trackBar1.Value.ToString();
+            Motion.SetSpeedImm(Convert.ToDouble(trackBar1.Value));
         }
     }
 }
