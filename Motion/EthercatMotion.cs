@@ -31,25 +31,25 @@ namespace Motion
 
         public Motor[] Motors { get; set; }
 
-        public TargetPosition HomePosition { get; set; } = new TargetPosition();
-        public TargetPosition PickPosition { get; set; } = new TargetPosition();
-        public TargetPosition BinPosition { get; set; } = new TargetPosition();
-        public TargetPosition ConveyorLeftPosition { get; set; } = new TargetPosition();
-        public TargetPosition ConveyorRightPosition { get; set; } = new TargetPosition();
-        public TargetPosition Holder1 { get; set; } = new TargetPosition() { Id = 1 };
-        public TargetPosition Holder2 { get; set; } = new TargetPosition() { Id = 2 };
-        public TargetPosition Holder3 { get; set; } = new TargetPosition() { Id = 3 };
-        public TargetPosition Holder4 { get; set; } = new TargetPosition() { Id = 4 };
-        public TargetPosition Holder5 { get; set; } = new TargetPosition() { Id = 5 };
-        public TargetPosition Holder6 { get; set; } = new TargetPosition() { Id = 6 };
+        public TargetPosition HomePosition { get; set; } = new TargetPosition() { Id = Location.Home };
+        public TargetPosition PickPosition { get; set; } = new TargetPosition() { Id = Location.Pick };
+        public TargetPosition BinPosition { get; set; } = new TargetPosition() { Id = Location.Bin };
+        public TargetPosition ConveyorLeftPosition { get; set; } = new TargetPosition() { Id = Location.NoWhere };
+        public TargetPosition ConveyorRightPosition { get; set; } = new TargetPosition() { Id = Location.NoWhere };
+        public TargetPosition Holder1 { get; set; } = new TargetPosition() { Id = Location.Holder1 };
+        public TargetPosition Holder2 { get; set; } = new TargetPosition() { Id = Location.Holder2 };
+        public TargetPosition Holder3 { get; set; } = new TargetPosition() { Id = Location.Holder3 };
+        public TargetPosition Holder4 { get; set; } = new TargetPosition() { Id = Location.Holder4 };
+        public TargetPosition Holder5 { get; set; } = new TargetPosition() { Id = Location.Holder5 };
+        public TargetPosition Holder6 { get; set; } = new TargetPosition() { Id = Location.Holder6 };
 
-        public TargetPosition Gold1 { get; set; } = new TargetPosition() { Id = 11 };
-        public TargetPosition Gold2 { get; set; } = new TargetPosition() { Id = 12 };
-        public TargetPosition Gold3 { get; set; } = new TargetPosition() { Id = 13 };
-        public TargetPosition Gold4 { get; set; } = new TargetPosition() { Id = 14 };
-        public TargetPosition Gold5 { get; set; } = new TargetPosition() { Id = 15 };
+        public TargetPosition Gold1 { get; set; } = new TargetPosition() { Id = Location.Gold1 };
+        public TargetPosition Gold2 { get; set; } = new TargetPosition() { Id = Location.Gold2 };
+        public TargetPosition Gold3 { get; set; } = new TargetPosition() { Id = Location.Gold3 };
+        public TargetPosition Gold4 { get; set; } = new TargetPosition() { Id = Location.Gold4 };
+        public TargetPosition Gold5 { get; set; } = new TargetPosition() { Id = Location.Gold5 };
 
-        public TargetPosition[] Holders { get; set; }
+        public TargetPosition[] Locations { get; set; }
 
         public EthercatMotion(Api Controller, int axisNum)
         {
@@ -155,15 +155,16 @@ namespace Motion
             LoadPosition(Holder3, TeachPos.Holder3);
             LoadPosition(Holder4, TeachPos.Holder4);
             LoadPosition(Holder5, TeachPos.Holder5);
-            LoadPosition(Holder6, TeachPos.Holder6);
-
-            Holders = new TargetPosition[6] { Holder1, Holder2, Holder3, Holder4, Holder5, Holder6};
+            LoadPosition(Holder6, TeachPos.Holder6);           
 
             LoadPosition(Gold1, TeachPos.Gold1);
             LoadPosition(Gold2, TeachPos.Gold2);
             LoadPosition(Gold3, TeachPos.Gold3);
             LoadPosition(Gold4, TeachPos.Gold4);
             LoadPosition(Gold5, TeachPos.Gold5);
+
+            Locations = new TargetPosition[14] { Holder1, Holder2, Holder3, Holder4, Holder5, Holder6,
+            HomePosition,PickPosition, BinPosition, Gold1, Gold2, Gold3, Gold4, Gold5};
         }
 
         private void LoadPosition(TargetPosition target, TeachPos pos)

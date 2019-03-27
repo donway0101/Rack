@@ -84,7 +84,7 @@ namespace Tools
             XElement Teach = new XElement(PosItem.Teach.ToString());
             const double defaultXPos = 800;
             const double defaultYPos = 50;
-            const double defaultZPos = 720;
+            const double defaultZPos = 715;
             const double defaultRPos = 26;
             const double defaultAPos = 0;
             const double defaultApproachHeight = 720;
@@ -105,7 +105,7 @@ namespace Tools
                 new XAttribute(PosItem.Name.ToString(), TeachPos.Pick.ToString()),
                 new XAttribute(PosItem.XPos.ToString(), 366),
                 new XAttribute(PosItem.YPos.ToString(), 0),
-                new XAttribute(PosItem.ZPos.ToString(), 300),
+                new XAttribute(PosItem.ZPos.ToString(), 290),
                 new XAttribute(PosItem.RPos.ToString(), defaultRPos),
                 new XAttribute(PosItem.APos.ToString(), defaultAPos),
                 new XAttribute(PosItem.ApproachHeight.ToString(), 300)
@@ -115,11 +115,11 @@ namespace Tools
             BinPos.Add(
                      new XAttribute(PosItem.Name.ToString(), TeachPos.Bin.ToString()),
                      new XAttribute(PosItem.XPos.ToString(), 366),
-                     new XAttribute(PosItem.YPos.ToString(), 150),
-                     new XAttribute(PosItem.ZPos.ToString(), 600),
+                     new XAttribute(PosItem.YPos.ToString(), 30),
+                     new XAttribute(PosItem.ZPos.ToString(), 470),
                      new XAttribute(PosItem.RPos.ToString(), defaultRPos),
                      new XAttribute(PosItem.APos.ToString(), defaultAPos),
-                     new XAttribute(PosItem.ApproachHeight.ToString(), 600)
+                     new XAttribute(PosItem.ApproachHeight.ToString(), 480)
                      );
 
             XElement ConveyorRight = new XElement(PosItem.Pos.ToString());

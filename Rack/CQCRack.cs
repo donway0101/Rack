@@ -69,25 +69,49 @@ namespace Rack
         public void Test()
         {
             //PickAndLoad();
-            LoadGold();
+            //LoadGold();
+            //UnloadAndBin();
+            TestRun();
         }
 
         private void LoadGold()
         {
             Task.Run(() =>
             {
-                //DemoMoveToTarget(Motion.Gold1);
-                //DemoMoveToTarget(Motion.Holder1);
-                //DemoMoveToTarget(Motion.Gold2);
-                //DemoMoveToTarget(Motion.Holder2);
-                //DemoMoveToTarget(Motion.Gold3);
-                //DemoMoveToTarget(Motion.Holder3);
-                //DemoMoveToTarget(Motion.Gold4);
-                //DemoMoveToTarget(Motion.Holder4);
-                //DemoMoveToTarget(Motion.Gold5);
-                //DemoMoveToTarget(Motion.Holder5);
+                DemoMoveToTarget(Motion.Gold1);
+                DemoMoveToTarget(Motion.Holder1);
+                DemoMoveToTarget(Motion.Gold2);
+                DemoMoveToTarget(Motion.Holder2);
+                DemoMoveToTarget(Motion.Gold3);
+                DemoMoveToTarget(Motion.Holder3);
+                DemoMoveToTarget(Motion.Gold4);
+                DemoMoveToTarget(Motion.Holder4);
+                DemoMoveToTarget(Motion.Gold5);
+                DemoMoveToTarget(Motion.Holder5);
                 DemoMoveToTarget(Motion.Gold1);
                 DemoMoveToTarget(Motion.Holder6);
+                DemoMoveToTarget(Motion.HomePosition);
+            });
+        }
+
+        private void UnloadAndBin()
+        {
+            Task.Run(() =>
+            {
+                SetSpeed(20);
+                DemoMoveToTarget(Motion.Holder1);
+                DemoMoveToTarget(Motion.BinPosition);
+                DemoMoveToTarget(Motion.Holder2);
+                DemoMoveToTarget(Motion.BinPosition);
+                DemoMoveToTarget(Motion.Holder3);
+                DemoMoveToTarget(Motion.BinPosition);
+                DemoMoveToTarget(Motion.Holder4);
+                DemoMoveToTarget(Motion.BinPosition);
+                DemoMoveToTarget(Motion.Holder5);
+                DemoMoveToTarget(Motion.BinPosition);
+                DemoMoveToTarget(Motion.Holder6);
+                DemoMoveToTarget(Motion.BinPosition);
+                DemoMoveToTarget(Motion.HomePosition);
             });
         }
 
@@ -108,6 +132,27 @@ namespace Rack
                 DemoMoveToTarget(Motion.PickPosition);
                 DemoMoveToTarget(Motion.Holder6);
                 DemoMoveToTarget(Motion.PickPosition);
+                DemoMoveToTarget(Motion.HomePosition);
+            });
+        }
+
+        private void TestRun()
+        {
+            Task.Run(() =>
+            {
+                SetSpeed(20);
+                Exchange(Motion.PickPosition, Gripper.One);
+                Exchange(Motion.Holder1, Gripper.Two);
+                Exchange(Motion.PickPosition, Gripper.One);
+                Exchange(Motion.Holder2, Gripper.Two);
+                Exchange(Motion.PickPosition, Gripper.One);
+                Exchange(Motion.Holder3, Gripper.Two);
+                Exchange(Motion.PickPosition, Gripper.One);
+                Exchange(Motion.Holder4, Gripper.Two);
+                Exchange(Motion.PickPosition, Gripper.One);
+                Exchange(Motion.Holder5, Gripper.Two);
+                Exchange(Motion.PickPosition, Gripper.One);
+                Exchange(Motion.Holder6, Gripper.Two);
             });
         }
 
@@ -151,7 +196,7 @@ namespace Rack
             {
                 TargetPosition currentHolder = null;
                 double tolerance = 50;
-                foreach (var pos in Motion.Holders)
+                foreach (var pos in Motion.Locations)
                 {
                     if (Math.Abs(CurrentPosition.XPos - pos.XPos) < tolerance &
                         Math.Abs(CurrentPosition.YPos - pos.YPos) < tolerance &
@@ -173,7 +218,7 @@ namespace Rack
                 }
                 else
                 {
-                    throw new Exception("Y motor is at unknown position, please home robot manually.");
+                    throw new Exception("Gripper is in unknown conveyor area, please home Y and manually then retry.");
                 }
             }
             else //Robot in box zone.
@@ -185,7 +230,7 @@ namespace Rack
 
                     TargetPosition currentHolder = null;
                     double tolerance = 50;
-                    foreach (var pos in Motion.Holders)
+                    foreach (var pos in Motion.Locations)
                     {
                         if (Math.Abs(CurrentPosition.XPos - pos.XPos) < tolerance &
                             Math.Abs(CurrentPosition.YPos - pos.YPos) < tolerance &
@@ -207,7 +252,7 @@ namespace Rack
                     }
                     else
                     {
-                        throw new Exception("Y motor is at unknown position, please home robot manually.");
+                        throw new Exception("Gripper is in unknown box, please home Y and manually then retry.");
                     }
                 }
                 else
@@ -225,7 +270,7 @@ namespace Rack
                     }
                     else
                     {
-                        throw new Exception("Y motor is at unknown position, please home robot manually.");
+                        throw new Exception("Gripper is in unknown position, please home Y and manually then retry.");
                     }
                 }
             }
@@ -264,6 +309,28 @@ namespace Rack
             Motion.ToPointWaitTillEnd(Motion.MotorY, Motion.PickPosition.YPos);
         }
 
+        private void Exchange(TargetPosition target, Gripper gripper)
+        {
+            MoveToTargetPosition(gripper, target);
+            Motion.ToPointWaitTillEnd(Motion.MotorZ, target.ApproachHeight);
+            SwitchGripper(target, gripper);
+            Motion.ToPointWaitTillEnd(Motion.MotorZ, target.ZPos);
+            Motion.ToPointWaitTillEnd(Motion.MotorZ, target.ApproachHeight);
+            Motion.ToPointWaitTillEnd(Motion.MotorY, Motion.PickPosition.YPos);
+        }
+
+        private void SwitchGripper(TargetPosition target, Gripper gripper)
+        {
+            if (gripper == Gripper.One)
+            {
+                Motion.ToPointWaitTillEnd(Motion.MotorR, -target.RPos);
+            }
+            else
+            {
+                Motion.ToPointWaitTillEnd(Motion.MotorR, target.RPos);
+            }
+        }
+
         public void Place(Gripper gripper)
         {
             //After place, conveyor can reload.
@@ -295,6 +362,12 @@ namespace Rack
             //    throw new Exception("Robot is not home complete");
             //}
 
+            //Todo
+            //if (target.Id==Location.Bin && door is opened, then that's not cool )
+            {
+
+            }
+
             if (SetupComplete == false)
             {
                 throw new Exception("Robot is not SetupComplete");
@@ -325,17 +398,17 @@ namespace Rack
                                       
                     Motion.WaitTillEndX();
                     Motion.WaitTillEnd(Motion.MotorR);
-                    if (zMoveAfterXEnd == true & target.Id>7) //Holder id <= 6, only for gold phone.
-                    {
-                        Motion.ToPointWaitTillEnd(Motion.MotorY, target.YPos);
-                        Motion.BreakToPointWaitTillEnd(Motion.MotorZ, target.ZPos);
-                    }
-                    else //For shield boxes.
-                    {
+                    //if (zMoveAfterXEnd == true & (int)target.Id>7) //Holder id <= 6, only for gold phone.
+                    //{
+                    //    Motion.ToPointWaitTillEnd(Motion.MotorY, target.YPos);
+                    //    Motion.BreakToPointWaitTillEnd(Motion.MotorZ, target.ZPos);
+                    //}
+                    //else //For shield boxes.
+                    //{
                         Motion.WaitTillEnd(Motion.MotorZ);
                         Motion.ToPointWaitTillEnd(Motion.MotorY, target.YPos);
                         Motion.ToPointWaitTillEnd(Motion.MotorZ, target.ZPos);
-                    }
+                    //}
                 }
                 else 
                 {
@@ -454,17 +527,17 @@ namespace Rack
 
                             Motion.WaitTillEndX();
                             Motion.WaitTillEnd(Motion.MotorR);
-                            if (zMoveAfterXEnd == true & target.Id > 7) //Holder id <= 6, only for gold phone.
-                            {
-                                Motion.ToPointWaitTillEnd(Motion.MotorY, target.YPos);
-                                Motion.BreakToPointWaitTillEnd(Motion.MotorZ, target.ZPos);
-                            }
-                            else //For shield boxes.
-                            {
+                            //if (zMoveAfterXEnd == true & (int)target.Id > 7) //Holder id <= 6, only for gold phone.
+                            //{
+                            //    Motion.ToPointWaitTillEnd(Motion.MotorY, target.YPos);
+                            //    Motion.BreakToPointWaitTillEnd(Motion.MotorZ, target.ZPos);
+                            //}
+                            //else //For shield boxes.
+                            //{
                                 Motion.WaitTillEnd(Motion.MotorZ);
                                 Motion.ToPointWaitTillEnd(Motion.MotorY, target.YPos);
                                 Motion.ToPointWaitTillEnd(Motion.MotorZ, target.ZPos);
-                            }
+                            //}
                         }
                         else //To top.
                         {
@@ -566,17 +639,17 @@ namespace Rack
 
                             Motion.WaitTillEndX();
                             Motion.WaitTillEnd(Motion.MotorR);
-                            if (zMoveAfterXEnd == true & target.Id > 7) //Holder id <= 6, only for gold phone.
-                            {
-                                Motion.ToPointWaitTillEnd(Motion.MotorY, target.YPos);
-                                Motion.BreakToPointWaitTillEnd(Motion.MotorZ, target.ZPos);
-                            }
-                            else //For shield boxes.
-                            {
+                            //if (zMoveAfterXEnd == true & (int)target.Id > 7) //Holder id <= 6, only for gold phone.
+                            //{
+                            //    Motion.ToPointWaitTillEnd(Motion.MotorY, target.YPos);
+                            //    Motion.BreakToPointWaitTillEnd(Motion.MotorZ, target.ZPos);
+                            //}
+                            //else //For shield boxes.
+                            //{
                                 Motion.WaitTillEnd(Motion.MotorZ);
                                 Motion.ToPointWaitTillEnd(Motion.MotorY, target.YPos);
                                 Motion.ToPointWaitTillEnd(Motion.MotorZ, target.ZPos);
-                            }
+                            //}
                         }
                         else //To top.
                         {
