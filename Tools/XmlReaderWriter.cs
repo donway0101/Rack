@@ -213,60 +213,68 @@ namespace Tools
                      );
             #endregion
 
+            double baseXPos = 1330;
+            double incXpos = 130;
+            double GoldYPos = 0;
+            double goldApproach = 30;
+            double goldZPos = 20;
+            double goldRPos = 26;
+            double goldAPos = 0;
+
             #region GoldenPhone
             XElement Gold1 = new XElement(PosItem.Pos.ToString());
             Gold1.Add(
                      new XAttribute(PosItem.Name.ToString(), TeachPos.Gold1.ToString()),
-                     new XAttribute(PosItem.XPos.ToString(), defaultXPos),
-                     new XAttribute(PosItem.YPos.ToString(), defaultYPos),
-                     new XAttribute(PosItem.ZPos.ToString(), defaultZPos),
-                     new XAttribute(PosItem.RPos.ToString(), defaultRPos),
-                     new XAttribute(PosItem.APos.ToString(), defaultAPos),
-                     new XAttribute(PosItem.ApproachHeight.ToString(), defaultApproachHeight)
+                     new XAttribute(PosItem.XPos.ToString(), baseXPos - incXpos*0),
+                     new XAttribute(PosItem.YPos.ToString(), GoldYPos),
+                     new XAttribute(PosItem.ZPos.ToString(), goldZPos),
+                     new XAttribute(PosItem.RPos.ToString(), goldRPos),
+                     new XAttribute(PosItem.APos.ToString(), goldAPos),
+                     new XAttribute(PosItem.ApproachHeight.ToString(), goldApproach)
                      );
 
             XElement Gold2 = new XElement(PosItem.Pos.ToString());
             Gold2.Add(
                      new XAttribute(PosItem.Name.ToString(), TeachPos.Gold2.ToString()),
-                     new XAttribute(PosItem.XPos.ToString(), defaultXPos),
-                     new XAttribute(PosItem.YPos.ToString(), defaultYPos),
-                     new XAttribute(PosItem.ZPos.ToString(), defaultZPos),
-                     new XAttribute(PosItem.RPos.ToString(), defaultRPos),
-                     new XAttribute(PosItem.APos.ToString(), defaultAPos),
-                     new XAttribute(PosItem.ApproachHeight.ToString(), defaultApproachHeight)
+                     new XAttribute(PosItem.XPos.ToString(), baseXPos - incXpos * 1),
+                     new XAttribute(PosItem.YPos.ToString(), GoldYPos),
+                     new XAttribute(PosItem.ZPos.ToString(), goldZPos),
+                     new XAttribute(PosItem.RPos.ToString(), goldRPos),
+                     new XAttribute(PosItem.APos.ToString(), goldAPos),
+                     new XAttribute(PosItem.ApproachHeight.ToString(), goldApproach)
                      );
 
             XElement Gold3 = new XElement(PosItem.Pos.ToString());
             Gold3.Add(
                      new XAttribute(PosItem.Name.ToString(), TeachPos.Gold3.ToString()),
-                     new XAttribute(PosItem.XPos.ToString(), defaultXPos),
-                     new XAttribute(PosItem.YPos.ToString(), defaultYPos),
-                     new XAttribute(PosItem.ZPos.ToString(), defaultZPos),
-                     new XAttribute(PosItem.RPos.ToString(), defaultRPos),
-                     new XAttribute(PosItem.APos.ToString(), defaultAPos),
-                     new XAttribute(PosItem.ApproachHeight.ToString(), defaultApproachHeight)
+                     new XAttribute(PosItem.XPos.ToString(), baseXPos - incXpos * 2),
+                     new XAttribute(PosItem.YPos.ToString(), GoldYPos),
+                     new XAttribute(PosItem.ZPos.ToString(), goldZPos),
+                     new XAttribute(PosItem.RPos.ToString(), goldRPos),
+                     new XAttribute(PosItem.APos.ToString(), goldAPos),
+                     new XAttribute(PosItem.ApproachHeight.ToString(), goldApproach)
                      );
 
             XElement Gold4 = new XElement(PosItem.Pos.ToString());
             Gold4.Add(
                      new XAttribute(PosItem.Name.ToString(), TeachPos.Gold4.ToString()),
-                     new XAttribute(PosItem.XPos.ToString(), defaultXPos),
-                     new XAttribute(PosItem.YPos.ToString(), defaultYPos),
-                     new XAttribute(PosItem.ZPos.ToString(), defaultZPos),
-                     new XAttribute(PosItem.RPos.ToString(), defaultRPos),
-                     new XAttribute(PosItem.APos.ToString(), defaultAPos),
-                     new XAttribute(PosItem.ApproachHeight.ToString(), defaultApproachHeight)
+                     new XAttribute(PosItem.XPos.ToString(), baseXPos - incXpos * 3),
+                     new XAttribute(PosItem.YPos.ToString(), GoldYPos),
+                     new XAttribute(PosItem.ZPos.ToString(), goldZPos),
+                     new XAttribute(PosItem.RPos.ToString(), goldRPos),
+                     new XAttribute(PosItem.APos.ToString(), goldAPos),
+                     new XAttribute(PosItem.ApproachHeight.ToString(), goldApproach)
                      );
 
             XElement Gold5 = new XElement(PosItem.Pos.ToString());
             Gold5.Add(
                      new XAttribute(PosItem.Name.ToString(), TeachPos.Gold5.ToString()),
-                     new XAttribute(PosItem.XPos.ToString(), defaultXPos),
-                     new XAttribute(PosItem.YPos.ToString(), defaultYPos),
-                     new XAttribute(PosItem.ZPos.ToString(), defaultZPos),
-                     new XAttribute(PosItem.RPos.ToString(), defaultRPos),
-                     new XAttribute(PosItem.APos.ToString(), defaultAPos),
-                     new XAttribute(PosItem.ApproachHeight.ToString(), defaultApproachHeight)
+                     new XAttribute(PosItem.XPos.ToString(), baseXPos - incXpos * 4),
+                     new XAttribute(PosItem.YPos.ToString(), GoldYPos),
+                     new XAttribute(PosItem.ZPos.ToString(), goldZPos),
+                     new XAttribute(PosItem.RPos.ToString(), goldRPos),
+                     new XAttribute(PosItem.APos.ToString(), goldAPos),
+                     new XAttribute(PosItem.ApproachHeight.ToString(), goldApproach)
                      ); 
             #endregion
 

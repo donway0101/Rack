@@ -68,10 +68,27 @@ namespace Rack
 
         public void Test()
         {
-            DemoMoveToTarget(Motion.PickPosition);
-            DemoMoveToTarget(Motion.Holder6);
+            //PickAndLoad();
+            LoadGold();
+        }
 
-            PickAndLoad();
+        private void LoadGold()
+        {
+            Task.Run(() =>
+            {
+                //DemoMoveToTarget(Motion.Gold1);
+                //DemoMoveToTarget(Motion.Holder1);
+                //DemoMoveToTarget(Motion.Gold2);
+                //DemoMoveToTarget(Motion.Holder2);
+                //DemoMoveToTarget(Motion.Gold3);
+                //DemoMoveToTarget(Motion.Holder3);
+                //DemoMoveToTarget(Motion.Gold4);
+                //DemoMoveToTarget(Motion.Holder4);
+                //DemoMoveToTarget(Motion.Gold5);
+                //DemoMoveToTarget(Motion.Holder5);
+                DemoMoveToTarget(Motion.Gold1);
+                DemoMoveToTarget(Motion.Holder6);
+            });
         }
 
         private void PickAndLoad()
@@ -329,12 +346,13 @@ namespace Rack
                         //Bottom to top.
                         {
                             Motion.ToPoint(Motion.MotorZ, target.ApproachHeight);
+                            Motion.ToPointX(Motion.ConveyorRightPosition.XPos);
                             if (CurrentPosition.ZPos < Motion.PickPosition.ApproachHeight)
                             {                               
                                 Motion.WaitTillZBiggerThan(Motion.PickPosition.ApproachHeight - 10);
                             }
 
-                            Motion.ToPointX(target.XPos);
+                            Motion.BreakToPointX(target.XPos);
 
                             if (gripper == Gripper.One)
                             {
@@ -358,8 +376,9 @@ namespace Rack
                             //Bottom to bottom.
                             {
                                 Motion.ToPoint(Motion.MotorZ, Motion.PickPosition.ApproachHeight);
+                                Motion.ToPointX(Motion.ConveyorRightPosition.XPos);
                                 Motion.WaitTillZBiggerThan(Motion.PickPosition.ApproachHeight - 10);
-                                Motion.ToPointX(target.XPos);
+                                Motion.BreakToPointX(target.XPos);
 
                                 Motion.WaitTillXSmallerThan(Motion.ConveyorLeftPosition.XPos);
 
@@ -401,9 +420,8 @@ namespace Rack
 
                         Motion.WaitTillEndX();
                         Motion.WaitTillEnd(Motion.MotorR);
-                        Motion.WaitTillEnd(Motion.MotorZ);
                         Motion.ToPointWaitTillEnd(Motion.MotorY, target.YPos);
-                        Motion.ToPointWaitTillEnd(Motion.MotorZ, target.ZPos);
+                        Motion.BreakToPointWaitTillEnd(Motion.MotorZ, target.ZPos);
                     }
                 } 
                 #endregion

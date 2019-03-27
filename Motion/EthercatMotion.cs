@@ -43,6 +43,12 @@ namespace Motion
         public TargetPosition Holder5 { get; set; } = new TargetPosition() { Id = 5 };
         public TargetPosition Holder6 { get; set; } = new TargetPosition() { Id = 6 };
 
+        public TargetPosition Gold1 { get; set; } = new TargetPosition() { Id = 11 };
+        public TargetPosition Gold2 { get; set; } = new TargetPosition() { Id = 12 };
+        public TargetPosition Gold3 { get; set; } = new TargetPosition() { Id = 13 };
+        public TargetPosition Gold4 { get; set; } = new TargetPosition() { Id = 14 };
+        public TargetPosition Gold5 { get; set; } = new TargetPosition() { Id = 15 };
+
         public TargetPosition[] Holders { get; set; }
 
         public EthercatMotion(Api Controller, int axisNum)
@@ -152,6 +158,12 @@ namespace Motion
             LoadPosition(Holder6, TeachPos.Holder6);
 
             Holders = new TargetPosition[6] { Holder1, Holder2, Holder3, Holder4, Holder5, Holder6};
+
+            LoadPosition(Gold1, TeachPos.Gold1);
+            LoadPosition(Gold2, TeachPos.Gold2);
+            LoadPosition(Gold3, TeachPos.Gold3);
+            LoadPosition(Gold4, TeachPos.Gold4);
+            LoadPosition(Gold5, TeachPos.Gold5);
         }
 
         private void LoadPosition(TargetPosition target, TeachPos pos)
