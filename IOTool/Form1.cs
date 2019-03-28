@@ -22,21 +22,20 @@ namespace IOTool
 
         Api ch = new Api();
         EthercatIO IORobot;
-        EthercatIO IOConveyor;
 
-        private void button1_Click(object sender, EventArgs e)
+
+        private void button1_Click_1(object sender, EventArgs e)
         {
             try
             {
                 ch.OpenCommEthernet("192.168.8.18", 701);
 
-                IORobot = new EthercatIO(ch, 72, 3, 2);
-                IOConveyor = new EthercatIO(ch, 88, 8, 5);
+                IORobot = new EthercatIO(ch, 72, 7, 3);
 
-                //IO.Setup();
-                IORobot.SetOutput(1, 6, false);
+                IORobot.Setup();
+                IORobot.SetOutput(1, 6, true);
                 //bool v = IO.GetInput(2, 6);
-                IORobot.SetOutput(Output.RedLight, true);
+                //IORobot.SetOutput(Output.RedLight, true);
                 ;
             }
             catch (Exception ex)

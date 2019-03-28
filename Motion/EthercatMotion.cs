@@ -61,7 +61,7 @@ namespace Motion
         {
             #region Motor parameters setup
             MotorZ = new Motor(Axis.ACSC_AXIS_0);
-            MotorZ.EcatPosActValAddr = 167; //For Sanyo, axisAddrOffset = 18
+            MotorZ.EcatPosActValAddr = 143; //For Sanyo, axisAddrOffset = 18
             MotorZ.EncCtsPerR = 131072;
             MotorZ.BallScrewLead = 32;
             MotorZ.HomeOffset = 365;
@@ -120,7 +120,7 @@ namespace Motion
 
             //Todo , is two gripper is 60,    MotorR.EncCtsPerR  error?
             MotorR = new Motor(Axis.ACSC_AXIS_4);
-            MotorR.EcatPosActValAddr = 135;
+            MotorR.EcatPosActValAddr = 111;
             MotorR.EncCtsPerR = 10000;
             MotorR.BallScrewLead = 360.0 * 1.0 / 100.0; //Warning: double calculation, need to add .0 to each number.
             MotorR.HomeOffset = -1.9;

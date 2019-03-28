@@ -141,7 +141,7 @@ namespace StepperTool
             do
             {
                 Console.WriteLine("Motor moving");
-                Task<bool> a = stepper.ToPointAsync(Gripper.One, 90, Gripper.Two, 60, 10);
+                Task<bool> a = stepper.ToPointAsync(Gripper.One, 90, Gripper.Two, 90, 10);
                 Console.WriteLine("Doing other job");
                 Thread.Sleep(100);
                 Console.WriteLine("Doing other job");
@@ -178,6 +178,13 @@ namespace StepperTool
         {
             loop = checkBox1.Checked;
 
+        }
+
+        private void button13_Click(object sender, EventArgs e)
+        {
+            int speed = Convert.ToInt16(textBox4.Text);
+            stepper.SetSpeed(Gripper.One, speed);
+            stepper.SetSpeed(Gripper.Two, speed);
         }
     }
 }

@@ -161,19 +161,20 @@ namespace Rack
             Motion.SetSpeed(speed);
             if (GripperIsOnline==true)
             {
-                Steppers.SetVelocity(Gripper.One, speed * 360 / 1000);
-                Steppers.SetVelocity(Gripper.One, speed * 360 / 1000); 
+                int stepperSpeed = Convert.ToInt16(speed / 20.0);
+                stepperSpeed++;
+                if (stepperSpeed>30)
+                {
+                    stepperSpeed = 30;
+                }
+                Steppers.SetSpeed(Gripper.One, stepperSpeed);
+                Steppers.SetSpeed(Gripper.One, stepperSpeed); 
             }
         }
 
         public void SetSpeedImm(double speed)
         {
             Motion.SetSpeedImm(speed);
-            if (GripperIsOnline == true)
-            {
-                Steppers.SetVelocity(Gripper.One, speed * 360 / 1000);
-                Steppers.SetVelocity(Gripper.One, speed * 360 / 1000);
-            }
         }
 
         public void HomeRobot(double homeSpeed = 20)
@@ -194,32 +195,55 @@ namespace Rack
             if (CurrentPosition.XPos < Motion.ConveyorRightPosition.XPos &
                 CurrentPosition.XPos > Motion.ConveyorLeftPosition.XPos) //Robot is in conveyor zone.
             {
-                TargetPosition currentHolder = null;
-                double tolerance = 50;
-                foreach (var pos in Motion.Locations)
+                if (CurrentPosition.YPos > YIsInBox) //Y is dangerous
                 {
-                    if (Math.Abs(CurrentPosition.XPos - pos.XPos) < tolerance &
-                        Math.Abs(CurrentPosition.YPos - pos.YPos) < tolerance &
-                        (CurrentPosition.ZPos > pos.ZPos - tolerance & CurrentPosition.ZPos < pos.ApproachHeight + tolerance))
+                    TargetPosition currentHolder = null;
+                    double tolerance = 50;
+                    foreach (var pos in Motion.Locations)
                     {
-                        currentHolder = pos;
+                        if (Math.Abs(CurrentPosition.XPos - pos.XPos) < tolerance &
+                            Math.Abs(CurrentPosition.YPos - pos.YPos) < tolerance &
+                            (CurrentPosition.ZPos > pos.ZPos - tolerance & CurrentPosition.ZPos < pos.ApproachHeight + tolerance))
+                        {
+                            currentHolder = pos;
+                        }
                     }
-                }
 
-                if (currentHolder != null)
-                {
-                    Motion.ToPointWaitTillEnd(Motion.MotorZ, currentHolder.ApproachHeight);
-                    Motion.ToPointWaitTillEnd(Motion.MotorR, currentHolder.RPos);
-                    Motion.ToPointWaitTillEnd(Motion.MotorY, Motion.HomePosition.YPos);
-                    Motion.ToPointWaitTillEnd(Motion.MotorZ, Motion.HomePosition.ZPos);
-                    Motion.ToPointXWaitTillEnd(Motion.HomePosition.XPos);
-                    Motion.ToPointWaitTillEnd(Motion.MotorR, Motion.HomePosition.RPos);
-                    HomeGrippers();
+                    if (currentHolder != null)
+                    {
+                        Motion.ToPointWaitTillEnd(Motion.MotorZ, currentHolder.ApproachHeight);
+                        Motion.ToPointWaitTillEnd(Motion.MotorR, currentHolder.RPos);
+                        Motion.ToPointWaitTillEnd(Motion.MotorY, Motion.HomePosition.YPos);
+                        Motion.ToPointWaitTillEnd(Motion.MotorZ, Motion.HomePosition.ZPos);
+                        Motion.ToPointXWaitTillEnd(Motion.HomePosition.XPos);
+                        Motion.ToPointWaitTillEnd(Motion.MotorR, Motion.HomePosition.RPos);
+                        HomeGrippers();
+                    }
+                    else
+                    {
+                        throw new Exception("Gripper is in unknown conveyor area, please home Y and manually then retry.");
+                    }
                 }
                 else
                 {
-                    throw new Exception("Gripper is in unknown conveyor area, please home Y and manually then retry.");
+                    if (CurrentPosition.YPos < YIsNearHome)
+                    {
+
+                        Motion.ToPointWaitTillEnd(Motion.MotorY, Motion.HomePosition.YPos);
+                        Motion.ToPointWaitTillEnd(Motion.MotorZ, Motion.HomePosition.ZPos);
+                        Motion.ToPointXWaitTillEnd(Motion.HomePosition.XPos);
+                        Motion.ToPointWaitTillEnd(Motion.MotorR, Motion.HomePosition.RPos);
+
+                        //Disable one of the motor.
+                        HomeGrippers();
+                    }
+                    else
+                    {
+                        throw new Exception("Gripper is in unknown position, please home Y and manually then retry.");
+                    }
                 }
+
+                
             }
             else //Robot in box zone.
             {

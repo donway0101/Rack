@@ -45,7 +45,7 @@ namespace GripperStepper
         /// <summary>
         /// 3600 counts electric pulse = 1 round
         /// </summary>
-        private double ElectronicGearing = 3600;
+        private double ElectronicGearing = 3600.0;
 
         /// <summary>
         /// Load is driven by gear and belt.
@@ -55,7 +55,7 @@ namespace GripperStepper
         /// <summary>
         /// Motor counts per degree, including transimission factor.
         /// </summary>
-        private double CountPerDegree = 0;
+        private double CountPerDegree = 0.0;
         #endregion
 
         public bool StepperOneIsConnected { get; set; }
@@ -71,7 +71,7 @@ namespace GripperStepper
         public Stepper(string portName)
         {
             PortName = portName;
-            CountPerDegree = ElectronicGearing * GearRatio / 360;
+            CountPerDegree = ElectronicGearing * GearRatio / 360.0;
         }
 
         /// <summary>
@@ -325,8 +325,10 @@ namespace GripperStepper
         /// Must has the right sensor for homing.
         /// </summary>
         /// <param name="motor"></param>
-        public void HomeMotor(Gripper motor, double homeOffset)
+        public void HomeMotor(Gripper motor, double homeOffset, int defaultSpeed=10)
         {
+            SetSpeed(motor, 1);
+
             if (GetStatus(motor, StatusCode.Enabled) == false)
             {
                 throw new Exception("Motor is not enabled");
@@ -362,6 +364,9 @@ namespace GripperStepper
             {
                 throw new Exception("Drive is NOT acknowledged");
             }
+
+
+            SetSpeed(motor, defaultSpeed);
         }
 
         /// <summary>
@@ -514,18 +519,23 @@ namespace GripperStepper
         /// </summary>
         /// <param name="motor"></param>
         /// <param name="acceleration"> degree / sec / sec </param>
-        public void SetAcceleration(Gripper motor, double acceleration)
+        public void SetAcceleration(Gripper motor, int acceleration = 30)
         {
             // rev / sec / sec
-            double acc = GearRatio * acceleration / 360;
-            string accStr = acc.ToString("0.000");
-            string res = SendCommand(motor, "AC" + accStr);
+            //double acc = GearRatio * acceleration / 360.0;
+            //// AC - Acceleration Rate 0.167 to 5461.167 (resolution is 0.167 rps/s)
+            //int times = Convert.ToInt16(acc / 0.167);
+            //times++;
+            //acc = Convert.ToDouble(times) * 0.167;
+
+            //string accStr = acc.ToString("0.000");
+            string res = SendCommand(motor, "AC" + acceleration);
             if (MotorAcknowledged(motor, res) == false)
             {
                 throw new Exception("Drive is NOT acknowledged");
             }
 
-            res = SendCommand(motor, "DE" + accStr);
+            res = SendCommand(motor, "DE" + acceleration);
             if (MotorAcknowledged(motor, res) == false)
             {
                 throw new Exception("Drive is NOT acknowledged");
@@ -536,16 +546,28 @@ namespace GripperStepper
         /// Set speed of motor.
         /// </summary>
         /// <param name="motor"></param>
-        /// <param name="velocity">degree / sec</param>
-        public void SetVelocity(Gripper motor, double velocity)
+        /// <param name="velocity">rps</param>
+        public void SetVelocity(Gripper motor, int velocity = 30)
         {
-            double vel = GearRatio * velocity / 360;
-            string velStr = vel.ToString("0.0000");
-            string res = SendCommand(motor, "VE" + velStr);
+            //double vel = GearRatio * velocity / 360.0;
+
+            // ST-Q/Si, ST-S , STM, STAC5: 0.0042 - 80.0000 (resolution is 0.0042)
+            //int times = Convert.ToInt16(vel / 0.0042);
+            //times++;
+            //vel = Convert.ToDouble(times) * 0.0042;
+            //string velStr = vel.ToString("0.0000");
+
+            string res = SendCommand(motor, "VE" + velocity);
             if (MotorAcknowledged(motor, res) == false)
             {
                 throw new Exception("Drive is NOT acknowledged");
             }
+        }
+
+        public void SetSpeed(Gripper motor, int speed = 30)
+        {
+            SetVelocity(motor, speed);
+            SetAcceleration(motor, speed);
         }
 
         /// <summary>

@@ -25,6 +25,7 @@ namespace RackTool
             try
             {
                 Rack.Start();
+                button2.Enabled = true;
             }
             catch (Exception ex)
             {
@@ -41,6 +42,9 @@ namespace RackTool
             try
             {
                 Rack.HomeRobot();
+                button3.Enabled = true;
+                button2.Enabled = false;
+                button1.Enabled = false;
                 //Rack.Test();
             }
             catch (Exception ex)
@@ -52,15 +56,22 @@ namespace RackTool
         //Test
         private void button3_Click(object sender, EventArgs e)
         {
-            try
-            {
-                Rack.Test();
-            }
-            catch (Exception ex)
-            {
+            button3.Enabled = false;
+            Task.Run(()=> {
+                do
+                {
+                    try
+                    {
+                        Rack.Test();
+                    }
+                    catch (Exception ex)
+                    {
 
-                MessageBox.Show(ex.Message);
-            }
+                        MessageBox.Show(ex.Message);
+                    }
+                } while (testLoop);
+          
+            });
         }
 
         private void button5_Click(object sender, EventArgs e)
@@ -79,6 +90,19 @@ namespace RackTool
         private void button4_Click(object sender, EventArgs e)
         {
             XmlReaderWriter.CreateStorageFile("RackData.xml");
+        }
+
+        bool testLoop = true;
+        private void checkBox1_CheckedChanged(object sender, EventArgs e)
+        {
+            testLoop = checkBox1.Enabled;
+            button3.Enabled = true;
+        }
+
+        private void trackBar1_Scroll(object sender, EventArgs e)
+        {
+            label1.Text = trackBar1.Value.ToString();
+            Rack.SetSpeedImm(Convert.ToDouble(trackBar1.Value));            
         }
     }
 }

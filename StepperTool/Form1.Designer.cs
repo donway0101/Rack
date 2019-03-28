@@ -42,9 +42,10 @@
             this.button11 = new System.Windows.Forms.Button();
             this.textBox2 = new System.Windows.Forms.TextBox();
             this.button12 = new System.Windows.Forms.Button();
-            this.button13 = new System.Windows.Forms.Button();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.label1 = new System.Windows.Forms.Label();
+            this.button13 = new System.Windows.Forms.Button();
+            this.textBox4 = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // button1
@@ -183,19 +184,10 @@
             this.button12.UseVisualStyleBackColor = true;
             this.button12.Click += new System.EventHandler(this.button12_Click);
             // 
-            // button13
-            // 
-            this.button13.Location = new System.Drawing.Point(161, 392);
-            this.button13.Name = "button13";
-            this.button13.Size = new System.Drawing.Size(90, 33);
-            this.button13.TabIndex = 14;
-            this.button13.Text = "StopAsync";
-            this.button13.UseVisualStyleBackColor = true;
-            // 
             // checkBox1
             // 
             this.checkBox1.AutoSize = true;
-            this.checkBox1.Location = new System.Drawing.Point(287, 406);
+            this.checkBox1.Location = new System.Drawing.Point(161, 406);
             this.checkBox1.Name = "checkBox1";
             this.checkBox1.Size = new System.Drawing.Size(61, 19);
             this.checkBox1.TabIndex = 15;
@@ -212,14 +204,33 @@
             this.label1.TabIndex = 16;
             this.label1.Text = "label1";
             // 
+            // button13
+            // 
+            this.button13.Location = new System.Drawing.Point(322, 77);
+            this.button13.Name = "button13";
+            this.button13.Size = new System.Drawing.Size(90, 33);
+            this.button13.TabIndex = 17;
+            this.button13.Text = "SetSpeed";
+            this.button13.UseVisualStyleBackColor = true;
+            this.button13.Click += new System.EventHandler(this.button13_Click);
+            // 
+            // textBox4
+            // 
+            this.textBox4.Location = new System.Drawing.Point(437, 83);
+            this.textBox4.Name = "textBox4";
+            this.textBox4.Size = new System.Drawing.Size(100, 25);
+            this.textBox4.TabIndex = 19;
+            this.textBox4.Text = "10";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(888, 554);
+            this.Controls.Add(this.textBox4);
+            this.Controls.Add(this.button13);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.checkBox1);
-            this.Controls.Add(this.button13);
             this.Controls.Add(this.button12);
             this.Controls.Add(this.button11);
             this.Controls.Add(this.textBox2);
@@ -257,9 +268,10 @@
         private System.Windows.Forms.Button button11;
         private System.Windows.Forms.TextBox textBox2;
         private System.Windows.Forms.Button button12;
-        private System.Windows.Forms.Button button13;
         private System.Windows.Forms.CheckBox checkBox1;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Button button13;
+        private System.Windows.Forms.TextBox textBox4;
     }
 }
 
