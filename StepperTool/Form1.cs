@@ -40,7 +40,19 @@ namespace StepperTool
         {
             try
             {
-                stepper.HomeMotor(Gripper.One, 0);
+                stepper.HomeMotor(Gripper.One, -6);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private void button3_Click_1(object sender, EventArgs e)
+        {
+            try
+            {
+                stepper.HomeMotor(Gripper.Two, -2);
             }
             catch (Exception ex)
             {
@@ -72,17 +84,7 @@ namespace StepperTool
             }
         }
 
-        private void button3_Click_1(object sender, EventArgs e)
-        {
-            try
-            {
-                stepper.HomeMotor(Gripper.Two, 0);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-        }
+
 
         private void button4_Click_1(object sender, EventArgs e)
         {
@@ -136,7 +138,7 @@ namespace StepperTool
         private async void button12_Click(object sender, EventArgs e)
         {
             button12.Enabled = false;
-            while (loop)
+            do
             {
                 Console.WriteLine("Motor moving");
                 Task<bool> a = stepper.ToPointAsync(Gripper.One, 90, Gripper.Two, 60, 10);
@@ -165,6 +167,9 @@ namespace StepperTool
                 }
                 label1.Text = successTimes + " of " + testTimes + " success";
             }
+            while (loop);
+
+
             button12.Enabled = true;
         }
 

@@ -323,7 +323,7 @@ namespace Rack
         {
             if (gripper == Gripper.One)
             {
-                Motion.ToPointWaitTillEnd(Motion.MotorR, -target.RPos);
+                Motion.ToPointWaitTillEnd(Motion.MotorR, target.RPos-60);
             }
             else
             {
@@ -393,7 +393,7 @@ namespace Rack
                     }
                     else
                     {
-                        Motion.ToPoint(Motion.MotorR, -target.RPos);
+                        Motion.ToPoint(Motion.MotorR, target.RPos-60);
                     }
                                       
                     Motion.WaitTillEndX();
@@ -433,7 +433,7 @@ namespace Rack
                             }
                             else
                             {
-                                Motion.ToPoint(Motion.MotorR, -target.RPos);
+                                Motion.ToPoint(Motion.MotorR, target.RPos-60);
                             }
 
                             Motion.WaitTillEndX();
@@ -488,7 +488,7 @@ namespace Rack
                         }
                         else
                         {
-                            Motion.ToPoint(Motion.MotorR, -target.RPos);
+                            Motion.ToPoint(Motion.MotorR, target.RPos-60);
                         }
 
                         Motion.WaitTillEndX();
@@ -518,7 +518,7 @@ namespace Rack
                             }
                             else
                             {
-                                Motion.ToPoint(Motion.MotorR, -target.RPos);
+                                Motion.ToPoint(Motion.MotorR, target.RPos-60);
                             }
 
                             Motion.WaitTillXBiggerThan(Motion.ConveyorRightPosition.XPos);
@@ -555,7 +555,7 @@ namespace Rack
                             }
                             else
                             {
-                                Motion.ToPoint(Motion.MotorR, -target.RPos);
+                                Motion.ToPoint(Motion.MotorR, target.RPos-60);
                             }
 
                             Motion.WaitTillEndX();
@@ -576,7 +576,7 @@ namespace Rack
                             }
                             else
                             {
-                                Motion.ToPoint(Motion.MotorR, -target.RPos);
+                                Motion.ToPoint(Motion.MotorR, target.RPos-60);
                             }
                             Motion.ToPoint(Motion.MotorZ, target.ApproachHeight);
                             Motion.WaitTillEndX();
@@ -601,7 +601,7 @@ namespace Rack
                             }
                             else
                             {
-                                Motion.ToPoint(Motion.MotorR, -target.RPos);
+                                Motion.ToPoint(Motion.MotorR, target.RPos-60);
                             }
 
                             Motion.WaitTillEndX();
@@ -630,7 +630,7 @@ namespace Rack
                             }
                             else
                             {
-                                Motion.ToPoint(Motion.MotorR, -target.RPos);
+                                Motion.ToPoint(Motion.MotorR, target.RPos-60);
                             }
 
                             Motion.WaitTillXBiggerThan(Motion.ConveyorRightPosition.XPos);
@@ -660,7 +660,7 @@ namespace Rack
                             }
                             else
                             {
-                                Motion.ToPoint(Motion.MotorR, -target.RPos);
+                                Motion.ToPoint(Motion.MotorR, target.RPos-60);
                             }
                             Motion.ToPoint(Motion.MotorZ, target.ApproachHeight);
                             Motion.WaitTillEndX();
@@ -686,7 +686,7 @@ namespace Rack
                                 }
                                 else
                                 {
-                                    Motion.ToPoint(Motion.MotorR, -target.RPos);
+                                    Motion.ToPoint(Motion.MotorR, target.RPos-60);
                                 }
 
                                 Motion.WaitTillXSmallerThan(Motion.ConveyorLeftPosition.XPos);
@@ -708,7 +708,7 @@ namespace Rack
                                 }
                                 else
                                 {
-                                    Motion.ToPoint(Motion.MotorR, -target.RPos);
+                                    Motion.ToPoint(Motion.MotorR, target.RPos-60);
                                 }
                                 Motion.ToPoint(Motion.MotorZ, target.ApproachHeight);
                                 Motion.WaitTillEndX();
@@ -727,7 +727,7 @@ namespace Rack
                             }
                             else
                             {
-                                Motion.ToPoint(Motion.MotorR, -target.RPos);
+                                Motion.ToPoint(Motion.MotorR, target.RPos-60);
                             }
                             Motion.ToPoint(Motion.MotorZ, target.ApproachHeight);
                             Motion.WaitTillEndX();

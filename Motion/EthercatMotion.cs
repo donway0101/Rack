@@ -122,7 +122,7 @@ namespace Motion
             MotorR = new Motor(Axis.ACSC_AXIS_4);
             MotorR.EcatPosActValAddr = 135;
             MotorR.EncCtsPerR = 10000;
-            MotorR.BallScrewLead = 360 * 1 / 100;
+            MotorR.BallScrewLead = 360.0 * 1.0 / 100.0; //Warning: double calculation, need to add .0 to each number.
             MotorR.HomeOffset = -1.9;
             MotorR.CriticalErrAcc = 100;
             MotorR.CriticalErrVel = 100;

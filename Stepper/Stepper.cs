@@ -267,11 +267,26 @@ namespace GripperStepper
         /// <param name="motor"></param>
         public void Enable(Gripper motor)
         {
+            if (GetStatus(motor, StatusCode.Enabled) == true)
+            {
+                return;
+            }
+
+            if (GetStatus(motor, StatusCode.Alarm)==true)
+            {
+                ResetAlarm(motor);
+            }
+
             string res = SendCommand(motor, "ME");
 
             if (MotorAcknowledged(motor, res) != true) 
             {
-                throw new Exception("Drive is NOT enabled");
+                throw new Exception("Drive is NOT acknowledged");
+            }
+
+            if (GetStatus(motor, StatusCode.Enabled) == false)
+            {
+                throw new Exception("Motor can not be enabled");
             }
         }
 
@@ -298,6 +313,11 @@ namespace GripperStepper
             {
                 throw new Exception("Drive is NOT disabled");
             }
+
+            if (GetStatus(motor, StatusCode.Enabled) == true)
+            {
+                throw new Exception("Motor is not disabled");
+            }
         }
 
         /// <summary>
@@ -309,7 +329,7 @@ namespace GripperStepper
         {
             if (GetStatus(motor, StatusCode.Enabled) == false)
             {
-                throw new Exception("Motor is not ready");
+                throw new Exception("Motor is not enabled");
             }
 
             if (GetInput(motor, Input.X1) == false)
@@ -322,7 +342,7 @@ namespace GripperStepper
             string res = SendCommand(motor, "SH1H");
             if (MotorAcknowledged(motor, res) == false)
             {
-                throw new Exception("Drive is NOT acknowledged");
+                throw new Exception("Drive is NOT acknowledged of home search command SH1H");
             }
 
             Thread.Sleep(50);
@@ -544,7 +564,7 @@ namespace GripperStepper
 
             if (GetStatus(motor, StatusCode.Alarm) == true)
             {
-                throw new Exception("Drive is still alarmed");
+                throw new Exception("Drive's alarm can not be reset");
             }
 
             res = SendCommand(motor, "ME");
