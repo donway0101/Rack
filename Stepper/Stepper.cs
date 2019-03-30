@@ -55,7 +55,7 @@ namespace GripperStepper
         /// <summary>
         /// Motor counts per degree, including transimission factor.
         /// </summary>
-        private double CountPerDegree = 0.0;
+        private readonly double _countPerDegree = 0.0;
         #endregion
 
         public bool StepperOneIsConnected { get; set; }
@@ -71,29 +71,22 @@ namespace GripperStepper
         public Stepper(string portName)
         {
             PortName = portName;
-            CountPerDegree = ElectronicGearing * GearRatio / 360.0;
+            _countPerDegree = ElectronicGearing * GearRatio / 360.0;
         }
 
         /// <summary>
         /// Open serial port.
         /// </summary>
         public void Setup()
-        {           
-            try
-            {
-                Close();
-                Thread.Sleep(500);
-                SerialPort = new SerialPort(PortName, 9600, Parity.None, 8, StopBits.One);
-                SerialPort.Open();
-                SerialPort.DataReceived += SerialPort_DataReceived;
-                Thread.Sleep(300);
+        {
+            Close();
+            Thread.Sleep(500);
+            SerialPort = new SerialPort(PortName, 9600, Parity.None, 8, StopBits.One);
+            SerialPort.Open();
+            SerialPort.DataReceived += SerialPort_DataReceived;
+            Thread.Sleep(300);
 
-                Connect();
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+            Connect();
         }
 
 
@@ -325,9 +318,9 @@ namespace GripperStepper
         /// Must has the right sensor for homing.
         /// </summary>
         /// <param name="motor"></param>
-        public void HomeMotor(Gripper motor, double homeOffset, int defaultSpeed=10)
+        public void HomeMotor(Gripper motor, double homeOffset, int defaultWorkingSpeed=10)
         {
-            SetSpeed(motor, 1);
+            SetSpeed(motor, 1); //Default homing speed.
 
             if (GetStatus(motor, StatusCode.Enabled) == false)
             {
@@ -366,7 +359,7 @@ namespace GripperStepper
             }
 
 
-            SetSpeed(motor, defaultSpeed);
+            SetSpeed(motor, defaultWorkingSpeed);
         }
 
         /// <summary>
@@ -374,9 +367,9 @@ namespace GripperStepper
         /// </summary>
         /// <param name="motor"></param>
         /// <param name="angle"></param>
-        public void ToPoint(Gripper motor, double angle, int timeout = 10)
+        public void ToPoint(Gripper motor, double angle)
         {
-            int target = Convert.ToInt32(angle * CountPerDegree);
+            int target = Convert.ToInt32(angle * _countPerDegree);
             string res = SendCommand(motor, "FP" + target);
             if (MotorAcknowledged(motor, res) == false)
             {
@@ -384,15 +377,22 @@ namespace GripperStepper
             }
 
             Thread.Sleep(50);
-            WaitMotionEnd(motor, timeout);
-
-            double currentPos = GetPosition(motor);
-            if (Math.Abs(currentPos - angle) > 0.5)
-            {
-                throw new Exception("Position error is bigger than 0.5 degree.");
-            }
         }
-      
+
+        public void ToPointWaitTillEnd(Gripper motor, double angle)
+        {
+            int target = Convert.ToInt32(angle * _countPerDegree);
+            string res = SendCommand(motor, "FP" + target);
+            if (MotorAcknowledged(motor, res) == false)
+            {
+                throw new Exception("Drive is NOT acknowledged");
+            }
+
+            Thread.Sleep(50);
+
+            WaitTillEnd(motor, angle);
+        }
+
         public async Task<bool> ToPointAsync(Gripper motor1, double angle1, Gripper motor2, double angle2,
             int timeout = 10)
         {
@@ -400,14 +400,14 @@ namespace GripperStepper
             {
                 try
                 {
-                    int target1 = Convert.ToInt32(angle1 * CountPerDegree);
+                    int target1 = Convert.ToInt32(angle1 * _countPerDegree);
                     string res1 = SendCommand(motor1, "FP" + target1);
                     if (MotorAcknowledged(motor1, res1) == false)
                     {
                         throw new Exception("Drive is NOT acknowledged");
                     }
 
-                    int target2 = Convert.ToInt32(angle2 * CountPerDegree);
+                    int target2 = Convert.ToInt32(angle2 * _countPerDegree);
                     string res2 = SendCommand(motor2, "FP" + target2);
                     if (MotorAcknowledged(motor2, res2) == false)
                     {
@@ -415,8 +415,8 @@ namespace GripperStepper
                     }
 
                     Thread.Sleep(50);
-                    WaitMotionEnd(motor1, timeout);
-                    WaitMotionEnd(motor2, timeout);
+                    WaitTillEnd(motor1, angle1, timeout);
+                    WaitTillEnd(motor2, angle2, timeout);
 
                     double currentPos1 = GetPosition(motor1);
                     if (Math.Abs(currentPos1 - angle1) > 0.5)
@@ -449,7 +449,7 @@ namespace GripperStepper
         {
             double lastPos = GetPosition(motor);
 
-            int target = Convert.ToInt32(angle * CountPerDegree);
+            int target = Convert.ToInt32(angle * _countPerDegree);
             string res = SendCommand(motor, "FL" + target);
             if (MotorAcknowledged(motor, res) == false)
             {
@@ -457,21 +457,40 @@ namespace GripperStepper
             }
 
             Thread.Sleep(50);
-            WaitMotionEnd(motor, timeout);
-
-            double currentPos = GetPosition(motor);
-            if (Math.Abs( currentPos - (lastPos+angle) ) > 0.5)
-            {
-                throw new Exception("Position error is bigger than 0.5 degree.");
-            }           
+            WaitTillEnd(motor, lastPos + angle, timeout);        
         }
 
         /// <summary>
         /// Wait motor get in position.
         /// </summary>
         /// <param name="motor"></param>
+        /// <param name="targetAngle"></param>
         /// <param name="timeout"></param>
-        private void WaitMotionEnd(Gripper motor, int timeout = 10)
+        public void WaitTillEnd(Gripper motor, double targetAngle, int timeout = 10)
+        {
+            Stopwatch stopwatch = new Stopwatch();
+            stopwatch.Start();
+            bool inPos = false;
+            while (inPos == false)
+            {
+                if (stopwatch.ElapsedMilliseconds > timeout * 1000) //Should response within 2 second.
+                {
+                    throw new Exception("Motor in position timeout.");
+                }
+
+                inPos = GetStatus(motor, StatusCode.Inpos);
+
+                Thread.Sleep(20);
+            }
+
+            double currentPos = GetPosition(motor);
+            if (Math.Abs(currentPos - targetAngle) > 0.5)
+            {
+                throw new Exception("Position error is bigger than 0.5 degree.");
+            }
+        }
+
+        public void WaitTillEnd(Gripper motor, int timeout = 10)
         {
             Stopwatch stopwatch = new Stopwatch();
             stopwatch.Start();
@@ -655,7 +674,7 @@ namespace GripperStepper
 
             int pos = Convert.ToInt32(posString);
 
-            return pos / CountPerDegree;
+            return pos / _countPerDegree;
         }
 
     }

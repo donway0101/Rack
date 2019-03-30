@@ -60,77 +60,94 @@ namespace Motion
         public void Setup()
         {
             #region Motor parameters setup
-            MotorZ = new Motor(Axis.ACSC_AXIS_0);
-            MotorZ.EcatPosActValAddr = 143; //For Sanyo, axisAddrOffset = 18
-            MotorZ.EncCtsPerR = 131072;
-            MotorZ.BallScrewLead = 32;
-            MotorZ.HomeOffset = 365;
-            MotorZ.CriticalErrAcc = 100;
-            MotorZ.CriticalErrVel = 100;
-            MotorZ.CriticalErrIdle = 5;
-            MotorZ.SoftLimitNagtive = -10;
-            MotorZ.SoftLimitPositive = 730;
-            MotorZ.SpeedFactor = 0.9;
-            MotorZ.JerkFactor = 16;
 
-            MotorX1 = new Motor(Axis.ACSC_AXIS_1);
-            MotorX1.EcatPosActValAddr = MotorZ.EcatPosActValAddr + 18; //For Sanyo, axisAddrOffset = 18
-            MotorX1.EncCtsPerR = 131072;
-            MotorX1.BallScrewLead = 16;
-            MotorX1.HomeOffset = 793.5;
-            MotorX1.CriticalErrAcc = 100;
-            MotorX1.CriticalErrVel = 100;
-            MotorX1.CriticalErrIdle = 5;
-            MotorX1.SoftLimitNagtive = -5;
-            MotorX1.SoftLimitPositive = 590;
-            MotorX1.SpeedFactor = 0.9;
-            MotorX1.JerkFactor = 16;
+            MotorZ = new Motor(Axis.ACSC_AXIS_0)
+            {
+                EcatPosActValAddr = 145,
+                EncCtsPerR = 131072,
+                BallScrewLead = 32,
+                HomeOffset = 365,
+                CriticalErrAcc = 100,
+                CriticalErrVel = 100,
+                CriticalErrIdle = 5,
+                SoftLimitNagtive = -10,
+                SoftLimitPositive = 730,
+                SpeedFactor = 0.9,
+                JerkFactor = 16
+            };
+            //For Sanyo, axisAddrOffset = 18
+
+            MotorX1 = new Motor(Axis.ACSC_AXIS_1)
+            {
+                EcatPosActValAddr = MotorZ.EcatPosActValAddr + 18,
+                EncCtsPerR = 131072,
+                BallScrewLead = 16,
+                HomeOffset = 793.5,
+                CriticalErrAcc = 100,
+                CriticalErrVel = 100,
+                CriticalErrIdle = 5,
+                SoftLimitNagtive = -5,
+                SoftLimitPositive = 590,
+                SpeedFactor = 0.9,
+                JerkFactor = 16
+            };
+            //For Sanyo, axisAddrOffset = 18
 
             MotorX1.MaxTravel = MotorX1.SoftLimitPositive - 10;
 
-            MotorX2 = new Motor(Axis.ACSC_AXIS_2);
-            MotorX2.EcatPosActValAddr = MotorX1.EcatPosActValAddr + 18; //For Sanyo, axisAddrOffset = 18
-            MotorX2.EncCtsPerR = 131072;
-            MotorX2.BallScrewLead = 16;
-            MotorX2.HomeOffset = 12.7;
-            MotorX2.CriticalErrAcc = 100;
-            MotorX2.CriticalErrVel = 100;
-            MotorX2.CriticalErrIdle = 5;
-            MotorX2.SoftLimitNagtive = -5;
-            MotorX2.SoftLimitPositive = 760;
-            MotorX2.SpeedFactor = 1.0;
-            MotorX2.JerkFactor = 20;
+            MotorX2 = new Motor(Axis.ACSC_AXIS_2)
+            {
+                EcatPosActValAddr = MotorX1.EcatPosActValAddr + 18,
+                EncCtsPerR = 131072,
+                BallScrewLead = 16,
+                HomeOffset = 12.7,
+                CriticalErrAcc = 100,
+                CriticalErrVel = 100,
+                CriticalErrIdle = 5,
+                SoftLimitNagtive = -5,
+                SoftLimitPositive = 760,
+                SpeedFactor = 1.0,
+                JerkFactor = 20
+            };
+            //For Sanyo, axisAddrOffset = 18
 
             MotorX2.MaxTravel = MotorX2.SoftLimitPositive - 10;
 
-            MotorY = new Motor(Axis.ACSC_AXIS_3);
-            MotorY.EcatPosActValAddr = MotorX2.EcatPosActValAddr + 18; //For Sanyo, axisAddrOffset = 18
-            MotorY.EncCtsPerR = 131072;
-            MotorY.BallScrewLead = 16;
-            MotorY.HomeOffset = 12.4;
-            MotorY.CriticalErrAcc = 100;
-            MotorY.CriticalErrVel = 100;
-            MotorY.CriticalErrIdle = 5;
-            MotorY.SoftLimitNagtive = -330;
-            MotorY.SoftLimitPositive = 4;
-            MotorY.SpeedFactor = 0.8;
-            MotorY.JerkFactor = 20;
+            MotorY = new Motor(Axis.ACSC_AXIS_3)
+            {
+                EcatPosActValAddr = MotorX2.EcatPosActValAddr + 18,
+                EncCtsPerR = 131072,
+                BallScrewLead = 16,
+                HomeOffset = 12.4,
+                CriticalErrAcc = 100,
+                CriticalErrVel = 100,
+                CriticalErrIdle = 5,
+                SoftLimitNagtive = -330,
+                SoftLimitPositive = 4,
+                SpeedFactor = 0.8,
+                JerkFactor = 20,
+                Direction = -1
+            };
+            //For Sanyo, axisAddrOffset = 18
 
-            MotorY.Direction = -1;
 
             //Todo , is two gripper is 60,    MotorR.EncCtsPerR  error?
-            MotorR = new Motor(Axis.ACSC_AXIS_4);
-            MotorR.EcatPosActValAddr = 111;
-            MotorR.EncCtsPerR = 10000;
-            MotorR.BallScrewLead = 360.0 * 1.0 / 100.0; //Warning: double calculation, need to add .0 to each number.
-            MotorR.HomeOffset = -1.9;
-            MotorR.CriticalErrAcc = 100;
-            MotorR.CriticalErrVel = 100;
-            MotorR.CriticalErrIdle = 5;
-            MotorR.SoftLimitNagtive = -40;
-            MotorR.SoftLimitPositive = 40;
-            MotorR.SpeedFactor = 0.18;
-            MotorR.JerkFactor = 3.6; 
+            MotorR = new Motor(Axis.ACSC_AXIS_4)
+            {
+                EcatPosActValAddr = 113,
+                EncCtsPerR = 10000,
+                BallScrewLead = 360.0 * 1.0 / 100.0,
+                HomeOffset = -1.9,
+                CriticalErrAcc = 100,
+                CriticalErrVel = 100,
+                CriticalErrIdle = 5,
+                SoftLimitNagtive = -40,
+                SoftLimitPositive = 40,
+                SpeedFactor = 0.18,
+                JerkFactor = 3.6
+            };
+            //Warning: double calculation, need to add .0 to each number.
+
             #endregion
 
             Motors = new Motor[5] { MotorZ, MotorX1, MotorX2, MotorY, MotorR };

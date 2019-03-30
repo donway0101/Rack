@@ -34,17 +34,17 @@ namespace RackTool
             }           
         }
 
-        CQCRack Rack = new CQCRack("192.168.8.18");
+        CqcRack Rack = new CqcRack("192.168.8.18");
 
         private void button2_Click(object sender, EventArgs e)
         {
             
             try
             {
-                Rack.HomeRobot();
-                button3.Enabled = true;
-                button2.Enabled = false;
-                button1.Enabled = false;
+                Task.Run(() => { Rack.HomeRobot();              
+                });
+                //button2.Enabled = false;
+                //button1.Enabled = false;
                 //Rack.Test();
             }
             catch (Exception ex)
@@ -56,22 +56,48 @@ namespace RackTool
         //Test
         private void button3_Click(object sender, EventArgs e)
         {
-            button3.Enabled = false;
-            Task.Run(()=> {
-                do
-                {
-                    try
-                    {
-                        Rack.Test();
-                    }
-                    catch (Exception ex)
-                    {
+            //DialogResult result = MessageBox.Show("是否所有屏蔽箱门都打开了？", "!!!", MessageBoxButtons.YesNo);
+            //if (result == DialogResult.No)
+            //{
+            //    return;
+            //}
 
-                        MessageBox.Show(ex.Message);
-                    }
-                } while (testLoop);
-          
+            Rack.SetSpeed(20);
+
+            ////button3.Enabled = false;
+            //Task.Run(()=> {
+            //    do
+            //    {
+            //        try
+            //        {
+            //            Rack.Test();
+            //        }
+            //        catch (Exception ex)
+            //        {
+
+            //            MessageBox.Show(ex.Message);
+            //        }
+            //    } while (testLoop);
+
+            //});
+
+
+            Task.Run(() =>
+            {
+
+                try
+                {
+                    Rack.Test();
+                }
+                catch (Exception ex)
+                {
+
+                    MessageBox.Show(ex.Message);
+                }
+
+
             });
+
         }
 
         private void button5_Click(object sender, EventArgs e)

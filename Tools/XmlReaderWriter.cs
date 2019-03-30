@@ -107,7 +107,7 @@ namespace Tools
                 new XAttribute(PosItem.YPos.ToString(), 0),
                 new XAttribute(PosItem.ZPos.ToString(), 290),
                 new XAttribute(PosItem.RPos.ToString(), defaultRPos),
-                new XAttribute(PosItem.APos.ToString(), defaultAPos),
+                new XAttribute(PosItem.APos.ToString(), 90),
                 new XAttribute(PosItem.ApproachHeight.ToString(), 300)
                 );
 
