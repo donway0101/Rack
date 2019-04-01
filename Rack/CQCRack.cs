@@ -15,7 +15,7 @@ namespace Rack
     {
         private readonly Api _ch = new Api();
         private EthercatMotion _motion;
-        private Stepper _steppers;
+        private Stepper _gripper;
         private bool _gripperIsOnline = true;
         private readonly string _ip;
 
@@ -42,8 +42,8 @@ namespace Rack
      
             if (_gripperIsOnline)
             {
-                _steppers = new Stepper("COM3");
-                _steppers.Setup();
+                _gripper = new Stepper("COM3");
+                _gripper.Setup();
             }
 
             SetSpeed(10);
@@ -58,94 +58,80 @@ namespace Rack
 
         public void Test()
         {
+            SetSpeed(20);
+
             //PickAndLoad();
             //LoadGold();
             //UnloadAndBin();
             //TestRun();
-            Exchange(_motion.PickPosition, Gripper.One);
-            //Exchange(_motion.Holder1, Gripper.Two);
-        }
+            TestUnloadAndLoadHolders();
 
-        private void LoadGold()
-        {
-            Task.Run(() =>
-            {
-                DemoMoveToTarget(_motion.Gold1);
-                DemoMoveToTarget(_motion.Holder1);
-                DemoMoveToTarget(_motion.Gold2);
-                DemoMoveToTarget(_motion.Holder2);
-                DemoMoveToTarget(_motion.Gold3);
-                DemoMoveToTarget(_motion.Holder3);
-                DemoMoveToTarget(_motion.Gold4);
-                DemoMoveToTarget(_motion.Holder4);
-                DemoMoveToTarget(_motion.Gold5);
-                DemoMoveToTarget(_motion.Holder5);
-                DemoMoveToTarget(_motion.Gold1);
-                DemoMoveToTarget(_motion.Holder6);
-                DemoMoveToTarget(_motion.HomePosition);
-            });
-        }
-
-        private void UnloadAndBin()
-        {
-            Task.Run(() =>
-            {
-                SetSpeed(20);
-                DemoMoveToTarget(_motion.Holder1);
-                DemoMoveToTarget(_motion.BinPosition);
-                DemoMoveToTarget(_motion.Holder2);
-                DemoMoveToTarget(_motion.BinPosition);
-                DemoMoveToTarget(_motion.Holder3);
-                DemoMoveToTarget(_motion.BinPosition);
-                DemoMoveToTarget(_motion.Holder4);
-                DemoMoveToTarget(_motion.BinPosition);
-                DemoMoveToTarget(_motion.Holder5);
-                DemoMoveToTarget(_motion.BinPosition);
-                DemoMoveToTarget(_motion.Holder6);
-                DemoMoveToTarget(_motion.BinPosition);
-                DemoMoveToTarget(_motion.HomePosition);
-            });
-        }
-
-        private void PickAndLoad()
-        {
-            Task.Run(() =>
-            {
-                SetSpeed(20);
-                DemoMoveToTarget(_motion.Holder1);
-                DemoMoveToTarget(_motion.PickPosition);
-                DemoMoveToTarget(_motion.Holder2);
-                DemoMoveToTarget(_motion.PickPosition);
-                DemoMoveToTarget(_motion.Holder3);
-                DemoMoveToTarget(_motion.PickPosition);
-                DemoMoveToTarget(_motion.Holder4);
-                DemoMoveToTarget(_motion.PickPosition);
-                DemoMoveToTarget(_motion.Holder5);
-                DemoMoveToTarget(_motion.PickPosition);
-                DemoMoveToTarget(_motion.Holder6);
-                DemoMoveToTarget(_motion.PickPosition);
-                DemoMoveToTarget(_motion.HomePosition);
-            });
-        }
-
-        private void TestRun()
-        {
             //Task.Run(() =>
             //{
-                //SetSpeed(20);
-                Exchange(_motion.PickPosition, Gripper.One);
-                Exchange(_motion.Holder1, Gripper.Two);
-                Exchange(_motion.PickPosition, Gripper.One);
-                Exchange(_motion.Holder2, Gripper.Two);
-                Exchange(_motion.PickPosition, Gripper.One);
-                Exchange(_motion.Holder3, Gripper.Two);
-                Exchange(_motion.PickPosition, Gripper.One);
-                Exchange(_motion.Holder4, Gripper.Two);
-                Exchange(_motion.PickPosition, Gripper.One);
-                Exchange(_motion.Holder5, Gripper.Two);
-                Exchange(_motion.PickPosition, Gripper.One);
-                Exchange(_motion.Holder6, Gripper.Two);
+            //    Place(Gripper.One);
+            //    Place(Gripper.Two);
             //});
+        }
+
+        private void TestLoadGold()
+        {
+            Task.Run(() =>
+            {
+                Load(Gripper.One, _motion.Gold1);
+                Load(Gripper.One, _motion.Holder1);
+                Load(Gripper.One, _motion.Gold2);
+                Load(Gripper.One, _motion.Holder2);
+                Load(Gripper.One, _motion.Gold3);
+                Load(Gripper.One, _motion.Holder3);
+                Load(Gripper.One, _motion.Gold4);
+                Load(Gripper.One, _motion.Holder4);
+                Load(Gripper.One, _motion.Gold5);
+                Load(Gripper.One, _motion.Holder5);
+                Load(Gripper.One, _motion.Gold1);
+                Load(Gripper.One, _motion.Holder6);
+                Load(Gripper.One, _motion.HomePosition);
+            });
+        }
+
+        private void TestUnloadAndBin()
+        {
+            Task.Run(() =>
+            {
+                SetSpeed(20);
+                Unload(Gripper.Two, _motion.Holder1);
+                Unload(Gripper.Two, _motion.BinPosition);
+                Unload(Gripper.Two, _motion.Holder2);
+                Unload(Gripper.Two, _motion.BinPosition);
+                Unload(Gripper.Two, _motion.Holder3);
+                Unload(Gripper.Two, _motion.BinPosition);
+                Unload(Gripper.Two, _motion.Holder4);
+                Unload(Gripper.Two, _motion.BinPosition);
+                Unload(Gripper.Two, _motion.Holder5);
+                Unload(Gripper.Two, _motion.BinPosition);
+                Unload(Gripper.Two, _motion.Holder6);
+                Unload(Gripper.Two, _motion.BinPosition);
+                Unload(Gripper.Two, _motion.HomePosition);
+            });
+        }
+
+        private void TestUnloadAndLoadHolders()
+        {
+            Task.Run(() =>
+            {
+                SetSpeed(20);
+                UnloadAndLoad(_motion.PickPosition, Gripper.One);
+                UnloadAndLoad(_motion.Holder1, Gripper.Two);
+                UnloadAndLoad(_motion.PickPosition, Gripper.One);
+                UnloadAndLoad(_motion.Holder2, Gripper.Two);
+                UnloadAndLoad(_motion.PickPosition, Gripper.One);
+                UnloadAndLoad(_motion.Holder3, Gripper.Two);
+                UnloadAndLoad(_motion.PickPosition, Gripper.One);
+                UnloadAndLoad(_motion.Holder4, Gripper.Two);
+                UnloadAndLoad(_motion.PickPosition, Gripper.One);
+                UnloadAndLoad(_motion.Holder5, Gripper.Two);
+                UnloadAndLoad(_motion.PickPosition, Gripper.One);
+                UnloadAndLoad(_motion.Holder6, Gripper.Two);
+            });
         }
 
         public void SetSpeed(double speed)
@@ -159,8 +145,8 @@ namespace Rack
                 {
                     stepperSpeed = 30;
                 }
-                _steppers.SetSpeed(Gripper.One, stepperSpeed);
-                _steppers.SetSpeed(Gripper.Two, stepperSpeed); 
+                _gripper.SetSpeed(Gripper.One, stepperSpeed);
+                _gripper.SetSpeed(Gripper.Two, stepperSpeed); 
             }
         }
 
@@ -306,61 +292,76 @@ namespace Rack
         {
             if (_gripperIsOnline)
             {
-                _steppers.HomeMotor(Gripper.One, -6);
-                _steppers.HomeMotor(Gripper.Two, -2);
+                _gripper.HomeMotor(Gripper.One, -6);
+                _gripper.HomeMotor(Gripper.Two, -2);
             }
+        }
+
+        public void SwitchGripper(TargetPosition target, Gripper gripper)
+        {
+            gripper = gripper== Gripper.One ? Gripper.Two : Gripper.One;
+            ToPointWaitTillEndGripper(target, gripper);
         }
 
         public void Pick(Gripper gripper)
         {
             //If system is OK, gripper is free and opened, conveyor is ready
             //If the other gripper is holding a phone, then conveyor can not reload.
- 
-        }
-
-        private void DemoMoveToTarget(TargetPosition target)
-        {
-            MoveToTargetPosition(Gripper.One, target);
-            _motion.ToPointWaitTillEnd(_motion.MotorZ, target.ApproachHeight);
-            _motion.ToPointWaitTillEnd(_motion.MotorY, _motion.PickPosition.YPos);
-        }
-
-        private void Exchange(TargetPosition target, Gripper gripper)
-        {
-            MoveToTargetPosition(gripper, target);
-
-            _motion.ToPointWaitTillEnd(_motion.MotorZ, target.ApproachHeight);
-            SwitchGripper(target, gripper);
-
-            _motion.ToPointWaitTillEnd(_motion.MotorZ, target.ZPos);
-            _motion.ToPointWaitTillEnd(_motion.MotorZ, target.ApproachHeight);
-            _motion.ToPointWaitTillEnd(_motion.MotorY, _motion.PickPosition.YPos);
-        }
-
-        public void SwitchGripper(TargetPosition target, Gripper gripper)
-        {
-            gripper = gripper== Gripper.One ? Gripper.Two : Gripper.One;
-            MoveGripperTillEnd(target, gripper);
+            MoveToTargetPosition(gripper, _motion.PickPosition);
+            //Close cylinder.
+            _motion.ToPointWaitTillEnd(_motion.MotorZ, _motion.PickPosition.ApproachHeight);
+            //Check.
         }
 
         public void Place(Gripper gripper)
         {
             //After place, conveyor can reload.
+            //TODO make sure pick position is empty, conveyor is not stucked and gripper is full.
+            MoveToTargetPosition(gripper, _motion.PickPosition);
+            //Open cylinder.
+            _motion.ToPointWaitTillEnd(_motion.MotorZ, _motion.PickPosition.ApproachHeight);
+            //Check phone is on conveyor.
         }
 
         public void Bin(Gripper gripper)
         {
-
+            //TODO make sure pick position is empty, conveyor is not stucked and gripper is full.
+            MoveToTargetPosition(gripper, _motion.BinPosition);
+            //Open cylinder.
+            _motion.ToPointWaitTillEnd(_motion.MotorZ, _motion.BinPosition.ApproachHeight);
+            //Check phone is on conveyor.
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="gripper"></param>
-        /// <param name="holder">One of holders in Motion</param>
         public void Load(Gripper gripper, TargetPosition holder)
         {
+            //Todo make sure box is open.
+            MoveToTargetPosition(gripper, holder);
+            //Open gripper
+            _motion.ToPointWaitTillEnd(_motion.MotorZ, holder.ApproachHeight);
+            //Box is OK to close.
+            _motion.ToPointWaitTillEnd(_motion.MotorY, _motion.PickPosition.YPos);
+        }
 
+        public void Unload(Gripper gripper, TargetPosition holder)
+        {
+            //Todo make sure box is open.
+            MoveToTargetPosition(gripper, holder);
+            //Close gripper
+            _motion.ToPointWaitTillEnd(_motion.MotorZ, holder.ApproachHeight);
+            //Box is OK to close.
+            _motion.ToPointWaitTillEnd(_motion.MotorY, _motion.PickPosition.YPos);
+        }
+
+        public void UnloadAndLoad(TargetPosition target, Gripper gripper)
+        {
+            //Todo make sure box is open.
+            MoveToTargetPosition(gripper, target);
+            //Open gripper
+            _motion.ToPointWaitTillEnd(_motion.MotorZ, target.ApproachHeight); //Up.
+            SwitchGripper(target, gripper); //Switch gripper.
+            _motion.ToPointWaitTillEnd(_motion.MotorZ, target.ZPos); //Down.
+            _motion.ToPointWaitTillEnd(_motion.MotorZ, target.ApproachHeight); //Up.
+            _motion.ToPointWaitTillEnd(_motion.MotorY, _motion.PickPosition.YPos); //Back.
         }
 
 
@@ -408,7 +409,7 @@ namespace Rack
                         }
                         else //To left bottom.
                         {
-                            MoveFromRightToLeftBottom(target);
+                            MoveFromRightToLeftBottom(gripper, target);
                         }
                     }
                     else //To Conveyor.
@@ -487,336 +488,255 @@ namespace Rack
         private void MoveFromRightToConveyor(Gripper gripper, TargetPosition target, TargetPosition currentPosition)
         {
             _motion.ToPoint(_motion.MotorZ, target.ApproachHeight);
-            if (currentPosition.ZPos < _motion.PickPosition.ApproachHeight)
-            {
-                _motion.WaitTillZBiggerThan(_motion.PickPosition.ApproachHeight - 20);
-            }
+            _motion.ToPointX(_motion.ConveyorRightPosition.XPos);
+            ToPointGripper(target, gripper);
 
-            _motion.ToPointX(target.XPos);
-
-            if (gripper == Gripper.One)
-            {
-                _motion.ToPoint(_motion.MotorR, target.RPos);
-            }
-            else
-            {
-                _motion.ToPoint(_motion.MotorR, target.RPos - 60);
-            }
-
+            _motion.WaitTillZBiggerThan(_motion.PickPosition.ApproachHeight - 20);
+            _motion.BreakToPointX(target.XPos);
+        
             _motion.WaitTillEndX();
-            _motion.WaitTillEnd(_motion.MotorR);
+            WaitTillEndGripper(target, gripper);
+
+            MotorYOutThenBreakMotorZDown(target);
+        }
+
+        private void MotorYOutThenBreakMotorZDown(TargetPosition target)
+        {
             _motion.ToPointWaitTillEnd(_motion.MotorY, target.YPos);
+            _gripper.CheckEnabled();
             _motion.BreakToPointWaitTillEnd(_motion.MotorZ, target.ZPos);
         }
 
-        private void MoveFromRightToLeftBottom(TargetPosition target)
+        private void MoveFromRightToLeftBottom(Gripper gripper, TargetPosition target)
         {
             _motion.ToPoint(_motion.MotorZ, _motion.PickPosition.ApproachHeight);
             _motion.ToPointX(_motion.ConveyorRightPosition.XPos);
-            _motion.WaitTillZBiggerThan(_motion.PickPosition.ApproachHeight - 10);
+            ToPointGripper(target, gripper);
+
+            _motion.WaitTillZBiggerThan(_motion.PickPosition.ApproachHeight - 20);
             _motion.BreakToPointX(target.XPos);
 
             _motion.WaitTillXSmallerThan(_motion.ConveyorLeftPosition.XPos);
-
             _motion.BreakToPoint(_motion.MotorZ, target.ApproachHeight);
 
-            _motion.WaitTillEndX();
-            _motion.WaitTillEnd(_motion.MotorR);
-
+            _motion.WaitTillEndX();          
             _motion.WaitTillEnd(_motion.MotorZ);
-            _motion.ToPointWaitTillEnd(_motion.MotorY, target.YPos);
-            _motion.ToPointWaitTillEnd(_motion.MotorZ, target.ZPos);
+            WaitTillEndGripper(target, gripper);
+
+            MotorYOutThenMotorZDown(target);
         }
 
         private void MoveFromRightToLeftTop(Gripper gripper, TargetPosition target, TargetPosition currentPosition)
         {
             _motion.ToPoint(_motion.MotorZ, target.ApproachHeight);
             _motion.ToPointX(_motion.ConveyorRightPosition.XPos);
-            if (currentPosition.ZPos < _motion.PickPosition.ApproachHeight)
-            {
-                _motion.WaitTillZBiggerThan(_motion.PickPosition.ApproachHeight - 10);
-            }
-
+            ToPointGripper(target, gripper);
+ 
+            _motion.WaitTillZBiggerThan(_motion.PickPosition.ApproachHeight - 20);
             _motion.BreakToPointX(target.XPos);
 
-            if (gripper == Gripper.One)
-            {
-                _motion.ToPoint(_motion.MotorR, target.RPos);
-            }
-            else
-            {
-                _motion.ToPoint(_motion.MotorR, target.RPos - 60);
-            }
-
             _motion.WaitTillEndX();
-            _motion.WaitTillEnd(_motion.MotorR);
             _motion.WaitTillEnd(_motion.MotorZ);
-            _motion.ToPointWaitTillEnd(_motion.MotorY, target.YPos);
-            _motion.ToPointWaitTillEnd(_motion.MotorZ, target.ZPos);
+            WaitTillEndGripper(target, gripper);
+
+            MotorYOutThenMotorZDown(target);
         }
 
         private void MoveFromRightToRight(Gripper gripper, TargetPosition target)
         {
-            //Todo , detail exception.
             _motion.ToPoint(_motion.MotorZ, target.ApproachHeight);
             _motion.ToPointX(target.XPos);
-
-            if (gripper == Gripper.One)
-            {
-                _motion.ToPoint(_motion.MotorR, target.RPos);
-                _steppers.ToPoint(Gripper.One, target.APos);
-                _steppers.ToPoint(Gripper.Two, 0);
-                _steppers.WaitTillEnd(Gripper.One, target.APos);
-                _steppers.WaitTillEnd(Gripper.Two);
-            }
-            else
-            {
-                _motion.ToPoint(_motion.MotorR, target.RPos - 60);
-                _steppers.ToPoint(Gripper.Two, target.APos);
-                _steppers.ToPoint(Gripper.One, 0);
-                _steppers.WaitTillEnd(Gripper.One);
-                _steppers.WaitTillEnd(Gripper.Two, target.APos);
-            }
-
+            ToPointWaitTillEndGripper(target, gripper);
             _motion.WaitTillEndX();
-            _motion.WaitTillEnd(_motion.MotorR);
             _motion.WaitTillEnd(_motion.MotorZ);
+            MotorYOutThenMotorZDown(target);
+        }
 
+        private void MotorYOutThenMotorZDown(TargetPosition target)
+        {
             _motion.ToPointWaitTillEnd(_motion.MotorY, target.YPos);
+            _gripper.CheckEnabled();
             _motion.ToPointWaitTillEnd(_motion.MotorZ, target.ZPos);
         }
 
         private void MoveFromLeftToRightTop(Gripper gripper, TargetPosition target, TargetPosition currentPosition)
         {
             _motion.ToPoint(_motion.MotorZ, target.ApproachHeight);
-            if (currentPosition.ZPos < _motion.PickPosition.ApproachHeight)
-            {
-                _motion.WaitTillZBiggerThan(_motion.PickPosition.ApproachHeight - 10);
-            }
-
+            ToPointGripper(target, gripper);
+            _motion.WaitTillZBiggerThan(_motion.PickPosition.ApproachHeight - 20);
             _motion.ToPointX(target.XPos);
 
-            if (gripper == Gripper.One)
-            {
-                _motion.ToPoint(_motion.MotorR, target.RPos);
-            }
-            else
-            {
-                _motion.ToPoint(_motion.MotorR, target.RPos - 60);
-            }
-
             _motion.WaitTillEndX();
-            _motion.WaitTillEnd(_motion.MotorR);
             _motion.WaitTillEnd(_motion.MotorZ);
-            _motion.ToPointWaitTillEnd(_motion.MotorY, target.YPos);
-            _motion.ToPointWaitTillEnd(_motion.MotorZ, target.ZPos);
+            WaitTillEndGripper(target, gripper);
+
+            MotorYOutThenMotorZDown(target);
         }
 
         private void MoveFromLeftToRightBottom(Gripper gripper, TargetPosition target)
         {
             _motion.ToPoint(_motion.MotorZ, _motion.PickPosition.ApproachHeight);
-            _motion.WaitTillZBiggerThan(_motion.PickPosition.ApproachHeight - 10);
-            _motion.ToPointX(target.XPos);
+            _motion.WaitTillZBiggerThan(_motion.PickPosition.ApproachHeight - 20);
 
-            if (gripper == Gripper.One)
-            {
-                _motion.ToPoint(_motion.MotorR, target.RPos);
-            }
-            else
-            {
-                _motion.ToPoint(_motion.MotorR, target.RPos - 60);
-            }
+            _motion.ToPointX(target.XPos);
+            ToPointGripper(target, gripper);
 
             _motion.WaitTillXBiggerThan(_motion.ConveyorRightPosition.XPos);
             _motion.BreakToPoint(_motion.MotorZ, target.ApproachHeight);
 
-
-            _motion.WaitTillEndX();
-            _motion.WaitTillEnd(_motion.MotorR);
-
+            _motion.WaitTillEndX();           
             _motion.WaitTillEnd(_motion.MotorZ);
-            _motion.ToPointWaitTillEnd(_motion.MotorY, target.YPos);
-            _motion.ToPointWaitTillEnd(_motion.MotorZ, target.ZPos);
+            WaitTillEndGripper(target, gripper);
+
+            MotorYOutThenMotorZDown(target);
         }
 
         private void MoveFromLeftToLeft(Gripper gripper, TargetPosition target)
         {
             _motion.ToPointX(target.XPos);
-            if (gripper == Gripper.One)
-            {
-                _motion.ToPoint(_motion.MotorR, target.RPos);
-            }
-            else
-            {
-                _motion.ToPoint(_motion.MotorR, target.RPos - 60);
-            }
+            ToPointGripper(target, gripper);
             _motion.ToPoint(_motion.MotorZ, target.ApproachHeight);
             _motion.WaitTillEndX();
-            _motion.WaitTillEnd(_motion.MotorR);
             _motion.WaitTillEnd(_motion.MotorZ);
-            _motion.ToPointWaitTillEnd(_motion.MotorY, target.YPos);
-            _motion.BreakToPointWaitTillEnd(_motion.MotorZ, target.ZPos);
+            WaitTillEndGripper(target, gripper);
+            MotorYOutThenMotorZDown(target);
         }
 
         private void MoveFromLeftToConveyor(Gripper gripper, TargetPosition target, TargetPosition currentPosition)
         {
             _motion.ToPoint(_motion.MotorZ, target.ApproachHeight);
-            if (currentPosition.ZPos < _motion.PickPosition.ApproachHeight)
-            {
-                _motion.WaitTillZBiggerThan(_motion.PickPosition.ApproachHeight - 10);
-            }
-
+            ToPointGripper(target, gripper);
+            _motion.WaitTillZBiggerThan(_motion.PickPosition.ApproachHeight - 20);
             _motion.ToPointX(target.XPos);
 
-            if (gripper == Gripper.One)
-            {
-                _motion.ToPoint(_motion.MotorR, target.RPos);
-            }
-            else
-            {
-                _motion.ToPoint(_motion.MotorR, target.RPos - 60);
-            }
-
             _motion.WaitTillEndX();
-            _motion.WaitTillEnd(_motion.MotorR);
             _motion.WaitTillEnd(_motion.MotorZ);
-            _motion.ToPointWaitTillEnd(_motion.MotorY, target.YPos);
-            _motion.ToPointWaitTillEnd(_motion.MotorZ, target.ZPos);
+            WaitTillEndGripper(target, gripper);
+
+            MotorYOutThenMotorZDown(target);
         }
 
         private void MoveFromConveyorToRightTop(Gripper gripper, TargetPosition target)
         {
             _motion.ToPointX(target.XPos);
-            if (gripper == Gripper.One)
-            {
-                _motion.ToPoint(_motion.MotorR, target.RPos);
-            }
-            else
-            {
-                _motion.ToPoint(_motion.MotorR, target.RPos - 60);
-            }
+            ToPointGripper(target, gripper);
             _motion.ToPoint(_motion.MotorZ, target.ApproachHeight);
+
             _motion.WaitTillEndX();
-            _motion.WaitTillEnd(_motion.MotorR);
             _motion.WaitTillEnd(_motion.MotorZ);
-            _motion.ToPointWaitTillEnd(_motion.MotorY, target.YPos);
-            _motion.ToPointWaitTillEnd(_motion.MotorZ, target.ZPos);
+            WaitTillEndGripper(target, gripper);
+            MotorYOutThenMotorZDown(target);
         }
 
         private void MoveFromConveyorToRightBottom(Gripper gripper, TargetPosition target)
         {
             _motion.ToPointX(target.XPos);
             _motion.ToPoint(_motion.MotorZ, _motion.PickPosition.ApproachHeight);
-
-            if (gripper == Gripper.One)
-            {
-                _motion.ToPoint(_motion.MotorR, target.RPos);
-            }
-            else
-            {
-                _motion.ToPoint(_motion.MotorR, target.RPos - 60);
-            }
+            ToPointGripper(target, gripper);
 
             _motion.WaitTillXBiggerThan(_motion.ConveyorRightPosition.XPos);
             _motion.BreakToPoint(_motion.MotorZ, target.ApproachHeight);
 
-
-            _motion.WaitTillEndX();
-            _motion.WaitTillEnd(_motion.MotorR);
-
+            _motion.WaitTillEndX();          
             _motion.WaitTillEnd(_motion.MotorZ);
-            _motion.ToPointWaitTillEnd(_motion.MotorY, target.YPos);
-            _motion.ToPointWaitTillEnd(_motion.MotorZ, target.ZPos);
+            WaitTillEndGripper(target, gripper);
+
+            MotorYOutThenMotorZDown(target);
         }
 
         private void MoveFromConveyorToLeftTop(Gripper gripper, TargetPosition target)
         {
             _motion.ToPointX(target.XPos);
-            if (gripper == Gripper.One)
-            {
-                _motion.ToPoint(_motion.MotorR, target.RPos);
-            }
-            else
-            {
-                _motion.ToPoint(_motion.MotorR, target.RPos - 60);
-            }
+            ToPointGripper(target, gripper);
             _motion.ToPoint(_motion.MotorZ, target.ApproachHeight);
             _motion.WaitTillEndX();
-            _motion.WaitTillEnd(_motion.MotorR);
             _motion.WaitTillEnd(_motion.MotorZ);
-            _motion.ToPointWaitTillEnd(_motion.MotorY, target.YPos);
-            _motion.ToPointWaitTillEnd(_motion.MotorZ, target.ZPos);
+            WaitTillEndGripper(target, gripper);
+            MotorYOutThenMotorZDown(target);
         }
 
         private void MoveFromConveyorToLeftBottom(Gripper gripper, TargetPosition target)
         {
             _motion.ToPointX(target.XPos);
             _motion.ToPoint(_motion.MotorZ, _motion.PickPosition.ApproachHeight);
-
-            if (gripper == Gripper.One)
-            {
-                _motion.ToPoint(_motion.MotorR, target.RPos);
-            }
-            else
-            {
-                _motion.ToPoint(_motion.MotorR, target.RPos - 60);
-            }
+            ToPointGripper(target, gripper);
 
             _motion.WaitTillXSmallerThan(_motion.ConveyorLeftPosition.XPos);
             _motion.BreakToPoint(_motion.MotorZ, target.ApproachHeight);
 
             _motion.WaitTillEndX();
-            _motion.WaitTillEnd(_motion.MotorR);
-
             _motion.WaitTillEnd(_motion.MotorZ);
-            _motion.ToPointWaitTillEnd(_motion.MotorY, target.YPos);
-            _motion.ToPointWaitTillEnd(_motion.MotorZ, target.ZPos);
+            WaitTillEndGripper(target, gripper);
+
+            MotorYOutThenMotorZDown(target);
         }
 
         private void MoveFromConveyorToConveyor(Gripper gripper, TargetPosition target)
         {
             _motion.ToPointX(target.XPos);
             _motion.ToPoint(_motion.MotorZ, target.ApproachHeight);
-
-            MoveGripperTillEnd(target, gripper);
+            ToPointGripper(target, gripper);
 
             _motion.WaitTillEndX();
             _motion.WaitTillEnd(_motion.MotorZ);
+            WaitTillEndGripper(target, gripper);
 
-            _motion.ToPointWaitTillEnd(_motion.MotorY, target.YPos);
-            _motion.BreakToPointWaitTillEnd(_motion.MotorZ, target.ZPos);
+            MotorYOutThenMotorZDown(target);
         }
 
-        private void MoveGripperTillEnd(TargetPosition target, Gripper gripper)
+        private void ToPointWaitTillEndGripper(TargetPosition target, Gripper gripper)
         {
             if (gripper == Gripper.One)
             {
                 _motion.ToPoint(_motion.MotorR, target.RPos);
-                _steppers.ToPoint(Gripper.One, target.APos);
-                _steppers.ToPoint(Gripper.Two, 0);
-                _steppers.WaitTillEnd(Gripper.One, target.APos);
-                _steppers.WaitTillEnd(Gripper.Two);
+                _gripper.ToPoint(Gripper.One, target.APos);
+                _gripper.ToPoint(Gripper.Two, 0);
+                _motion.WaitTillEnd(_motion.MotorR);
+                _gripper.WaitTillEnd(Gripper.One, target.APos);
+                _gripper.WaitTillEnd(Gripper.Two, 0);
             }
             else
             {
                 _motion.ToPoint(_motion.MotorR, target.RPos - 60);
-                _steppers.ToPoint(Gripper.Two, target.APos);
-                _steppers.ToPoint(Gripper.One, 0);
-                _steppers.WaitTillEnd(Gripper.One);
-                _steppers.WaitTillEnd(Gripper.Two, target.APos);
-            }
+                _gripper.ToPoint(Gripper.Two, target.APos);
+                _gripper.ToPoint(Gripper.One, 0);
+                _motion.WaitTillEnd(_motion.MotorR);
+                _gripper.WaitTillEnd(Gripper.One, 0);
+                _gripper.WaitTillEnd(Gripper.Two, target.APos);
+            }         
+        }
 
+        private void WaitTillEndGripper(TargetPosition target, Gripper gripper)
+        {
             _motion.WaitTillEnd(_motion.MotorR);
+            if (gripper == Gripper.One)
+            {
+                _gripper.WaitTillEnd(Gripper.One, target.APos);
+                _gripper.WaitTillEnd(Gripper.Two, 0);
+            }
+            else
+            {
+                _gripper.WaitTillEnd(Gripper.One, 0);
+                _gripper.WaitTillEnd(Gripper.Two, target.APos);
+            }
         }
 
-        public void Unload(Gripper gripper, TargetPosition holder)
+        private void ToPointGripper(TargetPosition target, Gripper gripper)
         {
-
+            if (gripper == Gripper.One)
+            {
+                _motion.ToPoint(_motion.MotorR, target.RPos);
+                _gripper.ToPoint(Gripper.One, target.APos);
+                _gripper.ToPoint(Gripper.Two, 0);
+            }
+            else
+            {
+                _motion.ToPoint(_motion.MotorR, target.RPos - 60);
+                _gripper.ToPoint(Gripper.Two, target.APos);
+                _gripper.ToPoint(Gripper.One, 0);
+            }
         }
 
-        public void UnloadAndLoad(Gripper gripper, TargetPosition holder)
-        {
 
-        }
     }
 }

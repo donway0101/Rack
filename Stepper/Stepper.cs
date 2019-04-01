@@ -291,7 +291,9 @@ namespace GripperStepper
         /// <returns></returns>
         private bool MotorAcknowledged(Gripper motor, string response)
         {
-            return response.Substring(0, 1) == GetMotorId(motor) & response.Substring(1, 1) == "%";
+            bool idMatch = response.Substring(0, 1) == GetMotorId(motor);
+            bool endMatch = response.Substring(1, 1) == "%" | response.Substring(1, 1) == "*";
+            return idMatch & endMatch;
         }
 
         /// <summary>
@@ -324,7 +326,7 @@ namespace GripperStepper
 
             if (GetStatus(motor, StatusCode.Enabled) == false)
             {
-                throw new Exception("Motor is not enabled");
+                Enable(motor);
             }
 
             if (GetInput(motor, Input.X1) == false)
@@ -483,6 +485,11 @@ namespace GripperStepper
                 Thread.Sleep(20);
             }
 
+            if (GetStatus(motor, StatusCode.Enabled) == false)
+            {
+                throw new Exception("Stepper motor " + motor + " is disabled.");
+            }
+
             double currentPos = GetPosition(motor);
             if (Math.Abs(currentPos - targetAngle) > 0.5)
             {
@@ -490,21 +497,16 @@ namespace GripperStepper
             }
         }
 
-        public void WaitTillEnd(Gripper motor, int timeout = 10)
+        public void CheckEnabled()
         {
-            Stopwatch stopwatch = new Stopwatch();
-            stopwatch.Start();
-            bool inPos = false;
-            while (inPos == false)
+            if (GetStatus(Gripper.One, StatusCode.Enabled) == false)
             {
-                if (stopwatch.ElapsedMilliseconds > timeout * 1000) //Should response within 2 second.
-                {
-                    throw new Exception("Motor in position timeout.");
-                }
+                throw new Exception("Stepper motor One is disabled.");
+            }
 
-                inPos = GetStatus(motor, StatusCode.Inpos);
-
-                Thread.Sleep(20);
+            if (GetStatus(Gripper.Two, StatusCode.Enabled) == false)
+            {
+                throw new Exception("Stepper motor two is disabled.");
             }
         }
 
