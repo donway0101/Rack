@@ -58,6 +58,12 @@ namespace Tools
             }
         }
 
+        public static void Backup(string file, string basePath)
+        {
+            XElement root = XElement.Load(file);
+            root.Save(basePath + DateTime.Now.Date + ".xml");
+        }
+
         public static string GetTeachAttribute(string file, TeachPos PosName, PosItem attribute)
         {
             XElement root = XElement.Load(file);
@@ -68,6 +74,20 @@ namespace Tools
               .Single(itemName => itemName.Attribute(PosItem.Name.ToString()).Value == PosName.ToString());
 
             return elem.Attribute(attribute.ToString()).Value;
+        }
+
+        public static void SetTeachAttribute(string file, TeachPos posName, PosItem attribute, string newValue)
+        {
+            XElement root = XElement.Load(file);
+
+            XElement elem = root
+                .Elements(PosItem.Teach.ToString())
+                .Elements(PosItem.Pos.ToString())
+                .Single(itemName => itemName.Attribute(PosItem.Name.ToString()).Value == posName.ToString());
+
+            elem.Attribute(attribute.ToString()).Value = newValue;
+
+            root.Save(file);
         }
 
         public static void CreateStorageFile(string file)
@@ -122,8 +142,8 @@ namespace Tools
                      new XAttribute(PosItem.ApproachHeight.ToString(), 480)
                      );
 
-            XElement ConveyorRight = new XElement(PosItem.Pos.ToString());
-            ConveyorRight.Add(
+            XElement conveyorRight = new XElement(PosItem.Pos.ToString());
+            conveyorRight.Add(
                      new XAttribute(PosItem.Name.ToString(), TeachPos.ConveyorRight.ToString()),
                      new XAttribute(PosItem.XPos.ToString(), 745),
                      new XAttribute(PosItem.YPos.ToString(), defaultYPos),
@@ -282,7 +302,7 @@ namespace Tools
             Teach.Add(PickPos);
             Teach.Add(BinPos);
             Teach.Add(ConveyorLeft);
-            Teach.Add(ConveyorRight);
+            Teach.Add(conveyorRight);
 
             Teach.Add(Holder1);
             Teach.Add(Holder2);

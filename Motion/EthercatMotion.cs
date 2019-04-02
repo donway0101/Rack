@@ -187,7 +187,7 @@ namespace Motion
         private void LoadPosition(TargetPosition target, TeachPos pos)
         {
             target.XPos = Convert.ToDouble(
-                                XmlReaderWriter.GetTeachAttribute(Files.RackData, pos, PosItem.XPos));
+                    XmlReaderWriter.GetTeachAttribute(Files.RackData, pos, PosItem.XPos));
             target.YPos = Convert.ToDouble(
                     XmlReaderWriter.GetTeachAttribute(Files.RackData, pos, PosItem.YPos));
             target.ZPos = Convert.ToDouble(
@@ -197,7 +197,7 @@ namespace Motion
             target.APos = Convert.ToDouble(
                     XmlReaderWriter.GetTeachAttribute(Files.RackData, pos, PosItem.APos));
             target.ApproachHeight = Convert.ToDouble(
-                   XmlReaderWriter.GetTeachAttribute(Files.RackData, pos, PosItem.ApproachHeight));
+                    XmlReaderWriter.GetTeachAttribute(Files.RackData, pos, PosItem.ApproachHeight));
         }
 
         /// <summary>

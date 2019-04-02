@@ -140,13 +140,13 @@ namespace Conveyor
                     {
                         CommandReadyForPicking = false;
 
-                        IO.SetOutput(Output.Belt, false);
-                        Delay(200);
-                        SetCylinder(Output.Push, Input.PushIn, false);
-                        Delay(500);
-                        ResetCylinder(Output.Push, Input.PushIn, true);
-                        SetCylinder(Output.BlockPick, Input.BlockPickUp, false);
-                        ResetCylinder(Output.ClampPick, Input.ClampLoose);
+                        //IO.SetOutput(Output.Belt, false);
+                        //Delay(200);
+                        //SetCylinder(Output.Push, Input.PushIn, false);
+                        //Delay(500);
+                        //ResetCylinder(Output.Push, Input.PushIn, true);
+                        //SetCylinder(Output.BlockPick, Input.BlockPickUp, false);
+                        //ResetCylinder(Output.ClampPick, Input.ClampLoose);
 
                         ReadyForPicking = true;
                     }
@@ -155,11 +155,11 @@ namespace Conveyor
                     {
                         CommandInposForPicking = false;
 
-                        ResetCylinder(Output.BlockPick, Input.BlockPickUp, true);
-                        IO.SetOutput(Output.Belt, true);
-                        WaitTill(Input.PhoneInPick, true, 120000);
-                        Delay(1000);
-                        SetCylinder(Output.ClampPick, Input.ClampTight);
+                        //ResetCylinder(Output.BlockPick, Input.BlockPickUp, true);
+                        //IO.SetOutput(Output.Belt, true);
+                        //WaitTill(Input.PhoneInPick, true, 120000);
+                        //Delay(1000);
+                        //SetCylinder(Output.ClampPick, Input.ClampTight);
 
                         InposForPicking = true;
                     }

@@ -120,17 +120,17 @@ namespace Rack
             {
                 SetSpeed(20);
                 UnloadAndLoad(_motion.PickPosition, Gripper.One);
-                UnloadAndLoad(_motion.Holder1, Gripper.Two);
-                UnloadAndLoad(_motion.PickPosition, Gripper.One);
-                UnloadAndLoad(_motion.Holder2, Gripper.Two);
-                UnloadAndLoad(_motion.PickPosition, Gripper.One);
-                UnloadAndLoad(_motion.Holder3, Gripper.Two);
-                UnloadAndLoad(_motion.PickPosition, Gripper.One);
-                UnloadAndLoad(_motion.Holder4, Gripper.Two);
-                UnloadAndLoad(_motion.PickPosition, Gripper.One);
-                UnloadAndLoad(_motion.Holder5, Gripper.Two);
-                UnloadAndLoad(_motion.PickPosition, Gripper.One);
-                UnloadAndLoad(_motion.Holder6, Gripper.Two);
+                //UnloadAndLoad(_motion.Holder1, Gripper.Two);
+                //UnloadAndLoad(_motion.PickPosition, Gripper.One);
+                //UnloadAndLoad(_motion.Holder2, Gripper.Two);
+                //UnloadAndLoad(_motion.PickPosition, Gripper.One);
+                //UnloadAndLoad(_motion.Holder3, Gripper.Two);
+                //UnloadAndLoad(_motion.PickPosition, Gripper.One);
+                //UnloadAndLoad(_motion.Holder4, Gripper.Two);
+                //UnloadAndLoad(_motion.PickPosition, Gripper.One);
+                //UnloadAndLoad(_motion.Holder5, Gripper.Two);
+                //UnloadAndLoad(_motion.PickPosition, Gripper.One);
+                //UnloadAndLoad(_motion.Holder6, Gripper.Two);
             });
         }
 
