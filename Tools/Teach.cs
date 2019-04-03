@@ -20,7 +20,7 @@ namespace Tools
         }
 
         private string _file = @"D:\BP\ChongqingRack\Rack\Rack\RackTool\bin\Debug\RackData.xml";
-        private string _basePath = @"D:\BP\ChongqingRack\Rack\Rack\RackTool\bin\Debug\RackDataBackup\";
+        private string _basePath = @"D:\BP\ChongqingRack\Rack\Rack\RackTool\bin\Debug\";
         private TeachPos _selectPos;
 
         private void button1_Click(object sender, EventArgs e)

@@ -61,7 +61,7 @@ namespace Tools
         public static void Backup(string file, string basePath)
         {
             XElement root = XElement.Load(file);
-            root.Save(basePath + DateTime.Now.Date + ".xml");
+            root.Save(basePath + DateTime.Now.ToString("yyyyMMddhhmmss") + ".xml");
         }
 
         public static string GetTeachAttribute(string file, TeachPos PosName, PosItem attribute)

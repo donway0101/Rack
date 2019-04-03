@@ -160,6 +160,7 @@ namespace Motion
                 SetFPosition(mtr);
                 SetSafety(mtr);
             }
+            EnableAll();
 
             LoadPosition(HomePosition, TeachPos.Home);
             LoadPosition(PickPosition, TeachPos.Pick);
@@ -329,7 +330,11 @@ namespace Motion
         {
             return Ch.GetFPosition(MotorX1.Id) + Ch.GetFPosition(MotorX2.Id);
         }
-        public double GetVelocity(Motor motor) { return 0; }
+
+        public double GetVelocity(Motor motor)
+        {
+            return Ch.GetVelocity(motor.Id);
+        }
         public double GetAcceleration(Motor motor) { return 0; }
         public double GetDeceleration(Motor motor) { return 0; }
         public double GetJerk(Motor motor) { return 0; }
@@ -470,6 +475,22 @@ namespace Motion
 
             Ch.ToPoint(MotionFlags.ACSC_AMF_MAXIMUM, MotorX1.Id, x1Target);
             Ch.ToPoint(MotionFlags.ACSC_AMF_MAXIMUM, MotorX2.Id, x2Target);
+        }
+
+        public void Jog(Motor motor, bool positiveDirection)
+        {
+            double vel = GetVelocity(motor);
+            if (positiveDirection == false)
+            {
+                vel = -vel;
+            }
+
+            Ch.Jog(MotionFlags.ACSC_AMF_VELOCITY, motor.Id, vel);
+        }
+
+        public void Halt(Motor motor)
+        {
+            Ch.Halt(motor.Id);
         }
 
         public void BreakToPointXWaitTillEnd(double point, int timeout = 60000)

@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using ACS.SPiiPlusNET;
 using Motion;
 using GripperStepper;
+using Tools;
 
 namespace Rack
 {
@@ -14,8 +15,8 @@ namespace Rack
     public class CqcRack
     {
         private readonly Api _ch = new Api();
-        private EthercatMotion _motion;
-        private Stepper _gripper;
+        public EthercatMotion _motion;
+        public Stepper _gripper;
         private bool _gripperIsOnline = true;
         private readonly string _ip;
 
@@ -38,7 +39,6 @@ namespace Rack
             }
             _motion = new EthercatMotion(_ch, 5);
             _motion.Setup();
-            _motion.EnableAll();
      
             if (_gripperIsOnline)
             {
@@ -737,6 +737,27 @@ namespace Rack
             }
         }
 
+        public void SaveTeachPosition(TeachPos selectedTeachPos)
+        {
+            XmlReaderWriter.SetTeachAttribute(Files.RackData, selectedTeachPos, PosItem.XPos,
+                _motion.GetPositionX().ToString());
+            XmlReaderWriter.SetTeachAttribute(Files.RackData, selectedTeachPos, PosItem.YPos,
+                _motion.GetPosition(_motion.MotorY).ToString());
+            XmlReaderWriter.SetTeachAttribute(Files.RackData, selectedTeachPos, PosItem.ZPos,
+                _motion.GetPosition(_motion.MotorZ).ToString());
+            XmlReaderWriter.SetTeachAttribute(Files.RackData, selectedTeachPos, PosItem.RPos,
+                _motion.GetPosition(_motion.MotorR).ToString());
 
+            XmlReaderWriter.SetTeachAttribute(Files.RackData, selectedTeachPos, PosItem.APos,
+                _motion.GetPosition(_motion.MotorR) > 0
+                    ? _gripper.GetPosition(Gripper.One).ToString()
+                    : _gripper.GetPosition(Gripper.Two).ToString());
+        }
+
+        public void SaveApproachHeight(TeachPos selectedTeachPos)
+        {
+            XmlReaderWriter.SetTeachAttribute(Files.RackData, selectedTeachPos, PosItem.ApproachHeight,
+                _motion.GetPosition(_motion.MotorZ).ToString());
+        }
     }
 }
