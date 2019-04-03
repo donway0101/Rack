@@ -42,7 +42,10 @@ namespace Rack
      
             if (_gripperIsOnline)
             {
-                _gripper = new Stepper("COM3");
+                if (_gripper == null)
+                {
+                    _gripper = new Stepper("COM3");                   
+                }
                 _gripper.Setup();
             }
 
@@ -54,6 +57,7 @@ namespace Rack
         public void Stop()
         {
             _motion.DisableAll();
+            //_motion.KillAll();
         }
 
         public void Test()
@@ -317,7 +321,18 @@ namespace Rack
         {
             //After place, conveyor can reload.
             //TODO make sure pick position is empty, conveyor is not stucked and gripper is full.
-            MoveToTargetPosition(gripper, _motion.PickPosition);
+            TargetPosition placePosition = new TargetPosition()
+            {
+                APos = _motion.PickPosition.APos,
+                ApproachHeight = _motion.PickPosition.ApproachHeight,
+                Id = _motion.PickPosition.Id,
+                RPos = _motion.PickPosition.RPos,
+                XPos = _motion.PickPosition.XPos+1,
+                YPos = _motion.PickPosition.YPos,
+                ZPos = _motion.PickPosition.ZPos
+            };
+            
+            MoveToTargetPosition(gripper, placePosition);
             //Open cylinder.
             _motion.ToPointWaitTillEnd(_motion.MotorZ, _motion.PickPosition.ApproachHeight);
             //Check phone is on conveyor.

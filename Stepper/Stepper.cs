@@ -378,6 +378,11 @@ namespace GripperStepper
                 throw new Exception("Drive is NOT acknowledged");
             }
 
+            if (GetStatus(motor, StatusCode.Alarm))
+            {
+                throw new Exception("Drive alarm");
+            }
+
             Thread.Sleep(50);
         }
 

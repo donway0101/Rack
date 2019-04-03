@@ -80,6 +80,14 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Conveyor\Conveyor.csproj">
+      <Project>{e6fa979e-de28-4840-9e84-b86d3a64a9b6}</Project>
+      <Name>Conveyor</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\IO\IO.csproj">
+      <Project>{08b41e19-bb93-4308-9bb8-53ee23ed9211}</Project>
+      <Name>IO</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Motion\Motion.csproj">
       <Project>{9d555f20-a4d7-4f2a-a425-3fd8f086358a}</Project>
       <Name>Motion</Name>
@@ -87,6 +95,10 @@
     <ProjectReference Include="..\Rack\Rack.csproj">
       <Project>{ba6788fd-7479-47d6-b29f-118161d22071}</Project>
       <Name>Rack</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Stepper\Stepper.csproj">
+      <Project>{80bb0d71-717e-48fc-b7d5-d891537265f8}</Project>
+      <Name>Stepper</Name>
     </ProjectReference>
     <ProjectReference Include="..\Tools\Tools.csproj">
       <Project>{4dd6cdca-ae4c-48b6-bef8-9070ce525aa3}</Project>

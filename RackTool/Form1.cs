@@ -11,6 +11,8 @@ using System.Xml.Linq;
 using Rack;
 using Motion;
 using Tools;
+using GripperStepper;
+using System.Threading;
 
 namespace RackTool
 {
@@ -23,6 +25,9 @@ namespace RackTool
 
         private readonly CqcRack _rack = new CqcRack("192.168.8.18");
         private TeachPos _selectedTeachPos;
+        private Gripper _selectedGripper;
+        private TeachPos _selectedTargetPosition;
+        private Thread _uiUpdateThread;
 
         private void button1_Click(object sender, EventArgs e)
         {
@@ -30,6 +35,16 @@ namespace RackTool
             {
                 _rack.Start();
                 SetupForTeaching();
+
+                if (_uiUpdateThread==null)
+                {
+                    _uiUpdateThread = new Thread(UiUpdate)
+                    {
+                        IsBackground = true
+                    };
+                }
+                _uiUpdateThread.Start();
+
                 button2.Enabled = true;
             }
             catch (Exception ex)
@@ -39,6 +54,29 @@ namespace RackTool
             }           
         }
 
+        private void UiUpdate()
+        {
+            while (true)
+            {
+                try
+                {
+                    label6.Invoke((MethodInvoker) (() => { label6.Text=_rack._gripper.GetPosition(Gripper.One).ToString(); }));
+                    label7.Invoke((MethodInvoker)(() => { label7.Text = _rack._gripper.GetPosition(Gripper.Two).ToString(); }));
+                    Thread.Sleep(1000);
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                    break;
+                }
+            }
+        }
+
+        private void Invoke(Control control, MethodInvoker action)
+        {
+            control.Invoke(action);
+        }
+
         private void SetupForTeaching()
         {
             comboBox1.Items.Clear();
@@ -46,8 +84,21 @@ namespace RackTool
             {
                 comboBox1.Items.Add(pos);
             }
+
+            comboBox2.Items.Clear();
+            foreach (var pos in Enum.GetValues(typeof(Gripper)))
+            {
+                comboBox2.Items.Add(pos);
+            }
+
+            comboBox3.Items.Clear();
+            foreach (var pos in Enum.GetValues(typeof(TeachPos)))
+            {
+                comboBox3.Items.Add(pos);
+            }
         }
-      
+
+
         private void button2_Click(object sender, EventArgs e)
         {
             
@@ -151,6 +202,8 @@ namespace RackTool
             }
         }
 
+        #region Manual control
+
         private void button8_MouseDown(object sender, MouseEventArgs e)
         {
             _rack._motion.Jog(_rack._motion.MotorX1, false);
@@ -169,6 +222,175 @@ namespace RackTool
         private void button9_MouseUp(object sender, MouseEventArgs e)
         {
             _rack._motion.Halt(_rack._motion.MotorX1);
+        }
+
+        private void button10_MouseDown(object sender, MouseEventArgs e)
+        {
+            _rack._motion.Jog(_rack._motion.MotorX2, false);
+        }
+
+        private void button11_MouseDown(object sender, MouseEventArgs e)
+        {
+            _rack._motion.Jog(_rack._motion.MotorX2, true);
+        }
+
+        private void button15_MouseDown(object sender, MouseEventArgs e)
+        {
+            _rack._motion.Jog(_rack._motion.MotorY, false);
+        }
+
+        private void button13_MouseDown(object sender, MouseEventArgs e)
+        {
+            _rack._motion.Jog(_rack._motion.MotorZ, false);
+        }
+
+        private void button17_MouseDown(object sender, MouseEventArgs e)
+        {
+            _rack._motion.Jog(_rack._motion.MotorR, false);
+        }
+
+        private void button19_Click(object sender, EventArgs e)
+        {
+            _rack._gripper.ToPoint(Gripper.One, Convert.ToDouble(textBox1.Text));
+        }
+
+        private void button18_Click(object sender, EventArgs e)
+        {
+            _rack._gripper.ToPoint(Gripper.Two, Convert.ToDouble(textBox2.Text));
+        }
+
+        private void button14_MouseDown(object sender, MouseEventArgs e)
+        {
+            _rack._motion.Jog(_rack._motion.MotorY, true);
+        }
+
+        private void button12_MouseDown(object sender, MouseEventArgs e)
+        {
+            _rack._motion.Jog(_rack._motion.MotorZ, true);
+        }
+
+        private void button16_MouseDown(object sender, MouseEventArgs e)
+        {
+            _rack._motion.Jog(_rack._motion.MotorR, true);
+        }
+
+        private void button11_MouseUp(object sender, MouseEventArgs e)
+        {
+            _rack._motion.Halt(_rack._motion.MotorX2);
+        }
+
+        private void button14_MouseUp(object sender, MouseEventArgs e)
+        {
+            _rack._motion.Halt(_rack._motion.MotorY);
+        }
+
+        private void button12_MouseUp(object sender, MouseEventArgs e)
+        {
+            _rack._motion.Halt(_rack._motion.MotorZ);
+        }
+
+        private void button16_MouseUp(object sender, MouseEventArgs e)
+        {
+            _rack._motion.Halt(_rack._motion.MotorR);
+        }
+
+        private void button13_MouseUp(object sender, MouseEventArgs e)
+        {
+            _rack._motion.Halt(_rack._motion.MotorZ);
+        }
+
+        private void button17_MouseUp(object sender, MouseEventArgs e)
+        {
+            _rack._motion.Halt(_rack._motion.MotorR);
+        }
+
+        private void button15_MouseUp(object sender, MouseEventArgs e)
+        {
+            _rack._motion.Halt(_rack._motion.MotorY);
+        }
+
+        #endregion
+
+        private void button20_Click(object sender, EventArgs e)
+        {
+            Task.Run(() =>
+            {
+                //Todo complete condition.
+                TargetPosition target = _rack._motion.HomePosition;
+                switch (_selectedTargetPosition)
+                {
+                    case TeachPos.Home:
+                        break;
+                    case TeachPos.Pick:
+                        target = _rack._motion.PickPosition;
+                        break;
+                    case TeachPos.Bin:
+                        break;
+                    case TeachPos.ConveyorLeft:
+                        break;
+                    case TeachPos.ConveyorRight:
+                        break;
+                    case TeachPos.Holder1:
+                        target = _rack._motion.Holder1;
+                        break;
+                    case TeachPos.Holder2:
+                        target = _rack._motion.Holder2;
+                        break;
+                    case TeachPos.Holder3:
+                        target = _rack._motion.Holder3;
+                        break;
+                    case TeachPos.Holder4:
+                        target = _rack._motion.Holder4;
+                        break;
+                    case TeachPos.Holder5:
+                        target = _rack._motion.Holder5;
+                        break;
+                    case TeachPos.Holder6:
+                        target = _rack._motion.Holder6;
+                        break;
+                    case TeachPos.Gold1:
+                        break;
+                    case TeachPos.Gold2:
+                        break;
+                    case TeachPos.Gold3:
+                        break;
+                    case TeachPos.Gold4:
+                        break;
+                    case TeachPos.Gold5:
+                        break;
+                }
+
+                try
+                {
+                    _rack.Load(_selectedGripper, target);
+                }
+                catch (Exception ex)
+                {
+
+                    MessageBox.Show(ex.Message);
+                }
+            });
+
+        }
+
+        private void button22_Click(object sender, EventArgs e)
+        {
+            _rack._gripper.Disable(Gripper.One);
+        }
+
+        private void button21_Click(object sender, EventArgs e)
+        {
+            _rack._gripper.Disable(Gripper.Two);
+        }
+
+        private void comboBox2_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            _selectedGripper = (Gripper)comboBox2.SelectedItem;
+        }
+
+        private void comboBox3_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            _selectedTargetPosition = (TeachPos) comboBox3.SelectedItem;
         }
     }
 }

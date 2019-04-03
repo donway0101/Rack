@@ -311,6 +311,10 @@ namespace Motion
             foreach (var mtr in Motors)
             {
                 Ch.SetVelocityImm(mtr.Id, velocity * mtr.SpeedFactor);
+                if (velocity<=1.0)
+                {
+                    continue;
+                }
                 Ch.SetAccelerationImm(mtr.Id, velocity * 10);
                 Ch.SetDecelerationImm(mtr.Id, velocity * 10);
                 Ch.SetKillDecelerationImm(mtr.Id, velocity * 100);
@@ -373,7 +377,11 @@ namespace Motion
             }
         }
         public void Jog(Motor motor, double velocity) { }
-        public void Kill(Motor motor) { }
+
+        public void KillAll()
+        {
+            Ch.KillAll();
+        }
 
         public void ToPoint(Motor motor, double point)
         {
