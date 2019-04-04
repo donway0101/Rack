@@ -9,7 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using ACS.SPiiPlusNET;
-using IO;
+using EcatIo;
 
 
 namespace IOTool
@@ -22,7 +22,7 @@ namespace IOTool
         }
 
         private readonly Api _ch = new Api();
-        private static EthercatIO _ioRobot;
+        private static EthercatIo _ioRobot;
         private Thread _inputUpdate;
 
         private void InputUpdate()
@@ -144,7 +144,7 @@ namespace IOTool
             try
             {
                 _ch.OpenCommEthernet("192.168.8.18", 701);
-                _ioRobot = new EthercatIO(_ch, 72, 7, 4);
+                _ioRobot = new EthercatIo(_ch, 72, 7, 4);
                 _ioRobot.Setup();
 
                 GetOutput();

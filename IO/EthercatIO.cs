@@ -5,9 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using ACS.SPiiPlusNET;
 
-namespace IO
+namespace EcatIo
 {
-    public class EthercatIO : IInputOutput
+    public class EthercatIo : IInputOutput
     {
         private Api Ch;
         private int BaseAddressOffset;
@@ -20,7 +20,7 @@ namespace IO
         private const string GlobalDefine = "GLOBAL INT ";
         private string NewLine = Environment.NewLine;
 
-        public EthercatIO(Api acsController, int baseAddressOffset, 
+        public EthercatIo(Api acsController, int baseAddressOffset, 
             int inputModuleNum, int outputModuleNum, int inputModuleAddrInc = 4, int outputModuleAddrInc = 2)
         {
             Ch = acsController;
@@ -226,15 +226,16 @@ namespace IO
         {
             int moduleId = output / 10;
             int outputPinNum = output % 10;
-
+            SetOutput(moduleId, outputPinNum, value);
         }
 
         public bool Getinput(int input)
         {
             int moduleId = input / 10;
             int inputPinNum = input % 10;
-
-            return false;
+            return GetInput(moduleId, inputPinNum);
         }
+
+
     }
 }

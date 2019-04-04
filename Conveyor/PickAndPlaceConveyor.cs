@@ -5,13 +5,13 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using IO;
+using EcatIo;
 
 namespace Conveyor
 {
     public class PickAndPlaceConveyor
     {
-        private EthercatIO IO;
+        private EthercatIo IO;
         private Thread ConveyorWorkingThread;
 
         #region Error occured Event
@@ -41,7 +41,7 @@ namespace Conveyor
 
         public bool CommandReadyForPicking { get; set; }
 
-        public PickAndPlaceConveyor(EthercatIO io)
+        public PickAndPlaceConveyor(EthercatIo io)
         {
             IO = io;
         }

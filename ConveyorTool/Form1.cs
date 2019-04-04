@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Conveyor;
 using ACS.SPiiPlusNET;
-using IO;
+using EcatIo;
 using System.Threading;
 
 namespace ConveyorTool
@@ -29,7 +29,7 @@ namespace ConveyorTool
             {
                 Api ch = new Api();
                 ch.OpenCommEthernet("192.168.8.18", 701);
-                EthercatIO iO = new EthercatIO(ch, 88, 8, 5);
+                EthercatIo iO = new EthercatIo(ch, 88, 8, 5);
                 iO.Setup();
                 conveyor = new PickAndPlaceConveyor(iO);
                 conveyor.ErrorOccured += Conveyor_ErrorOccured;

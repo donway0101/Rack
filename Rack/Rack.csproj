@@ -46,11 +46,20 @@
   <ItemGroup>
     <Compile Include="CQCRack.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RackFunction.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Conveyor\Conveyor.csproj">
+      <Project>{e6fa979e-de28-4840-9e84-b86d3a64a9b6}</Project>
+      <Name>Conveyor</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\IO\IO.csproj">
+      <Project>{08b41e19-bb93-4308-9bb8-53ee23ed9211}</Project>
+      <Name>IO</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Motion\Motion.csproj">
       <Project>{9d555f20-a4d7-4f2a-a425-3fd8f086358a}</Project>
       <Name>Motion</Name>

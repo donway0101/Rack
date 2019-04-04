@@ -21,6 +21,42 @@ namespace RackTool
         public Form1()
         {
             InitializeComponent();
+            //Todo set tab draw mode to ownerdraw
+            tabControl1.DrawItem += new DrawItemEventHandler(tabControl1_DrawItem);
+        }
+
+        private void tabControl1_DrawItem(Object sender, System.Windows.Forms.DrawItemEventArgs e)
+        {
+            Graphics g = e.Graphics;
+            Brush _textBrush;
+
+            // Get the item from the collection.
+            TabPage _tabPage = tabControl1.TabPages[e.Index];
+
+            // Get the real bounds for the tab rectangle.
+            Rectangle _tabBounds = tabControl1.GetTabRect(e.Index);
+
+            if (e.State == DrawItemState.Selected)
+            {
+
+                // Draw a different background color, and don't paint a focus rectangle.
+                _textBrush = new SolidBrush(Color.Red);
+                g.FillRectangle(Brushes.Gray, e.Bounds);
+            }
+            else
+            {
+                _textBrush = new System.Drawing.SolidBrush(e.ForeColor);
+                e.DrawBackground();
+            }
+
+            // Use our own font.
+            Font _tabFont = new Font("Arial", 10.0f, FontStyle.Bold, GraphicsUnit.Pixel);
+
+            // Draw string. Center the text.
+            StringFormat _stringFlags = new StringFormat();
+            _stringFlags.Alignment = StringAlignment.Center;
+            _stringFlags.LineAlignment = StringAlignment.Center;
+            g.DrawString(_tabPage.Text, _tabFont, _textBrush, _tabBounds, new StringFormat(_stringFlags));
         }
 
         private readonly CqcRack _rack = new CqcRack("192.168.8.18");
@@ -43,8 +79,12 @@ namespace RackTool
                         IsBackground = true
                     };
                 }
-                _uiUpdateThread.Start();
 
+                if ( _uiUpdateThread.IsAlive==false)
+                {
+                    _uiUpdateThread.Start();
+                }
+               
                 button2.Enabled = true;
             }
             catch (Exception ex)
@@ -101,19 +141,18 @@ namespace RackTool
 
         private void button2_Click(object sender, EventArgs e)
         {
-            
-            try
+            Task.Run(() =>
             {
-                Task.Run(() => { _rack.HomeRobot();              
-                });
-                //button2.Enabled = false;
-                //button1.Enabled = false;
-                //Rack.Test();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
+
+                try
+                {
+                    _rack.HomeRobot();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
+            });
         }
 
         //Test
@@ -124,7 +163,7 @@ namespace RackTool
             //{
             //    return;
             //}
-            _rack.SetSpeed(20);
+            _rack.SetSpeed(defaultTestSpeed);
 
             Task.Run(() =>
             {
@@ -313,6 +352,8 @@ namespace RackTool
 
         private void button20_Click(object sender, EventArgs e)
         {
+            _rack.SetSpeed(defaultTestSpeed);
+
             Task.Run(() =>
             {
                 //Todo complete condition.
@@ -366,7 +407,6 @@ namespace RackTool
                 }
                 catch (Exception ex)
                 {
-
                     MessageBox.Show(ex.Message);
                 }
             });
@@ -375,12 +415,27 @@ namespace RackTool
 
         private void button22_Click(object sender, EventArgs e)
         {
-            _rack._gripper.Disable(Gripper.One);
+            if ( _rack._gripper.GetStatus(Gripper.One, StatusCode.Enabled))
+            {
+                _rack._gripper.Disable(Gripper.One);
+            }
+            else
+            {
+                _rack._gripper.Enable(Gripper.One);
+            }
+           
         }
 
         private void button21_Click(object sender, EventArgs e)
         {
-            _rack._gripper.Disable(Gripper.Two);
+            if (_rack._gripper.GetStatus(Gripper.Two, StatusCode.Enabled))
+            {
+                _rack._gripper.Disable(Gripper.Two);
+            }
+            else
+            {
+                _rack._gripper.Enable(Gripper.Two);
+            }
         }
 
         private void comboBox2_SelectedIndexChanged(object sender, EventArgs e)
@@ -391,6 +446,106 @@ namespace RackTool
         private void comboBox3_SelectedIndexChanged(object sender, EventArgs e)
         {
             _selectedTargetPosition = (TeachPos) comboBox3.SelectedItem;
+        }
+
+        private double defaultTestSpeed = 5;
+
+        private async void button23_Click(object sender, EventArgs e)
+        {
+            _rack.SetSpeed(defaultTestSpeed);
+
+            await Task.Run(() =>
+            {
+                try
+                {
+                    _rack.Pick(_selectedGripper);
+                }
+                catch (Exception ex)
+                {
+
+                    MessageBox.Show(ex.Message);
+                }
+            });
+        }
+
+        private async void button24_Click(object sender, EventArgs e)
+        {
+            _rack.SetSpeed(defaultTestSpeed);
+
+            await Task.Run(() =>
+            {
+                try
+                {
+                    _rack.Place(_selectedGripper);
+                }
+                catch (Exception ex)
+                {
+
+                    MessageBox.Show(ex.Message);
+                }
+            });
+        }
+
+        private void button25_Click(object sender, EventArgs e)
+        {
+            _rack.SetSpeed(defaultTestSpeed);
+
+            Task.Run(() =>
+            {
+                //Todo complete condition.
+                TargetPosition target = _rack._motion.HomePosition;
+                switch (_selectedTargetPosition)
+                {
+                    case TeachPos.Home:
+                        break;
+                    case TeachPos.Pick:
+                        target = _rack._motion.PickPosition;
+                        break;
+                    case TeachPos.Bin:
+                        break;
+                    case TeachPos.ConveyorLeft:
+                        break;
+                    case TeachPos.ConveyorRight:
+                        break;
+                    case TeachPos.Holder1:
+                        target = _rack._motion.Holder1;
+                        break;
+                    case TeachPos.Holder2:
+                        target = _rack._motion.Holder2;
+                        break;
+                    case TeachPos.Holder3:
+                        target = _rack._motion.Holder3;
+                        break;
+                    case TeachPos.Holder4:
+                        target = _rack._motion.Holder4;
+                        break;
+                    case TeachPos.Holder5:
+                        target = _rack._motion.Holder5;
+                        break;
+                    case TeachPos.Holder6:
+                        target = _rack._motion.Holder6;
+                        break;
+                    case TeachPos.Gold1:
+                        break;
+                    case TeachPos.Gold2:
+                        break;
+                    case TeachPos.Gold3:
+                        break;
+                    case TeachPos.Gold4:
+                        break;
+                    case TeachPos.Gold5:
+                        break;
+                }
+
+                try
+                {
+                    _rack.Unload(_selectedGripper, target);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
+            });
         }
     }
 }

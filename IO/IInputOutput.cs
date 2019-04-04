@@ -1,4 +1,4 @@
-﻿namespace IO
+﻿namespace EcatIo
 {
     public interface IInputOutput
     {

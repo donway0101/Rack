@@ -20,11 +20,11 @@ namespace GripperStepper
         X4,
     }
 
-    public enum Output
-    {
-        Y1=1,
-        Y2,
-    }
+    //public enum Output
+    //{
+    //    Y1=1,
+    //    Y2,
+    //}
 
     public enum StatusCode
     {

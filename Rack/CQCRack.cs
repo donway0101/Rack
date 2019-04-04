@@ -4,6 +4,7 @@ using ACS.SPiiPlusNET;
 using Motion;
 using GripperStepper;
 using Tools;
+using EcatIo;
 
 namespace Rack
 {
@@ -12,11 +13,12 @@ namespace Rack
     /// </summary>
     /// <remarks>If estop button is on, then ethercat bus error occur, notify user, use reboot method</remarks>
     /// Power up, Ethercat error occur, wire problem? 
-    public class CqcRack
+    public partial class CqcRack
     {
         private readonly Api _ch = new Api();
         public EthercatMotion _motion;
         public Stepper _gripper;
+        public EthercatIo _io;
         private bool _gripperIsOnline = true;
         private readonly string _ip;
 
@@ -39,7 +41,9 @@ namespace Rack
             }
             _motion = new EthercatMotion(_ch, 5);
             _motion.Setup();
-     
+            _io = new EthercatIo(_ch, 72, 7, 4);
+            _io.Setup();
+
             if (_gripperIsOnline)
             {
                 if (_gripper == null)
@@ -159,7 +163,7 @@ namespace Rack
             _motion.SetSpeedImm(speed);
         }
 
-        public void HomeRobot(double homeSpeed = 20)
+        public void HomeRobot(double homeSpeed = 5)
         {
             if (SetupComplete == false)
             {
@@ -313,9 +317,11 @@ namespace Rack
             //If the other gripper is holding a phone, then conveyor can not reload.
             MoveToTargetPosition(gripper, _motion.PickPosition);
             //Close cylinder.
+            CloseGripper(gripper);
             _motion.ToPointWaitTillEnd(_motion.MotorZ, _motion.PickPosition.ApproachHeight);
             //Check.
         }
+
 
         public void Place(Gripper gripper)
         {
@@ -327,13 +333,14 @@ namespace Rack
                 ApproachHeight = _motion.PickPosition.ApproachHeight,
                 Id = _motion.PickPosition.Id,
                 RPos = _motion.PickPosition.RPos,
-                XPos = _motion.PickPosition.XPos+1,
+                XPos = _motion.PickPosition.XPos+0.5,
                 YPos = _motion.PickPosition.YPos,
                 ZPos = _motion.PickPosition.ZPos
             };
             
             MoveToTargetPosition(gripper, placePosition);
             //Open cylinder.
+            OpenGripper(gripper);
             _motion.ToPointWaitTillEnd(_motion.MotorZ, _motion.PickPosition.ApproachHeight);
             //Check phone is on conveyor.
         }
@@ -351,7 +358,7 @@ namespace Rack
         {
             //Todo make sure box is open.
             MoveToTargetPosition(gripper, holder);
-            //Open gripper
+            OpenGripper(gripper);
             _motion.ToPointWaitTillEnd(_motion.MotorZ, holder.ApproachHeight);
             //Box is OK to close.
             _motion.ToPointWaitTillEnd(_motion.MotorY, _motion.PickPosition.YPos);
@@ -361,7 +368,7 @@ namespace Rack
         {
             //Todo make sure box is open.
             MoveToTargetPosition(gripper, holder);
-            //Close gripper
+            CloseGripper(gripper);
             _motion.ToPointWaitTillEnd(_motion.MotorZ, holder.ApproachHeight);
             //Box is OK to close.
             _motion.ToPointWaitTillEnd(_motion.MotorY, _motion.PickPosition.YPos);
