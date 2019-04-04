@@ -71,19 +71,11 @@ namespace Rack
 
         public void Test()
         {
-            SetSpeed(20);
-
-            //PickAndLoad();
-            //LoadGold();
-            //UnloadAndBin();
-            //TestRun();
-            TestUnloadAndLoadHolders();
-
-            //Task.Run(() =>
-            //{
-            //    Place(Gripper.One);
-            //    Place(Gripper.Two);
-            //});
+            ReadyThePhone();
+            Pick(Gripper.One);
+            UnloadAndLoad(_motion.Holder4, Gripper.Two);
+            UnloadAndLoad(_motion.Holder1, Gripper.One);
+            Place(Gripper.One);
         }
 
         private void TestLoadGold()
@@ -315,10 +307,18 @@ namespace Rack
             }
         }
 
-        public void SwitchGripper(TargetPosition target, Gripper gripper)
+        public void SwitchGripper(TargetPosition target, ref Gripper gripper)
         {
             gripper = gripper== Gripper.One ? Gripper.Two : Gripper.One;
+
+            target = AddOffset(gripper, target);
+            _motion.ToPointX(target.XPos);
+            _motion.ToPoint(_motion.MotorY, target.YPos);
+
             ToPointWaitTillEndGripper(target, gripper);
+
+            _motion.WaitTillEndX();
+            _motion.WaitTillEnd(_motion.MotorY);
         }
 
         public void Pick(Gripper gripper)
@@ -400,6 +400,20 @@ namespace Rack
 
         public void Unload(Gripper gripper, TargetPosition holder)
         {
+            if (gripper == Gripper.One)
+            {
+                if (!_io.GetInput(Input.Gripper01Loose))
+                {
+                    throw new Exception("Gripper one is not opened.");
+                }
+            }
+            else
+            {
+                if (!_io.GetInput(Input.Gripper02Loose))
+                {
+                    throw new Exception("Gripper two is not opened.");
+                }
+            }
             //Todo make sure box is open.
             MoveToTargetPosition(gripper, holder);
             CloseGripper(gripper);
@@ -412,24 +426,32 @@ namespace Rack
         {
             //Todo make sure box is open.
             MoveToTargetPosition(gripper, target);
-            //Open gripper
+            CloseGripper(gripper);
             _motion.ToPointWaitTillEnd(_motion.MotorZ, target.ApproachHeight); //Up.
             //Todo add offset.
-            SwitchGripper(target, gripper); //Switch gripper.
+            SwitchGripper(target, ref gripper); //Switch gripper.
             _motion.ToPointWaitTillEnd(_motion.MotorZ, target.ZPos); //Down.
+            OpenGripper(gripper);
             _motion.ToPointWaitTillEnd(_motion.MotorZ, target.ApproachHeight); //Up.
             _motion.ToPointWaitTillEnd(_motion.MotorY, _motion.PickPosition.YPos); //Back.
         }
 
-
-        private void MoveToTargetPosition(Gripper gripper, TargetPosition target)
+        private TargetPosition AddOffset(Gripper gripper, TargetPosition target)
         {
-            if ( gripper == Gripper.Two & target.Id != Location.Pick)
+            if (gripper == Gripper.Two & target.Id != Location.Pick)
             {
                 target.XPos = target.XPos + 1.44467773437;
                 target.YPos = target.YPos - 0.918862304687;
                 target.APos = target.APos - 0.15;
             }
+
+            return target;
+        }
+
+
+        private void MoveToTargetPosition(Gripper gripper, TargetPosition target)
+        {
+            target = AddOffset(gripper, target);
 
             TargetPosition currentPosition;
             currentPosition = GetRobotPose();
@@ -767,7 +789,7 @@ namespace Rack
                 _motion.WaitTillEnd(_motion.MotorR);
                 _gripper.WaitTillEnd(Gripper.One, 0);
                 _gripper.WaitTillEnd(Gripper.Two, target.APos);
-            }         
+            }                                
         }
 
         private void WaitTillEndGripper(TargetPosition target, Gripper gripper)

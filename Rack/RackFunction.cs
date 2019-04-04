@@ -88,6 +88,8 @@ namespace Rack
                 if (sw.ElapsedMilliseconds > timeout) throw new TimeoutException();
                 Thread.Sleep(10);
             }
+
+            _conveyor.ReadyForPicking = true;
         }
     }
 }
