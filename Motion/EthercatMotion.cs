@@ -31,23 +31,23 @@ namespace Motion
 
         public Motor[] Motors { get; set; }
 
-        public TargetPosition HomePosition { get; set; } = new TargetPosition() { Id = Location.Home };
-        public TargetPosition PickPosition { get; set; } = new TargetPosition() { Id = Location.Pick };
-        public TargetPosition BinPosition { get; set; } = new TargetPosition() { Id = Location.Bin };
-        public TargetPosition ConveyorLeftPosition { get; set; } = new TargetPosition() { Id = Location.NoWhere };
-        public TargetPosition ConveyorRightPosition { get; set; } = new TargetPosition() { Id = Location.NoWhere };
-        public TargetPosition Holder1 { get; set; } = new TargetPosition() { Id = Location.Holder1 };
-        public TargetPosition Holder2 { get; set; } = new TargetPosition() { Id = Location.Holder2 };
-        public TargetPosition Holder3 { get; set; } = new TargetPosition() { Id = Location.Holder3 };
-        public TargetPosition Holder4 { get; set; } = new TargetPosition() { Id = Location.Holder4 };
-        public TargetPosition Holder5 { get; set; } = new TargetPosition() { Id = Location.Holder5 };
-        public TargetPosition Holder6 { get; set; } = new TargetPosition() { Id = Location.Holder6 };
+        public TargetPosition HomePosition { get; set; }
+        public TargetPosition PickPosition { get; set; }
+        public TargetPosition BinPosition { get; set; }
+        public TargetPosition ConveyorLeftPosition { get; set; }
+        public TargetPosition ConveyorRightPosition { get; set; }
+        public TargetPosition Holder1 { get; set; } 
+        public TargetPosition Holder2 { get; set; }
+        public TargetPosition Holder3 { get; set; }
+        public TargetPosition Holder4 { get; set; }
+        public TargetPosition Holder5 { get; set; }
+        public TargetPosition Holder6 { get; set; }
 
-        public TargetPosition Gold1 { get; set; } = new TargetPosition() { Id = Location.Gold1 };
-        public TargetPosition Gold2 { get; set; } = new TargetPosition() { Id = Location.Gold2 };
-        public TargetPosition Gold3 { get; set; } = new TargetPosition() { Id = Location.Gold3 };
-        public TargetPosition Gold4 { get; set; } = new TargetPosition() { Id = Location.Gold4 };
-        public TargetPosition Gold5 { get; set; } = new TargetPosition() { Id = Location.Gold5 };
+        public TargetPosition Gold1 { get; set; }
+        public TargetPosition Gold2 { get; set; }
+        public TargetPosition Gold3 { get; set; }
+        public TargetPosition Gold4 { get; set; }
+        public TargetPosition Gold5 { get; set; }
 
         public TargetPosition[] Locations { get; set; }
 
@@ -162,43 +162,48 @@ namespace Motion
             }
             EnableAll();
 
-            LoadPosition(HomePosition, TeachPos.Home);
-            LoadPosition(PickPosition, TeachPos.Pick);
-            LoadPosition(BinPosition, TeachPos.Bin);
-            LoadPosition(ConveyorLeftPosition, TeachPos.ConveyorLeft);
-            LoadPosition(ConveyorRightPosition, TeachPos.ConveyorRight);
-
-            LoadPosition(Holder1, TeachPos.Holder1);
-            LoadPosition(Holder2, TeachPos.Holder2);
-            LoadPosition(Holder3, TeachPos.Holder3);
-            LoadPosition(Holder4, TeachPos.Holder4);
-            LoadPosition(Holder5, TeachPos.Holder5);
-            LoadPosition(Holder6, TeachPos.Holder6);           
-
-            LoadPosition(Gold1, TeachPos.Gold1);
-            LoadPosition(Gold2, TeachPos.Gold2);
-            LoadPosition(Gold3, TeachPos.Gold3);
-            LoadPosition(Gold4, TeachPos.Gold4);
-            LoadPosition(Gold5, TeachPos.Gold5);
+            HomePosition = LoadPosition(TeachPos.Home, Location.Home);
+            PickPosition = LoadPosition(TeachPos.Pick, Location.Pick);
+            BinPosition = LoadPosition(TeachPos.Bin, Location.Bin);
+            ConveyorLeftPosition = LoadPosition(TeachPos.ConveyorLeft, Location.NoWhere);
+            ConveyorRightPosition = LoadPosition(TeachPos.ConveyorRight, Location.NoWhere);
+             
+            Holder1 = LoadPosition(TeachPos.Holder1, Location.Holder1);
+            Holder2 = LoadPosition(TeachPos.Holder2, Location.Holder2);
+            Holder3 = LoadPosition(TeachPos.Holder3, Location.Holder3);
+            Holder4 = LoadPosition(TeachPos.Holder4, Location.Holder4);
+            Holder5 = LoadPosition(TeachPos.Holder5, Location.Holder5);
+            Holder6 = LoadPosition(TeachPos.Holder6, Location.Holder6);           
+             
+            Gold1 = LoadPosition(TeachPos.Gold1, Location.Gold1);
+            Gold2 = LoadPosition(TeachPos.Gold2, Location.Gold2);
+            Gold3 = LoadPosition(TeachPos.Gold3, Location.Gold3);
+            Gold4 = LoadPosition(TeachPos.Gold4, Location.Gold4);
+            Gold5 = LoadPosition(TeachPos.Gold5, Location.Gold5);
 
             Locations = new TargetPosition[14] { Holder1, Holder2, Holder3, Holder4, Holder5, Holder6,
             HomePosition,PickPosition, BinPosition, Gold1, Gold2, Gold3, Gold4, Gold5};
         }
 
-        private void LoadPosition(TargetPosition target, TeachPos pos)
+        private TargetPosition LoadPosition(TeachPos pos, Location id)
         {
-            target.XPos = Convert.ToDouble(
-                    XmlReaderWriter.GetTeachAttribute(Files.RackData, pos, PosItem.XPos));
-            target.YPos = Convert.ToDouble(
-                    XmlReaderWriter.GetTeachAttribute(Files.RackData, pos, PosItem.YPos));
-            target.ZPos = Convert.ToDouble(
-                    XmlReaderWriter.GetTeachAttribute(Files.RackData, pos, PosItem.ZPos));
-            target.RPos = Convert.ToDouble(
-                    XmlReaderWriter.GetTeachAttribute(Files.RackData, pos, PosItem.RPos));
-            target.APos = Convert.ToDouble(
-                    XmlReaderWriter.GetTeachAttribute(Files.RackData, pos, PosItem.APos));
-            target.ApproachHeight = Convert.ToDouble(
-                    XmlReaderWriter.GetTeachAttribute(Files.RackData, pos, PosItem.ApproachHeight));
+            TargetPosition target = new TargetPosition
+            {
+                Id = id,
+                XPos = Convert.ToDouble(
+                    XmlReaderWriter.GetTeachAttribute(Files.RackData, pos, PosItem.XPos)),
+                YPos = Convert.ToDouble(
+                    XmlReaderWriter.GetTeachAttribute(Files.RackData, pos, PosItem.YPos)),
+                ZPos = Convert.ToDouble(
+                    XmlReaderWriter.GetTeachAttribute(Files.RackData, pos, PosItem.ZPos)),
+                RPos = Convert.ToDouble(
+                    XmlReaderWriter.GetTeachAttribute(Files.RackData, pos, PosItem.RPos)),
+                APos = Convert.ToDouble(
+                    XmlReaderWriter.GetTeachAttribute(Files.RackData, pos, PosItem.APos)),
+                ApproachHeight = Convert.ToDouble(
+                    XmlReaderWriter.GetTeachAttribute(Files.RackData, pos, PosItem.ApproachHeight))
+            };
+            return target;
         }
 
         /// <summary>

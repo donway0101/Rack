@@ -5,6 +5,8 @@ using Motion;
 using GripperStepper;
 using Tools;
 using EcatIo;
+using Conveyor;
+using Input = EcatIo.Input;
 
 namespace Rack
 {
@@ -19,6 +21,8 @@ namespace Rack
         public EthercatMotion _motion;
         public Stepper _gripper;
         public EthercatIo _io;
+        public PickAndPlaceConveyor _conveyor;
+
         private bool _gripperIsOnline = true;
         private readonly string _ip;
 
@@ -43,6 +47,7 @@ namespace Rack
             _motion.Setup();
             _io = new EthercatIo(_ch, 72, 7, 4);
             _io.Setup();
+            _conveyor= new PickAndPlaceConveyor(_io);
 
             if (_gripperIsOnline)
             {
@@ -175,15 +180,15 @@ namespace Rack
 
             //Box state should either be open or close.
 
-            TargetPosition currentPosition = new TargetPosition();
-            GetRobotPose(currentPosition);
+            TargetPosition currentPosition;
+            currentPosition = GetRobotPose();
 
             if (currentPosition.XPos < _motion.ConveyorRightPosition.XPos &
                 currentPosition.XPos > _motion.ConveyorLeftPosition.XPos) //Robot is in conveyor zone.
             {
                 if (currentPosition.YPos > YIsInBox) //Y is dangerous
                 {
-                    TargetPosition currentHolder = null;
+                    TargetPosition currentHolder = new TargetPosition(){Id = Location.Home};
                     double tolerance = 50;
                     foreach (var pos in _motion.Locations)
                     {
@@ -195,7 +200,7 @@ namespace Rack
                         }
                     }
 
-                    if (currentHolder != null)
+                    if (currentHolder.Id != Location.Home)
                     {
                         _motion.ToPointWaitTillEnd(_motion.MotorZ, currentHolder.ApproachHeight);
                         _motion.ToPointWaitTillEnd(_motion.MotorR, currentHolder.RPos);
@@ -238,7 +243,7 @@ namespace Rack
                     //Todo, need to check X?
                     //X Y Z tolerance 50mm. then is inside box
 
-                    TargetPosition currentHolder = null;
+                    TargetPosition currentHolder = new TargetPosition(){Id = Location.Home};
                     double tolerance = 50;
                     foreach (var pos in _motion.Locations)
                     {
@@ -247,10 +252,11 @@ namespace Rack
                             (currentPosition.ZPos > pos.ZPos - tolerance & currentPosition.ZPos < pos.ApproachHeight + tolerance))
                         {
                             currentHolder = pos;
+                            break;
                         }
                     }
 
-                    if (currentHolder != null)
+                    if (currentHolder.Id != Location.Home)
                     {
                         _motion.ToPointWaitTillEnd(_motion.MotorZ, currentHolder.ApproachHeight);
                         _motion.ToPointWaitTillEnd(_motion.MotorR, currentHolder.RPos);
@@ -288,12 +294,16 @@ namespace Rack
             RobotHomeComplete = true;
         }
 
-        private void GetRobotPose(TargetPosition currentPosition)
+        private TargetPosition GetRobotPose()
         {
-            currentPosition.XPos = _motion.GetPositionX();
-            currentPosition.YPos = _motion.GetPosition(_motion.MotorY);
-            currentPosition.ZPos = _motion.GetPosition(_motion.MotorZ);
-            currentPosition.RPos = _motion.GetPosition(_motion.MotorR);
+            TargetPosition currentPosition = new TargetPosition
+            {
+                XPos = _motion.GetPositionX(),
+                YPos = _motion.GetPosition(_motion.MotorY),
+                ZPos = _motion.GetPosition(_motion.MotorZ),
+                RPos = _motion.GetPosition(_motion.MotorR)
+            };
+            return currentPosition;
         }
 
         private void HomeGrippers()
@@ -313,6 +323,30 @@ namespace Rack
 
         public void Pick(Gripper gripper)
         {
+            if ( _conveyor.ReadyForPicking)
+            {
+                _conveyor.ReadyForPicking = false;
+            }
+            else
+            {
+                throw new Exception("Phone is not ready.");
+            }
+
+            if ( gripper == Gripper.One)
+            {
+                if ( !_io.GetInput(Input.Gripper01Loose))
+                {
+                    throw new Exception("Gripper one is not opened.");
+                }
+            }
+            else
+            {
+                if (!_io.GetInput(Input.Gripper02Loose))
+                {
+                    throw new Exception("Gripper two is not opened.");
+                }
+            }
+            
             //If system is OK, gripper is free and opened, conveyor is ready
             //If the other gripper is holding a phone, then conveyor can not reload.
             MoveToTargetPosition(gripper, _motion.PickPosition);
@@ -380,6 +414,7 @@ namespace Rack
             MoveToTargetPosition(gripper, target);
             //Open gripper
             _motion.ToPointWaitTillEnd(_motion.MotorZ, target.ApproachHeight); //Up.
+            //Todo add offset.
             SwitchGripper(target, gripper); //Switch gripper.
             _motion.ToPointWaitTillEnd(_motion.MotorZ, target.ZPos); //Down.
             _motion.ToPointWaitTillEnd(_motion.MotorZ, target.ApproachHeight); //Up.
@@ -389,9 +424,15 @@ namespace Rack
 
         private void MoveToTargetPosition(Gripper gripper, TargetPosition target)
         {
+            if ( gripper == Gripper.Two & target.Id != Location.Pick)
+            {
+                target.XPos = target.XPos + 1.44467773437;
+                target.YPos = target.YPos - 0.918862304687;
+                target.APos = target.APos - 0.15;
+            }
 
-            TargetPosition currentPosition = new TargetPosition();
-            GetRobotPose(currentPosition);
+            TargetPosition currentPosition;
+            currentPosition = GetRobotPose();
 
             //if (RobotHomeComplete==false)
             //{
@@ -706,6 +747,7 @@ namespace Rack
             MotorYOutThenMotorZDown(target);
         }
 
+        //Todo add offset to gripper one and gripper two.
         private void ToPointWaitTillEndGripper(TargetPosition target, Gripper gripper)
         {
             if (gripper == Gripper.One)

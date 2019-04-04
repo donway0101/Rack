@@ -34,8 +34,6 @@
             this.button5 = new System.Windows.Forms.Button();
             this.button4 = new System.Windows.Forms.Button();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
-            this.trackBar1 = new System.Windows.Forms.TrackBar();
-            this.label1 = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.label7 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
@@ -72,12 +70,15 @@
             this.button23 = new System.Windows.Forms.Button();
             this.button24 = new System.Windows.Forms.Button();
             this.button25 = new System.Windows.Forms.Button();
-            ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).BeginInit();
+            this.label1 = new System.Windows.Forms.Label();
+            this.trackBar1 = new System.Windows.Forms.TrackBar();
+            this.button26 = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).BeginInit();
             this.SuspendLayout();
             // 
             // button1
@@ -143,25 +144,6 @@
             this.checkBox1.Text = "Loop";
             this.checkBox1.UseVisualStyleBackColor = true;
             this.checkBox1.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
-            // 
-            // trackBar1
-            // 
-            this.trackBar1.Location = new System.Drawing.Point(75, 434);
-            this.trackBar1.Maximum = 200;
-            this.trackBar1.Name = "trackBar1";
-            this.trackBar1.Size = new System.Drawing.Size(776, 56);
-            this.trackBar1.TabIndex = 7;
-            this.trackBar1.Value = 10;
-            this.trackBar1.Scroll += new System.EventHandler(this.trackBar1_Scroll);
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(880, 400);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(23, 15);
-            this.label1.TabIndex = 8;
-            this.label1.Text = "20";
             // 
             // groupBox1
             // 
@@ -454,7 +436,7 @@
             // 
             // button20
             // 
-            this.button20.Location = new System.Drawing.Point(27, 187);
+            this.button20.Location = new System.Drawing.Point(27, 218);
             this.button20.Name = "button20";
             this.button20.Size = new System.Drawing.Size(119, 35);
             this.button20.TabIndex = 15;
@@ -465,7 +447,7 @@
             // comboBox2
             // 
             this.comboBox2.FormattingEnabled = true;
-            this.comboBox2.Location = new System.Drawing.Point(170, 199);
+            this.comboBox2.Location = new System.Drawing.Point(152, 243);
             this.comboBox2.Name = "comboBox2";
             this.comboBox2.Size = new System.Drawing.Size(119, 23);
             this.comboBox2.TabIndex = 16;
@@ -474,7 +456,7 @@
             // comboBox3
             // 
             this.comboBox3.FormattingEnabled = true;
-            this.comboBox3.Location = new System.Drawing.Point(170, 227);
+            this.comboBox3.Location = new System.Drawing.Point(152, 271);
             this.comboBox3.Name = "comboBox3";
             this.comboBox3.Size = new System.Drawing.Size(119, 23);
             this.comboBox3.TabIndex = 17;
@@ -497,6 +479,9 @@
             // 
             // tabPage1
             // 
+            this.tabPage1.Controls.Add(this.button26);
+            this.tabPage1.Controls.Add(this.label1);
+            this.tabPage1.Controls.Add(this.trackBar1);
             this.tabPage1.Controls.Add(this.button25);
             this.tabPage1.Controls.Add(this.button24);
             this.tabPage1.Controls.Add(this.button23);
@@ -523,9 +508,7 @@
             // tabPage2
             // 
             this.tabPage2.Controls.Add(this.groupBox1);
-            this.tabPage2.Controls.Add(this.label1);
             this.tabPage2.Controls.Add(this.groupBox2);
-            this.tabPage2.Controls.Add(this.trackBar1);
             this.tabPage2.Location = new System.Drawing.Point(104, 4);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
@@ -536,7 +519,7 @@
             // 
             // button23
             // 
-            this.button23.Location = new System.Drawing.Point(27, 311);
+            this.button23.Location = new System.Drawing.Point(27, 341);
             this.button23.Name = "button23";
             this.button23.Size = new System.Drawing.Size(119, 35);
             this.button23.TabIndex = 18;
@@ -556,13 +539,42 @@
             // 
             // button25
             // 
-            this.button25.Location = new System.Drawing.Point(27, 228);
+            this.button25.Location = new System.Drawing.Point(27, 259);
             this.button25.Name = "button25";
             this.button25.Size = new System.Drawing.Size(119, 35);
             this.button25.TabIndex = 20;
             this.button25.Text = "Unload";
             this.button25.UseVisualStyleBackColor = true;
             this.button25.Click += new System.EventHandler(this.button25_Click);
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(760, 415);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(23, 15);
+            this.label1.TabIndex = 22;
+            this.label1.Text = "20";
+            // 
+            // trackBar1
+            // 
+            this.trackBar1.Location = new System.Drawing.Point(27, 464);
+            this.trackBar1.Maximum = 200;
+            this.trackBar1.Name = "trackBar1";
+            this.trackBar1.Size = new System.Drawing.Size(776, 56);
+            this.trackBar1.TabIndex = 21;
+            this.trackBar1.Value = 10;
+            this.trackBar1.Scroll += new System.EventHandler(this.trackBar1_Scroll);
+            // 
+            // button26
+            // 
+            this.button26.Location = new System.Drawing.Point(27, 176);
+            this.button26.Name = "button26";
+            this.button26.Size = new System.Drawing.Size(119, 35);
+            this.button26.TabIndex = 23;
+            this.button26.Text = "ReadyPhone";
+            this.button26.UseVisualStyleBackColor = true;
+            this.button26.Click += new System.EventHandler(this.button26_Click);
             // 
             // Form1
             // 
@@ -573,7 +585,6 @@
             this.Controls.Add(this.tabControl1);
             this.Name = "Form1";
             this.Text = "Rack";
-            ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).EndInit();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.groupBox2.ResumeLayout(false);
@@ -582,7 +593,7 @@
             this.tabPage1.ResumeLayout(false);
             this.tabPage1.PerformLayout();
             this.tabPage2.ResumeLayout(false);
-            this.tabPage2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -595,8 +606,6 @@
         private System.Windows.Forms.Button button5;
         private System.Windows.Forms.Button button4;
         private System.Windows.Forms.CheckBox checkBox1;
-        private System.Windows.Forms.TrackBar trackBar1;
-        private System.Windows.Forms.Label label1;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Label label5;
@@ -633,6 +642,9 @@
         private System.Windows.Forms.Button button24;
         private System.Windows.Forms.Button button23;
         private System.Windows.Forms.Button button25;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.TrackBar trackBar1;
+        private System.Windows.Forms.Button button26;
     }
 }
 

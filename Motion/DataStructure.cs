@@ -10,9 +10,9 @@ namespace Motion
     {
     }
 
-    public class TargetPosition
+    public struct TargetPosition
     {
-        public Location Id { get; set; } = Location.NoWhere;
+        public Location Id { get; set; }
         public double XPos { get; set; }
         public double YPos { get; set; }
         public double ZPos { get; set; }

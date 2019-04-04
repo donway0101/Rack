@@ -229,7 +229,7 @@ namespace EcatIo
             SetOutput(moduleId, outputPinNum, value);
         }
 
-        public bool Getinput(int input)
+        public bool GetInput(int input)
         {
             int moduleId = input / 10;
             int inputPinNum = input % 10;

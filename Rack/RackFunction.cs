@@ -50,5 +50,44 @@ namespace Rack
                 if (sw.ElapsedMilliseconds > 5000) throw new TimeoutException();
             }
         }
+
+        public void ReadyThePhone(int timeout=3000)
+        {
+            _io.SetOutput(Output.ClampPick, true);
+            Stopwatch sw = new Stopwatch();
+            sw.Start();
+            while (!_io.GetInput(Input.ClampTightPick))
+            {
+                if (sw.ElapsedMilliseconds > timeout) throw new TimeoutException();
+                Thread.Sleep(10);
+            }
+
+            _io.SetOutput(Output.SideBlockPick, true);
+            sw.Restart();
+            while (_io.GetInput(Input.SideBlockPick))
+            {
+                if (sw.ElapsedMilliseconds > timeout) throw new TimeoutException();
+                Thread.Sleep(10);
+            }
+
+            Thread.Sleep(500);
+
+            _io.SetOutput(Output.SideBlockPick, false);
+            sw.Restart();
+            while (!_io.GetInput(Input.SideBlockPick))
+            {
+                if (sw.ElapsedMilliseconds > timeout) throw new TimeoutException();
+                Thread.Sleep(10);
+            }
+
+            _io.SetOutput(Output.ClampPick, false);
+            sw = new Stopwatch();
+            sw.Restart();
+            while (!_io.GetInput(Input.ClampLoosePick))
+            {
+                if (sw.ElapsedMilliseconds > timeout) throw new TimeoutException();
+                Thread.Sleep(10);
+            }
+        }
     }
 }

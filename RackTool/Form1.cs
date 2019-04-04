@@ -547,5 +547,10 @@ namespace RackTool
                 }
             });
         }
+
+        private void button26_Click(object sender, EventArgs e)
+        {
+            _rack.ReadyThePhone();
+        }
     }
 }
