@@ -20,17 +20,17 @@ namespace EcatIo
         Reserved06 = 06,
         Reserved07 = 07,
         //1
-        UpBlockPickForward = 10,
-        UpBlockPickBackward = 23,
+        UpBlockPickForward = 22,
+        UpBlockPickBackward = 10,
         SideBlockPick = 11,
         SideBlockSeparateBackward = 12,
-        SideBlockSeparateForward = 21,
+        SideBlockSeparateForward = 20,
         ClampPick = 13,
         BeltPick = 14,
         BeltNg = 15,
         BeltConveyorOne = 16,
-        UpBlockSeparateBackward = 20,
-        UpBlockSeparateForward = 22,
+        UpBlockSeparateBackward = 17,
+        UpBlockSeparateForward = 21,
 
         //2
         //GripperOne = 20,
@@ -61,7 +61,7 @@ namespace EcatIo
         Estop=02,
         SideBlockPick=03,
         Reserved04=04,
-        UpBlockPick=05,
+        UpBlockPickBackward=05,
         ClampTightPick=06,
         ClampLoosePick = 07,
         // 1
@@ -86,7 +86,7 @@ namespace EcatIo
         ConveyorBinIn = 27,
         // 3
         ConveyorBinInTwo = 30,
-        UpBlockSeparateForward = 31,
+        UpBlockSeparateForward = 34,
         UpBlockSeparateBackward = 31,
         UpBlockPickForward = 32,
         Reservered32 = 33,

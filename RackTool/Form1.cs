@@ -562,7 +562,23 @@ namespace RackTool
         {
             //_rack._conveyor.UpBlockSeparate(false);
             //_rack._conveyor.InitialState();
-            _rack._conveyor.SideBlockSeparate(true);
+            //_rack._conveyor.UpBlockSeparate(true);
+            _rack._conveyor.Start();
+        }
+
+        private void button39_Click(object sender, EventArgs e)
+        {
+            _rack._conveyor.CommandInposForPicking = true;
+        }
+
+        private void button40_Click(object sender, EventArgs e)
+        {
+            _rack._conveyor.CommandReadyForPicking = true;
+        }
+
+        private void button41_Click(object sender, EventArgs e)
+        {
+            _rack._conveyor.InposForPicking = false;
         }
     }
 }

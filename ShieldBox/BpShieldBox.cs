@@ -59,45 +59,89 @@ namespace ShieldBox
         /// 
         /// </summary>
         /// <param name="timeout">Takes less than 3 sec to open</param>
-        public void OpenBox(int timeout = 10000)
+        public void OpenBox(int timeout = 5000)
         {
-            SendCmd(Command.OPEN);
-            Stopwatch stopwatch = new Stopwatch();
-            stopwatch.Start();
-            while (_response != Response.OpenSuccessful)
+            try
             {
-                if (stopwatch.ElapsedMilliseconds > timeout)
-                {
-                    //_response = String.Empty;
-                    throw new Exception("OpenBox " + _id + " timeout");
-                }
-                Delay(100);
+                SendCommand(Command.OPEN, Response.OpenSuccessful, timeout);
             }
-
-            long sec = stopwatch.ElapsedMilliseconds;
-            _response = String.Empty;
+            catch (Exception e)
+            {
+                throw new Exception("OpenBox " + _id + " timeout");
+            }
         }
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="timeout"> Takes less than 3 sec close</param>
-        public void CloseBox(int timeout = 10000)
+        public void CloseBox(int timeout = 5000)
         {
-            SendCmd(Command.CLOSE);
+            try
+            {
+                SendCommand(Command.CLOSE, Response.CloseSuccessful, timeout);
+            }
+            catch (Exception e)
+            {
+                throw new Exception("CloseBox " + _id + " timeout");
+            }            
+        }
+
+        public void GreenLight(int timeout = 5000)
+        {
+            try
+            {
+                SendCommand(Command.PASS, Response.LightOnSuccessful, timeout);
+            }
+            catch (Exception e)
+            {
+                throw new Exception("GreenLight " + _id + " timeout");
+            }
+        }
+
+        private void SendCommand(Command command, string response, int timeout = 5000)
+        {
+            SendCmd(command);
             Stopwatch stopwatch = new Stopwatch();
             stopwatch.Start();
-            while (_response != Response.CloseSuccessful)
+            while (_response != response)
             {
                 if (stopwatch.ElapsedMilliseconds > timeout)
                 {
-                    //_response = String.Empty;
-                    throw new Exception("CloseBox " + _id + " timeout");
+                    _response = String.Empty;
+                    throw new TimeoutException();
                 }
                 Delay(100);
             }
-            long sec = stopwatch.ElapsedMilliseconds;
+            //long sec = stopwatch.ElapsedMilliseconds; // For time consumption command testing
             _response = String.Empty;
+        }
+
+        public bool BoxIsClosed(int timeout = 1000)
+        {
+            SendCmd(Command.STATUS);
+            Stopwatch stopwatch = new Stopwatch();
+            stopwatch.Start();
+            while (_response != Response.BoxIsOpened & _response != Response.BoxIsClosed)
+            {
+                if (stopwatch.ElapsedMilliseconds > timeout)
+                {
+                    _response = String.Empty;
+                    throw new TimeoutException();
+                }
+                Delay(100);
+            }
+
+            if (_response != Response.BoxIsClosed)
+            {
+                _response = String.Empty;
+                return false;
+            }
+            else
+            {
+                _response = String.Empty;
+                return true;
+            }           
         }
 
         public Task<bool> CloseBoxAsync()

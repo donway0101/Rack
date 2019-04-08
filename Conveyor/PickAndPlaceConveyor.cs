@@ -99,7 +99,7 @@ namespace Conveyor
                 }
                 else
                 {
-                    SetCylinder(Output.UpBlockSeparateForward, Input.UpBlockSeparateForward, false);
+                    SetCylinder(Output.UpBlockSeparateBackward, Input.UpBlockSeparateBackward, false);
                 }
             }
         }
@@ -110,22 +110,22 @@ namespace Conveyor
             {
                 if (ConveyorMovingForward)
                 {
-                    ResetCylinder(Output.UpBlockSeparateForward, Input.UpBlockSeparateForward);
+                    ResetCylinder(Output.UpBlockPickForward, Input.UpBlockPickForward);
                 }
                 else
                 {
-                    ResetCylinder(Output.UpBlockSeparateBackward, Input.UpBlockSeparateBackward);
+                    ResetCylinder(Output.UpBlockPickBackward, Input.UpBlockPickBackward);
                 }
             }
             else
             {
                 if (ConveyorMovingForward)
                 {
-                    SetCylinder(Output.UpBlockSeparateForward, Input.UpBlockSeparateForward, false);
+                    SetCylinder(Output.UpBlockPickForward, Input.UpBlockPickForward, false);
                 }
                 else
                 {
-                    SetCylinder(Output.UpBlockSeparateForward, Input.UpBlockSeparateForward, false);
+                    SetCylinder(Output.UpBlockPickBackward, Input.UpBlockPickBackward, false);
                 }
             }
         }
@@ -206,10 +206,15 @@ namespace Conveyor
 
         public void InitialState()
         {
-            SetCylinder(Output.UpBlockSeparateForward, Input.UpBlockSeparateForward, false);
-            SetCylinder(Output.UpBlockSeparateBackward, Input.UpBlockSeparateBackward, false);
+            Clamp(false);
+            UpBlockSeparate(true);
+            UpBlockPick(true);
             SideBlockSeparate(false);
-            //TOdo
+            ConveyorMovingForward = !ConveyorMovingForward;
+            UpBlockSeparate(false);
+            UpBlockPick(false);
+            SideBlockSeparate(false);
+            ConveyorMovingForward = !ConveyorMovingForward;
         }
 
         public void Start()
@@ -240,8 +245,9 @@ namespace Conveyor
             {
                 try
                 {
-                    if (CommandReadyForPicking == true & ReadyForPicking == false)
+                    if (CommandReadyForPicking == true)
                     {
+                        ReadyForPicking = false;
                         if (InposForPicking)
                         {
                             RunBeltPick(false);
@@ -263,8 +269,16 @@ namespace Conveyor
                     if (CommandInposForPicking == true & InposForPicking == false)
                     {
                         CommandInposForPicking = false;
-                        WaitTill(Input.PickBufferHasPhoneForward, true, 30000);
-                        UpBlockPick(true);
+                        ReadyForPicking = false;
+                        if (_io.GetInput(Input.PickHasPhone)==false)
+                        {
+                            WaitTill(
+                                ConveyorMovingForward
+                                    ? Input.PickBufferHasPhoneForward
+                                    : Input.PickBufferHasPhoneBackward, true, 30000);
+                            UpBlockPick(true);
+                        }                        
+                        
                         SideBlockSeparate(true);
                         UpBlockSeparate(false);
                         RunBeltPick(true);

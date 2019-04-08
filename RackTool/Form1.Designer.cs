@@ -89,6 +89,8 @@
             this.comboBox2 = new System.Windows.Forms.ComboBox();
             this.button20 = new System.Windows.Forms.Button();
             this.tabPage4 = new System.Windows.Forms.TabPage();
+            this.checkBoxPickConveyorMoveForward = new System.Windows.Forms.CheckBox();
+            this.button38 = new System.Windows.Forms.Button();
             this.tabPage3 = new System.Windows.Forms.TabPage();
             this.label9 = new System.Windows.Forms.Label();
             this.tabPage5 = new System.Windows.Forms.TabPage();
@@ -96,8 +98,9 @@
             this.tabPage7 = new System.Windows.Forms.TabPage();
             this.label8 = new System.Windows.Forms.Label();
             this.richTextBox1 = new System.Windows.Forms.RichTextBox();
-            this.button38 = new System.Windows.Forms.Button();
-            this.checkBoxPickConveyorMoveForward = new System.Windows.Forms.CheckBox();
+            this.button39 = new System.Windows.Forms.Button();
+            this.button40 = new System.Windows.Forms.Button();
+            this.button41 = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar2)).BeginInit();
@@ -756,6 +759,9 @@
             // 
             // tabPage4
             // 
+            this.tabPage4.Controls.Add(this.button41);
+            this.tabPage4.Controls.Add(this.button40);
+            this.tabPage4.Controls.Add(this.button39);
             this.tabPage4.Controls.Add(this.checkBoxPickConveyorMoveForward);
             this.tabPage4.Controls.Add(this.button38);
             this.tabPage4.Location = new System.Drawing.Point(104, 4);
@@ -764,6 +770,29 @@
             this.tabPage4.TabIndex = 3;
             this.tabPage4.Text = "Conveyor";
             this.tabPage4.UseVisualStyleBackColor = true;
+            // 
+            // checkBoxPickConveyorMoveForward
+            // 
+            this.checkBoxPickConveyorMoveForward.AutoSize = true;
+            this.checkBoxPickConveyorMoveForward.Checked = true;
+            this.checkBoxPickConveyorMoveForward.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBoxPickConveyorMoveForward.Location = new System.Drawing.Point(50, 25);
+            this.checkBoxPickConveyorMoveForward.Name = "checkBoxPickConveyorMoveForward";
+            this.checkBoxPickConveyorMoveForward.Size = new System.Drawing.Size(197, 19);
+            this.checkBoxPickConveyorMoveForward.TabIndex = 1;
+            this.checkBoxPickConveyorMoveForward.Text = "Conveyor move forward";
+            this.checkBoxPickConveyorMoveForward.UseVisualStyleBackColor = true;
+            this.checkBoxPickConveyorMoveForward.CheckedChanged += new System.EventHandler(this.checkBoxPickConveyorMoveForward_CheckedChanged);
+            // 
+            // button38
+            // 
+            this.button38.Location = new System.Drawing.Point(50, 66);
+            this.button38.Name = "button38";
+            this.button38.Size = new System.Drawing.Size(102, 32);
+            this.button38.TabIndex = 0;
+            this.button38.Text = "Start";
+            this.button38.UseVisualStyleBackColor = true;
+            this.button38.Click += new System.EventHandler(this.button38_Click);
             // 
             // tabPage3
             // 
@@ -829,28 +858,35 @@
             this.richTextBox1.TabIndex = 19;
             this.richTextBox1.Text = "当前设备状态，报警，等待手机，执行任务，解决办法";
             // 
-            // button38
+            // button39
             // 
-            this.button38.Location = new System.Drawing.Point(403, 355);
-            this.button38.Name = "button38";
-            this.button38.Size = new System.Drawing.Size(102, 32);
-            this.button38.TabIndex = 0;
-            this.button38.Text = "UpSeparate";
-            this.button38.UseVisualStyleBackColor = true;
-            this.button38.Click += new System.EventHandler(this.button38_Click);
+            this.button39.Location = new System.Drawing.Point(50, 116);
+            this.button39.Name = "button39";
+            this.button39.Size = new System.Drawing.Size(102, 32);
+            this.button39.TabIndex = 2;
+            this.button39.Text = "Inpos";
+            this.button39.UseVisualStyleBackColor = true;
+            this.button39.Click += new System.EventHandler(this.button39_Click);
             // 
-            // checkBoxPickConveyorMoveForward
+            // button40
             // 
-            this.checkBoxPickConveyorMoveForward.AutoSize = true;
-            this.checkBoxPickConveyorMoveForward.Checked = true;
-            this.checkBoxPickConveyorMoveForward.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBoxPickConveyorMoveForward.Location = new System.Drawing.Point(50, 25);
-            this.checkBoxPickConveyorMoveForward.Name = "checkBoxPickConveyorMoveForward";
-            this.checkBoxPickConveyorMoveForward.Size = new System.Drawing.Size(197, 19);
-            this.checkBoxPickConveyorMoveForward.TabIndex = 1;
-            this.checkBoxPickConveyorMoveForward.Text = "Conveyor move forward";
-            this.checkBoxPickConveyorMoveForward.UseVisualStyleBackColor = true;
-            this.checkBoxPickConveyorMoveForward.CheckedChanged += new System.EventHandler(this.checkBoxPickConveyorMoveForward_CheckedChanged);
+            this.button40.Location = new System.Drawing.Point(50, 165);
+            this.button40.Name = "button40";
+            this.button40.Size = new System.Drawing.Size(102, 32);
+            this.button40.TabIndex = 3;
+            this.button40.Text = "Ready";
+            this.button40.UseVisualStyleBackColor = true;
+            this.button40.Click += new System.EventHandler(this.button40_Click);
+            // 
+            // button41
+            // 
+            this.button41.Location = new System.Drawing.Point(50, 214);
+            this.button41.Name = "button41";
+            this.button41.Size = new System.Drawing.Size(102, 32);
+            this.button41.TabIndex = 4;
+            this.button41.Text = "Picked";
+            this.button41.UseVisualStyleBackColor = true;
+            this.button41.Click += new System.EventHandler(this.button41_Click);
             // 
             // Form1
             // 
@@ -956,6 +992,9 @@
         private System.Windows.Forms.Button button37;
         private System.Windows.Forms.Button button38;
         private System.Windows.Forms.CheckBox checkBoxPickConveyorMoveForward;
+        private System.Windows.Forms.Button button39;
+        private System.Windows.Forms.Button button40;
+        private System.Windows.Forms.Button button41;
     }
 }
 
