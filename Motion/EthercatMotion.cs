@@ -161,6 +161,7 @@ namespace Motion
                 SetSafety(mtr);
             }
             EnableAll();
+            //Todo script inside acs to stop all motor is any error occur.
 
             HomePosition = LoadPosition(TeachPos.Home, Location.Home);
             PickPosition = LoadPosition(TeachPos.Pick, Location.Pick);
