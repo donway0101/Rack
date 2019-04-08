@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{08B41E19-BB93-4308-9BB8-53EE23ED9211}</ProjectGuid>
+    <ProjectGuid>{838EF205-9050-4252-B99A-8E7F66335996}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>IO</RootNamespace>
-    <AssemblyName>IO</AssemblyName>
+    <RootNamespace>ShiledBox</RootNamespace>
+    <AssemblyName>ShiledBox</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
@@ -31,9 +31,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="ACS.SPiiPlusNET">
-      <HintPath>.\ACS.SPiiPlusNET.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -44,9 +41,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="EcatIoData.cs" />
-    <Compile Include="EthercatIo.cs" />
-    <Compile Include="IInputOutput.cs" />
+    <Compile Include="BpShieldBox.cs" />
+    <Compile Include="BpShieldBoxData.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

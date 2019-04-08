@@ -134,9 +134,10 @@ namespace IOTool
 
         private void SetOutput(object sender, int moduleId, int outputPinNum)
         {
-            Button bt = (Button)sender;            
-            _ioRobot.SetOutput(moduleId, outputPinNum, !Convert.ToBoolean(bt.Text));
+            Button bt = (Button)sender;
             bt.Text = bt.Text == "True" ? "False" : "True";
+            _ioRobot.SetOutput(moduleId, outputPinNum, !Convert.ToBoolean(bt.Text));
+            //bt.Text = bt.Text == "True" ? "False" : "True";
         }
 
         private void button9_Click(object sender, EventArgs e)

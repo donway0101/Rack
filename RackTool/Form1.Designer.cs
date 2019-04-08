@@ -45,6 +45,12 @@
             this.button7 = new System.Windows.Forms.Button();
             this.button6 = new System.Windows.Forms.Button();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.trackBar2 = new System.Windows.Forms.TrackBar();
+            this.button27 = new System.Windows.Forms.Button();
+            this.button28 = new System.Windows.Forms.Button();
+            this.button29 = new System.Windows.Forms.Button();
+            this.button30 = new System.Windows.Forms.Button();
+            this.button31 = new System.Windows.Forms.Button();
             this.button21 = new System.Windows.Forms.Button();
             this.button22 = new System.Windows.Forms.Button();
             this.textBox2 = new System.Windows.Forms.TextBox();
@@ -63,52 +69,47 @@
             this.button8 = new System.Windows.Forms.Button();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.panel1 = new System.Windows.Forms.Panel();
             this.button26 = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.trackBar1 = new System.Windows.Forms.TrackBar();
             this.tabPage2 = new System.Windows.Forms.TabPage();
-            this.panel1 = new System.Windows.Forms.Panel();
-            this.tabPage3 = new System.Windows.Forms.TabPage();
-            this.tabPage4 = new System.Windows.Forms.TabPage();
-            this.tabPage5 = new System.Windows.Forms.TabPage();
-            this.tabPage6 = new System.Windows.Forms.TabPage();
-            this.tabPage7 = new System.Windows.Forms.TabPage();
-            this.richTextBox1 = new System.Windows.Forms.RichTextBox();
-            this.label8 = new System.Windows.Forms.Label();
-            this.label9 = new System.Windows.Forms.Label();
-            this.label10 = new System.Windows.Forms.Label();
-            this.button27 = new System.Windows.Forms.Button();
-            this.button28 = new System.Windows.Forms.Button();
-            this.button29 = new System.Windows.Forms.Button();
-            this.button30 = new System.Windows.Forms.Button();
-            this.button31 = new System.Windows.Forms.Button();
-            this.trackBar2 = new System.Windows.Forms.TrackBar();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.button37 = new System.Windows.Forms.Button();
+            this.button36 = new System.Windows.Forms.Button();
+            this.button35 = new System.Windows.Forms.Button();
+            this.button32 = new System.Windows.Forms.Button();
+            this.button33 = new System.Windows.Forms.Button();
+            this.button34 = new System.Windows.Forms.Button();
+            this.comboBox4 = new System.Windows.Forms.ComboBox();
             this.button25 = new System.Windows.Forms.Button();
             this.button24 = new System.Windows.Forms.Button();
             this.button23 = new System.Windows.Forms.Button();
             this.comboBox3 = new System.Windows.Forms.ComboBox();
             this.comboBox2 = new System.Windows.Forms.ComboBox();
             this.button20 = new System.Windows.Forms.Button();
-            this.button32 = new System.Windows.Forms.Button();
-            this.button33 = new System.Windows.Forms.Button();
-            this.button34 = new System.Windows.Forms.Button();
-            this.comboBox4 = new System.Windows.Forms.ComboBox();
-            this.button35 = new System.Windows.Forms.Button();
-            this.button36 = new System.Windows.Forms.Button();
-            this.button37 = new System.Windows.Forms.Button();
+            this.tabPage4 = new System.Windows.Forms.TabPage();
+            this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.label9 = new System.Windows.Forms.Label();
+            this.tabPage5 = new System.Windows.Forms.TabPage();
+            this.tabPage6 = new System.Windows.Forms.TabPage();
+            this.tabPage7 = new System.Windows.Forms.TabPage();
+            this.label8 = new System.Windows.Forms.Label();
+            this.richTextBox1 = new System.Windows.Forms.RichTextBox();
+            this.button38 = new System.Windows.Forms.Button();
+            this.checkBoxPickConveyorMoveForward = new System.Windows.Forms.CheckBox();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBar2)).BeginInit();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
+            this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).BeginInit();
             this.tabPage2.SuspendLayout();
-            this.panel1.SuspendLayout();
-            this.tabPage3.SuspendLayout();
-            this.tabPage4.SuspendLayout();
-            this.tabPage7.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.trackBar2)).BeginInit();
             this.groupBox3.SuspendLayout();
+            this.tabPage4.SuspendLayout();
+            this.tabPage3.SuspendLayout();
+            this.tabPage7.SuspendLayout();
             this.SuspendLayout();
             // 
             // button1
@@ -305,6 +306,61 @@
             this.groupBox2.TabIndex = 14;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "groupBox2";
+            // 
+            // trackBar2
+            // 
+            this.trackBar2.Location = new System.Drawing.Point(714, 24);
+            this.trackBar2.Maximum = 200;
+            this.trackBar2.Name = "trackBar2";
+            this.trackBar2.Orientation = System.Windows.Forms.Orientation.Vertical;
+            this.trackBar2.Size = new System.Drawing.Size(56, 259);
+            this.trackBar2.TabIndex = 36;
+            this.trackBar2.Value = 10;
+            // 
+            // button27
+            // 
+            this.button27.Location = new System.Drawing.Point(116, 258);
+            this.button27.Name = "button27";
+            this.button27.Size = new System.Drawing.Size(94, 39);
+            this.button27.TabIndex = 35;
+            this.button27.Text = "R";
+            this.button27.UseVisualStyleBackColor = true;
+            // 
+            // button28
+            // 
+            this.button28.Location = new System.Drawing.Point(116, 198);
+            this.button28.Name = "button28";
+            this.button28.Size = new System.Drawing.Size(94, 39);
+            this.button28.TabIndex = 34;
+            this.button28.Text = "Z";
+            this.button28.UseVisualStyleBackColor = true;
+            // 
+            // button29
+            // 
+            this.button29.Location = new System.Drawing.Point(116, 140);
+            this.button29.Name = "button29";
+            this.button29.Size = new System.Drawing.Size(94, 39);
+            this.button29.TabIndex = 33;
+            this.button29.Text = "Y";
+            this.button29.UseVisualStyleBackColor = true;
+            // 
+            // button30
+            // 
+            this.button30.Location = new System.Drawing.Point(116, 82);
+            this.button30.Name = "button30";
+            this.button30.Size = new System.Drawing.Size(94, 39);
+            this.button30.TabIndex = 32;
+            this.button30.Text = "X2";
+            this.button30.UseVisualStyleBackColor = true;
+            // 
+            // button31
+            // 
+            this.button31.Location = new System.Drawing.Point(116, 24);
+            this.button31.Name = "button31";
+            this.button31.Size = new System.Drawing.Size(94, 39);
+            this.button31.TabIndex = 31;
+            this.button31.Text = "X1";
+            this.button31.UseVisualStyleBackColor = true;
             // 
             // button21
             // 
@@ -511,6 +567,16 @@
             this.tabPage1.Text = "Main";
             this.tabPage1.UseVisualStyleBackColor = true;
             // 
+            // panel1
+            // 
+            this.panel1.BackColor = System.Drawing.Color.White;
+            this.panel1.Controls.Add(this.button1);
+            this.panel1.Controls.Add(this.button2);
+            this.panel1.Location = new System.Drawing.Point(599, 19);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(156, 140);
+            this.panel1.TabIndex = 19;
+            // 
             // button26
             // 
             this.button26.Location = new System.Drawing.Point(27, 176);
@@ -552,154 +618,6 @@
             this.tabPage2.Text = "Robot";
             this.tabPage2.UseVisualStyleBackColor = true;
             // 
-            // panel1
-            // 
-            this.panel1.BackColor = System.Drawing.Color.White;
-            this.panel1.Controls.Add(this.button1);
-            this.panel1.Controls.Add(this.button2);
-            this.panel1.Location = new System.Drawing.Point(599, 19);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(156, 140);
-            this.panel1.TabIndex = 19;
-            // 
-            // tabPage3
-            // 
-            this.tabPage3.Controls.Add(this.label9);
-            this.tabPage3.Location = new System.Drawing.Point(104, 4);
-            this.tabPage3.Name = "tabPage3";
-            this.tabPage3.Size = new System.Drawing.Size(1108, 599);
-            this.tabPage3.TabIndex = 2;
-            this.tabPage3.Text = "Box";
-            this.tabPage3.UseVisualStyleBackColor = true;
-            // 
-            // tabPage4
-            // 
-            this.tabPage4.Controls.Add(this.label10);
-            this.tabPage4.Location = new System.Drawing.Point(104, 4);
-            this.tabPage4.Name = "tabPage4";
-            this.tabPage4.Size = new System.Drawing.Size(1108, 599);
-            this.tabPage4.TabIndex = 3;
-            this.tabPage4.Text = "Conveyor";
-            this.tabPage4.UseVisualStyleBackColor = true;
-            // 
-            // tabPage5
-            // 
-            this.tabPage5.Location = new System.Drawing.Point(104, 4);
-            this.tabPage5.Name = "tabPage5";
-            this.tabPage5.Size = new System.Drawing.Size(1108, 599);
-            this.tabPage5.TabIndex = 4;
-            this.tabPage5.Text = "Tester";
-            this.tabPage5.UseVisualStyleBackColor = true;
-            // 
-            // tabPage6
-            // 
-            this.tabPage6.Location = new System.Drawing.Point(104, 4);
-            this.tabPage6.Name = "tabPage6";
-            this.tabPage6.Size = new System.Drawing.Size(1108, 599);
-            this.tabPage6.TabIndex = 5;
-            this.tabPage6.Text = "Log";
-            this.tabPage6.UseVisualStyleBackColor = true;
-            // 
-            // tabPage7
-            // 
-            this.tabPage7.Controls.Add(this.label8);
-            this.tabPage7.Location = new System.Drawing.Point(104, 4);
-            this.tabPage7.Name = "tabPage7";
-            this.tabPage7.Size = new System.Drawing.Size(1108, 599);
-            this.tabPage7.TabIndex = 6;
-            this.tabPage7.Text = "Setting";
-            this.tabPage7.UseVisualStyleBackColor = true;
-            // 
-            // richTextBox1
-            // 
-            this.richTextBox1.Location = new System.Drawing.Point(132, 12);
-            this.richTextBox1.Name = "richTextBox1";
-            this.richTextBox1.Size = new System.Drawing.Size(1112, 68);
-            this.richTextBox1.TabIndex = 19;
-            this.richTextBox1.Text = "当前设备状态，报警，等待手机，执行任务，解决办法";
-            // 
-            // label8
-            // 
-            this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(64, 44);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(37, 15);
-            this.label8.TabIndex = 0;
-            this.label8.Text = "账户";
-            // 
-            // label9
-            // 
-            this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(86, 87);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(174, 15);
-            this.label9.TabIndex = 0;
-            this.label9.Text = "选择com， 启用或者停用";
-            // 
-            // label10
-            // 
-            this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(231, 139);
-            this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(202, 15);
-            this.label10.TabIndex = 0;
-            this.label10.Text = "对应感应器和输出，功能测试";
-            // 
-            // button27
-            // 
-            this.button27.Location = new System.Drawing.Point(116, 258);
-            this.button27.Name = "button27";
-            this.button27.Size = new System.Drawing.Size(94, 39);
-            this.button27.TabIndex = 35;
-            this.button27.Text = "R";
-            this.button27.UseVisualStyleBackColor = true;
-            // 
-            // button28
-            // 
-            this.button28.Location = new System.Drawing.Point(116, 198);
-            this.button28.Name = "button28";
-            this.button28.Size = new System.Drawing.Size(94, 39);
-            this.button28.TabIndex = 34;
-            this.button28.Text = "Z";
-            this.button28.UseVisualStyleBackColor = true;
-            // 
-            // button29
-            // 
-            this.button29.Location = new System.Drawing.Point(116, 140);
-            this.button29.Name = "button29";
-            this.button29.Size = new System.Drawing.Size(94, 39);
-            this.button29.TabIndex = 33;
-            this.button29.Text = "Y";
-            this.button29.UseVisualStyleBackColor = true;
-            // 
-            // button30
-            // 
-            this.button30.Location = new System.Drawing.Point(116, 82);
-            this.button30.Name = "button30";
-            this.button30.Size = new System.Drawing.Size(94, 39);
-            this.button30.TabIndex = 32;
-            this.button30.Text = "X2";
-            this.button30.UseVisualStyleBackColor = true;
-            // 
-            // button31
-            // 
-            this.button31.Location = new System.Drawing.Point(116, 24);
-            this.button31.Name = "button31";
-            this.button31.Size = new System.Drawing.Size(94, 39);
-            this.button31.TabIndex = 31;
-            this.button31.Text = "X1";
-            this.button31.UseVisualStyleBackColor = true;
-            // 
-            // trackBar2
-            // 
-            this.trackBar2.Location = new System.Drawing.Point(714, 24);
-            this.trackBar2.Maximum = 200;
-            this.trackBar2.Name = "trackBar2";
-            this.trackBar2.Orientation = System.Windows.Forms.Orientation.Vertical;
-            this.trackBar2.Size = new System.Drawing.Size(56, 259);
-            this.trackBar2.TabIndex = 36;
-            this.trackBar2.Value = 10;
-            // 
             // groupBox3
             // 
             this.groupBox3.Controls.Add(this.button37);
@@ -721,6 +639,68 @@
             this.groupBox3.TabIndex = 15;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "groupBox3";
+            // 
+            // button37
+            // 
+            this.button37.Location = new System.Drawing.Point(714, 49);
+            this.button37.Name = "button37";
+            this.button37.Size = new System.Drawing.Size(124, 28);
+            this.button37.TabIndex = 33;
+            this.button37.Text = "Test Run";
+            this.button37.UseVisualStyleBackColor = true;
+            // 
+            // button36
+            // 
+            this.button36.Location = new System.Drawing.Point(628, 112);
+            this.button36.Name = "button36";
+            this.button36.Size = new System.Drawing.Size(75, 23);
+            this.button36.TabIndex = 32;
+            this.button36.Text = "Bin";
+            this.button36.UseVisualStyleBackColor = true;
+            // 
+            // button35
+            // 
+            this.button35.Location = new System.Drawing.Point(597, 48);
+            this.button35.Name = "button35";
+            this.button35.Size = new System.Drawing.Size(75, 23);
+            this.button35.TabIndex = 31;
+            this.button35.Text = "G1& G2";
+            this.button35.UseVisualStyleBackColor = true;
+            // 
+            // button32
+            // 
+            this.button32.Location = new System.Drawing.Point(359, 42);
+            this.button32.Name = "button32";
+            this.button32.Size = new System.Drawing.Size(119, 35);
+            this.button32.TabIndex = 27;
+            this.button32.Text = "Xml";
+            this.button32.UseVisualStyleBackColor = true;
+            // 
+            // button33
+            // 
+            this.button33.Location = new System.Drawing.Point(462, 112);
+            this.button33.Name = "button33";
+            this.button33.Size = new System.Drawing.Size(128, 39);
+            this.button33.TabIndex = 30;
+            this.button33.Text = "SaveApproach";
+            this.button33.UseVisualStyleBackColor = true;
+            // 
+            // button34
+            // 
+            this.button34.Location = new System.Drawing.Point(359, 112);
+            this.button34.Name = "button34";
+            this.button34.Size = new System.Drawing.Size(81, 39);
+            this.button34.TabIndex = 29;
+            this.button34.Text = "Save";
+            this.button34.UseVisualStyleBackColor = true;
+            // 
+            // comboBox4
+            // 
+            this.comboBox4.FormattingEnabled = true;
+            this.comboBox4.Location = new System.Drawing.Point(359, 83);
+            this.comboBox4.Name = "comboBox4";
+            this.comboBox4.Size = new System.Drawing.Size(132, 23);
+            this.comboBox4.TabIndex = 28;
             // 
             // button25
             // 
@@ -774,67 +754,103 @@
             this.button20.Text = "Load";
             this.button20.UseVisualStyleBackColor = true;
             // 
-            // button32
+            // tabPage4
             // 
-            this.button32.Location = new System.Drawing.Point(359, 42);
-            this.button32.Name = "button32";
-            this.button32.Size = new System.Drawing.Size(119, 35);
-            this.button32.TabIndex = 27;
-            this.button32.Text = "Xml";
-            this.button32.UseVisualStyleBackColor = true;
+            this.tabPage4.Controls.Add(this.checkBoxPickConveyorMoveForward);
+            this.tabPage4.Controls.Add(this.button38);
+            this.tabPage4.Location = new System.Drawing.Point(104, 4);
+            this.tabPage4.Name = "tabPage4";
+            this.tabPage4.Size = new System.Drawing.Size(1108, 599);
+            this.tabPage4.TabIndex = 3;
+            this.tabPage4.Text = "Conveyor";
+            this.tabPage4.UseVisualStyleBackColor = true;
             // 
-            // button33
+            // tabPage3
             // 
-            this.button33.Location = new System.Drawing.Point(462, 112);
-            this.button33.Name = "button33";
-            this.button33.Size = new System.Drawing.Size(128, 39);
-            this.button33.TabIndex = 30;
-            this.button33.Text = "SaveApproach";
-            this.button33.UseVisualStyleBackColor = true;
+            this.tabPage3.Controls.Add(this.label9);
+            this.tabPage3.Location = new System.Drawing.Point(104, 4);
+            this.tabPage3.Name = "tabPage3";
+            this.tabPage3.Size = new System.Drawing.Size(1108, 599);
+            this.tabPage3.TabIndex = 2;
+            this.tabPage3.Text = "Box";
+            this.tabPage3.UseVisualStyleBackColor = true;
             // 
-            // button34
+            // label9
             // 
-            this.button34.Location = new System.Drawing.Point(359, 112);
-            this.button34.Name = "button34";
-            this.button34.Size = new System.Drawing.Size(81, 39);
-            this.button34.TabIndex = 29;
-            this.button34.Text = "Save";
-            this.button34.UseVisualStyleBackColor = true;
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(86, 87);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(174, 15);
+            this.label9.TabIndex = 0;
+            this.label9.Text = "选择com， 启用或者停用";
             // 
-            // comboBox4
+            // tabPage5
             // 
-            this.comboBox4.FormattingEnabled = true;
-            this.comboBox4.Location = new System.Drawing.Point(359, 83);
-            this.comboBox4.Name = "comboBox4";
-            this.comboBox4.Size = new System.Drawing.Size(132, 23);
-            this.comboBox4.TabIndex = 28;
+            this.tabPage5.Location = new System.Drawing.Point(104, 4);
+            this.tabPage5.Name = "tabPage5";
+            this.tabPage5.Size = new System.Drawing.Size(1108, 599);
+            this.tabPage5.TabIndex = 4;
+            this.tabPage5.Text = "Tester";
+            this.tabPage5.UseVisualStyleBackColor = true;
             // 
-            // button35
+            // tabPage6
             // 
-            this.button35.Location = new System.Drawing.Point(597, 48);
-            this.button35.Name = "button35";
-            this.button35.Size = new System.Drawing.Size(75, 23);
-            this.button35.TabIndex = 31;
-            this.button35.Text = "G1& G2";
-            this.button35.UseVisualStyleBackColor = true;
+            this.tabPage6.Location = new System.Drawing.Point(104, 4);
+            this.tabPage6.Name = "tabPage6";
+            this.tabPage6.Size = new System.Drawing.Size(1108, 599);
+            this.tabPage6.TabIndex = 5;
+            this.tabPage6.Text = "Log";
+            this.tabPage6.UseVisualStyleBackColor = true;
             // 
-            // button36
+            // tabPage7
             // 
-            this.button36.Location = new System.Drawing.Point(628, 112);
-            this.button36.Name = "button36";
-            this.button36.Size = new System.Drawing.Size(75, 23);
-            this.button36.TabIndex = 32;
-            this.button36.Text = "Bin";
-            this.button36.UseVisualStyleBackColor = true;
+            this.tabPage7.Controls.Add(this.label8);
+            this.tabPage7.Location = new System.Drawing.Point(104, 4);
+            this.tabPage7.Name = "tabPage7";
+            this.tabPage7.Size = new System.Drawing.Size(1108, 599);
+            this.tabPage7.TabIndex = 6;
+            this.tabPage7.Text = "Setting";
+            this.tabPage7.UseVisualStyleBackColor = true;
             // 
-            // button37
+            // label8
             // 
-            this.button37.Location = new System.Drawing.Point(714, 49);
-            this.button37.Name = "button37";
-            this.button37.Size = new System.Drawing.Size(124, 28);
-            this.button37.TabIndex = 33;
-            this.button37.Text = "Test Run";
-            this.button37.UseVisualStyleBackColor = true;
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(64, 44);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(37, 15);
+            this.label8.TabIndex = 0;
+            this.label8.Text = "账户";
+            // 
+            // richTextBox1
+            // 
+            this.richTextBox1.Location = new System.Drawing.Point(132, 12);
+            this.richTextBox1.Name = "richTextBox1";
+            this.richTextBox1.Size = new System.Drawing.Size(1112, 68);
+            this.richTextBox1.TabIndex = 19;
+            this.richTextBox1.Text = "当前设备状态，报警，等待手机，执行任务，解决办法";
+            // 
+            // button38
+            // 
+            this.button38.Location = new System.Drawing.Point(403, 355);
+            this.button38.Name = "button38";
+            this.button38.Size = new System.Drawing.Size(102, 32);
+            this.button38.TabIndex = 0;
+            this.button38.Text = "UpSeparate";
+            this.button38.UseVisualStyleBackColor = true;
+            this.button38.Click += new System.EventHandler(this.button38_Click);
+            // 
+            // checkBoxPickConveyorMoveForward
+            // 
+            this.checkBoxPickConveyorMoveForward.AutoSize = true;
+            this.checkBoxPickConveyorMoveForward.Checked = true;
+            this.checkBoxPickConveyorMoveForward.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBoxPickConveyorMoveForward.Location = new System.Drawing.Point(50, 25);
+            this.checkBoxPickConveyorMoveForward.Name = "checkBoxPickConveyorMoveForward";
+            this.checkBoxPickConveyorMoveForward.Size = new System.Drawing.Size(197, 19);
+            this.checkBoxPickConveyorMoveForward.TabIndex = 1;
+            this.checkBoxPickConveyorMoveForward.Text = "Conveyor move forward";
+            this.checkBoxPickConveyorMoveForward.UseVisualStyleBackColor = true;
+            this.checkBoxPickConveyorMoveForward.CheckedChanged += new System.EventHandler(this.checkBoxPickConveyorMoveForward_CheckedChanged);
             // 
             // Form1
             // 
@@ -850,20 +866,20 @@
             this.groupBox1.PerformLayout();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBar2)).EndInit();
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
             this.tabPage1.PerformLayout();
+            this.panel1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).EndInit();
             this.tabPage2.ResumeLayout(false);
-            this.panel1.ResumeLayout(false);
-            this.tabPage3.ResumeLayout(false);
-            this.tabPage3.PerformLayout();
+            this.groupBox3.ResumeLayout(false);
             this.tabPage4.ResumeLayout(false);
             this.tabPage4.PerformLayout();
+            this.tabPage3.ResumeLayout(false);
+            this.tabPage3.PerformLayout();
             this.tabPage7.ResumeLayout(false);
             this.tabPage7.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.trackBar2)).EndInit();
-            this.groupBox3.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -918,7 +934,6 @@
         private System.Windows.Forms.RichTextBox richTextBox1;
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.Label label8;
-        private System.Windows.Forms.Label label10;
         private System.Windows.Forms.Button button27;
         private System.Windows.Forms.Button button28;
         private System.Windows.Forms.Button button29;
@@ -939,6 +954,8 @@
         private System.Windows.Forms.Button button35;
         private System.Windows.Forms.Button button36;
         private System.Windows.Forms.Button button37;
+        private System.Windows.Forms.Button button38;
+        private System.Windows.Forms.CheckBox checkBoxPickConveyorMoveForward;
     }
 }
 

@@ -100,8 +100,8 @@ namespace RackTool
             {
                 try
                 {
-                    label6.Invoke((MethodInvoker) (() => { label6.Text=_rack._gripper.GetPosition(Gripper.One).ToString(); }));
-                    label7.Invoke((MethodInvoker)(() => { label7.Text = _rack._gripper.GetPosition(Gripper.Two).ToString(); }));
+                    //label6.Invoke((MethodInvoker) (() => { label6.Text=_rack._gripper.GetPosition(Gripper.One).ToString(); }));
+                    //label7.Invoke((MethodInvoker)(() => { label7.Text = _rack._gripper.GetPosition(Gripper.Two).ToString(); }));
                     Thread.Sleep(1000);
                 }
                 catch (Exception e)
@@ -551,6 +551,18 @@ namespace RackTool
         private void button26_Click(object sender, EventArgs e)
         {
             _rack.ReadyThePhone();
+        }
+
+        private void checkBoxPickConveyorMoveForward_CheckedChanged(object sender, EventArgs e)
+        {
+            _rack._conveyor.ConveyorMovingForward = checkBoxPickConveyorMoveForward.Checked;
+        }
+
+        private void button38_Click(object sender, EventArgs e)
+        {
+            //_rack._conveyor.UpBlockSeparate(false);
+            //_rack._conveyor.InitialState();
+            _rack._conveyor.SideBlockSeparate(true);
         }
     }
 }

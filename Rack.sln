@@ -25,6 +25,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RackTool", "RackTool\RackTo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tools", "Tools\Tools.csproj", "{4DD6CDCA-AE4C-48B6-BEF8-9070CE525AA3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShieldBoxTool", "ShieldBoxTool\ShieldBoxTool.csproj", "{924D1E0B-F336-4056-BEC1-0C5615DA286A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShieldBox", "ShieldBox\ShieldBox.csproj", "{838EF205-9050-4252-B99A-8E7F66335996}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -75,6 +79,14 @@ Global
 		{4DD6CDCA-AE4C-48B6-BEF8-9070CE525AA3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4DD6CDCA-AE4C-48B6-BEF8-9070CE525AA3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4DD6CDCA-AE4C-48B6-BEF8-9070CE525AA3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{924D1E0B-F336-4056-BEC1-0C5615DA286A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{924D1E0B-F336-4056-BEC1-0C5615DA286A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{924D1E0B-F336-4056-BEC1-0C5615DA286A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{924D1E0B-F336-4056-BEC1-0C5615DA286A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{838EF205-9050-4252-B99A-8E7F66335996}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{838EF205-9050-4252-B99A-8E7F66335996}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{838EF205-9050-4252-B99A-8E7F66335996}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{838EF205-9050-4252-B99A-8E7F66335996}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

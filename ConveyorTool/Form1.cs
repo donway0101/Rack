@@ -33,7 +33,7 @@ namespace ConveyorTool
                 iO.Setup();
                 conveyor = new PickAndPlaceConveyor(iO);
                 conveyor.ErrorOccured += Conveyor_ErrorOccured;
-                conveyor.Run();
+                conveyor.Start();
             }
             catch (Exception ex)
             {
@@ -51,7 +51,7 @@ namespace ConveyorTool
         private void button2_Click(object sender, EventArgs e)
         {
             StopTesting = false;
-            conveyor.Run();
+            //conveyor.Run();
             Task.Run(() => {
                 while (StopTesting == false)
                 {

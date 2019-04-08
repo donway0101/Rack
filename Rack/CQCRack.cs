@@ -23,7 +23,7 @@ namespace Rack
         public EthercatIo _io;
         public PickAndPlaceConveyor _conveyor;
 
-        private bool _gripperIsOnline = true;
+        private bool _gripperIsOnline = false;
         private readonly string _ip;
 
         private const double YIsInBox = 200;

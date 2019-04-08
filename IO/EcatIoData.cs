@@ -6,17 +6,6 @@ using System.Threading.Tasks;
 
 namespace EcatIo
 {
-    public class DataStructure
-    {
-
-    }
-
-    public enum ModuleBaseAddress
-    {
-        First=72,
-        Second=144,
-    }
-
     public enum Output
     {
         //ModuleId = value/10, pin = value % 10, value zero based.
@@ -31,14 +20,18 @@ namespace EcatIo
         Reserved06 = 06,
         Reserved07 = 07,
         //1
-        UpBlockPick = 10,
+        UpBlockPickForward = 10,
+        UpBlockPickBackward = 23,
         SideBlockPick = 11,
-        SideBlockSeparate = 12,
+        SideBlockSeparateBackward = 12,
+        SideBlockSeparateForward = 21,
         ClampPick = 13,
         BeltPick = 14,
         BeltNg = 15,
         BeltConveyorOne = 16,
-        UpBlockSeparate = 17,
+        UpBlockSeparateBackward = 20,
+        UpBlockSeparateForward = 22,
+
         //2
         //GripperOne = 20,
         //GripperOne = 21,
@@ -72,13 +65,15 @@ namespace EcatIo
         ClampTightPick=06,
         ClampLoosePick = 07,
         // 1
-        SideBlockSeparate=10,
+        SideBlockSeparateForward=33,
+        SideBlockSeparateBackward = 10,
         Reserved11 = 11,
         ConveyorOneIn = 12,
         ConveyorOneOut = 13,
-        ConveyorPickInOne = 14,
+        PickBufferHasPhoneForward = 14,
+        PickBufferHasPhoneBackward = 15,
         ConveyorPickInTwo = 15,
-        Pick = 16,
+        PickHasPhone = 16,
         Reserved17 = 17,
         // 2
         Gripper01 = 20,
@@ -91,8 +86,9 @@ namespace EcatIo
         ConveyorBinIn = 27,
         // 3
         ConveyorBinInTwo = 30,
-        UpBlockSeparate = 31,
-        Reservered30 = 32,
+        UpBlockSeparateForward = 31,
+        UpBlockSeparateBackward = 31,
+        UpBlockPickForward = 32,
         Reservered32 = 33,
         Reservered34 = 34,
         Reservered35 = 35,
