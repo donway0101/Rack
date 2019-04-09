@@ -15,7 +15,7 @@ namespace Rack
     /// Power up, Ethercat error occur, wire problem? 
     public partial class CqcRack
     {      
-        public void Pick(Gripper gripper)
+        public void Pick(StepperMotor gripper)
         {
             if ( Conveyor.ReadyForPicking & _testRun==false)
             {
@@ -26,7 +26,7 @@ namespace Rack
                 throw new Exception("Phone is not ready.");
             }
 
-            if ( gripper == GripperStepper.Gripper.One)
+            if ( gripper == StepperMotor.One)
             {
                 if ( !Io.GetInput(Input.Gripper01Loose))
                 {
@@ -50,7 +50,7 @@ namespace Rack
             //Check.
         }
 
-        public void Place(Gripper gripper)
+        public void Place(StepperMotor gripper)
         {
             //After place, conveyor can reload.
             //TODO make sure pick position is empty, conveyor is not stucked and gripper is full.
@@ -72,7 +72,7 @@ namespace Rack
             //Check phone is on conveyor.
         }
 
-        public void Bin(Gripper gripper)
+        public void Bin(StepperMotor gripper)
         {
             //TODO make sure pick position is empty, conveyor is not stucked and gripper is full.
             MoveToTargetPosition(gripper, Motion.BinPosition);
@@ -81,7 +81,7 @@ namespace Rack
             //Check phone is on conveyor.
         }
 
-        public void Load(Gripper gripper, TargetPosition holder)
+        public void Load(StepperMotor gripper, TargetPosition holder)
         {
             //Todo make sure box is open.
             MoveToTargetPosition(gripper, holder);
@@ -91,9 +91,9 @@ namespace Rack
             Motion.ToPointWaitTillEnd(Motion.MotorY, Motion.PickPosition.YPos);
         }
 
-        public void Unload(Gripper gripper, TargetPosition holder)
+        public void Unload(StepperMotor gripper, TargetPosition holder)
         {
-            if (gripper == GripperStepper.Gripper.One)
+            if (gripper == StepperMotor.One)
             {
                 if (!Io.GetInput(Input.Gripper01Loose))
                 {
@@ -115,7 +115,7 @@ namespace Rack
             Motion.ToPointWaitTillEnd(Motion.MotorY, Motion.PickPosition.YPos);
         }
 
-        public void UnloadAndLoad(TargetPosition target, Gripper gripper)
+        public void UnloadAndLoad(TargetPosition target, StepperMotor gripper)
         {
             //Todo make sure box is open.
             MoveToTargetPosition(gripper, target);
@@ -129,9 +129,9 @@ namespace Rack
             Motion.ToPointWaitTillEnd(Motion.MotorY, Motion.PickPosition.YPos); //Back.
         }
 
-        private void SwitchGripper(TargetPosition target, ref Gripper gripper)
+        private void SwitchGripper(TargetPosition target, ref StepperMotor gripper)
         {
-            gripper = gripper == GripperStepper.Gripper.One ? GripperStepper.Gripper.Two : GripperStepper.Gripper.One;
+            gripper = gripper == StepperMotor.One ? StepperMotor.Two : StepperMotor.One;
 
             target = AddOffset(gripper, target);
             Motion.ToPointX(target.XPos);
@@ -143,9 +143,9 @@ namespace Rack
             Motion.WaitTillEnd(Motion.MotorY);
         }
 
-        private TargetPosition AddOffset(Gripper gripper, TargetPosition target)
+        private TargetPosition AddOffset(StepperMotor gripper, TargetPosition target)
         {
-            if (gripper == GripperStepper.Gripper.Two & target.Id != Location.Pick)
+            if (gripper == StepperMotor.Two & target.Id != Location.Pick)
             {
                 target.XPos = target.XPos + 1.44467773437;
                 target.YPos = target.YPos - 0.918862304687;

@@ -8,21 +8,19 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.Linq;
+using System.Diagnostics;
 using Rack;
 using Motion;
 using Tools;
 using GripperStepper;
 using System.Threading;
-
+using ACS.SPiiPlusNET;
+using Input = EcatIo.Input;
+using Outout = EcatIo.Output;
 namespace RackTool
 {
     public partial class Form1 : Form
     {
-        private readonly CqcRack _rack = new CqcRack("192.168.8.18");
-        private Gripper _selectedGripper;
-        private TeachPos _selectedTargetPosition;
-        private Thread _uiUpdateThread;
-
         public Form1()
         {
             InitializeComponent();
@@ -64,14 +62,19 @@ namespace RackTool
             g.DrawString(_tabPage.Text, _tabFont, _textBrush, _tabBounds, new StringFormat(_stringFlags));
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private readonly CqcRack _rack = new CqcRack("192.168.8.18");
+        private TeachPos _selectedTargetPosition;
+        private StepperMotor _selectedGripper;
+        private Thread _uiUpdateThread;
+
+        private void button_Start_Click(object sender, EventArgs e)
         {
             try
             {
                 _rack.Start();
                 SetupForTeaching();
 
-                if (_uiUpdateThread==null)
+                if (_uiUpdateThread == null)
                 {
                     _uiUpdateThread = new Thread(UiUpdate)
                     {
@@ -79,28 +82,31 @@ namespace RackTool
                     };
                 }
 
-                if ( _uiUpdateThread.IsAlive==false)
+                if (_uiUpdateThread.IsAlive == false)
                 {
                     _uiUpdateThread.Start();
                 }
-               
-                button2.Enabled = true;
+
+                buttonHome.Enabled = true;
             }
             catch (Exception ex)
             {
 
                 MessageBox.Show(ex.Message);
-            }           
+            }
         }
-
         private void UiUpdate()
         {
             while (true)
             {
                 try
                 {
-                    label6.Invoke((MethodInvoker) (() => { label6.Text=_rack.Stepper.GetPosition(Gripper.One).ToString(); }));
-                    label7.Invoke((MethodInvoker)(() => { label7.Text = _rack.Stepper.GetPosition(Gripper.Two).ToString(); }));
+                    labelPositionG1.Invoke((MethodInvoker) (() => { labelPositionG1.Text=_rack.Stepper.GetPosition(StepperMotor.One).ToString(); }));
+                    labelPositionG2.Invoke((MethodInvoker)(() => { labelPositionG2.Text = _rack.Stepper.GetPosition(StepperMotor.Two).ToString(); }));
+                    labelPositionX.Invoke((MethodInvoker)(() => { labelPositionX.Text = _rack.Motion.GetPositionX().ToString(); }));
+                    labelPositionY.Invoke((MethodInvoker)(() => { labelPositionY.Text = _rack.Motion.GetPosition(_rack.Motion.MotorY).ToString(); }));
+                    labelPositionZ.Invoke((MethodInvoker)(() => { labelPositionZ.Text = _rack.Motion.GetPosition(_rack.Motion.MotorZ).ToString(); }));
+                    labelPositionR.Invoke((MethodInvoker)(() => { labelPositionR.Text = _rack.Motion.GetPosition(_rack.Motion.MotorR).ToString(); }));
                     Thread.Sleep(1000);
                 }
                 catch (Exception e)
@@ -119,24 +125,24 @@ namespace RackTool
         private void SetupForTeaching()
         {
 
-            comboBox2.Items.Clear();
-            foreach (var pos in Enum.GetValues(typeof(Gripper)))
+            comboBox_Gripper.Items.Clear();
+            foreach (var pos in Enum.GetValues(typeof(StepperMotor)))
             {
-                comboBox2.Items.Add(pos);
+                comboBox_Gripper.Items.Add(pos);
             }
 
-            comboBox3.Items.Clear();
+            comboBoxMovePos.Items.Clear();
             foreach (var pos in Enum.GetValues(typeof(TeachPos)))
             {
-                comboBox3.Items.Add(pos);
+                comboBoxMovePos.Items.Add(pos);
             }
         }
 
-
-        private void button2_Click(object sender, EventArgs e)
+        private void button_Home_Click(object sender, EventArgs e)
         {
             Task.Run(() =>
             {
+
                 try
                 {
                     _rack.HomeRobot();
@@ -147,7 +153,6 @@ namespace RackTool
                 }
             });
         }
-
 
         //Test
         private void button3_Click(object sender, EventArgs e)
@@ -186,8 +191,7 @@ namespace RackTool
                 MessageBox.Show(ex.Message);
             }
         }
-
-        private void button4_Click(object sender, EventArgs e)
+        private void buttonCreateXml_Click(object sender, EventArgs e)
         {
             XmlReaderWriter.CreateStorageFile("RackData.xml");
         }
@@ -195,17 +199,10 @@ namespace RackTool
         bool testLoop = true;
         private void checkBox1_CheckedChanged(object sender, EventArgs e)
         {
-            testLoop = checkBox1.Enabled;
-            button3.Enabled = true;
+            testLoop = checkBoxIsLoop.Enabled;
+            buttonTest.Enabled = true;
         }
-
-        private void trackBar1_Scroll(object sender, EventArgs e)
-        {
-            label1.Text = trackBar1.Value.ToString();
-            _rack.SetSpeedImm(Convert.ToDouble(trackBar1.Value));            
-        }
-
-        private void button7_Click(object sender, EventArgs e)
+        private void buttonSave_Click(object sender, EventArgs e)
         {
             try
             {
@@ -214,10 +211,11 @@ namespace RackTool
             catch (Exception exception)
             {
                 MessageBox.Show(exception.Message);
-            }          
+            }
         }
 
-        private void button6_Click(object sender, EventArgs e)
+
+        private void buttonSaveApproach_Click(object sender, EventArgs e)
         {
             try
             {
@@ -234,119 +232,338 @@ namespace RackTool
 
         private void button8_MouseDown(object sender, MouseEventArgs e)
         {
-            _rack.Motion.Jog(_rack.Motion.MotorX1, false);
+            try
+            {
+                _rack.Motion.Jog(_rack.Motion.MotorX1, false);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
 
         private void button8_MouseUp(object sender, MouseEventArgs e)
         {
-            _rack.Motion.Halt(_rack.Motion.MotorX1);
+            try
+            {
+                _rack.Motion.Halt(_rack.Motion.MotorX1);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+            
         }
 
         private void button9_MouseDown(object sender, MouseEventArgs e)
         {
-            _rack.Motion.Jog(_rack.Motion.MotorX1, true);
+            
+            try
+            {
+                _rack.Motion.Jog(_rack.Motion.MotorX1, true);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
 
         private void button9_MouseUp(object sender, MouseEventArgs e)
         {
-            _rack.Motion.Halt(_rack.Motion.MotorX1);
+
+            try
+            {
+                _rack.Motion.Halt(_rack.Motion.MotorX1);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
 
         private void button10_MouseDown(object sender, MouseEventArgs e)
         {
-            _rack.Motion.Jog(_rack.Motion.MotorX2, false);
+            
+            try
+            {
+                _rack.Motion.Jog(_rack.Motion.MotorX2, false);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
 
         private void button11_MouseDown(object sender, MouseEventArgs e)
         {
-            _rack.Motion.Jog(_rack.Motion.MotorX2, true);
+            try
+            {
+                _rack.Motion.Jog(_rack.Motion.MotorX2, true);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+
+        }
+        private void buttonNagetiveX2_MouseUp(object sender, MouseEventArgs e)
+        {
+            try
+            {
+                _rack.Motion.Halt(_rack.Motion.MotorX2);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
 
         private void button15_MouseDown(object sender, MouseEventArgs e)
         {
-            _rack.Motion.Jog(_rack.Motion.MotorY, false);
+            
+            try
+            {
+                _rack.Motion.Jog(_rack.Motion.MotorY, false);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
 
         private void button13_MouseDown(object sender, MouseEventArgs e)
         {
-            _rack.Motion.Jog(_rack.Motion.MotorZ, false);
+            try
+            {
+                _rack.Motion.Jog(_rack.Motion.MotorZ, false);
+            }
+            catch (Exception ex)
+            {
+
+                MessageBox.Show(ex.Message);
+            }
         }
 
         private void button17_MouseDown(object sender, MouseEventArgs e)
         {
-            _rack.Motion.Jog(_rack.Motion.MotorR, false);
+            try
+            {
+                _rack.Motion.Jog(_rack.Motion.MotorR, false);
+            }
+            catch (Exception ex)
+            {
+
+                MessageBox.Show(ex.Message);
+            }
         }
 
         private void button19_Click(object sender, EventArgs e)
         {
-            _rack.Stepper.ToPoint(Gripper.One, Convert.ToDouble(textBox1.Text));
+            try
+            {
+                _rack.Stepper.ToPoint(StepperMotor.One, Convert.ToDouble(textBoxDistanceG1.Text));
+            }
+            catch (Exception ex)
+            {
+
+                MessageBox.Show(ex.Message);
+            }
         }
 
         private void button18_Click(object sender, EventArgs e)
         {
-            _rack.Stepper.ToPoint(Gripper.Two, Convert.ToDouble(textBox2.Text));
+            try
+            {
+                _rack.Stepper.ToPoint(StepperMotor.Two, Convert.ToDouble(textBoxDistanceG2.Text));
+            }
+            catch (Exception ex)
+            {
+
+                MessageBox.Show(ex.Message);
+            }
         }
 
         private void button14_MouseDown(object sender, MouseEventArgs e)
         {
-            _rack.Motion.Jog(_rack.Motion.MotorY, true);
+            try
+            {
+                _rack.Motion.Jog(_rack.Motion.MotorY, true);
+            }
+            catch (Exception ex)
+            {
+
+                MessageBox.Show(ex.Message);
+            }
         }
 
         private void button12_MouseDown(object sender, MouseEventArgs e)
         {
-            _rack.Motion.Jog(_rack.Motion.MotorZ, true);
+            try
+            {
+                _rack.Motion.Jog(_rack.Motion.MotorZ, true);
+            }
+            catch (Exception ex)
+            {
+
+                MessageBox.Show(ex.Message);
+            }
         }
 
         private void button16_MouseDown(object sender, MouseEventArgs e)
         {
-            _rack.Motion.Jog(_rack.Motion.MotorR, true);
+            try
+            {
+                _rack.Motion.Jog(_rack.Motion.MotorR, true);
+            }
+            catch (Exception ex)
+            {
+
+                MessageBox.Show(ex.Message);
+            }
         }
 
         private void button11_MouseUp(object sender, MouseEventArgs e)
         {
-            _rack.Motion.Halt(_rack.Motion.MotorX2);
+            try
+            {
+                _rack.Motion.Halt(_rack.Motion.MotorX2);
+            }
+            catch (Exception ex)
+            {
+
+                MessageBox.Show(ex.Message);
+            }
         }
 
         private void button14_MouseUp(object sender, MouseEventArgs e)
         {
-            _rack.Motion.Halt(_rack.Motion.MotorY);
+            try
+            {
+                _rack.Motion.Halt(_rack.Motion.MotorY);
+            }
+            catch (Exception ex)
+            {
+
+                MessageBox.Show(ex.Message);
+            }
         }
 
         private void button12_MouseUp(object sender, MouseEventArgs e)
         {
-            _rack.Motion.Halt(_rack.Motion.MotorZ);
+            try
+            {
+                _rack.Motion.Halt(_rack.Motion.MotorZ);
+            }
+            catch (Exception ex)
+            {
+
+                MessageBox.Show(ex.Message);
+            }
         }
 
         private void button16_MouseUp(object sender, MouseEventArgs e)
         {
-            _rack.Motion.Halt(_rack.Motion.MotorR);
+            try
+            {
+                _rack.Motion.Halt(_rack.Motion.MotorR);
+            }
+            catch (Exception ex)
+            {
+
+                MessageBox.Show(ex.Message);
+            }
         }
 
         private void button13_MouseUp(object sender, MouseEventArgs e)
         {
-            _rack.Motion.Halt(_rack.Motion.MotorZ);
+            try
+            {
+                _rack.Motion.Halt(_rack.Motion.MotorZ);
+            }
+            catch (Exception ex)
+            {
+
+                MessageBox.Show(ex.Message);
+            }
         }
 
         private void button17_MouseUp(object sender, MouseEventArgs e)
         {
-            _rack.Motion.Halt(_rack.Motion.MotorR);
+            try
+            {
+                _rack.Motion.Halt(_rack.Motion.MotorR);
+            }
+            catch (Exception ex)
+            {
+
+                MessageBox.Show(ex.Message);
+            }
         }
 
         private void button15_MouseUp(object sender, MouseEventArgs e)
         {
-            _rack.Motion.Halt(_rack.Motion.MotorY);
+            try
+            {
+                _rack.Motion.Halt(_rack.Motion.MotorY);
+            }
+            catch (Exception ex)
+            {
+
+                MessageBox.Show(ex.Message);
+            }
         }
 
         #endregion
-
-        private void button20_Click(object sender, EventArgs e)
+        private void buttonLoad_Click(object sender, EventArgs e)
         {
             _rack.SetSpeed(defaultTestSpeed);
 
-            Task.Run(() =>
+            Task.Run((Action)(() =>
             {
                 //Todo complete condition.
-                TargetPosition target = _rack.TeachPos2TargetConverter(_selectedTargetPosition);
+                TargetPosition target = _rack.Motion.HomePosition;
+                switch (this._selectedTargetPosition)
+                {
+                    case TeachPos.Home:
+                        break;
+                    case TeachPos.Pick:
+                        target = _rack.Motion.PickPosition;
+                        break;
+                    case TeachPos.Bin:
+                        break;
+                    case TeachPos.ConveyorLeft:
+                        break;
+                    case TeachPos.ConveyorRight:
+                        break;
+                    case TeachPos.Holder1:
+                        target = _rack.Motion.Holder1;
+                        break;
+                    case TeachPos.Holder2:
+                        target = _rack.Motion.Holder2;
+                        break;
+                    case TeachPos.Holder3:
+                        target = _rack.Motion.Holder3;
+                        break;
+                    case TeachPos.Holder4:
+                        target = _rack.Motion.Holder4;
+                        break;
+                    case TeachPos.Holder5:
+                        target = _rack.Motion.Holder5;
+                        break;
+                    case TeachPos.Holder6:
+                        target = _rack.Motion.Holder6;
+                        break;
+                    case TeachPos.Gold1:
+                        break;
+                    case TeachPos.Gold2:
+                        break;
+                    case TeachPos.Gold3:
+                        break;
+                    case TeachPos.Gold4:
+                        break;
+                    case TeachPos.Gold5:
+                        break;
+                }
 
                 try
                 {
@@ -356,48 +573,23 @@ namespace RackTool
                 {
                     MessageBox.Show(ex.Message);
                 }
-            });
+            }));
 
         }
 
-        private void button22_Click(object sender, EventArgs e)
+        private void comboBox_Gripper_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if ( _rack.Stepper.GetStatus(Gripper.One, StatusCode.Enabled))
-            {
-                _rack.Stepper.Disable(Gripper.One);
-            }
-            else
-            {
-                _rack.Stepper.Enable(Gripper.One);
-            }
-           
+            _selectedGripper = (StepperMotor)comboBox_Gripper.SelectedItem;
         }
 
-        private void button21_Click(object sender, EventArgs e)
+        private void comboBoxMovePos_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (_rack.Stepper.GetStatus(Gripper.Two, StatusCode.Enabled))
-            {
-                _rack.Stepper.Disable(Gripper.Two);
-            }
-            else
-            {
-                _rack.Stepper.Enable(Gripper.Two);
-            }
-        }
-
-        private void comboBox2_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            _selectedGripper = (Gripper)comboBox2.SelectedItem;
-        }
-
-        private void comboBox3_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            _selectedTargetPosition = (TeachPos) comboBox3.SelectedItem;
+            _selectedTargetPosition = (TeachPos)comboBoxMovePos.SelectedItem;
         }
 
         private double defaultTestSpeed = 5;
 
-        private async void button23_Click(object sender, EventArgs e)
+        private async void buttonPick_Click(object sender, EventArgs e)
         {
             _rack.SetSpeed(defaultTestSpeed);
 
@@ -415,7 +607,7 @@ namespace RackTool
             });
         }
 
-        private async void button24_Click(object sender, EventArgs e)
+        private async void buttonPlace_Click(object sender, EventArgs e)
         {
             _rack.SetSpeed(defaultTestSpeed);
 
@@ -432,15 +624,56 @@ namespace RackTool
                 }
             });
         }
-
-        private void button25_Click(object sender, EventArgs e)
+        private void buttonUnload_Click(object sender, EventArgs e)
         {
             _rack.SetSpeed(defaultTestSpeed);
 
-            Task.Run(() =>
+            Task.Run((Action)(() =>
             {
                 //Todo complete condition.
-                TargetPosition target = _rack.TeachPos2TargetConverter(_selectedTargetPosition);
+                TargetPosition target = _rack.Motion.HomePosition;
+                switch (this._selectedTargetPosition)
+                {
+                    case TeachPos.Home:
+                        break;
+                    case TeachPos.Pick:
+                        target = _rack.Motion.PickPosition;
+                        break;
+                    case TeachPos.Bin:
+                        break;
+                    case TeachPos.ConveyorLeft:
+                        break;
+                    case TeachPos.ConveyorRight:
+                        break;
+                    case TeachPos.Holder1:
+                        target = _rack.Motion.Holder1;
+                        break;
+                    case TeachPos.Holder2:
+                        target = _rack.Motion.Holder2;
+                        break;
+                    case TeachPos.Holder3:
+                        target = _rack.Motion.Holder3;
+                        break;
+                    case TeachPos.Holder4:
+                        target = _rack.Motion.Holder4;
+                        break;
+                    case TeachPos.Holder5:
+                        target = _rack.Motion.Holder5;
+                        break;
+                    case TeachPos.Holder6:
+                        target = _rack.Motion.Holder6;
+                        break;
+                    case TeachPos.Gold1:
+                        break;
+                    case TeachPos.Gold2:
+                        break;
+                    case TeachPos.Gold3:
+                        break;
+                    case TeachPos.Gold4:
+                        break;
+                    case TeachPos.Gold5:
+                        break;
+                }
 
                 try
                 {
@@ -450,7 +683,7 @@ namespace RackTool
                 {
                     MessageBox.Show(ex.Message);
                 }
-            });
+            }));
         }
 
         private void button26_Click(object sender, EventArgs e)
@@ -458,30 +691,245 @@ namespace RackTool
             _rack.ReadyThePhone();
         }
 
-        private void button27_Click(object sender, EventArgs e)
+        private void checkBoxPickConveyorMoveForward_CheckedChanged(object sender, EventArgs e)
         {
-            _rack.CalculateG1ToG2Offset(_selectedTargetPosition);
+            _rack.Conveyor.ConveyorMovingForward = checkBoxPickConveyorMoveForward.Checked;
         }
 
-        private void button28_Click(object sender, EventArgs e)
+        private void button38_Click(object sender, EventArgs e)
         {
-            Task.Run(() =>
+            //_rack._conveyor.UpBlockSeparate(false);
+            //_rack._conveyor.InitialState();
+            //_rack._conveyor.UpBlockSeparate(true);
+            _rack.Conveyor.Start();
+        }
+
+        private void button39_Click(object sender, EventArgs e)
+        {
+            _rack.Conveyor.CommandInposForPicking = true;
+        }
+
+        private void button40_Click(object sender, EventArgs e)
+        {
+            _rack.Conveyor.CommandReadyForPicking = true;
+        }
+
+        private void button41_Click(object sender, EventArgs e)
+        {
+            _rack.Conveyor.InposForPicking = false;
+        }
+
+        
+
+        private void trackBarSetSpeed_Scroll(object sender, EventArgs e)
+        {
+            labelSpeed2.Text = trackBarSetSpeed2.Value.ToString();
+            _rack.SetSpeedImm(Convert.ToDouble(trackBarSetSpeed2.Value));
+        }
+
+        private void trackBarSetSpeed1_Scroll(object sender, EventArgs e)
+        {
+            labelSpeed1.Text = trackBarSetSpeed1.Value.ToString();
+            _rack.SetSpeedImm(Convert.ToDouble(trackBarSetSpeed1.Value));
+        }
+
+        private void RefleshRobotUi()
+        {
+            try
             {
-                try
+                foreach (var item in _rack.Motion.Motors)
                 {
-                    _rack.LoadForTeaching(_selectedGripper, _selectedTargetPosition);
+                    MotorStates State = _rack.Motion.GetRobotState(item);
+                    switch (item.Id)
+                    {
+                        case Axis.ACSC_AXIS_0: buttonEableZ.Text = Convert.ToBoolean(State & MotorStates.ACSC_MST_ENABLE) ? "Disable" : "Enable"; break;
+                        case Axis.ACSC_AXIS_1: buttonEableX1.Text = Convert.ToBoolean(State & MotorStates.ACSC_MST_ENABLE) ? "Disable" : "Enable"; break;
+                        case Axis.ACSC_AXIS_2: buttonEableX2.Text = Convert.ToBoolean(State & MotorStates.ACSC_MST_ENABLE) ? "Disable" : "Enable"; break;
+                        case Axis.ACSC_AXIS_3: buttonEableY.Text = Convert.ToBoolean(State & MotorStates.ACSC_MST_ENABLE) ? "Disable" : "Enable"; break;
+                        case Axis.ACSC_AXIS_4: buttonEableR.Text = Convert.ToBoolean(State & MotorStates.ACSC_MST_ENABLE) ? "Disable" : "Enable"; break;
+                        default:
+                            break;
+                    }
                 }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.Message);
-                }
-            });
-            
+                buttonG1TightOrLoose.Text = _rack.Io.GetInput(Input.Gripper01Tight) ? "Loose" : "Tight";
+                buttonG2TightOrLoose.Text = _rack.Io.GetInput(Input.Gripper02Tight) ? "Loose" : "Tight";
+                buttonEableG1.Text = _rack.Stepper.GetStatus(StepperMotor.One, StatusCode.Enabled) ? "Disable" : "Enable";
+                buttonEableG2.Text = _rack.Stepper.GetStatus(StepperMotor.Two, StatusCode.Enabled) ? "Disable" : "Enable";
+            }
+            catch (Exception ex)
+            {
+
+                MessageBox.Show(ex.Message);
+            }
+           
         }
 
-        private void button29_Click(object sender, EventArgs e)
+        #region Enable
+        private void button22_Click(object sender, EventArgs e)
         {
-            _rack.EnableMotorsForTeaching();
+            if (_rack.Stepper.GetStatus(StepperMotor.One, StatusCode.Enabled))
+            {
+                _rack.Stepper.Disable(StepperMotor.One);
+            }
+            else
+            {
+                _rack.Stepper.Enable(StepperMotor.One);
+            }
+            RefleshRobotUi();
         }
+
+        private void button21_Click(object sender, EventArgs e)
+        {
+            if (_rack.Stepper.GetStatus(StepperMotor.Two, StatusCode.Enabled))
+            {
+                _rack.Stepper.Disable(StepperMotor.Two);
+            }
+            else
+            {
+                _rack.Stepper.Enable(StepperMotor.Two);
+            }
+            RefleshRobotUi();
+        }
+
+        private void buttonEableX1_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (buttonEableX1.Text == "Enable")
+                    _rack.Motion.Enable(_rack.Motion.MotorX1);
+
+                else
+                    _rack.Motion.Disable(_rack.Motion.MotorX1);
+                RefleshRobotUi();
+            }
+            catch (Exception ex)
+            {
+
+                MessageBox.Show(ex.Message);
+            }
+        }
+        private void buttonEableX2_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (buttonEableX2.Text == "Enable")
+                    _rack.Motion.Enable(_rack.Motion.MotorX2);
+
+                else
+                    _rack.Motion.Disable(_rack.Motion.MotorX2);
+                RefleshRobotUi();
+            }
+            catch (Exception ex)
+            {
+
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private void buttonEableY_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (buttonEableY.Text == "Enable")
+                    _rack.Motion.Enable(_rack.Motion.MotorY);
+
+                else
+                    _rack.Motion.Disable(_rack.Motion.MotorY);
+                RefleshRobotUi();
+            }
+            catch (Exception ex)
+            {
+
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private void buttonEableR_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (buttonEableR.Text == "Enable")
+                    _rack.Motion.Enable(_rack.Motion.MotorR);
+
+                else
+                    _rack.Motion.Disable(_rack.Motion.MotorR);
+                RefleshRobotUi();
+            }
+            catch (Exception ex)
+            {
+
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private void buttonEableZ_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (buttonEableZ.Text == "Enable")
+                    _rack.Motion.Enable(_rack.Motion.MotorZ);
+
+                else
+                    _rack.Motion.Disable(_rack.Motion.MotorZ);
+                RefleshRobotUi();
+            }
+            catch (Exception ex)
+            {
+
+                MessageBox.Show(ex.Message);
+            }
+        }
+        #endregion
+
+        private void buttonG1TightOrLoose_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (buttonG1TightOrLoose.Text == "G1Open")
+                {
+                   _rack.OpenGripper(StepperMotor.One);
+                    buttonG1TightOrLoose.Text = "G1Close";
+                }
+                else
+                {
+                    _rack.CloseGripper(StepperMotor.One);
+                    buttonG1TightOrLoose.Text = "G1Open";
+                }
+            }
+            catch (Exception ex)
+            {
+
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private void buttonG2TightOrLoose_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (buttonG2TightOrLoose.Text == "G2Open")
+                {
+                    _rack.OpenGripper(StepperMotor.Two);
+                    buttonG2TightOrLoose.Text = "G2Close";
+                }
+                else
+                {
+                    _rack.CloseGripper(StepperMotor.Two);
+                    buttonG2TightOrLoose.Text = "G2Open";
+                }
+            }
+            catch (Exception ex)
+            {
+
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private void buttonHighSpeed_Click(object sender, EventArgs e)
+        {
+
+        }
+
+
     }
 }

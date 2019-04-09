@@ -24,7 +24,7 @@ namespace Rack
                 Motion.GetPosition(Motion.MotorR).ToString(CultureInfo.CurrentCulture));
 
             XmlReaderWriter.SetTeachAttribute(Files.RackData, selectedTeachPos, PosItem.APos,
-                Stepper.GetPosition(Gripper.One).ToString(CultureInfo.CurrentCulture));
+                Stepper.GetPosition(StepperMotor.One).ToString(CultureInfo.CurrentCulture));
         }
 
         public void SaveApproachHeight(TeachPos selectedTeachPos)
@@ -44,7 +44,7 @@ namespace Rack
 
             double xOffset = Motion.GetPositionX() - XPos;
             double yOffset = Motion.GetPosition(Motion.MotorY) - YPos;
-            double aOffset = Stepper.GetPosition(Gripper.Two) - APos;
+            double aOffset = Stepper.GetPosition(StepperMotor.Two) - APos;
 
             if (Math.Abs(xOffset)>5 | Math.Abs(yOffset) > 5 | Math.Abs(aOffset) > 5)
             {
@@ -65,8 +65,8 @@ namespace Rack
             Motion.Disable(Motion.MotorX1);
             Motion.Disable(Motion.MotorX2);
             Motion.Disable(Motion.MotorY);
-            Stepper.Disable(Gripper.One);
-            Stepper.Disable(Gripper.Two);
+            Stepper.Disable(StepperMotor.One);
+            Stepper.Disable(StepperMotor.Two);
         }
 
         public void EnableMotorsForTeaching()
@@ -74,11 +74,11 @@ namespace Rack
             Motion.Enable(Motion.MotorX1);
             Motion.Enable(Motion.MotorX2);
             Motion.Enable(Motion.MotorY);
-            Stepper.Enable(Gripper.One);
-            Stepper.Enable(Gripper.Two);
+            Stepper.Enable(StepperMotor.One);
+            Stepper.Enable(StepperMotor.Two);
         }
 
-        public void LoadForTeaching(Gripper gripper, TeachPos selectedTeachPos)
+        public void LoadForTeaching(StepperMotor gripper, TeachPos selectedTeachPos)
         {
             TargetPosition target = TeachPos2TargetConverter(selectedTeachPos);
             target.ZPos = target.ZPos + 30;

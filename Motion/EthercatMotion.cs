@@ -620,6 +620,10 @@ namespace Motion
 
         }
 
-      
+        public MotorStates GetRobotState(Motor motor)
+        {
+            return Ch.GetMotorState(motor.Id);
+        }
+
     }
 }

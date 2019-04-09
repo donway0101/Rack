@@ -40,7 +40,7 @@ namespace StepperTool
         {
             try
             {
-                stepper.HomeMotor(Gripper.One, -6);
+                stepper.HomeMotor(StepperMotor.One, -6);
             }
             catch (Exception ex)
             {
@@ -52,7 +52,7 @@ namespace StepperTool
         {
             try
             {
-                stepper.HomeMotor(Gripper.Two, -2);
+                stepper.HomeMotor(StepperMotor.Two, -2);
             }
             catch (Exception ex)
             {
@@ -64,7 +64,7 @@ namespace StepperTool
         {
             try
             {
-                stepper.Stop(Gripper.One);
+                stepper.Stop(StepperMotor.One);
             }
             catch (Exception ex)
             {
@@ -76,7 +76,7 @@ namespace StepperTool
         {
             try
             {
-                stepper.Stop(Gripper.Two);
+                stepper.Stop(StepperMotor.Two);
             }
             catch (Exception ex)
             {
@@ -90,7 +90,7 @@ namespace StepperTool
         {
             try
             {
-                stepper.Stop(Gripper.Two);
+                stepper.Stop(StepperMotor.Two);
             }
             catch (Exception ex)
             {
@@ -100,36 +100,36 @@ namespace StepperTool
 
         private void button7_Click(object sender, EventArgs e)
         {
-            stepper.Enable(Gripper.One);
+            stepper.Enable(StepperMotor.One);
         }
 
         private void button6_Click(object sender, EventArgs e)
         {
-            stepper.Enable(Gripper.Two);
+            stepper.Enable(StepperMotor.Two);
 
         }
 
         private void button9_Click(object sender, EventArgs e)
         {
-            stepper.Disable(Gripper.One);
+            stepper.Disable(StepperMotor.One);
         }
 
         private void button8_Click(object sender, EventArgs e)
         {
-            stepper.Disable(Gripper.Two);
+            stepper.Disable(StepperMotor.Two);
         }
 
         private void button10_Click(object sender, EventArgs e)
         {
             button10.Enabled = false;
-            stepper.ToPoint(Gripper.One, Convert.ToDouble(textBox1.Text));
+            stepper.ToPoint(StepperMotor.One, Convert.ToDouble(textBox1.Text));
             button10.Enabled = true;
         }
 
         private void button11_Click(object sender, EventArgs e)
         {
             button11.Enabled = false;
-            stepper.ToPoint(Gripper.Two, Convert.ToDouble(textBox2.Text));
+            stepper.ToPoint(StepperMotor.Two, Convert.ToDouble(textBox2.Text));
             button11.Enabled = true;            
         }
 
@@ -141,7 +141,7 @@ namespace StepperTool
             do
             {
                 Console.WriteLine("Motor moving");
-                Task<bool> a = stepper.ToPointAsync(Gripper.One, 90, Gripper.Two, 90, 10);
+                Task<bool> a = stepper.ToPointAsync(StepperMotor.One, 90, StepperMotor.Two, 90, 10);
                 Console.WriteLine("Doing other job");
                 Thread.Sleep(100);
                 Console.WriteLine("Doing other job");
@@ -151,7 +151,7 @@ namespace StepperTool
                 Console.WriteLine("Result is " + result);
 
                 Console.WriteLine("Motor moving");
-                a = stepper.ToPointAsync(Gripper.One, 0, Gripper.Two, 0, 10);
+                a = stepper.ToPointAsync(StepperMotor.One, 0, StepperMotor.Two, 0, 10);
                 Console.WriteLine("Doing other job");
                 Thread.Sleep(100);
                 Console.WriteLine("Doing other job");
@@ -183,8 +183,8 @@ namespace StepperTool
         private void button13_Click(object sender, EventArgs e)
         {
             int speed = Convert.ToInt16(textBox4.Text);
-            stepper.SetSpeed(Gripper.One, speed);
-            stepper.SetSpeed(Gripper.Two, speed);
+            stepper.SetSpeed(StepperMotor.One, speed);
+            stepper.SetSpeed(StepperMotor.Two, speed);
         }
     }
 }

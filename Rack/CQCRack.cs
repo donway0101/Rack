@@ -79,8 +79,8 @@ namespace Rack
                 {
                     stepperSpeed = 30;
                 }
-                Stepper.SetSpeed(GripperStepper.Gripper.One, stepperSpeed);
-                Stepper.SetSpeed(GripperStepper.Gripper.Two, stepperSpeed); 
+                Stepper.SetSpeed(StepperMotor.One, stepperSpeed);
+                Stepper.SetSpeed(StepperMotor.Two, stepperSpeed); 
             }
         }
 
@@ -140,9 +140,8 @@ namespace Rack
                 {
                     if (currentPosition.YPos < YIsNearHome)
                     {
-
-                        Motion.ToPointWaitTillEnd(Motion.MotorY, Motion.HomePosition.YPos);
                         Motion.ToPointWaitTillEnd(Motion.MotorZ, Motion.HomePosition.ZPos);
+                        Motion.ToPointWaitTillEnd(Motion.MotorY, Motion.HomePosition.YPos);
                         Motion.ToPointXWaitTillEnd(Motion.HomePosition.XPos);
                         Motion.ToPointWaitTillEnd(Motion.MotorR, Motion.HomePosition.RPos);
 
@@ -231,8 +230,8 @@ namespace Rack
         {
             if (_gripperIsOnline)
             {
-                Stepper.HomeMotor(GripperStepper.Gripper.One, -6);
-                Stepper.HomeMotor(GripperStepper.Gripper.Two, -2);
+                Stepper.HomeMotor(StepperMotor.One, -6);
+                Stepper.HomeMotor(StepperMotor.Two, -2);
             }
         }
 

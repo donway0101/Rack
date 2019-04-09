@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using GripperStepper;
 
 namespace Rack
 {
@@ -11,29 +12,29 @@ namespace Rack
         public void Test()
         {
             ReadyThePhone();
-            Pick(GripperStepper.Gripper.One);
-            UnloadAndLoad(Motion.Holder4, GripperStepper.Gripper.Two);
-            UnloadAndLoad(Motion.Holder1, GripperStepper.Gripper.One);
-            Place(GripperStepper.Gripper.One);
+            Pick(StepperMotor.One);
+            UnloadAndLoad(Motion.Holder4, StepperMotor.Two);
+            UnloadAndLoad(Motion.Holder1, StepperMotor.One);
+            Place(StepperMotor.One);
         }
 
         private void TestLoadGold()
         {
             Task.Run(() =>
             {
-                Load(GripperStepper.Gripper.One, Motion.Gold1);
-                Load(GripperStepper.Gripper.One, Motion.Holder1);
-                Load(GripperStepper.Gripper.One, Motion.Gold2);
-                Load(GripperStepper.Gripper.One, Motion.Holder2);
-                Load(GripperStepper.Gripper.One, Motion.Gold3);
-                Load(GripperStepper.Gripper.One, Motion.Holder3);
-                Load(GripperStepper.Gripper.One, Motion.Gold4);
-                Load(GripperStepper.Gripper.One, Motion.Holder4);
-                Load(GripperStepper.Gripper.One, Motion.Gold5);
-                Load(GripperStepper.Gripper.One, Motion.Holder5);
-                Load(GripperStepper.Gripper.One, Motion.Gold1);
-                Load(GripperStepper.Gripper.One, Motion.Holder6);
-                Load(GripperStepper.Gripper.One, Motion.HomePosition);
+                Load(StepperMotor.One, Motion.Gold1);
+                Load(StepperMotor.One, Motion.Holder1);
+                Load(StepperMotor.One, Motion.Gold2);
+                Load(StepperMotor.One, Motion.Holder2);
+                Load(StepperMotor.One, Motion.Gold3);
+                Load(StepperMotor.One, Motion.Holder3);
+                Load(StepperMotor.One, Motion.Gold4);
+                Load(StepperMotor.One, Motion.Holder4);
+                Load(StepperMotor.One, Motion.Gold5);
+                Load(StepperMotor.One, Motion.Holder5);
+                Load(StepperMotor.One, Motion.Gold1);
+                Load(StepperMotor.One, Motion.Holder6);
+                Load(StepperMotor.One, Motion.HomePosition);
             });
         }
 
@@ -42,19 +43,19 @@ namespace Rack
             Task.Run(() =>
             {
                 SetSpeed(20);
-                Unload(GripperStepper.Gripper.Two, Motion.Holder1);
-                Unload(GripperStepper.Gripper.Two, Motion.BinPosition);
-                Unload(GripperStepper.Gripper.Two, Motion.Holder2);
-                Unload(GripperStepper.Gripper.Two, Motion.BinPosition);
-                Unload(GripperStepper.Gripper.Two, Motion.Holder3);
-                Unload(GripperStepper.Gripper.Two, Motion.BinPosition);
-                Unload(GripperStepper.Gripper.Two, Motion.Holder4);
-                Unload(GripperStepper.Gripper.Two, Motion.BinPosition);
-                Unload(GripperStepper.Gripper.Two, Motion.Holder5);
-                Unload(GripperStepper.Gripper.Two, Motion.BinPosition);
-                Unload(GripperStepper.Gripper.Two, Motion.Holder6);
-                Unload(GripperStepper.Gripper.Two, Motion.BinPosition);
-                Unload(GripperStepper.Gripper.Two, Motion.HomePosition);
+                Unload(StepperMotor.Two, Motion.Holder1);
+                Unload(StepperMotor.Two, Motion.BinPosition);
+                Unload(StepperMotor.Two, Motion.Holder2);
+                Unload(StepperMotor.Two, Motion.BinPosition);
+                Unload(StepperMotor.Two, Motion.Holder3);
+                Unload(StepperMotor.Two, Motion.BinPosition);
+                Unload(StepperMotor.Two, Motion.Holder4);
+                Unload(StepperMotor.Two, Motion.BinPosition);
+                Unload(StepperMotor.Two, Motion.Holder5);
+                Unload(StepperMotor.Two, Motion.BinPosition);
+                Unload(StepperMotor.Two, Motion.Holder6);
+                Unload(StepperMotor.Two, Motion.BinPosition);
+                Unload(StepperMotor.Two, Motion.HomePosition);
             });
         }
 
@@ -63,7 +64,7 @@ namespace Rack
             Task.Run(() =>
             {
                 SetSpeed(20);
-                UnloadAndLoad(Motion.PickPosition, GripperStepper.Gripper.One);
+                UnloadAndLoad(Motion.PickPosition, StepperMotor.One);
                 //UnloadAndLoad(_motion.Holder1, Gripper.Two);
                 //UnloadAndLoad(_motion.PickPosition, Gripper.One);
                 //UnloadAndLoad(_motion.Holder2, Gripper.Two);
