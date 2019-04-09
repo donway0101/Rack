@@ -39,6 +39,7 @@
             this.label12 = new System.Windows.Forms.Label();
             this.label13 = new System.Windows.Forms.Label();
             this.label14 = new System.Windows.Forms.Label();
+            this.labelSpeed2 = new System.Windows.Forms.Label();
             this.label15 = new System.Windows.Forms.Label();
             this.labelPositionG2 = new System.Windows.Forms.Label();
             this.labelPositionG1 = new System.Windows.Forms.Label();
@@ -52,7 +53,6 @@
             this.buttonLowSpeed = new System.Windows.Forms.Button();
             this.buttonMiddleSpeed = new System.Windows.Forms.Button();
             this.buttonHighSpeed = new System.Windows.Forms.Button();
-            this.labelSpeed2 = new System.Windows.Forms.Label();
             this.trackBarSetSpeed2 = new System.Windows.Forms.TrackBar();
             this.buttonEableR = new System.Windows.Forms.Button();
             this.buttonEableZ = new System.Windows.Forms.Button();
@@ -82,18 +82,23 @@
             this.trackBarSetSpeed1 = new System.Windows.Forms.TrackBar();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.buttonLoadForTeach = new System.Windows.Forms.Button();
+            this.buttonReadyForPick = new System.Windows.Forms.Button();
+            this.buttonCalOffset = new System.Windows.Forms.Button();
+            this.buttonBin = new System.Windows.Forms.Button();
+            this.buttonUnloadAndLoad = new System.Windows.Forms.Button();
             this.buttonSaveApproach = new System.Windows.Forms.Button();
+            this.label1 = new System.Windows.Forms.Label();
             this.buttonSavePosition = new System.Windows.Forms.Button();
+            this.label2 = new System.Windows.Forms.Label();
             this.buttonCreateXml = new System.Windows.Forms.Button();
+            this.buttonPlace = new System.Windows.Forms.Button();
             this.buttonLoad = new System.Windows.Forms.Button();
+            this.buttonPick = new System.Windows.Forms.Button();
             this.buttonUnload = new System.Windows.Forms.Button();
+            this.comboBoxMovePos = new System.Windows.Forms.ComboBox();
             this.comboBox_Gripper = new System.Windows.Forms.ComboBox();
             this.label3 = new System.Windows.Forms.Label();
-            this.comboBoxMovePos = new System.Windows.Forms.ComboBox();
-            this.label2 = new System.Windows.Forms.Label();
-            this.buttonPick = new System.Windows.Forms.Button();
-            this.buttonPlace = new System.Windows.Forms.Button();
-            this.label1 = new System.Windows.Forms.Label();
             this.tabPage4 = new System.Windows.Forms.TabPage();
             this.buttonForPicked = new System.Windows.Forms.Button();
             this.buttonForReady = new System.Windows.Forms.Button();
@@ -107,11 +112,7 @@
             this.tabPage7 = new System.Windows.Forms.TabPage();
             this.label8 = new System.Windows.Forms.Label();
             this.richTextBoxMessage = new System.Windows.Forms.RichTextBox();
-            this.buttonUnloadAndLoad = new System.Windows.Forms.Button();
-            this.buttonBin = new System.Windows.Forms.Button();
-            this.buttonCalOffset = new System.Windows.Forms.Button();
-            this.buttonReadyForPick = new System.Windows.Forms.Button();
-            this.buttonLoadForTeach = new System.Windows.Forms.Button();
+            this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarSetSpeed2)).BeginInit();
@@ -200,7 +201,7 @@
             this.groupBox1.Controls.Add(this.labelPositionZ);
             this.groupBox1.Controls.Add(this.labelPositionY);
             this.groupBox1.Controls.Add(this.labelPositionX);
-            this.groupBox1.Location = new System.Drawing.Point(633, 24);
+            this.groupBox1.Location = new System.Drawing.Point(622, 24);
             this.groupBox1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
@@ -253,6 +254,16 @@
             this.label14.Size = new System.Drawing.Size(23, 15);
             this.label14.TabIndex = 7;
             this.label14.Text = "Y:";
+            // 
+            // labelSpeed2
+            // 
+            this.labelSpeed2.AutoSize = true;
+            this.labelSpeed2.Font = new System.Drawing.Font("SimSun", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.labelSpeed2.Location = new System.Drawing.Point(47, 251);
+            this.labelSpeed2.Name = "labelSpeed2";
+            this.labelSpeed2.Size = new System.Drawing.Size(34, 24);
+            this.labelSpeed2.TabIndex = 37;
+            this.labelSpeed2.Text = "20";
             // 
             // label15
             // 
@@ -351,7 +362,7 @@
             this.groupBox2.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.groupBox2.Size = new System.Drawing.Size(977, 316);
+            this.groupBox2.Size = new System.Drawing.Size(1032, 316);
             this.groupBox2.TabIndex = 14;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Manual";
@@ -380,7 +391,7 @@
             // 
             // buttonLowSpeed
             // 
-            this.buttonLowSpeed.Location = new System.Drawing.Point(883, 242);
+            this.buttonLowSpeed.Location = new System.Drawing.Point(937, 244);
             this.buttonLowSpeed.Margin = new System.Windows.Forms.Padding(4);
             this.buttonLowSpeed.Name = "buttonLowSpeed";
             this.buttonLowSpeed.Size = new System.Drawing.Size(73, 58);
@@ -390,7 +401,7 @@
             // 
             // buttonMiddleSpeed
             // 
-            this.buttonMiddleSpeed.Location = new System.Drawing.Point(883, 132);
+            this.buttonMiddleSpeed.Location = new System.Drawing.Point(937, 134);
             this.buttonMiddleSpeed.Margin = new System.Windows.Forms.Padding(4);
             this.buttonMiddleSpeed.Name = "buttonMiddleSpeed";
             this.buttonMiddleSpeed.Size = new System.Drawing.Size(73, 58);
@@ -400,7 +411,7 @@
             // 
             // buttonHighSpeed
             // 
-            this.buttonHighSpeed.Location = new System.Drawing.Point(883, 22);
+            this.buttonHighSpeed.Location = new System.Drawing.Point(937, 24);
             this.buttonHighSpeed.Margin = new System.Windows.Forms.Padding(4);
             this.buttonHighSpeed.Name = "buttonHighSpeed";
             this.buttonHighSpeed.Size = new System.Drawing.Size(73, 58);
@@ -409,25 +420,15 @@
             this.buttonHighSpeed.UseVisualStyleBackColor = true;
             this.buttonHighSpeed.Click += new System.EventHandler(this.buttonHighSpeed_Click);
             // 
-            // labelSpeed2
-            // 
-            this.labelSpeed2.AutoSize = true;
-            this.labelSpeed2.Font = new System.Drawing.Font("SimSun", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.labelSpeed2.Location = new System.Drawing.Point(47, 251);
-            this.labelSpeed2.Name = "labelSpeed2";
-            this.labelSpeed2.Size = new System.Drawing.Size(34, 24);
-            this.labelSpeed2.TabIndex = 37;
-            this.labelSpeed2.Text = "20";
-            // 
             // trackBarSetSpeed2
             // 
             this.trackBarSetSpeed2.AutoSize = false;
-            this.trackBarSetSpeed2.Location = new System.Drawing.Point(791, 22);
+            this.trackBarSetSpeed2.Location = new System.Drawing.Point(780, 22);
             this.trackBarSetSpeed2.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.trackBarSetSpeed2.Maximum = 200;
             this.trackBarSetSpeed2.Name = "trackBarSetSpeed2";
             this.trackBarSetSpeed2.Orientation = System.Windows.Forms.Orientation.Vertical;
-            this.trackBarSetSpeed2.Size = new System.Drawing.Size(85, 279);
+            this.trackBarSetSpeed2.Size = new System.Drawing.Size(150, 279);
             this.trackBarSetSpeed2.TabIndex = 36;
             this.trackBarSetSpeed2.Value = 10;
             this.trackBarSetSpeed2.Scroll += new System.EventHandler(this.trackBarSetSpeed_Scroll);
@@ -779,10 +780,65 @@
             this.groupBox3.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.groupBox3.Size = new System.Drawing.Size(977, 244);
+            this.groupBox3.Size = new System.Drawing.Size(1032, 244);
             this.groupBox3.TabIndex = 15;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Run";
+            // 
+            // buttonLoadForTeach
+            // 
+            this.buttonLoadForTeach.Location = new System.Drawing.Point(542, 72);
+            this.buttonLoadForTeach.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.buttonLoadForTeach.Name = "buttonLoadForTeach";
+            this.buttonLoadForTeach.Size = new System.Drawing.Size(119, 35);
+            this.buttonLoadForTeach.TabIndex = 38;
+            this.buttonLoadForTeach.Text = "Teach Load";
+            this.buttonLoadForTeach.UseVisualStyleBackColor = true;
+            this.buttonLoadForTeach.Click += new System.EventHandler(this.buttonLoadForTeach_Click);
+            // 
+            // buttonReadyForPick
+            // 
+            this.buttonReadyForPick.Location = new System.Drawing.Point(542, 24);
+            this.buttonReadyForPick.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.buttonReadyForPick.Name = "buttonReadyForPick";
+            this.buttonReadyForPick.Size = new System.Drawing.Size(119, 35);
+            this.buttonReadyForPick.TabIndex = 37;
+            this.buttonReadyForPick.Text = "Ready Phone";
+            this.buttonReadyForPick.UseVisualStyleBackColor = true;
+            this.buttonReadyForPick.Click += new System.EventHandler(this.buttonReadyForPick_Click);
+            // 
+            // buttonCalOffset
+            // 
+            this.buttonCalOffset.Location = new System.Drawing.Point(677, 116);
+            this.buttonCalOffset.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.buttonCalOffset.Name = "buttonCalOffset";
+            this.buttonCalOffset.Size = new System.Drawing.Size(160, 35);
+            this.buttonCalOffset.TabIndex = 36;
+            this.buttonCalOffset.Text = "Calculate Offset";
+            this.buttonCalOffset.UseVisualStyleBackColor = true;
+            this.buttonCalOffset.Click += new System.EventHandler(this.buttonCalOffset_Click);
+            // 
+            // buttonBin
+            // 
+            this.buttonBin.Location = new System.Drawing.Point(255, 118);
+            this.buttonBin.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.buttonBin.Name = "buttonBin";
+            this.buttonBin.Size = new System.Drawing.Size(119, 35);
+            this.buttonBin.TabIndex = 35;
+            this.buttonBin.Text = "Bin";
+            this.buttonBin.UseVisualStyleBackColor = true;
+            this.buttonBin.Click += new System.EventHandler(this.buttonBin_Click);
+            // 
+            // buttonUnloadAndLoad
+            // 
+            this.buttonUnloadAndLoad.Location = new System.Drawing.Point(381, 118);
+            this.buttonUnloadAndLoad.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.buttonUnloadAndLoad.Name = "buttonUnloadAndLoad";
+            this.buttonUnloadAndLoad.Size = new System.Drawing.Size(119, 35);
+            this.buttonUnloadAndLoad.TabIndex = 34;
+            this.buttonUnloadAndLoad.Text = "Unload N Load";
+            this.buttonUnloadAndLoad.UseVisualStyleBackColor = true;
+            this.buttonUnloadAndLoad.Click += new System.EventHandler(this.buttonUnloadAndLoad_Click);
             // 
             // buttonSaveApproach
             // 
@@ -795,6 +851,15 @@
             this.buttonSaveApproach.UseVisualStyleBackColor = true;
             this.buttonSaveApproach.Click += new System.EventHandler(this.buttonSaveApproach_Click);
             // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(206, 39);
+            this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(0, 15);
+            this.label1.TabIndex = 31;
+            // 
             // buttonSavePosition
             // 
             this.buttonSavePosition.Location = new System.Drawing.Point(677, 22);
@@ -805,6 +870,16 @@
             this.buttonSavePosition.Text = "Save Position";
             this.buttonSavePosition.UseVisualStyleBackColor = true;
             this.buttonSavePosition.Click += new System.EventHandler(this.buttonSave_Click);
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(7, 24);
+            this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(71, 15);
+            this.label2.TabIndex = 32;
+            this.label2.Text = "Gripper:";
             // 
             // buttonCreateXml
             // 
@@ -817,6 +892,17 @@
             this.buttonCreateXml.UseVisualStyleBackColor = true;
             this.buttonCreateXml.Click += new System.EventHandler(this.buttonCreateXml_Click);
             // 
+            // buttonPlace
+            // 
+            this.buttonPlace.Location = new System.Drawing.Point(255, 69);
+            this.buttonPlace.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.buttonPlace.Name = "buttonPlace";
+            this.buttonPlace.Size = new System.Drawing.Size(119, 35);
+            this.buttonPlace.TabIndex = 25;
+            this.buttonPlace.Text = "Place";
+            this.buttonPlace.UseVisualStyleBackColor = true;
+            this.buttonPlace.Click += new System.EventHandler(this.buttonPlace_Click);
+            // 
             // buttonLoad
             // 
             this.buttonLoad.Location = new System.Drawing.Point(381, 22);
@@ -828,6 +914,17 @@
             this.buttonLoad.UseVisualStyleBackColor = true;
             this.buttonLoad.Click += new System.EventHandler(this.buttonLoad_Click);
             // 
+            // buttonPick
+            // 
+            this.buttonPick.Location = new System.Drawing.Point(256, 20);
+            this.buttonPick.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.buttonPick.Name = "buttonPick";
+            this.buttonPick.Size = new System.Drawing.Size(119, 35);
+            this.buttonPick.TabIndex = 24;
+            this.buttonPick.Text = "Pick";
+            this.buttonPick.UseVisualStyleBackColor = true;
+            this.buttonPick.Click += new System.EventHandler(this.buttonPick_Click);
+            // 
             // buttonUnload
             // 
             this.buttonUnload.Location = new System.Drawing.Point(381, 70);
@@ -838,6 +935,16 @@
             this.buttonUnload.Text = "Unload";
             this.buttonUnload.UseVisualStyleBackColor = true;
             this.buttonUnload.Click += new System.EventHandler(this.buttonUnload_Click);
+            // 
+            // comboBoxMovePos
+            // 
+            this.comboBoxMovePos.FormattingEnabled = true;
+            this.comboBoxMovePos.Location = new System.Drawing.Point(90, 59);
+            this.comboBoxMovePos.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.comboBoxMovePos.Name = "comboBoxMovePos";
+            this.comboBoxMovePos.Size = new System.Drawing.Size(159, 23);
+            this.comboBoxMovePos.TabIndex = 23;
+            this.comboBoxMovePos.SelectedIndexChanged += new System.EventHandler(this.comboBoxMovePos_SelectedIndexChanged);
             // 
             // comboBox_Gripper
             // 
@@ -858,57 +965,6 @@
             this.label3.Size = new System.Drawing.Size(63, 15);
             this.label3.TabIndex = 33;
             this.label3.Text = "Target:";
-            // 
-            // comboBoxMovePos
-            // 
-            this.comboBoxMovePos.FormattingEnabled = true;
-            this.comboBoxMovePos.Location = new System.Drawing.Point(90, 59);
-            this.comboBoxMovePos.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.comboBoxMovePos.Name = "comboBoxMovePos";
-            this.comboBoxMovePos.Size = new System.Drawing.Size(159, 23);
-            this.comboBoxMovePos.TabIndex = 23;
-            this.comboBoxMovePos.SelectedIndexChanged += new System.EventHandler(this.comboBoxMovePos_SelectedIndexChanged);
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(7, 24);
-            this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(71, 15);
-            this.label2.TabIndex = 32;
-            this.label2.Text = "Gripper:";
-            // 
-            // buttonPick
-            // 
-            this.buttonPick.Location = new System.Drawing.Point(256, 20);
-            this.buttonPick.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.buttonPick.Name = "buttonPick";
-            this.buttonPick.Size = new System.Drawing.Size(119, 35);
-            this.buttonPick.TabIndex = 24;
-            this.buttonPick.Text = "Pick";
-            this.buttonPick.UseVisualStyleBackColor = true;
-            this.buttonPick.Click += new System.EventHandler(this.buttonPick_Click);
-            // 
-            // buttonPlace
-            // 
-            this.buttonPlace.Location = new System.Drawing.Point(255, 69);
-            this.buttonPlace.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.buttonPlace.Name = "buttonPlace";
-            this.buttonPlace.Size = new System.Drawing.Size(119, 35);
-            this.buttonPlace.TabIndex = 25;
-            this.buttonPlace.Text = "Place";
-            this.buttonPlace.UseVisualStyleBackColor = true;
-            this.buttonPlace.Click += new System.EventHandler(this.buttonPlace_Click);
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(206, 39);
-            this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(0, 15);
-            this.label1.TabIndex = 31;
             // 
             // tabPage4
             // 
@@ -985,6 +1041,7 @@
             // 
             // tabPage3
             // 
+            this.tabPage3.Controls.Add(this.comboBox1);
             this.tabPage3.Controls.Add(this.label9);
             this.tabPage3.Location = new System.Drawing.Point(104, 4);
             this.tabPage3.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
@@ -1052,60 +1109,13 @@
             this.richTextBoxMessage.TabIndex = 19;
             this.richTextBoxMessage.Text = "当前设备状态，报警，等待手机，执行任务，解决办法";
             // 
-            // buttonUnloadAndLoad
+            // comboBox1
             // 
-            this.buttonUnloadAndLoad.Location = new System.Drawing.Point(381, 118);
-            this.buttonUnloadAndLoad.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.buttonUnloadAndLoad.Name = "buttonUnloadAndLoad";
-            this.buttonUnloadAndLoad.Size = new System.Drawing.Size(119, 35);
-            this.buttonUnloadAndLoad.TabIndex = 34;
-            this.buttonUnloadAndLoad.Text = "Unload N Load";
-            this.buttonUnloadAndLoad.UseVisualStyleBackColor = true;
-            this.buttonUnloadAndLoad.Click += new System.EventHandler(this.buttonUnloadAndLoad_Click);
-            // 
-            // buttonBin
-            // 
-            this.buttonBin.Location = new System.Drawing.Point(255, 118);
-            this.buttonBin.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.buttonBin.Name = "buttonBin";
-            this.buttonBin.Size = new System.Drawing.Size(119, 35);
-            this.buttonBin.TabIndex = 35;
-            this.buttonBin.Text = "Bin";
-            this.buttonBin.UseVisualStyleBackColor = true;
-            this.buttonBin.Click += new System.EventHandler(this.buttonBin_Click);
-            // 
-            // buttonCalOffset
-            // 
-            this.buttonCalOffset.Location = new System.Drawing.Point(677, 116);
-            this.buttonCalOffset.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.buttonCalOffset.Name = "buttonCalOffset";
-            this.buttonCalOffset.Size = new System.Drawing.Size(160, 35);
-            this.buttonCalOffset.TabIndex = 36;
-            this.buttonCalOffset.Text = "Calculate Offset";
-            this.buttonCalOffset.UseVisualStyleBackColor = true;
-            this.buttonCalOffset.Click += new System.EventHandler(this.buttonCalOffset_Click);
-            // 
-            // buttonReadyForPick
-            // 
-            this.buttonReadyForPick.Location = new System.Drawing.Point(542, 24);
-            this.buttonReadyForPick.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.buttonReadyForPick.Name = "buttonReadyForPick";
-            this.buttonReadyForPick.Size = new System.Drawing.Size(119, 35);
-            this.buttonReadyForPick.TabIndex = 37;
-            this.buttonReadyForPick.Text = "Ready Phone";
-            this.buttonReadyForPick.UseVisualStyleBackColor = true;
-            this.buttonReadyForPick.Click += new System.EventHandler(this.buttonReadyForPick_Click);
-            // 
-            // buttonLoadForTeach
-            // 
-            this.buttonLoadForTeach.Location = new System.Drawing.Point(542, 72);
-            this.buttonLoadForTeach.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.buttonLoadForTeach.Name = "buttonLoadForTeach";
-            this.buttonLoadForTeach.Size = new System.Drawing.Size(119, 35);
-            this.buttonLoadForTeach.TabIndex = 38;
-            this.buttonLoadForTeach.Text = "Teach Load";
-            this.buttonLoadForTeach.UseVisualStyleBackColor = true;
-            this.buttonLoadForTeach.Click += new System.EventHandler(this.buttonLoadForTeach_Click);
+            this.comboBox1.FormattingEnabled = true;
+            this.comboBox1.Location = new System.Drawing.Point(107, 177);
+            this.comboBox1.Name = "comboBox1";
+            this.comboBox1.Size = new System.Drawing.Size(96, 23);
+            this.comboBox1.TabIndex = 1;
             // 
             // Form1
             // 
@@ -1226,6 +1236,7 @@
         private System.Windows.Forms.Button buttonCalOffset;
         private System.Windows.Forms.Button buttonReadyForPick;
         private System.Windows.Forms.Button buttonLoadForTeach;
+        private System.Windows.Forms.ComboBox comboBox1;
     }
 }
 

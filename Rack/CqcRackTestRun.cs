@@ -13,8 +13,8 @@ namespace Rack
         {
             ReadyThePhone();
             Pick(StepperMotor.One);
-            UnloadAndLoad(Motion.Holder4, StepperMotor.Two);
-            UnloadAndLoad(Motion.Holder1, StepperMotor.One);
+            UnloadAndLoad(Motion.ShieldBox4, StepperMotor.Two);
+            UnloadAndLoad(Motion.ShieldBox1, StepperMotor.One);
             Place(StepperMotor.One);
         }
 
@@ -23,17 +23,17 @@ namespace Rack
             Task.Run(() =>
             {
                 Load(StepperMotor.One, Motion.Gold1);
-                Load(StepperMotor.One, Motion.Holder1);
+                Load(StepperMotor.One, Motion.ShieldBox1);
                 Load(StepperMotor.One, Motion.Gold2);
-                Load(StepperMotor.One, Motion.Holder2);
+                Load(StepperMotor.One, Motion.ShieldBox2);
                 Load(StepperMotor.One, Motion.Gold3);
-                Load(StepperMotor.One, Motion.Holder3);
+                Load(StepperMotor.One, Motion.ShieldBox3);
                 Load(StepperMotor.One, Motion.Gold4);
-                Load(StepperMotor.One, Motion.Holder4);
+                Load(StepperMotor.One, Motion.ShieldBox4);
                 Load(StepperMotor.One, Motion.Gold5);
-                Load(StepperMotor.One, Motion.Holder5);
+                Load(StepperMotor.One, Motion.ShieldBox5);
                 Load(StepperMotor.One, Motion.Gold1);
-                Load(StepperMotor.One, Motion.Holder6);
+                Load(StepperMotor.One, Motion.ShieldBox6);
                 Load(StepperMotor.One, Motion.HomePosition);
             });
         }
@@ -43,17 +43,17 @@ namespace Rack
             Task.Run(() =>
             {
                 SetSpeed(20);
-                Unload(StepperMotor.Two, Motion.Holder1);
+                Unload(StepperMotor.Two, Motion.ShieldBox1);
                 Unload(StepperMotor.Two, Motion.BinPosition);
-                Unload(StepperMotor.Two, Motion.Holder2);
+                Unload(StepperMotor.Two, Motion.ShieldBox2);
                 Unload(StepperMotor.Two, Motion.BinPosition);
-                Unload(StepperMotor.Two, Motion.Holder3);
+                Unload(StepperMotor.Two, Motion.ShieldBox3);
                 Unload(StepperMotor.Two, Motion.BinPosition);
-                Unload(StepperMotor.Two, Motion.Holder4);
+                Unload(StepperMotor.Two, Motion.ShieldBox4);
                 Unload(StepperMotor.Two, Motion.BinPosition);
-                Unload(StepperMotor.Two, Motion.Holder5);
+                Unload(StepperMotor.Two, Motion.ShieldBox5);
                 Unload(StepperMotor.Two, Motion.BinPosition);
-                Unload(StepperMotor.Two, Motion.Holder6);
+                Unload(StepperMotor.Two, Motion.ShieldBox6);
                 Unload(StepperMotor.Two, Motion.BinPosition);
                 Unload(StepperMotor.Two, Motion.HomePosition);
             });

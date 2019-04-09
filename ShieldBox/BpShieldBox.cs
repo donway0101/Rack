@@ -12,7 +12,12 @@ namespace ShieldBox
         private readonly object _sendLock = new object();
         private const string CmdEnding = "\r";
         private string _response;
-        private int _id;
+        public readonly int Id;
+
+        public State State { get; set; } = State.Close;
+        public int PassRate { get; set; }
+        public int TestCount { get; set; }
+        public int PassCount { get; set; }
 
         public BpShieldBox(int id, string serialPortName, int serialBaudRate = 9600,
             Parity serialParity = Parity.None, int serialDataBit = 8,
@@ -21,7 +26,7 @@ namespace ShieldBox
             _serial = new SerialPort(serialPortName, serialBaudRate, serialParity,
                     serialDataBit, serialStopBits)
                 { ReadTimeout = 1000};
-            _id = id;
+            Id = id;
         }
 
         public void Start()
@@ -64,10 +69,11 @@ namespace ShieldBox
             try
             {
                 SendCommand(Command.OPEN, Response.OpenSuccessful, timeout);
+                State = State.Open;
             }
             catch (Exception e)
             {
-                throw new Exception("OpenBox " + _id + " timeout");
+                throw new Exception("OpenBox " + Id + " timeout");
             }
         }
 
@@ -80,10 +86,11 @@ namespace ShieldBox
             try
             {
                 SendCommand(Command.CLOSE, Response.CloseSuccessful, timeout);
+                State = State.Close;
             }
             catch (Exception e)
             {
-                throw new Exception("CloseBox " + _id + " timeout");
+                throw new Exception("CloseBox " + Id + " timeout");
             }            
         }
 
@@ -95,7 +102,7 @@ namespace ShieldBox
             }
             catch (Exception e)
             {
-                throw new Exception("GreenLight " + _id + " timeout");
+                throw new Exception("GreenLight " + Id + " timeout");
             }
         }
 

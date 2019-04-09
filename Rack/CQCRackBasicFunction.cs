@@ -5,6 +5,7 @@ using Motion;
 using GripperStepper;
 using EcatIo;
 using Conveyor;
+using  ShieldBox;
 
 namespace Rack
 {
@@ -87,6 +88,51 @@ namespace Rack
             Motion.ToPointWaitTillEnd(Motion.MotorZ, holder.ApproachHeight);
             //Box is OK to close.
             Motion.ToPointWaitTillEnd(Motion.MotorY, Motion.PickPosition.YPos);
+        }
+
+        public void Load(StepperMotor gripper, BpShieldBox shieldBox)
+        {
+            TargetPosition holder = ConvertShieldBoxToTargetPosition(shieldBox);
+            if (shieldBox.State != State.Open)
+            {
+                throw new Exception("Box " + shieldBox.Id + " is not opened");
+            }
+            //Todo make sure box is open.
+            MoveToTargetPosition(gripper, holder);
+            OpenGripper(gripper);
+            Motion.ToPointWaitTillEnd(Motion.MotorZ, holder.ApproachHeight);
+            //Box is OK to close.
+            Motion.ToPointWaitTillEnd(Motion.MotorY, Motion.PickPosition.YPos);
+        }
+
+        private TargetPosition ConvertShieldBoxToTargetPosition(BpShieldBox shieldBox)
+        {
+            TargetPosition target = Motion.HomePosition;
+            switch (shieldBox.Id)
+            {
+                case 1:
+                    target = Motion.ShieldBox1;
+                    break;
+                case 2:
+                    target = Motion.ShieldBox2;
+                    break;
+                case 3:
+                    target = Motion.ShieldBox3;
+                    break;
+                case 4:
+                    target = Motion.ShieldBox4;
+                    break;
+                case 5:
+                    target = Motion.ShieldBox5;
+                    break;
+                case 6:
+                    target = Motion.ShieldBox6;
+                    break;
+                default:
+                    break;
+            }
+
+            return target;
         }
 
         public void Unload(StepperMotor gripper, TargetPosition holder)

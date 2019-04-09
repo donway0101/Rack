@@ -68,6 +68,10 @@
       <Project>{9d555f20-a4d7-4f2a-a425-3fd8f086358a}</Project>
       <Name>Motion</Name>
     </ProjectReference>
+    <ProjectReference Include="..\ShieldBox\ShieldBox.csproj">
+      <Project>{838ef205-9050-4252-b99a-8e7f66335996}</Project>
+      <Name>ShieldBox</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Stepper\Stepper.csproj">
       <Project>{80bb0d71-717e-48fc-b7d5-d891537265f8}</Project>
       <Name>Stepper</Name>

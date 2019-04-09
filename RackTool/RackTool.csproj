@@ -100,6 +100,10 @@
       <Project>{ba6788fd-7479-47d6-b29f-118161d22071}</Project>
       <Name>Rack</Name>
     </ProjectReference>
+    <ProjectReference Include="..\ShieldBox\ShieldBox.csproj">
+      <Project>{838ef205-9050-4252-b99a-8e7f66335996}</Project>
+      <Name>ShieldBox</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Stepper\Stepper.csproj">
       <Project>{80bb0d71-717e-48fc-b7d5-d891537265f8}</Project>
       <Name>Stepper</Name>

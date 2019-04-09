@@ -17,6 +17,7 @@ using System.Threading;
 using ACS.SPiiPlusNET;
 using Input = EcatIo.Input;
 using Outout = EcatIo.Output;
+using ShieldBox;
 namespace RackTool
 {
     public partial class Form1 : Form

@@ -36,12 +36,12 @@ namespace Motion
         public TargetPosition BinPosition { get; set; }
         public TargetPosition ConveyorLeftPosition { get; set; }
         public TargetPosition ConveyorRightPosition { get; set; }
-        public TargetPosition Holder1 { get; set; } 
-        public TargetPosition Holder2 { get; set; }
-        public TargetPosition Holder3 { get; set; }
-        public TargetPosition Holder4 { get; set; }
-        public TargetPosition Holder5 { get; set; }
-        public TargetPosition Holder6 { get; set; }
+        public TargetPosition ShieldBox1 { get; set; } 
+        public TargetPosition ShieldBox2 { get; set; }
+        public TargetPosition ShieldBox3 { get; set; }
+        public TargetPosition ShieldBox4 { get; set; }
+        public TargetPosition ShieldBox5 { get; set; }
+        public TargetPosition ShieldBox6 { get; set; }
 
         public TargetPosition Gold1 { get; set; }
         public TargetPosition Gold2 { get; set; }
@@ -173,12 +173,12 @@ namespace Motion
             ConveyorLeftPosition = LoadPosition(TeachPos.ConveyorLeft, Location.NoWhere);
             ConveyorRightPosition = LoadPosition(TeachPos.ConveyorRight, Location.NoWhere);
              
-            Holder1 = LoadPosition(TeachPos.Holder1, Location.Holder1);
-            Holder2 = LoadPosition(TeachPos.Holder2, Location.Holder2);
-            Holder3 = LoadPosition(TeachPos.Holder3, Location.Holder3);
-            Holder4 = LoadPosition(TeachPos.Holder4, Location.Holder4);
-            Holder5 = LoadPosition(TeachPos.Holder5, Location.Holder5);
-            Holder6 = LoadPosition(TeachPos.Holder6, Location.Holder6);           
+            ShieldBox1 = LoadPosition(TeachPos.Holder1, Location.Holder1);
+            ShieldBox2 = LoadPosition(TeachPos.Holder2, Location.Holder2);
+            ShieldBox3 = LoadPosition(TeachPos.Holder3, Location.Holder3);
+            ShieldBox4 = LoadPosition(TeachPos.Holder4, Location.Holder4);
+            ShieldBox5 = LoadPosition(TeachPos.Holder5, Location.Holder5);
+            ShieldBox6 = LoadPosition(TeachPos.Holder6, Location.Holder6);           
              
             Gold1 = LoadPosition(TeachPos.Gold1, Location.Gold1);
             Gold2 = LoadPosition(TeachPos.Gold2, Location.Gold2);
@@ -189,7 +189,7 @@ namespace Motion
             G1ToG2Offset = LoadPosition(TeachPos.G1ToG2Offset, Location.NoWhere);
             PickOffset = LoadPosition(TeachPos.PickOffset, Location.NoWhere);
 
-            Locations = new TargetPosition[14] { Holder1, Holder2, Holder3, Holder4, Holder5, Holder6,
+            Locations = new TargetPosition[14] { ShieldBox1, ShieldBox2, ShieldBox3, ShieldBox4, ShieldBox5, ShieldBox6,
             HomePosition,PickPosition, BinPosition, Gold1, Gold2, Gold3, Gold4, Gold5};
         }
 

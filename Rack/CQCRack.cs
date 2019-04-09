@@ -5,6 +5,7 @@ using Motion;
 using GripperStepper;
 using EcatIo;
 using Conveyor;
+using ShieldBox;
 using Tools;
 
 namespace Rack
@@ -27,6 +28,7 @@ namespace Rack
         public Stepper Stepper;
         public EthercatIo Io;
         public PickAndPlaceConveyor Conveyor;
+        public BpShieldBox ShieldBox1 { get; set; }
 
         public bool RobotHomeComplete { get; set; }
         public bool SetupComplete { get; set; }
@@ -56,6 +58,8 @@ namespace Rack
                 }
                 Stepper.Setup();
             }
+
+            ShieldBox1 = new BpShieldBox(1, "COM3");
 
             SetSpeed(10);
 
@@ -252,22 +256,22 @@ namespace Rack
                 case TeachPos.ConveyorRight:
                     break;
                 case TeachPos.Holder1:
-                    target = Motion.Holder1;
+                    target = Motion.ShieldBox1;
                     break;
                 case TeachPos.Holder2:
-                    target = Motion.Holder2;
+                    target = Motion.ShieldBox2;
                     break;
                 case TeachPos.Holder3:
-                    target = Motion.Holder3;
+                    target = Motion.ShieldBox3;
                     break;
                 case TeachPos.Holder4:
-                    target = Motion.Holder4;
+                    target = Motion.ShieldBox4;
                     break;
                 case TeachPos.Holder5:
-                    target = Motion.Holder5;
+                    target = Motion.ShieldBox5;
                     break;
                 case TeachPos.Holder6:
-                    target = Motion.Holder6;
+                    target = Motion.ShieldBox6;
                     break;
                 case TeachPos.Gold1:
                     break;

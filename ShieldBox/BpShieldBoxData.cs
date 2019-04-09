@@ -11,6 +11,15 @@
         SWITCHRF,
     }
 
+    public enum State
+    {
+        Testing,
+        Fail,
+        Pass,
+        Open,
+        Close,
+    }
+
     public static class Response
     {
         private const string ResponseEnding = "\r\n";

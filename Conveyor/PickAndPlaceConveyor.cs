@@ -270,6 +270,7 @@ namespace Conveyor
                     {
                         CommandInposForPicking = false;
                         ReadyForPicking = false;
+                        RunBeltPick(true);
                         if (_io.GetInput(Input.PickHasPhone)==false)
                         {
                             WaitTill(
@@ -278,10 +279,9 @@ namespace Conveyor
                                     : Input.PickBufferHasPhoneBackward, true, 30000);
                             UpBlockPick(true);
                         }                        
-                        
                         SideBlockSeparate(true);
                         UpBlockSeparate(false);
-                        RunBeltPick(true);
+                        
                         WaitTill(Input.PickHasPhone, true, 5000);
                         Delay(1000);
                         Clamp(true);
