@@ -49,6 +49,10 @@ namespace Motion
         public TargetPosition Gold4 { get; set; }
         public TargetPosition Gold5 { get; set; }
 
+        public TargetPosition G1ToG2Offset { get; set; }
+
+        public TargetPosition PickOffset { get; set; }
+
         public TargetPosition[] Locations { get; set; }
 
         public EthercatMotion(Api Controller, int axisNum)
@@ -181,6 +185,9 @@ namespace Motion
             Gold3 = LoadPosition(TeachPos.Gold3, Location.Gold3);
             Gold4 = LoadPosition(TeachPos.Gold4, Location.Gold4);
             Gold5 = LoadPosition(TeachPos.Gold5, Location.Gold5);
+
+            G1ToG2Offset = LoadPosition(TeachPos.G1ToG2Offset, Location.NoWhere);
+            PickOffset = LoadPosition(TeachPos.PickOffset, Location.NoWhere);
 
             Locations = new TargetPosition[14] { Holder1, Holder2, Holder3, Holder4, Holder5, Holder6,
             HomePosition,PickPosition, BinPosition, Gold1, Gold2, Gold3, Gold4, Gold5};

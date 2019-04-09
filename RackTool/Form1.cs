@@ -193,7 +193,15 @@ namespace RackTool
         }
         private void buttonCreateXml_Click(object sender, EventArgs e)
         {
-            XmlReaderWriter.CreateStorageFile("RackData.xml");
+            try
+            {
+                XmlReaderWriter.CreateStorageFile("RackData.xml");
+            }
+            catch (Exception ex)
+            {
+
+                MessageBox.Show(ex.Message);
+            }
         }
 
         bool testLoop = true;
@@ -514,56 +522,14 @@ namespace RackTool
         }
 
         #endregion
-        private void buttonLoad_Click(object sender, EventArgs e)
+        private async void buttonLoad_Click(object sender, EventArgs e)
         {
             _rack.SetSpeed(defaultTestSpeed);
 
-            Task.Run((Action)(() =>
+            await Task.Run((Action)(() =>
             {
                 //Todo complete condition.
-                TargetPosition target = _rack.Motion.HomePosition;
-                switch (this._selectedTargetPosition)
-                {
-                    case TeachPos.Home:
-                        break;
-                    case TeachPos.Pick:
-                        target = _rack.Motion.PickPosition;
-                        break;
-                    case TeachPos.Bin:
-                        break;
-                    case TeachPos.ConveyorLeft:
-                        break;
-                    case TeachPos.ConveyorRight:
-                        break;
-                    case TeachPos.Holder1:
-                        target = _rack.Motion.Holder1;
-                        break;
-                    case TeachPos.Holder2:
-                        target = _rack.Motion.Holder2;
-                        break;
-                    case TeachPos.Holder3:
-                        target = _rack.Motion.Holder3;
-                        break;
-                    case TeachPos.Holder4:
-                        target = _rack.Motion.Holder4;
-                        break;
-                    case TeachPos.Holder5:
-                        target = _rack.Motion.Holder5;
-                        break;
-                    case TeachPos.Holder6:
-                        target = _rack.Motion.Holder6;
-                        break;
-                    case TeachPos.Gold1:
-                        break;
-                    case TeachPos.Gold2:
-                        break;
-                    case TeachPos.Gold3:
-                        break;
-                    case TeachPos.Gold4:
-                        break;
-                    case TeachPos.Gold5:
-                        break;
-                }
+                TargetPosition target = _rack.TeachPos2TargetConverter(_selectedTargetPosition);
 
                 try
                 {
@@ -624,56 +590,14 @@ namespace RackTool
                 }
             });
         }
-        private void buttonUnload_Click(object sender, EventArgs e)
+        private async void buttonUnload_Click(object sender, EventArgs e)
         {
             _rack.SetSpeed(defaultTestSpeed);
 
-            Task.Run((Action)(() =>
+            await Task.Run((Action)(() =>
             {
                 //Todo complete condition.
-                TargetPosition target = _rack.Motion.HomePosition;
-                switch (this._selectedTargetPosition)
-                {
-                    case TeachPos.Home:
-                        break;
-                    case TeachPos.Pick:
-                        target = _rack.Motion.PickPosition;
-                        break;
-                    case TeachPos.Bin:
-                        break;
-                    case TeachPos.ConveyorLeft:
-                        break;
-                    case TeachPos.ConveyorRight:
-                        break;
-                    case TeachPos.Holder1:
-                        target = _rack.Motion.Holder1;
-                        break;
-                    case TeachPos.Holder2:
-                        target = _rack.Motion.Holder2;
-                        break;
-                    case TeachPos.Holder3:
-                        target = _rack.Motion.Holder3;
-                        break;
-                    case TeachPos.Holder4:
-                        target = _rack.Motion.Holder4;
-                        break;
-                    case TeachPos.Holder5:
-                        target = _rack.Motion.Holder5;
-                        break;
-                    case TeachPos.Holder6:
-                        target = _rack.Motion.Holder6;
-                        break;
-                    case TeachPos.Gold1:
-                        break;
-                    case TeachPos.Gold2:
-                        break;
-                    case TeachPos.Gold3:
-                        break;
-                    case TeachPos.Gold4:
-                        break;
-                    case TeachPos.Gold5:
-                        break;
-                }
+                TargetPosition target = _rack.TeachPos2TargetConverter(_selectedTargetPosition);
 
                 try
                 {
@@ -751,8 +675,8 @@ namespace RackTool
                             break;
                     }
                 }
-                buttonG1TightOrLoose.Text = _rack.Io.GetInput(Input.Gripper01Tight) ? "Loose" : "Tight";
-                buttonG2TightOrLoose.Text = _rack.Io.GetInput(Input.Gripper02Tight) ? "Loose" : "Tight";
+                buttonG1TightOrLoose.Text = _rack.Io.GetInput(Input.Gripper01Tight) ? "G1Open" : "G1Close";
+                buttonG2TightOrLoose.Text = _rack.Io.GetInput(Input.Gripper02Tight) ? "G2Open" : "G2Close";
                 buttonEableG1.Text = _rack.Stepper.GetStatus(StepperMotor.One, StatusCode.Enabled) ? "Disable" : "Enable";
                 buttonEableG2.Text = _rack.Stepper.GetStatus(StepperMotor.Two, StatusCode.Enabled) ? "Disable" : "Enable";
             }
@@ -930,6 +854,87 @@ namespace RackTool
 
         }
 
+        private async void buttonBin_Click(object sender, EventArgs e)
+        {
+            _rack.SetSpeed(defaultTestSpeed);
 
+            await Task.Run(() =>
+            {
+                try
+                {
+                    //Todo check Box closed.
+                    _rack.Bin(_selectedGripper);
+                }
+                catch (Exception ex)
+                {
+
+                    MessageBox.Show(ex.Message);
+                }
+            });
+        }
+
+        private async void buttonUnloadAndLoad_Click(object sender, EventArgs e)
+        {
+            _rack.SetSpeed(defaultTestSpeed);
+
+            await Task.Run(() =>
+            {
+                try
+                {
+                    TargetPosition target = _rack.TeachPos2TargetConverter(_selectedTargetPosition);
+                    //Todo check Box closed.
+                    _rack.UnloadAndLoad(target, _selectedGripper);
+                }
+                catch (Exception ex)
+                {
+
+                    MessageBox.Show(ex.Message);
+                }
+            });
+        }
+
+        private void buttonReadyForPick_Click(object sender, EventArgs e)
+        {            
+            try
+            {
+                _rack.ReadyThePhone();
+            }
+            catch (Exception ex)
+            {
+
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private async void buttonLoadForTeach_Click(object sender, EventArgs e)
+        {
+            _rack.SetSpeed(defaultTestSpeed);
+
+            await Task.Run(() =>
+            {
+                try
+                {
+                    _rack.LoadForTeaching(_selectedGripper, _selectedTargetPosition);
+                }
+                catch (Exception ex)
+                {
+
+                    MessageBox.Show(ex.Message);
+                }
+            });
+        }
+
+        private void buttonCalOffset_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                _rack.CalculateG1ToG2Offset( _selectedTargetPosition);
+            }
+            catch (Exception ex)
+            {
+
+                MessageBox.Show(ex.Message);
+            }
+        }
     }
 }

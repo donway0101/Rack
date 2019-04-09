@@ -40,10 +40,16 @@ namespace Rack
                     throw new Exception("Gripper two is not opened.");
                 }
             }
+
+            TargetPosition target = Motion.PickPosition;
+            if (gripper == StepperMotor.Two)
+            {
+                target.XPos = target.XPos + Motion.PickOffset.XPos;
+            }
             
             //If system is OK, gripper is free and opened, conveyor is ready
             //If the other gripper is holding a phone, then conveyor can not reload.
-            MoveToTargetPosition(gripper, Motion.PickPosition);
+            MoveToTargetPosition(gripper, target);
             //Close cylinder.
             CloseGripper(gripper);
             Motion.ToPointWaitTillEnd(Motion.MotorZ, Motion.PickPosition.ApproachHeight);
@@ -54,17 +60,9 @@ namespace Rack
         {
             //After place, conveyor can reload.
             //TODO make sure pick position is empty, conveyor is not stucked and gripper is full.
-            TargetPosition placePosition = new TargetPosition()
-            {
-                APos = Motion.PickPosition.APos,
-                ApproachHeight = Motion.PickPosition.ApproachHeight,
-                Id = Motion.PickPosition.Id,
-                RPos = Motion.PickPosition.RPos,
-                XPos = Motion.PickPosition.XPos+0.5,
-                YPos = Motion.PickPosition.YPos,
-                ZPos = Motion.PickPosition.ZPos
-            };
-            
+            TargetPosition placePosition = Motion.PickPosition;
+            placePosition.XPos = placePosition.XPos + 0.5;
+
             MoveToTargetPosition(gripper, placePosition);
             //Open cylinder.
             OpenGripper(gripper);
@@ -147,9 +145,9 @@ namespace Rack
         {
             if (gripper == StepperMotor.Two & target.Id != Location.Pick)
             {
-                target.XPos = target.XPos + 1.44467773437;
-                target.YPos = target.YPos - 0.918862304687;
-                target.APos = target.APos - 0.15;
+                target.XPos = target.XPos + Motion.G1ToG2Offset.XPos;
+                target.YPos = target.YPos - Motion.G1ToG2Offset.YPos;
+                target.APos = target.APos - Motion.G1ToG2Offset.APos;
             }
 
             return target;

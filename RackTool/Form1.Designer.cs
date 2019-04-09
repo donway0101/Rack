@@ -80,12 +80,10 @@
             this.label5 = new System.Windows.Forms.Label();
             this.labelSpeed1 = new System.Windows.Forms.Label();
             this.trackBarSetSpeed1 = new System.Windows.Forms.TrackBar();
-            this.panel1 = new System.Windows.Forms.Panel();
-            this.buttonReadyPhone = new System.Windows.Forms.Button();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.buttonSaveApproach = new System.Windows.Forms.Button();
-            this.buttonSave = new System.Windows.Forms.Button();
+            this.buttonSavePosition = new System.Windows.Forms.Button();
             this.buttonCreateXml = new System.Windows.Forms.Button();
             this.buttonLoad = new System.Windows.Forms.Button();
             this.buttonUnload = new System.Windows.Forms.Button();
@@ -109,13 +107,17 @@
             this.tabPage7 = new System.Windows.Forms.TabPage();
             this.label8 = new System.Windows.Forms.Label();
             this.richTextBoxMessage = new System.Windows.Forms.RichTextBox();
+            this.buttonUnloadAndLoad = new System.Windows.Forms.Button();
+            this.buttonBin = new System.Windows.Forms.Button();
+            this.buttonCalOffset = new System.Windows.Forms.Button();
+            this.buttonReadyForPick = new System.Windows.Forms.Button();
+            this.buttonLoadForTeach = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarSetSpeed2)).BeginInit();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarSetSpeed1)).BeginInit();
-            this.panel1.SuspendLayout();
             this.tabPage2.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.tabPage4.SuspendLayout();
@@ -125,10 +127,10 @@
             // 
             // buttonStart
             // 
-            this.buttonStart.Location = new System.Drawing.Point(13, 22);
+            this.buttonStart.Location = new System.Drawing.Point(123, 59);
             this.buttonStart.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.buttonStart.Name = "buttonStart";
-            this.buttonStart.Size = new System.Drawing.Size(119, 35);
+            this.buttonStart.Size = new System.Drawing.Size(194, 106);
             this.buttonStart.TabIndex = 0;
             this.buttonStart.Text = "Start";
             this.buttonStart.UseVisualStyleBackColor = true;
@@ -137,10 +139,10 @@
             // buttonHome
             // 
             this.buttonHome.Enabled = false;
-            this.buttonHome.Location = new System.Drawing.Point(13, 71);
+            this.buttonHome.Location = new System.Drawing.Point(120, 191);
             this.buttonHome.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.buttonHome.Name = "buttonHome";
-            this.buttonHome.Size = new System.Drawing.Size(119, 35);
+            this.buttonHome.Size = new System.Drawing.Size(194, 35);
             this.buttonHome.TabIndex = 1;
             this.buttonHome.Text = "Home";
             this.buttonHome.UseVisualStyleBackColor = true;
@@ -148,7 +150,7 @@
             // 
             // buttonTest
             // 
-            this.buttonTest.Location = new System.Drawing.Point(27, 116);
+            this.buttonTest.Location = new System.Drawing.Point(791, 191);
             this.buttonTest.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.buttonTest.Name = "buttonTest";
             this.buttonTest.Size = new System.Drawing.Size(119, 35);
@@ -159,10 +161,10 @@
             // 
             // buttonStop
             // 
-            this.buttonStop.Location = new System.Drawing.Point(792, 19);
+            this.buttonStop.Location = new System.Drawing.Point(426, 59);
             this.buttonStop.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.buttonStop.Name = "buttonStop";
-            this.buttonStop.Size = new System.Drawing.Size(176, 132);
+            this.buttonStop.Size = new System.Drawing.Size(194, 106);
             this.buttonStop.TabIndex = 4;
             this.buttonStop.Text = "Stop";
             this.buttonStop.UseVisualStyleBackColor = true;
@@ -173,7 +175,7 @@
             this.checkBoxIsLoop.AutoSize = true;
             this.checkBoxIsLoop.Checked = true;
             this.checkBoxIsLoop.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBoxIsLoop.Location = new System.Drawing.Point(152, 125);
+            this.checkBoxIsLoop.Location = new System.Drawing.Point(916, 200);
             this.checkBoxIsLoop.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.checkBoxIsLoop.Name = "checkBoxIsLoop";
             this.checkBoxIsLoop.Size = new System.Drawing.Size(61, 19);
@@ -691,11 +693,11 @@
             // 
             // tabPage1
             // 
+            this.tabPage1.Controls.Add(this.buttonHome);
+            this.tabPage1.Controls.Add(this.buttonStart);
             this.tabPage1.Controls.Add(this.label5);
             this.tabPage1.Controls.Add(this.labelSpeed1);
             this.tabPage1.Controls.Add(this.trackBarSetSpeed1);
-            this.tabPage1.Controls.Add(this.panel1);
-            this.tabPage1.Controls.Add(this.buttonReadyPhone);
             this.tabPage1.Controls.Add(this.buttonTest);
             this.tabPage1.Controls.Add(this.checkBoxIsLoop);
             this.tabPage1.Controls.Add(this.buttonStop);
@@ -741,28 +743,6 @@
             this.trackBarSetSpeed1.Value = 20;
             this.trackBarSetSpeed1.Scroll += new System.EventHandler(this.trackBarSetSpeed1_Scroll);
             // 
-            // panel1
-            // 
-            this.panel1.BackColor = System.Drawing.Color.White;
-            this.panel1.Controls.Add(this.buttonStart);
-            this.panel1.Controls.Add(this.buttonHome);
-            this.panel1.Location = new System.Drawing.Point(599, 19);
-            this.panel1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(156, 140);
-            this.panel1.TabIndex = 19;
-            // 
-            // buttonReadyPhone
-            // 
-            this.buttonReadyPhone.Location = new System.Drawing.Point(27, 176);
-            this.buttonReadyPhone.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.buttonReadyPhone.Name = "buttonReadyPhone";
-            this.buttonReadyPhone.Size = new System.Drawing.Size(119, 35);
-            this.buttonReadyPhone.TabIndex = 23;
-            this.buttonReadyPhone.Text = "ReadyPhone";
-            this.buttonReadyPhone.UseVisualStyleBackColor = true;
-            this.buttonReadyPhone.Click += new System.EventHandler(this.button26_Click);
-            // 
             // tabPage2
             // 
             this.tabPage2.Controls.Add(this.groupBox3);
@@ -778,9 +758,14 @@
             // 
             // groupBox3
             // 
+            this.groupBox3.Controls.Add(this.buttonLoadForTeach);
+            this.groupBox3.Controls.Add(this.buttonReadyForPick);
+            this.groupBox3.Controls.Add(this.buttonCalOffset);
+            this.groupBox3.Controls.Add(this.buttonBin);
+            this.groupBox3.Controls.Add(this.buttonUnloadAndLoad);
             this.groupBox3.Controls.Add(this.buttonSaveApproach);
             this.groupBox3.Controls.Add(this.label1);
-            this.groupBox3.Controls.Add(this.buttonSave);
+            this.groupBox3.Controls.Add(this.buttonSavePosition);
             this.groupBox3.Controls.Add(this.label2);
             this.groupBox3.Controls.Add(this.buttonCreateXml);
             this.groupBox3.Controls.Add(this.buttonPlace);
@@ -790,43 +775,43 @@
             this.groupBox3.Controls.Add(this.comboBoxMovePos);
             this.groupBox3.Controls.Add(this.comboBox_Gripper);
             this.groupBox3.Controls.Add(this.label3);
-            this.groupBox3.Location = new System.Drawing.Point(19, 349);
+            this.groupBox3.Location = new System.Drawing.Point(19, 337);
             this.groupBox3.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.groupBox3.Size = new System.Drawing.Size(977, 205);
+            this.groupBox3.Size = new System.Drawing.Size(977, 244);
             this.groupBox3.TabIndex = 15;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Run";
             // 
             // buttonSaveApproach
             // 
-            this.buttonSaveApproach.Location = new System.Drawing.Point(644, 83);
+            this.buttonSaveApproach.Location = new System.Drawing.Point(677, 71);
             this.buttonSaveApproach.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.buttonSaveApproach.Name = "buttonSaveApproach";
-            this.buttonSaveApproach.Size = new System.Drawing.Size(128, 39);
+            this.buttonSaveApproach.Size = new System.Drawing.Size(160, 35);
             this.buttonSaveApproach.TabIndex = 30;
-            this.buttonSaveApproach.Text = "SaveApproach";
+            this.buttonSaveApproach.Text = "Save Approach";
             this.buttonSaveApproach.UseVisualStyleBackColor = true;
             this.buttonSaveApproach.Click += new System.EventHandler(this.buttonSaveApproach_Click);
             // 
-            // buttonSave
+            // buttonSavePosition
             // 
-            this.buttonSave.Location = new System.Drawing.Point(594, 129);
-            this.buttonSave.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.buttonSave.Name = "buttonSave";
-            this.buttonSave.Size = new System.Drawing.Size(81, 39);
-            this.buttonSave.TabIndex = 29;
-            this.buttonSave.Text = "Save";
-            this.buttonSave.UseVisualStyleBackColor = true;
-            this.buttonSave.Click += new System.EventHandler(this.buttonSave_Click);
+            this.buttonSavePosition.Location = new System.Drawing.Point(677, 22);
+            this.buttonSavePosition.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.buttonSavePosition.Name = "buttonSavePosition";
+            this.buttonSavePosition.Size = new System.Drawing.Size(158, 35);
+            this.buttonSavePosition.TabIndex = 29;
+            this.buttonSavePosition.Text = "Save Position";
+            this.buttonSavePosition.UseVisualStyleBackColor = true;
+            this.buttonSavePosition.Click += new System.EventHandler(this.buttonSave_Click);
             // 
             // buttonCreateXml
             // 
-            this.buttonCreateXml.Location = new System.Drawing.Point(516, 23);
+            this.buttonCreateXml.Location = new System.Drawing.Point(883, 22);
             this.buttonCreateXml.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.buttonCreateXml.Name = "buttonCreateXml";
-            this.buttonCreateXml.Size = new System.Drawing.Size(89, 89);
+            this.buttonCreateXml.Size = new System.Drawing.Size(73, 58);
             this.buttonCreateXml.TabIndex = 27;
             this.buttonCreateXml.Text = "Xml";
             this.buttonCreateXml.UseVisualStyleBackColor = true;
@@ -834,7 +819,7 @@
             // 
             // buttonLoad
             // 
-            this.buttonLoad.Location = new System.Drawing.Point(288, 34);
+            this.buttonLoad.Location = new System.Drawing.Point(381, 22);
             this.buttonLoad.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.buttonLoad.Name = "buttonLoad";
             this.buttonLoad.Size = new System.Drawing.Size(119, 35);
@@ -845,7 +830,7 @@
             // 
             // buttonUnload
             // 
-            this.buttonUnload.Location = new System.Drawing.Point(288, 87);
+            this.buttonUnload.Location = new System.Drawing.Point(381, 70);
             this.buttonUnload.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.buttonUnload.Name = "buttonUnload";
             this.buttonUnload.Size = new System.Drawing.Size(119, 35);
@@ -857,7 +842,7 @@
             // comboBox_Gripper
             // 
             this.comboBox_Gripper.FormattingEnabled = true;
-            this.comboBox_Gripper.Location = new System.Drawing.Point(101, 40);
+            this.comboBox_Gripper.Location = new System.Drawing.Point(91, 20);
             this.comboBox_Gripper.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.comboBox_Gripper.Name = "comboBox_Gripper";
             this.comboBox_Gripper.Size = new System.Drawing.Size(159, 23);
@@ -867,17 +852,17 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(18, 91);
+            this.label3.Location = new System.Drawing.Point(7, 63);
             this.label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(63, 15);
             this.label3.TabIndex = 33;
-            this.label3.Text = "MoveTo:";
+            this.label3.Text = "Target:";
             // 
             // comboBoxMovePos
             // 
             this.comboBoxMovePos.FormattingEnabled = true;
-            this.comboBoxMovePos.Location = new System.Drawing.Point(101, 87);
+            this.comboBoxMovePos.Location = new System.Drawing.Point(90, 59);
             this.comboBoxMovePos.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.comboBoxMovePos.Name = "comboBoxMovePos";
             this.comboBoxMovePos.Size = new System.Drawing.Size(159, 23);
@@ -887,7 +872,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(17, 44);
+            this.label2.Location = new System.Drawing.Point(7, 24);
             this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(71, 15);
@@ -896,10 +881,10 @@
             // 
             // buttonPick
             // 
-            this.buttonPick.Location = new System.Drawing.Point(101, 127);
+            this.buttonPick.Location = new System.Drawing.Point(256, 20);
             this.buttonPick.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.buttonPick.Name = "buttonPick";
-            this.buttonPick.Size = new System.Drawing.Size(76, 35);
+            this.buttonPick.Size = new System.Drawing.Size(119, 35);
             this.buttonPick.TabIndex = 24;
             this.buttonPick.Text = "Pick";
             this.buttonPick.UseVisualStyleBackColor = true;
@@ -907,10 +892,10 @@
             // 
             // buttonPlace
             // 
-            this.buttonPlace.Location = new System.Drawing.Point(184, 127);
+            this.buttonPlace.Location = new System.Drawing.Point(255, 69);
             this.buttonPlace.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.buttonPlace.Name = "buttonPlace";
-            this.buttonPlace.Size = new System.Drawing.Size(77, 35);
+            this.buttonPlace.Size = new System.Drawing.Size(119, 35);
             this.buttonPlace.TabIndex = 25;
             this.buttonPlace.Text = "Place";
             this.buttonPlace.UseVisualStyleBackColor = true;
@@ -919,7 +904,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(216, 59);
+            this.label1.Location = new System.Drawing.Point(206, 39);
             this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(0, 15);
@@ -1067,6 +1052,61 @@
             this.richTextBoxMessage.TabIndex = 19;
             this.richTextBoxMessage.Text = "当前设备状态，报警，等待手机，执行任务，解决办法";
             // 
+            // buttonUnloadAndLoad
+            // 
+            this.buttonUnloadAndLoad.Location = new System.Drawing.Point(381, 118);
+            this.buttonUnloadAndLoad.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.buttonUnloadAndLoad.Name = "buttonUnloadAndLoad";
+            this.buttonUnloadAndLoad.Size = new System.Drawing.Size(119, 35);
+            this.buttonUnloadAndLoad.TabIndex = 34;
+            this.buttonUnloadAndLoad.Text = "Unload N Load";
+            this.buttonUnloadAndLoad.UseVisualStyleBackColor = true;
+            this.buttonUnloadAndLoad.Click += new System.EventHandler(this.buttonUnloadAndLoad_Click);
+            // 
+            // buttonBin
+            // 
+            this.buttonBin.Location = new System.Drawing.Point(255, 118);
+            this.buttonBin.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.buttonBin.Name = "buttonBin";
+            this.buttonBin.Size = new System.Drawing.Size(119, 35);
+            this.buttonBin.TabIndex = 35;
+            this.buttonBin.Text = "Bin";
+            this.buttonBin.UseVisualStyleBackColor = true;
+            this.buttonBin.Click += new System.EventHandler(this.buttonBin_Click);
+            // 
+            // buttonCalOffset
+            // 
+            this.buttonCalOffset.Location = new System.Drawing.Point(677, 116);
+            this.buttonCalOffset.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.buttonCalOffset.Name = "buttonCalOffset";
+            this.buttonCalOffset.Size = new System.Drawing.Size(160, 35);
+            this.buttonCalOffset.TabIndex = 36;
+            this.buttonCalOffset.Text = "Calculate Offset";
+            this.buttonCalOffset.UseVisualStyleBackColor = true;
+            this.buttonCalOffset.Click += new System.EventHandler(this.buttonCalOffset_Click);
+            // 
+            // buttonReadyForPick
+            // 
+            this.buttonReadyForPick.Location = new System.Drawing.Point(542, 24);
+            this.buttonReadyForPick.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.buttonReadyForPick.Name = "buttonReadyForPick";
+            this.buttonReadyForPick.Size = new System.Drawing.Size(119, 35);
+            this.buttonReadyForPick.TabIndex = 37;
+            this.buttonReadyForPick.Text = "Ready Phone";
+            this.buttonReadyForPick.UseVisualStyleBackColor = true;
+            this.buttonReadyForPick.Click += new System.EventHandler(this.buttonReadyForPick_Click);
+            // 
+            // buttonLoadForTeach
+            // 
+            this.buttonLoadForTeach.Location = new System.Drawing.Point(542, 72);
+            this.buttonLoadForTeach.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.buttonLoadForTeach.Name = "buttonLoadForTeach";
+            this.buttonLoadForTeach.Size = new System.Drawing.Size(119, 35);
+            this.buttonLoadForTeach.TabIndex = 38;
+            this.buttonLoadForTeach.Text = "Teach Load";
+            this.buttonLoadForTeach.UseVisualStyleBackColor = true;
+            this.buttonLoadForTeach.Click += new System.EventHandler(this.buttonLoadForTeach_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
@@ -1087,7 +1127,6 @@
             this.tabPage1.ResumeLayout(false);
             this.tabPage1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarSetSpeed1)).EndInit();
-            this.panel1.ResumeLayout(false);
             this.tabPage2.ResumeLayout(false);
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
@@ -1135,8 +1174,6 @@
         private System.Windows.Forms.TabControl tabControl1;
         private System.Windows.Forms.TabPage tabPage1;
         private System.Windows.Forms.TabPage tabPage2;
-        private System.Windows.Forms.Button buttonReadyPhone;
-        private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.TabPage tabPage4;
         private System.Windows.Forms.TabPage tabPage3;
         private System.Windows.Forms.TabPage tabPage5;
@@ -1159,7 +1196,7 @@
         private System.Windows.Forms.Button buttonLoad;
         private System.Windows.Forms.Button buttonCreateXml;
         private System.Windows.Forms.Button buttonSaveApproach;
-        private System.Windows.Forms.Button buttonSave;
+        private System.Windows.Forms.Button buttonSavePosition;
         private System.Windows.Forms.Button buttonConveyorStart;
         private System.Windows.Forms.CheckBox checkBoxPickConveyorMoveForward;
         private System.Windows.Forms.Button buttonForInpos;
@@ -1184,6 +1221,11 @@
         private System.Windows.Forms.Button buttonG1TightOrLoose;
         private System.Windows.Forms.Button buttonG2TightOrLoose;
         private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Button buttonBin;
+        private System.Windows.Forms.Button buttonUnloadAndLoad;
+        private System.Windows.Forms.Button buttonCalOffset;
+        private System.Windows.Forms.Button buttonReadyForPick;
+        private System.Windows.Forms.Button buttonLoadForTeach;
     }
 }
 
