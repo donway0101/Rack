@@ -45,12 +45,12 @@
             this.button7 = new System.Windows.Forms.Button();
             this.button6 = new System.Windows.Forms.Button();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.trackBar2 = new System.Windows.Forms.TrackBar();
-            this.button27 = new System.Windows.Forms.Button();
-            this.button28 = new System.Windows.Forms.Button();
-            this.button29 = new System.Windows.Forms.Button();
-            this.button30 = new System.Windows.Forms.Button();
-            this.button31 = new System.Windows.Forms.Button();
+            this.trackBarRobotManualSpeed = new System.Windows.Forms.TrackBar();
+            this.buttonREnable = new System.Windows.Forms.Button();
+            this.buttonZEnable = new System.Windows.Forms.Button();
+            this.buttonYEnable = new System.Windows.Forms.Button();
+            this.buttonX2Enable = new System.Windows.Forms.Button();
+            this.buttonX1Enable = new System.Windows.Forms.Button();
             this.button21 = new System.Windows.Forms.Button();
             this.button22 = new System.Windows.Forms.Button();
             this.textBox2 = new System.Windows.Forms.TextBox();
@@ -65,8 +65,8 @@
             this.button15 = new System.Windows.Forms.Button();
             this.button11 = new System.Windows.Forms.Button();
             this.button10 = new System.Windows.Forms.Button();
-            this.button9 = new System.Windows.Forms.Button();
-            this.button8 = new System.Windows.Forms.Button();
+            this.buttonX1Positive = new System.Windows.Forms.Button();
+            this.buttonX1Nagtive = new System.Windows.Forms.Button();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.panel1 = new System.Windows.Forms.Panel();
@@ -101,9 +101,11 @@
             this.button39 = new System.Windows.Forms.Button();
             this.button40 = new System.Windows.Forms.Button();
             this.button41 = new System.Windows.Forms.Button();
+            this.button43 = new System.Windows.Forms.Button();
+            this.button42 = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.trackBar2)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBarRobotManualSpeed)).BeginInit();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -188,9 +190,9 @@
             this.groupBox1.Controls.Add(this.label4);
             this.groupBox1.Controls.Add(this.label3);
             this.groupBox1.Controls.Add(this.label2);
-            this.groupBox1.Location = new System.Drawing.Point(545, 24);
+            this.groupBox1.Location = new System.Drawing.Point(714, 56);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(136, 214);
+            this.groupBox1.Size = new System.Drawing.Size(140, 240);
             this.groupBox1.TabIndex = 9;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "groupBox1";
@@ -280,13 +282,15 @@
             // 
             // groupBox2
             // 
-            this.groupBox2.Controls.Add(this.trackBar2);
+            this.groupBox2.Controls.Add(this.button42);
+            this.groupBox2.Controls.Add(this.button43);
+            this.groupBox2.Controls.Add(this.trackBarRobotManualSpeed);
             this.groupBox2.Controls.Add(this.groupBox1);
-            this.groupBox2.Controls.Add(this.button27);
-            this.groupBox2.Controls.Add(this.button28);
-            this.groupBox2.Controls.Add(this.button29);
-            this.groupBox2.Controls.Add(this.button30);
-            this.groupBox2.Controls.Add(this.button31);
+            this.groupBox2.Controls.Add(this.buttonREnable);
+            this.groupBox2.Controls.Add(this.buttonZEnable);
+            this.groupBox2.Controls.Add(this.buttonYEnable);
+            this.groupBox2.Controls.Add(this.buttonX2Enable);
+            this.groupBox2.Controls.Add(this.buttonX1Enable);
             this.groupBox2.Controls.Add(this.button21);
             this.groupBox2.Controls.Add(this.button22);
             this.groupBox2.Controls.Add(this.textBox2);
@@ -301,73 +305,76 @@
             this.groupBox2.Controls.Add(this.button15);
             this.groupBox2.Controls.Add(this.button11);
             this.groupBox2.Controls.Add(this.button10);
-            this.groupBox2.Controls.Add(this.button9);
-            this.groupBox2.Controls.Add(this.button8);
-            this.groupBox2.Location = new System.Drawing.Point(75, 50);
+            this.groupBox2.Controls.Add(this.buttonX1Positive);
+            this.groupBox2.Controls.Add(this.buttonX1Nagtive);
+            this.groupBox2.Location = new System.Drawing.Point(42, 16);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(871, 318);
+            this.groupBox2.Size = new System.Drawing.Size(1045, 366);
             this.groupBox2.TabIndex = 14;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "groupBox2";
             // 
-            // trackBar2
+            // trackBarRobotManualSpeed
             // 
-            this.trackBar2.Location = new System.Drawing.Point(714, 24);
-            this.trackBar2.Maximum = 200;
-            this.trackBar2.Name = "trackBar2";
-            this.trackBar2.Orientation = System.Windows.Forms.Orientation.Vertical;
-            this.trackBar2.Size = new System.Drawing.Size(56, 259);
-            this.trackBar2.TabIndex = 36;
-            this.trackBar2.Value = 10;
+            this.trackBarRobotManualSpeed.Location = new System.Drawing.Point(887, 36);
+            this.trackBarRobotManualSpeed.Maximum = 100;
+            this.trackBarRobotManualSpeed.Name = "trackBarRobotManualSpeed";
+            this.trackBarRobotManualSpeed.Orientation = System.Windows.Forms.Orientation.Vertical;
+            this.trackBarRobotManualSpeed.Size = new System.Drawing.Size(56, 288);
+            this.trackBarRobotManualSpeed.SmallChange = 5;
+            this.trackBarRobotManualSpeed.TabIndex = 36;
+            this.trackBarRobotManualSpeed.Value = 10;
+            this.trackBarRobotManualSpeed.Scroll += new System.EventHandler(this.trackBar2_Scroll);
             // 
-            // button27
+            // buttonREnable
             // 
-            this.button27.Location = new System.Drawing.Point(116, 258);
-            this.button27.Name = "button27";
-            this.button27.Size = new System.Drawing.Size(94, 39);
-            this.button27.TabIndex = 35;
-            this.button27.Text = "R";
-            this.button27.UseVisualStyleBackColor = true;
+            this.buttonREnable.Location = new System.Drawing.Point(116, 185);
+            this.buttonREnable.Name = "buttonREnable";
+            this.buttonREnable.Size = new System.Drawing.Size(94, 39);
+            this.buttonREnable.TabIndex = 35;
+            this.buttonREnable.Text = "R";
+            this.buttonREnable.UseVisualStyleBackColor = true;
             // 
-            // button28
+            // buttonZEnable
             // 
-            this.button28.Location = new System.Drawing.Point(116, 198);
-            this.button28.Name = "button28";
-            this.button28.Size = new System.Drawing.Size(94, 39);
-            this.button28.TabIndex = 34;
-            this.button28.Text = "Z";
-            this.button28.UseVisualStyleBackColor = true;
+            this.buttonZEnable.Location = new System.Drawing.Point(116, 230);
+            this.buttonZEnable.Name = "buttonZEnable";
+            this.buttonZEnable.Size = new System.Drawing.Size(94, 66);
+            this.buttonZEnable.TabIndex = 34;
+            this.buttonZEnable.Text = "Z";
+            this.buttonZEnable.UseVisualStyleBackColor = true;
             // 
-            // button29
+            // buttonYEnable
             // 
-            this.button29.Location = new System.Drawing.Point(116, 140);
-            this.button29.Name = "button29";
-            this.button29.Size = new System.Drawing.Size(94, 39);
-            this.button29.TabIndex = 33;
-            this.button29.Text = "Y";
-            this.button29.UseVisualStyleBackColor = true;
+            this.buttonYEnable.Location = new System.Drawing.Point(116, 140);
+            this.buttonYEnable.Name = "buttonYEnable";
+            this.buttonYEnable.Size = new System.Drawing.Size(94, 39);
+            this.buttonYEnable.TabIndex = 33;
+            this.buttonYEnable.Text = "Y";
+            this.buttonYEnable.UseVisualStyleBackColor = true;
             // 
-            // button30
+            // buttonX2Enable
             // 
-            this.button30.Location = new System.Drawing.Point(116, 82);
-            this.button30.Name = "button30";
-            this.button30.Size = new System.Drawing.Size(94, 39);
-            this.button30.TabIndex = 32;
-            this.button30.Text = "X2";
-            this.button30.UseVisualStyleBackColor = true;
+            this.buttonX2Enable.Location = new System.Drawing.Point(116, 82);
+            this.buttonX2Enable.Name = "buttonX2Enable";
+            this.buttonX2Enable.Size = new System.Drawing.Size(94, 39);
+            this.buttonX2Enable.TabIndex = 32;
+            this.buttonX2Enable.Text = "X2";
+            this.buttonX2Enable.UseVisualStyleBackColor = true;
             // 
-            // button31
+            // buttonX1Enable
             // 
-            this.button31.Location = new System.Drawing.Point(116, 24);
-            this.button31.Name = "button31";
-            this.button31.Size = new System.Drawing.Size(94, 39);
-            this.button31.TabIndex = 31;
-            this.button31.Text = "X1";
-            this.button31.UseVisualStyleBackColor = true;
+            this.buttonX1Enable.Location = new System.Drawing.Point(116, 24);
+            this.buttonX1Enable.Name = "buttonX1Enable";
+            this.buttonX1Enable.Size = new System.Drawing.Size(94, 39);
+            this.buttonX1Enable.TabIndex = 31;
+            this.buttonX1Enable.Text = "Enable";
+            this.buttonX1Enable.UseVisualStyleBackColor = true;
+            this.buttonX1Enable.Click += new System.EventHandler(this.button31_Click);
             // 
             // button21
             // 
-            this.button21.Location = new System.Drawing.Point(431, 129);
+            this.button21.Location = new System.Drawing.Point(577, 56);
             this.button21.Name = "button21";
             this.button21.Size = new System.Drawing.Size(94, 39);
             this.button21.TabIndex = 30;
@@ -377,7 +384,7 @@
             // 
             // button22
             // 
-            this.button22.Location = new System.Drawing.Point(316, 129);
+            this.button22.Location = new System.Drawing.Point(462, 56);
             this.button22.Name = "button22";
             this.button22.Size = new System.Drawing.Size(94, 39);
             this.button22.TabIndex = 29;
@@ -387,7 +394,7 @@
             // 
             // textBox2
             // 
-            this.textBox2.Location = new System.Drawing.Point(431, 82);
+            this.textBox2.Location = new System.Drawing.Point(577, 143);
             this.textBox2.Name = "textBox2";
             this.textBox2.Size = new System.Drawing.Size(94, 25);
             this.textBox2.TabIndex = 28;
@@ -395,7 +402,7 @@
             // 
             // textBox1
             // 
-            this.textBox1.Location = new System.Drawing.Point(316, 82);
+            this.textBox1.Location = new System.Drawing.Point(462, 143);
             this.textBox1.Name = "textBox1";
             this.textBox1.Size = new System.Drawing.Size(94, 25);
             this.textBox1.TabIndex = 27;
@@ -403,7 +410,7 @@
             // 
             // button18
             // 
-            this.button18.Location = new System.Drawing.Point(431, 24);
+            this.button18.Location = new System.Drawing.Point(577, 102);
             this.button18.Name = "button18";
             this.button18.Size = new System.Drawing.Size(94, 39);
             this.button18.TabIndex = 26;
@@ -413,7 +420,7 @@
             // 
             // button19
             // 
-            this.button19.Location = new System.Drawing.Point(316, 24);
+            this.button19.Location = new System.Drawing.Point(462, 102);
             this.button19.Name = "button19";
             this.button19.Size = new System.Drawing.Size(94, 39);
             this.button19.TabIndex = 25;
@@ -423,7 +430,7 @@
             // 
             // button16
             // 
-            this.button16.Location = new System.Drawing.Point(216, 258);
+            this.button16.Location = new System.Drawing.Point(216, 185);
             this.button16.Name = "button16";
             this.button16.Size = new System.Drawing.Size(94, 39);
             this.button16.TabIndex = 24;
@@ -434,7 +441,7 @@
             // 
             // button17
             // 
-            this.button17.Location = new System.Drawing.Point(6, 258);
+            this.button17.Location = new System.Drawing.Point(6, 185);
             this.button17.Name = "button17";
             this.button17.Size = new System.Drawing.Size(94, 39);
             this.button17.TabIndex = 23;
@@ -445,9 +452,9 @@
             // 
             // button12
             // 
-            this.button12.Location = new System.Drawing.Point(216, 198);
+            this.button12.Location = new System.Drawing.Point(216, 230);
             this.button12.Name = "button12";
-            this.button12.Size = new System.Drawing.Size(94, 39);
+            this.button12.Size = new System.Drawing.Size(94, 66);
             this.button12.TabIndex = 22;
             this.button12.Text = "button12";
             this.button12.UseVisualStyleBackColor = true;
@@ -456,9 +463,9 @@
             // 
             // button13
             // 
-            this.button13.Location = new System.Drawing.Point(6, 198);
+            this.button13.Location = new System.Drawing.Point(6, 230);
             this.button13.Name = "button13";
-            this.button13.Size = new System.Drawing.Size(94, 39);
+            this.button13.Size = new System.Drawing.Size(94, 66);
             this.button13.TabIndex = 21;
             this.button13.Text = "Z";
             this.button13.UseVisualStyleBackColor = true;
@@ -506,29 +513,32 @@
             this.button10.TabIndex = 17;
             this.button10.Text = "X2";
             this.button10.UseVisualStyleBackColor = true;
+            this.button10.Click += new System.EventHandler(this.button10_Click);
             this.button10.MouseDown += new System.Windows.Forms.MouseEventHandler(this.button10_MouseDown);
             // 
-            // button9
+            // buttonX1Positive
             // 
-            this.button9.Location = new System.Drawing.Point(216, 24);
-            this.button9.Name = "button9";
-            this.button9.Size = new System.Drawing.Size(94, 39);
-            this.button9.TabIndex = 16;
-            this.button9.Text = "button9";
-            this.button9.UseVisualStyleBackColor = true;
-            this.button9.MouseDown += new System.Windows.Forms.MouseEventHandler(this.button9_MouseDown);
-            this.button9.MouseUp += new System.Windows.Forms.MouseEventHandler(this.button9_MouseUp);
+            this.buttonX1Positive.Location = new System.Drawing.Point(216, 24);
+            this.buttonX1Positive.Name = "buttonX1Positive";
+            this.buttonX1Positive.Size = new System.Drawing.Size(94, 39);
+            this.buttonX1Positive.TabIndex = 16;
+            this.buttonX1Positive.Text = "X1+";
+            this.buttonX1Positive.UseVisualStyleBackColor = true;
+            this.buttonX1Positive.Click += new System.EventHandler(this.buttonX1Positive_Click);
+            this.buttonX1Positive.MouseDown += new System.Windows.Forms.MouseEventHandler(this.button9_MouseDown);
+            this.buttonX1Positive.MouseUp += new System.Windows.Forms.MouseEventHandler(this.button9_MouseUp);
             // 
-            // button8
+            // buttonX1Nagtive
             // 
-            this.button8.Location = new System.Drawing.Point(6, 24);
-            this.button8.Name = "button8";
-            this.button8.Size = new System.Drawing.Size(94, 39);
-            this.button8.TabIndex = 15;
-            this.button8.Text = "X1";
-            this.button8.UseVisualStyleBackColor = true;
-            this.button8.MouseDown += new System.Windows.Forms.MouseEventHandler(this.button8_MouseDown);
-            this.button8.MouseUp += new System.Windows.Forms.MouseEventHandler(this.button8_MouseUp);
+            this.buttonX1Nagtive.Location = new System.Drawing.Point(6, 24);
+            this.buttonX1Nagtive.Name = "buttonX1Nagtive";
+            this.buttonX1Nagtive.Size = new System.Drawing.Size(94, 39);
+            this.buttonX1Nagtive.TabIndex = 15;
+            this.buttonX1Nagtive.Text = "X1-";
+            this.buttonX1Nagtive.UseVisualStyleBackColor = true;
+            this.buttonX1Nagtive.Click += new System.EventHandler(this.button8_Click);
+            this.buttonX1Nagtive.MouseDown += new System.Windows.Forms.MouseEventHandler(this.button8_MouseDown);
+            this.buttonX1Nagtive.MouseUp += new System.Windows.Forms.MouseEventHandler(this.button8_MouseUp);
             // 
             // tabControl1
             // 
@@ -593,7 +603,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(768, 261);
+            this.label1.Location = new System.Drawing.Point(569, 274);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(23, 15);
             this.label1.TabIndex = 22;
@@ -604,7 +614,7 @@
             this.trackBar1.Location = new System.Drawing.Point(27, 302);
             this.trackBar1.Maximum = 200;
             this.trackBar1.Name = "trackBar1";
-            this.trackBar1.Size = new System.Drawing.Size(776, 56);
+            this.trackBar1.Size = new System.Drawing.Size(565, 56);
             this.trackBar1.TabIndex = 21;
             this.trackBar1.Value = 10;
             this.trackBar1.Scroll += new System.EventHandler(this.trackBar1_Scroll);
@@ -636,9 +646,9 @@
             this.groupBox3.Controls.Add(this.comboBox3);
             this.groupBox3.Controls.Add(this.comboBox2);
             this.groupBox3.Controls.Add(this.button20);
-            this.groupBox3.Location = new System.Drawing.Point(75, 388);
+            this.groupBox3.Location = new System.Drawing.Point(42, 391);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(871, 205);
+            this.groupBox3.Size = new System.Drawing.Size(1045, 205);
             this.groupBox3.TabIndex = 15;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "groupBox3";
@@ -756,6 +766,7 @@
             this.button20.TabIndex = 21;
             this.button20.Text = "Load";
             this.button20.UseVisualStyleBackColor = true;
+            this.button20.Click += new System.EventHandler(this.button20_Click_1);
             // 
             // tabPage4
             // 
@@ -888,6 +899,26 @@
             this.button41.UseVisualStyleBackColor = true;
             this.button41.Click += new System.EventHandler(this.button41_Click);
             // 
+            // button43
+            // 
+            this.button43.Location = new System.Drawing.Point(949, 220);
+            this.button43.Name = "button43";
+            this.button43.Size = new System.Drawing.Size(75, 104);
+            this.button43.TabIndex = 38;
+            this.button43.Text = "Slow\r\nSpeed\r\n";
+            this.button43.UseVisualStyleBackColor = true;
+            this.button43.Click += new System.EventHandler(this.button43_Click);
+            // 
+            // button42
+            // 
+            this.button42.Location = new System.Drawing.Point(949, 109);
+            this.button42.Name = "button42";
+            this.button42.Size = new System.Drawing.Size(75, 98);
+            this.button42.TabIndex = 39;
+            this.button42.Text = "Middle\r\nSpeed";
+            this.button42.UseVisualStyleBackColor = true;
+            this.button42.Click += new System.EventHandler(this.button42_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
@@ -902,7 +933,7 @@
             this.groupBox1.PerformLayout();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.trackBar2)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBarRobotManualSpeed)).EndInit();
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
             this.tabPage1.PerformLayout();
@@ -944,8 +975,8 @@
         private System.Windows.Forms.Button button15;
         private System.Windows.Forms.Button button11;
         private System.Windows.Forms.Button button10;
-        private System.Windows.Forms.Button button9;
-        private System.Windows.Forms.Button button8;
+        private System.Windows.Forms.Button buttonX1Positive;
+        private System.Windows.Forms.Button buttonX1Nagtive;
         private System.Windows.Forms.Button button16;
         private System.Windows.Forms.Button button17;
         private System.Windows.Forms.Button button18;
@@ -970,12 +1001,12 @@
         private System.Windows.Forms.RichTextBox richTextBox1;
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.Label label8;
-        private System.Windows.Forms.Button button27;
-        private System.Windows.Forms.Button button28;
-        private System.Windows.Forms.Button button29;
-        private System.Windows.Forms.Button button30;
-        private System.Windows.Forms.Button button31;
-        private System.Windows.Forms.TrackBar trackBar2;
+        private System.Windows.Forms.Button buttonREnable;
+        private System.Windows.Forms.Button buttonZEnable;
+        private System.Windows.Forms.Button buttonYEnable;
+        private System.Windows.Forms.Button buttonX2Enable;
+        private System.Windows.Forms.Button buttonX1Enable;
+        private System.Windows.Forms.TrackBar trackBarRobotManualSpeed;
         private System.Windows.Forms.GroupBox groupBox3;
         private System.Windows.Forms.Button button25;
         private System.Windows.Forms.Button button24;
@@ -995,6 +1026,8 @@
         private System.Windows.Forms.Button button39;
         private System.Windows.Forms.Button button40;
         private System.Windows.Forms.Button button41;
+        private System.Windows.Forms.Button button42;
+        private System.Windows.Forms.Button button43;
     }
 }
 

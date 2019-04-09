@@ -12,7 +12,7 @@ namespace GripperStepper
         Two=2,
     }
 
-    public enum Input
+    public enum InputStepper
     {
         X1=1,
         X2,

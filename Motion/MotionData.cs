@@ -6,10 +6,6 @@ using System.Threading.Tasks;
 
 namespace Motion
 {
-    public class DataStructure
-    {
-    }
-
     public struct TargetPosition
     {
         public Location Id { get; set; }

@@ -245,107 +245,107 @@ namespace RackTool
 
         private void button8_MouseDown(object sender, MouseEventArgs e)
         {
-            _rack._motion.Jog(_rack._motion.MotorX1, false);
+            _rack.Motion.Jog(_rack.Motion.MotorX1, false);
         }
 
         private void button8_MouseUp(object sender, MouseEventArgs e)
         {
-            _rack._motion.Halt(_rack._motion.MotorX1);
+            _rack.Motion.Halt(_rack.Motion.MotorX1);
         }
 
         private void button9_MouseDown(object sender, MouseEventArgs e)
         {
-            _rack._motion.Jog(_rack._motion.MotorX1, true);
+            _rack.Motion.Jog(_rack.Motion.MotorX1, true);
         }
 
         private void button9_MouseUp(object sender, MouseEventArgs e)
         {
-            _rack._motion.Halt(_rack._motion.MotorX1);
+            _rack.Motion.Halt(_rack.Motion.MotorX1);
         }
 
         private void button10_MouseDown(object sender, MouseEventArgs e)
         {
-            _rack._motion.Jog(_rack._motion.MotorX2, false);
+            _rack.Motion.Jog(_rack.Motion.MotorX2, false);
         }
 
         private void button11_MouseDown(object sender, MouseEventArgs e)
         {
-            _rack._motion.Jog(_rack._motion.MotorX2, true);
+            _rack.Motion.Jog(_rack.Motion.MotorX2, true);
         }
 
         private void button15_MouseDown(object sender, MouseEventArgs e)
         {
-            _rack._motion.Jog(_rack._motion.MotorY, false);
+            _rack.Motion.Jog(_rack.Motion.MotorY, false);
         }
 
         private void button13_MouseDown(object sender, MouseEventArgs e)
         {
-            _rack._motion.Jog(_rack._motion.MotorZ, false);
+            _rack.Motion.Jog(_rack.Motion.MotorZ, false);
         }
 
         private void button17_MouseDown(object sender, MouseEventArgs e)
         {
-            _rack._motion.Jog(_rack._motion.MotorR, false);
+            _rack.Motion.Jog(_rack.Motion.MotorR, false);
         }
 
         private void button19_Click(object sender, EventArgs e)
         {
-            _rack._gripper.ToPoint(Gripper.One, Convert.ToDouble(textBox1.Text));
+            _rack.Gripper.ToPoint(Gripper.One, Convert.ToDouble(textBox1.Text));
         }
 
         private void button18_Click(object sender, EventArgs e)
         {
-            _rack._gripper.ToPoint(Gripper.Two, Convert.ToDouble(textBox2.Text));
+            _rack.Gripper.ToPoint(Gripper.Two, Convert.ToDouble(textBox2.Text));
         }
 
         private void button14_MouseDown(object sender, MouseEventArgs e)
         {
-            _rack._motion.Jog(_rack._motion.MotorY, true);
+            _rack.Motion.Jog(_rack.Motion.MotorY, true);
         }
 
         private void button12_MouseDown(object sender, MouseEventArgs e)
         {
-            _rack._motion.Jog(_rack._motion.MotorZ, true);
+            _rack.Motion.Jog(_rack.Motion.MotorZ, true);
         }
 
         private void button16_MouseDown(object sender, MouseEventArgs e)
         {
-            _rack._motion.Jog(_rack._motion.MotorR, true);
+            _rack.Motion.Jog(_rack.Motion.MotorR, true);
         }
 
         private void button11_MouseUp(object sender, MouseEventArgs e)
         {
-            _rack._motion.Halt(_rack._motion.MotorX2);
+            _rack.Motion.Halt(_rack.Motion.MotorX2);
         }
 
         private void button14_MouseUp(object sender, MouseEventArgs e)
         {
-            _rack._motion.Halt(_rack._motion.MotorY);
+            _rack.Motion.Halt(_rack.Motion.MotorY);
         }
 
         private void button12_MouseUp(object sender, MouseEventArgs e)
         {
-            _rack._motion.Halt(_rack._motion.MotorZ);
+            _rack.Motion.Halt(_rack.Motion.MotorZ);
         }
 
         private void button16_MouseUp(object sender, MouseEventArgs e)
         {
-            _rack._motion.Halt(_rack._motion.MotorR);
+            _rack.Motion.Halt(_rack.Motion.MotorR);
         }
 
         private void button13_MouseUp(object sender, MouseEventArgs e)
         {
-            _rack._motion.Halt(_rack._motion.MotorZ);
+            _rack.Motion.Halt(_rack.Motion.MotorZ);
         }
 
         private void button17_MouseUp(object sender, MouseEventArgs e)
         {
-            _rack._motion.Halt(_rack._motion.MotorR);
+            _rack.Motion.Halt(_rack.Motion.MotorR);
         }
 
         private void button15_MouseUp(object sender, MouseEventArgs e)
         {
-            _rack._motion.Halt(_rack._motion.MotorY);
+            _rack.Motion.Halt(_rack.Motion.MotorY);
         }
 
         #endregion
@@ -357,13 +357,13 @@ namespace RackTool
             Task.Run(() =>
             {
                 //Todo complete condition.
-                TargetPosition target = _rack._motion.HomePosition;
+                TargetPosition target = _rack.Motion.HomePosition;
                 switch (_selectedTargetPosition)
                 {
                     case TeachPos.Home:
                         break;
                     case TeachPos.Pick:
-                        target = _rack._motion.PickPosition;
+                        target = _rack.Motion.PickPosition;
                         break;
                     case TeachPos.Bin:
                         break;
@@ -372,22 +372,22 @@ namespace RackTool
                     case TeachPos.ConveyorRight:
                         break;
                     case TeachPos.Holder1:
-                        target = _rack._motion.Holder1;
+                        target = _rack.Motion.Holder1;
                         break;
                     case TeachPos.Holder2:
-                        target = _rack._motion.Holder2;
+                        target = _rack.Motion.Holder2;
                         break;
                     case TeachPos.Holder3:
-                        target = _rack._motion.Holder3;
+                        target = _rack.Motion.Holder3;
                         break;
                     case TeachPos.Holder4:
-                        target = _rack._motion.Holder4;
+                        target = _rack.Motion.Holder4;
                         break;
                     case TeachPos.Holder5:
-                        target = _rack._motion.Holder5;
+                        target = _rack.Motion.Holder5;
                         break;
                     case TeachPos.Holder6:
-                        target = _rack._motion.Holder6;
+                        target = _rack.Motion.Holder6;
                         break;
                     case TeachPos.Gold1:
                         break;
@@ -415,26 +415,26 @@ namespace RackTool
 
         private void button22_Click(object sender, EventArgs e)
         {
-            if ( _rack._gripper.GetStatus(Gripper.One, StatusCode.Enabled))
+            if ( _rack.Gripper.GetStatus(Gripper.One, StatusCode.Enabled))
             {
-                _rack._gripper.Disable(Gripper.One);
+                _rack.Gripper.Disable(Gripper.One);
             }
             else
             {
-                _rack._gripper.Enable(Gripper.One);
+                _rack.Gripper.Enable(Gripper.One);
             }
            
         }
 
         private void button21_Click(object sender, EventArgs e)
         {
-            if (_rack._gripper.GetStatus(Gripper.Two, StatusCode.Enabled))
+            if (_rack.Gripper.GetStatus(Gripper.Two, StatusCode.Enabled))
             {
-                _rack._gripper.Disable(Gripper.Two);
+                _rack.Gripper.Disable(Gripper.Two);
             }
             else
             {
-                _rack._gripper.Enable(Gripper.Two);
+                _rack.Gripper.Enable(Gripper.Two);
             }
         }
 
@@ -493,13 +493,13 @@ namespace RackTool
             Task.Run(() =>
             {
                 //Todo complete condition.
-                TargetPosition target = _rack._motion.HomePosition;
+                TargetPosition target = _rack.Motion.HomePosition;
                 switch (_selectedTargetPosition)
                 {
                     case TeachPos.Home:
                         break;
                     case TeachPos.Pick:
-                        target = _rack._motion.PickPosition;
+                        target = _rack.Motion.PickPosition;
                         break;
                     case TeachPos.Bin:
                         break;
@@ -508,22 +508,22 @@ namespace RackTool
                     case TeachPos.ConveyorRight:
                         break;
                     case TeachPos.Holder1:
-                        target = _rack._motion.Holder1;
+                        target = _rack.Motion.Holder1;
                         break;
                     case TeachPos.Holder2:
-                        target = _rack._motion.Holder2;
+                        target = _rack.Motion.Holder2;
                         break;
                     case TeachPos.Holder3:
-                        target = _rack._motion.Holder3;
+                        target = _rack.Motion.Holder3;
                         break;
                     case TeachPos.Holder4:
-                        target = _rack._motion.Holder4;
+                        target = _rack.Motion.Holder4;
                         break;
                     case TeachPos.Holder5:
-                        target = _rack._motion.Holder5;
+                        target = _rack.Motion.Holder5;
                         break;
                     case TeachPos.Holder6:
-                        target = _rack._motion.Holder6;
+                        target = _rack.Motion.Holder6;
                         break;
                     case TeachPos.Gold1:
                         break;
@@ -555,7 +555,7 @@ namespace RackTool
 
         private void checkBoxPickConveyorMoveForward_CheckedChanged(object sender, EventArgs e)
         {
-            _rack._conveyor.ConveyorMovingForward = checkBoxPickConveyorMoveForward.Checked;
+            _rack.Conveyor.ConveyorMovingForward = checkBoxPickConveyorMoveForward.Checked;
         }
 
         private void button38_Click(object sender, EventArgs e)
@@ -563,22 +563,63 @@ namespace RackTool
             //_rack._conveyor.UpBlockSeparate(false);
             //_rack._conveyor.InitialState();
             //_rack._conveyor.UpBlockSeparate(true);
-            _rack._conveyor.Start();
+            _rack.Conveyor.Start();
         }
 
         private void button39_Click(object sender, EventArgs e)
         {
-            _rack._conveyor.CommandInposForPicking = true;
+            _rack.Conveyor.CommandInposForPicking = true;
         }
 
         private void button40_Click(object sender, EventArgs e)
         {
-            _rack._conveyor.CommandReadyForPicking = true;
+            _rack.Conveyor.CommandReadyForPicking = true;
         }
 
         private void button41_Click(object sender, EventArgs e)
         {
-            _rack._conveyor.InposForPicking = false;
+            _rack.Conveyor.InposForPicking = false;
+        }
+
+        private void trackBar2_Scroll(object sender, EventArgs e)
+        {
+            label1.Text = trackBar1.Value.ToString();
+            _rack.SetSpeedImm(Convert.ToDouble(trackBarRobotManualSpeed.Value));
+        }
+
+        private void button43_Click(object sender, EventArgs e)
+        {
+            _rack.SetSpeedImm(1);
+        }
+
+        private void button42_Click(object sender, EventArgs e)
+        {
+            _rack.SetSpeedImm(10);
+        }
+
+        private void button31_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button8_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void buttonX1Positive_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button10_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button20_Click_1(object sender, EventArgs e)
+        {
+
         }
     }
 }

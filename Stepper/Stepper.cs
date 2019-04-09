@@ -331,7 +331,7 @@ namespace GripperStepper
                 Enable(motor);
             }
 
-            if (GetInput(motor, Input.X1) == false)
+            if (GetInput(motor, InputStepper.X1) == false)
             {
                 //If home sensor has been triggered before homing.
                 // move out first.
@@ -659,7 +659,7 @@ namespace GripperStepper
         /// <param name="motor"></param>
         /// <param name="input"></param>
         /// <returns></returns>
-        public bool GetInput(Gripper motor, Input input)
+        public bool GetInput(Gripper motor, InputStepper input)
         {
             string res = SendCommand(motor, "IS");
             if (res.Length != 12)

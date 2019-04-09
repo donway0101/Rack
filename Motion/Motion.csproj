@@ -44,7 +44,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DataStructure.cs" />
+    <Compile Include="MotionData.cs" />
     <Compile Include="EthercatMotion.cs" />
     <Compile Include="Motor - Copy.cs" />
     <Compile Include="Motor.cs" />
