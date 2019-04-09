@@ -18,6 +18,11 @@ namespace RackTool
 {
     public partial class Form1 : Form
     {
+        private readonly CqcRack _rack = new CqcRack("192.168.8.18");
+        private Gripper _selectedGripper;
+        private TeachPos _selectedTargetPosition;
+        private Thread _uiUpdateThread;
+
         public Form1()
         {
             InitializeComponent();
@@ -59,12 +64,6 @@ namespace RackTool
             g.DrawString(_tabPage.Text, _tabFont, _textBrush, _tabBounds, new StringFormat(_stringFlags));
         }
 
-        private readonly CqcRack _rack = new CqcRack("192.168.8.18");
-        private TeachPos _selectedTeachPos;
-        private Gripper _selectedGripper;
-        private TeachPos _selectedTargetPosition;
-        private Thread _uiUpdateThread;
-
         private void button1_Click(object sender, EventArgs e)
         {
             try
@@ -100,8 +99,8 @@ namespace RackTool
             {
                 try
                 {
-                    //label6.Invoke((MethodInvoker) (() => { label6.Text=_rack._gripper.GetPosition(Gripper.One).ToString(); }));
-                    //label7.Invoke((MethodInvoker)(() => { label7.Text = _rack._gripper.GetPosition(Gripper.Two).ToString(); }));
+                    label6.Invoke((MethodInvoker) (() => { label6.Text=_rack.Stepper.GetPosition(Gripper.One).ToString(); }));
+                    label7.Invoke((MethodInvoker)(() => { label7.Text = _rack.Stepper.GetPosition(Gripper.Two).ToString(); }));
                     Thread.Sleep(1000);
                 }
                 catch (Exception e)
@@ -119,11 +118,6 @@ namespace RackTool
 
         private void SetupForTeaching()
         {
-            comboBox1.Items.Clear();
-            foreach (var pos in Enum.GetValues(typeof(TeachPos)))
-            {
-                comboBox1.Items.Add(pos);
-            }
 
             comboBox2.Items.Clear();
             foreach (var pos in Enum.GetValues(typeof(Gripper)))
@@ -143,7 +137,6 @@ namespace RackTool
         {
             Task.Run(() =>
             {
-
                 try
                 {
                     _rack.HomeRobot();
@@ -154,6 +147,7 @@ namespace RackTool
                 }
             });
         }
+
 
         //Test
         private void button3_Click(object sender, EventArgs e)
@@ -215,7 +209,7 @@ namespace RackTool
         {
             try
             {
-                _rack.SaveTeachPosition(_selectedTeachPos);
+                _rack.SaveTeachPosition(_selectedTargetPosition);
             }
             catch (Exception exception)
             {
@@ -223,17 +217,12 @@ namespace RackTool
             }          
         }
 
-        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            _selectedTeachPos = (TeachPos)comboBox1.SelectedItem;
-        }
-
         private void button6_Click(object sender, EventArgs e)
         {
             try
             {
                 //Todo is approach is lower than teach, then exception.
-                _rack.SaveApproachHeight(_selectedTeachPos);
+                _rack.SaveApproachHeight(_selectedTargetPosition);
             }
             catch (Exception exception)
             {
@@ -290,12 +279,12 @@ namespace RackTool
 
         private void button19_Click(object sender, EventArgs e)
         {
-            _rack.Gripper.ToPoint(Gripper.One, Convert.ToDouble(textBox1.Text));
+            _rack.Stepper.ToPoint(Gripper.One, Convert.ToDouble(textBox1.Text));
         }
 
         private void button18_Click(object sender, EventArgs e)
         {
-            _rack.Gripper.ToPoint(Gripper.Two, Convert.ToDouble(textBox2.Text));
+            _rack.Stepper.ToPoint(Gripper.Two, Convert.ToDouble(textBox2.Text));
         }
 
         private void button14_MouseDown(object sender, MouseEventArgs e)
@@ -357,49 +346,7 @@ namespace RackTool
             Task.Run(() =>
             {
                 //Todo complete condition.
-                TargetPosition target = _rack.Motion.HomePosition;
-                switch (_selectedTargetPosition)
-                {
-                    case TeachPos.Home:
-                        break;
-                    case TeachPos.Pick:
-                        target = _rack.Motion.PickPosition;
-                        break;
-                    case TeachPos.Bin:
-                        break;
-                    case TeachPos.ConveyorLeft:
-                        break;
-                    case TeachPos.ConveyorRight:
-                        break;
-                    case TeachPos.Holder1:
-                        target = _rack.Motion.Holder1;
-                        break;
-                    case TeachPos.Holder2:
-                        target = _rack.Motion.Holder2;
-                        break;
-                    case TeachPos.Holder3:
-                        target = _rack.Motion.Holder3;
-                        break;
-                    case TeachPos.Holder4:
-                        target = _rack.Motion.Holder4;
-                        break;
-                    case TeachPos.Holder5:
-                        target = _rack.Motion.Holder5;
-                        break;
-                    case TeachPos.Holder6:
-                        target = _rack.Motion.Holder6;
-                        break;
-                    case TeachPos.Gold1:
-                        break;
-                    case TeachPos.Gold2:
-                        break;
-                    case TeachPos.Gold3:
-                        break;
-                    case TeachPos.Gold4:
-                        break;
-                    case TeachPos.Gold5:
-                        break;
-                }
+                TargetPosition target = _rack.TeachPos2TargetConverter(_selectedTargetPosition);
 
                 try
                 {
@@ -415,26 +362,26 @@ namespace RackTool
 
         private void button22_Click(object sender, EventArgs e)
         {
-            if ( _rack.Gripper.GetStatus(Gripper.One, StatusCode.Enabled))
+            if ( _rack.Stepper.GetStatus(Gripper.One, StatusCode.Enabled))
             {
-                _rack.Gripper.Disable(Gripper.One);
+                _rack.Stepper.Disable(Gripper.One);
             }
             else
             {
-                _rack.Gripper.Enable(Gripper.One);
+                _rack.Stepper.Enable(Gripper.One);
             }
            
         }
 
         private void button21_Click(object sender, EventArgs e)
         {
-            if (_rack.Gripper.GetStatus(Gripper.Two, StatusCode.Enabled))
+            if (_rack.Stepper.GetStatus(Gripper.Two, StatusCode.Enabled))
             {
-                _rack.Gripper.Disable(Gripper.Two);
+                _rack.Stepper.Disable(Gripper.Two);
             }
             else
             {
-                _rack.Gripper.Enable(Gripper.Two);
+                _rack.Stepper.Enable(Gripper.Two);
             }
         }
 
@@ -493,49 +440,7 @@ namespace RackTool
             Task.Run(() =>
             {
                 //Todo complete condition.
-                TargetPosition target = _rack.Motion.HomePosition;
-                switch (_selectedTargetPosition)
-                {
-                    case TeachPos.Home:
-                        break;
-                    case TeachPos.Pick:
-                        target = _rack.Motion.PickPosition;
-                        break;
-                    case TeachPos.Bin:
-                        break;
-                    case TeachPos.ConveyorLeft:
-                        break;
-                    case TeachPos.ConveyorRight:
-                        break;
-                    case TeachPos.Holder1:
-                        target = _rack.Motion.Holder1;
-                        break;
-                    case TeachPos.Holder2:
-                        target = _rack.Motion.Holder2;
-                        break;
-                    case TeachPos.Holder3:
-                        target = _rack.Motion.Holder3;
-                        break;
-                    case TeachPos.Holder4:
-                        target = _rack.Motion.Holder4;
-                        break;
-                    case TeachPos.Holder5:
-                        target = _rack.Motion.Holder5;
-                        break;
-                    case TeachPos.Holder6:
-                        target = _rack.Motion.Holder6;
-                        break;
-                    case TeachPos.Gold1:
-                        break;
-                    case TeachPos.Gold2:
-                        break;
-                    case TeachPos.Gold3:
-                        break;
-                    case TeachPos.Gold4:
-                        break;
-                    case TeachPos.Gold5:
-                        break;
-                }
+                TargetPosition target = _rack.TeachPos2TargetConverter(_selectedTargetPosition);
 
                 try
                 {
@@ -553,73 +458,30 @@ namespace RackTool
             _rack.ReadyThePhone();
         }
 
-        private void checkBoxPickConveyorMoveForward_CheckedChanged(object sender, EventArgs e)
+        private void button27_Click(object sender, EventArgs e)
         {
-            _rack.Conveyor.ConveyorMovingForward = checkBoxPickConveyorMoveForward.Checked;
+            _rack.CalculateG1ToG2Offset(_selectedTargetPosition);
         }
 
-        private void button38_Click(object sender, EventArgs e)
+        private void button28_Click(object sender, EventArgs e)
         {
-            //_rack._conveyor.UpBlockSeparate(false);
-            //_rack._conveyor.InitialState();
-            //_rack._conveyor.UpBlockSeparate(true);
-            _rack.Conveyor.Start();
+            Task.Run(() =>
+            {
+                try
+                {
+                    _rack.LoadForTeaching(_selectedGripper, _selectedTargetPosition);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
+            });
+            
         }
 
-        private void button39_Click(object sender, EventArgs e)
+        private void button29_Click(object sender, EventArgs e)
         {
-            _rack.Conveyor.CommandInposForPicking = true;
-        }
-
-        private void button40_Click(object sender, EventArgs e)
-        {
-            _rack.Conveyor.CommandReadyForPicking = true;
-        }
-
-        private void button41_Click(object sender, EventArgs e)
-        {
-            _rack.Conveyor.InposForPicking = false;
-        }
-
-        private void trackBar2_Scroll(object sender, EventArgs e)
-        {
-            label1.Text = trackBar1.Value.ToString();
-            _rack.SetSpeedImm(Convert.ToDouble(trackBarRobotManualSpeed.Value));
-        }
-
-        private void button43_Click(object sender, EventArgs e)
-        {
-            _rack.SetSpeedImm(1);
-        }
-
-        private void button42_Click(object sender, EventArgs e)
-        {
-            _rack.SetSpeedImm(10);
-        }
-
-        private void button31_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void button8_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void buttonX1Positive_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void button10_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void button20_Click_1(object sender, EventArgs e)
-        {
-
+            _rack.EnableMotorsForTeaching();
         }
     }
 }

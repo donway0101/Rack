@@ -5,6 +5,7 @@ using Motion;
 using GripperStepper;
 using EcatIo;
 using Conveyor;
+using Tools;
 
 namespace Rack
 {
@@ -18,12 +19,12 @@ namespace Rack
         private readonly Api _ch = new Api();
         private const double YIsInBox = 200;
         private const double YIsNearHome = 10;
-        private bool _gripperIsOnline = false;
+        private bool _gripperIsOnline = true;
         private readonly string _ip;
         private bool _testRun = false;
 
         public EthercatMotion Motion;
-        public Stepper Gripper;
+        public Stepper Stepper;
         public EthercatIo Io;
         public PickAndPlaceConveyor Conveyor;
 
@@ -49,11 +50,11 @@ namespace Rack
 
             if (_gripperIsOnline)
             {
-                if (Gripper == null)
+                if (Stepper == null)
                 {
-                    Gripper = new Stepper("COM3");                   
+                    Stepper = new Stepper("COM3");                   
                 }
-                Gripper.Setup();
+                Stepper.Setup();
             }
 
             SetSpeed(10);
@@ -78,8 +79,8 @@ namespace Rack
                 {
                     stepperSpeed = 30;
                 }
-                Gripper.SetSpeed(GripperStepper.Gripper.One, stepperSpeed);
-                Gripper.SetSpeed(GripperStepper.Gripper.Two, stepperSpeed); 
+                Stepper.SetSpeed(GripperStepper.Gripper.One, stepperSpeed);
+                Stepper.SetSpeed(GripperStepper.Gripper.Two, stepperSpeed); 
             }
         }
 
@@ -230,9 +231,58 @@ namespace Rack
         {
             if (_gripperIsOnline)
             {
-                Gripper.HomeMotor(GripperStepper.Gripper.One, -6);
-                Gripper.HomeMotor(GripperStepper.Gripper.Two, -2);
+                Stepper.HomeMotor(GripperStepper.Gripper.One, -6);
+                Stepper.HomeMotor(GripperStepper.Gripper.Two, -2);
             }
+        }
+
+        public TargetPosition TeachPos2TargetConverter(TeachPos teachPos)
+        {
+            TargetPosition target = Motion.HomePosition;
+            switch (teachPos)
+            {
+                case TeachPos.Home:
+                    break;
+                case TeachPos.Pick:
+                    target = Motion.PickPosition;
+                    break;
+                case TeachPos.Bin:
+                    break;
+                case TeachPos.ConveyorLeft:
+                    break;
+                case TeachPos.ConveyorRight:
+                    break;
+                case TeachPos.Holder1:
+                    target = Motion.Holder1;
+                    break;
+                case TeachPos.Holder2:
+                    target = Motion.Holder2;
+                    break;
+                case TeachPos.Holder3:
+                    target = Motion.Holder3;
+                    break;
+                case TeachPos.Holder4:
+                    target = Motion.Holder4;
+                    break;
+                case TeachPos.Holder5:
+                    target = Motion.Holder5;
+                    break;
+                case TeachPos.Holder6:
+                    target = Motion.Holder6;
+                    break;
+                case TeachPos.Gold1:
+                    break;
+                case TeachPos.Gold2:
+                    break;
+                case TeachPos.Gold3:
+                    break;
+                case TeachPos.Gold4:
+                    break;
+                case TeachPos.Gold5:
+                    break;
+            }
+
+            return target;
         }
 
     }

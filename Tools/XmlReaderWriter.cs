@@ -101,6 +101,7 @@ namespace Tools
                 root = new XElement("RackData");
 
             #region Teach
+
             XElement Teach = new XElement(PosItem.Teach.ToString());
             const double defaultXPos = 800;
             const double defaultYPos = 50;
@@ -163,6 +164,7 @@ namespace Tools
                      new XAttribute(PosItem.APos.ToString(), defaultAPos),
                      new XAttribute(PosItem.ApproachHeight.ToString(), defaultApproachHeight)
                      );
+           
 
             #region ShieldBoxHolder
 
@@ -233,6 +235,8 @@ namespace Tools
                      );
             #endregion
 
+            #region GoldenPhone
+
             double baseXPos = 1330;
             double incXpos = 130;
             double GoldYPos = 0;
@@ -241,7 +245,6 @@ namespace Tools
             double goldRPos = 26;
             double goldAPos = 0;
 
-            #region GoldenPhone
             XElement Gold1 = new XElement(PosItem.Pos.ToString());
             Gold1.Add(
                      new XAttribute(PosItem.Name.ToString(), TeachPos.Gold1.ToString()),
@@ -295,9 +298,23 @@ namespace Tools
                      new XAttribute(PosItem.RPos.ToString(), goldRPos),
                      new XAttribute(PosItem.APos.ToString(), goldAPos),
                      new XAttribute(PosItem.ApproachHeight.ToString(), goldApproach)
-                     ); 
+                     );
             #endregion
 
+            XElement g1ToG2Offset = new XElement(PosItem.Pos.ToString());
+            g1ToG2Offset.Add(
+                new XAttribute(PosItem.Name.ToString(), TeachPos.G1ToG2Offset.ToString()),
+                new XAttribute(PosItem.XPos.ToString(), 2),
+                new XAttribute(PosItem.YPos.ToString(), 2),
+                new XAttribute(PosItem.ZPos.ToString(), 720),
+                new XAttribute(PosItem.RPos.ToString(), 30),
+                new XAttribute(PosItem.APos.ToString(), 2),
+                new XAttribute(PosItem.ApproachHeight.ToString(), 720)
+            );
+
+            #endregion
+
+            #region AddElements
             Teach.Add(HomePos);
             Teach.Add(PickPos);
             Teach.Add(BinPos);
@@ -317,10 +334,10 @@ namespace Tools
             Teach.Add(Gold4);
             Teach.Add(Gold5);
 
+            Teach.Add(g1ToG2Offset);
             #endregion
 
             root.Add(Teach);
-
             root.Save(file);
         }
     }

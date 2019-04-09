@@ -41,20 +41,20 @@ namespace Rack
             if (gripper == GripperStepper.Gripper.One)
             {
                 Motion.ToPoint(Motion.MotorR, target.RPos);
-                Gripper.ToPoint(GripperStepper.Gripper.One, target.APos);
-                Gripper.ToPoint(GripperStepper.Gripper.Two, 0);
+                Stepper.ToPoint(GripperStepper.Gripper.One, target.APos);
+                Stepper.ToPoint(GripperStepper.Gripper.Two, 0);
                 Motion.WaitTillEnd(Motion.MotorR);
-                Gripper.WaitTillEnd(GripperStepper.Gripper.One, target.APos);
-                Gripper.WaitTillEnd(GripperStepper.Gripper.Two, 0);
+                Stepper.WaitTillEnd(GripperStepper.Gripper.One, target.APos);
+                Stepper.WaitTillEnd(GripperStepper.Gripper.Two, 0);
             }
             else
             {
                 Motion.ToPoint(Motion.MotorR, target.RPos - 60);
-                Gripper.ToPoint(GripperStepper.Gripper.Two, target.APos);
-                Gripper.ToPoint(GripperStepper.Gripper.One, 0);
+                Stepper.ToPoint(GripperStepper.Gripper.Two, target.APos);
+                Stepper.ToPoint(GripperStepper.Gripper.One, 0);
                 Motion.WaitTillEnd(Motion.MotorR);
-                Gripper.WaitTillEnd(GripperStepper.Gripper.One, 0);
-                Gripper.WaitTillEnd(GripperStepper.Gripper.Two, target.APos);
+                Stepper.WaitTillEnd(GripperStepper.Gripper.One, 0);
+                Stepper.WaitTillEnd(GripperStepper.Gripper.Two, target.APos);
             }
         }
 
@@ -63,13 +63,13 @@ namespace Rack
             Motion.WaitTillEnd(Motion.MotorR);
             if (gripper == GripperStepper.Gripper.One)
             {
-                Gripper.WaitTillEnd(GripperStepper.Gripper.One, target.APos);
-                Gripper.WaitTillEnd(GripperStepper.Gripper.Two, 0);
+                Stepper.WaitTillEnd(GripperStepper.Gripper.One, target.APos);
+                Stepper.WaitTillEnd(GripperStepper.Gripper.Two, 0);
             }
             else
             {
-                Gripper.WaitTillEnd(GripperStepper.Gripper.One, 0);
-                Gripper.WaitTillEnd(GripperStepper.Gripper.Two, target.APos);
+                Stepper.WaitTillEnd(GripperStepper.Gripper.One, 0);
+                Stepper.WaitTillEnd(GripperStepper.Gripper.Two, target.APos);
             }
         }
 
@@ -78,68 +78,16 @@ namespace Rack
             if (gripper == GripperStepper.Gripper.One)
             {
                 Motion.ToPoint(Motion.MotorR, target.RPos);
-                Gripper.ToPoint(GripperStepper.Gripper.One, target.APos);
-                Gripper.ToPoint(GripperStepper.Gripper.Two, 0);
+                Stepper.ToPoint(GripperStepper.Gripper.One, target.APos);
+                Stepper.ToPoint(GripperStepper.Gripper.Two, 0);
             }
             else
             {
                 Motion.ToPoint(Motion.MotorR, target.RPos - 60);
-                Gripper.ToPoint(GripperStepper.Gripper.Two, target.APos);
-                Gripper.ToPoint(GripperStepper.Gripper.One, 0);
+                Stepper.ToPoint(GripperStepper.Gripper.Two, target.APos);
+                Stepper.ToPoint(GripperStepper.Gripper.One, 0);
             }
         }
-
-
-        private void Timeout()
-        {
-            Stopwatch sw = new Stopwatch();
-            sw.Start();
-
-            while (true)
-            {                
-                if (sw.ElapsedMilliseconds > 5000) throw new TimeoutException();
-            }
-        }
-
-        public void ReadyThePhone(int timeout=3000)
-        {
-            Io.SetOutput(Output.ClampPick, true);
-            Stopwatch sw = new Stopwatch();
-            sw.Start();
-            while (!Io.GetInput(Input.ClampTightPick))
-            {
-                if (sw.ElapsedMilliseconds > timeout) throw new TimeoutException();
-                Thread.Sleep(10);
-            }
-
-            Io.SetOutput(Output.SideBlockPick, true);
-            sw.Restart();
-            while (Io.GetInput(Input.SideBlockPick))
-            {
-                if (sw.ElapsedMilliseconds > timeout) throw new TimeoutException();
-                Thread.Sleep(10);
-            }
-
-            Thread.Sleep(500);
-
-            Io.SetOutput(Output.SideBlockPick, false);
-            sw.Restart();
-            while (!Io.GetInput(Input.SideBlockPick))
-            {
-                if (sw.ElapsedMilliseconds > timeout) throw new TimeoutException();
-                Thread.Sleep(10);
-            }
-
-            Io.SetOutput(Output.ClampPick, false);
-            sw = new Stopwatch();
-            sw.Restart();
-            while (!Io.GetInput(Input.ClampLoosePick))
-            {
-                if (sw.ElapsedMilliseconds > timeout) throw new TimeoutException();
-                Thread.Sleep(10);
-            }
-
-            Conveyor.ReadyForPicking = true;
-        }
+       
     }
 }

@@ -239,7 +239,7 @@ namespace Motion
                (int)motor.Id, (int)motor.Id, -1, -1);
         }
 
-        private void MapEtherCAT()
+        private void MapEtherCat()
         {
             foreach (var motor in Motors)
             {
@@ -290,7 +290,7 @@ namespace Motion
                 Ch.CompileBuffer(DBuffer);
             }
 
-            MapEtherCAT();
+            MapEtherCat();
         }
 
         public void SetPosition(Motor motor, double position) { }

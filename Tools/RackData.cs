@@ -31,6 +31,7 @@ namespace Tools
         Bin,
         ConveyorLeft,
         ConveyorRight,
+        G1ToG2Offset,
 
         Holder1,
         Holder2,
