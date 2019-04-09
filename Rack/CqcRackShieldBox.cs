@@ -1,0 +1,77 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+using GripperStepper;
+using ShieldBox;
+
+namespace Rack
+{
+    public partial class CqcRack
+    {
+        private Thread _shieldBoxServerThread;
+        public BpShieldBox ShieldBox1 { get; set; }
+
+        public BpShieldBox[] ShieldBoxs { get; set; }
+
+        public void ShieldBoxSetup()
+        {
+            ShieldBox1 = new BpShieldBox(1, "COM3");
+
+            ShieldBoxs = new BpShieldBox[1]{ShieldBox1};
+        }
+
+        public void ShieldBoxInitialization()
+        {
+            foreach (var box in ShieldBoxs)
+            {
+                if (box.Enabled)
+                {
+                    box.OpenBox();
+                }
+            }
+        }
+
+        public void StartShieldBoxServer()
+        {
+            if (_shieldBoxServerThread == null)
+            {
+                _shieldBoxServerThread = new Thread(ShieldBoxServer)
+                {
+                    IsBackground = true
+                };
+            }
+
+            if (_shieldBoxServerThread.IsAlive == false)
+            {
+                _shieldBoxServerThread.Start();
+            }
+        }
+
+        private void Delay(int millisec)
+        {
+            Thread.Sleep(millisec);
+        }
+
+        private void ShieldBoxServer()
+        {
+            while (true)
+            {
+
+                Delay(50);
+            }
+        }
+
+        public void StopShieldBoxServer()
+        {
+            if (_shieldBoxServerThread != null)
+            {
+                _shieldBoxServerThread.Abort();
+                _shieldBoxServerThread.Join();
+            }
+        }
+
+    }
+}

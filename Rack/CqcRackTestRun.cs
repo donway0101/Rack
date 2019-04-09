@@ -9,12 +9,31 @@ namespace Rack
 {
     public partial class CqcRack
     {
+
+
         public void Test()
+        {
+            RunShieldBox();
+        }
+
+        public void ExchangeBox()
         {
             ReadyThePhone();
             Pick(StepperMotor.One);
             UnloadAndLoad(Motion.ShieldBox4, StepperMotor.Two);
             UnloadAndLoad(Motion.ShieldBox1, StepperMotor.One);
+            Place(StepperMotor.One);
+        }
+
+        public void RunShieldBox()
+        {
+            ReadyThePhone();
+            Pick(StepperMotor.One);
+            UnloadAndLoad(Motion.ShieldBox4, StepperMotor.Two);
+            Place(StepperMotor.Two);
+            ReadyThePhone();
+            Pick(StepperMotor.Two);
+            UnloadAndLoad(Motion.ShieldBox4, StepperMotor.One);
             Place(StepperMotor.One);
         }
 

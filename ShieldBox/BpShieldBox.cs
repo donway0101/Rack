@@ -18,6 +18,8 @@ namespace ShieldBox
         public int PassRate { get; set; }
         public int TestCount { get; set; }
         public int PassCount { get; set; }
+        public bool Enabled { get; set; }
+        public bool Empty { get; set; }
 
         public BpShieldBox(int id, string serialPortName, int serialBaudRate = 9600,
             Parity serialParity = Parity.None, int serialDataBit = 8,

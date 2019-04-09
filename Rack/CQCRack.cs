@@ -28,7 +28,7 @@ namespace Rack
         public Stepper Stepper;
         public EthercatIo Io;
         public PickAndPlaceConveyor Conveyor;
-        public BpShieldBox ShieldBox1 { get; set; }
+
 
         public bool RobotHomeComplete { get; set; }
         public bool SetupComplete { get; set; }
@@ -58,8 +58,8 @@ namespace Rack
                 }
                 Stepper.Setup();
             }
-
-            ShieldBox1 = new BpShieldBox(1, "COM3");
+           
+            ShieldBoxSetup();
 
             SetSpeed(10);
 

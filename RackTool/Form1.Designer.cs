@@ -128,10 +128,10 @@
             // 
             // buttonStart
             // 
-            this.buttonStart.Location = new System.Drawing.Point(123, 59);
+            this.buttonStart.Location = new System.Drawing.Point(40, 16);
             this.buttonStart.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.buttonStart.Name = "buttonStart";
-            this.buttonStart.Size = new System.Drawing.Size(194, 106);
+            this.buttonStart.Size = new System.Drawing.Size(154, 71);
             this.buttonStart.TabIndex = 0;
             this.buttonStart.Text = "Start";
             this.buttonStart.UseVisualStyleBackColor = true;
@@ -140,10 +140,10 @@
             // buttonHome
             // 
             this.buttonHome.Enabled = false;
-            this.buttonHome.Location = new System.Drawing.Point(120, 191);
+            this.buttonHome.Location = new System.Drawing.Point(40, 113);
             this.buttonHome.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.buttonHome.Name = "buttonHome";
-            this.buttonHome.Size = new System.Drawing.Size(194, 35);
+            this.buttonHome.Size = new System.Drawing.Size(154, 35);
             this.buttonHome.TabIndex = 1;
             this.buttonHome.Text = "Home";
             this.buttonHome.UseVisualStyleBackColor = true;
@@ -151,7 +151,7 @@
             // 
             // buttonTest
             // 
-            this.buttonTest.Location = new System.Drawing.Point(791, 191);
+            this.buttonTest.Location = new System.Drawing.Point(411, 16);
             this.buttonTest.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.buttonTest.Name = "buttonTest";
             this.buttonTest.Size = new System.Drawing.Size(119, 35);
@@ -162,10 +162,10 @@
             // 
             // buttonStop
             // 
-            this.buttonStop.Location = new System.Drawing.Point(426, 59);
+            this.buttonStop.Location = new System.Drawing.Point(217, 16);
             this.buttonStop.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.buttonStop.Name = "buttonStop";
-            this.buttonStop.Size = new System.Drawing.Size(194, 106);
+            this.buttonStop.Size = new System.Drawing.Size(154, 71);
             this.buttonStop.TabIndex = 4;
             this.buttonStop.Text = "Stop";
             this.buttonStop.UseVisualStyleBackColor = true;
@@ -176,7 +176,7 @@
             this.checkBoxIsLoop.AutoSize = true;
             this.checkBoxIsLoop.Checked = true;
             this.checkBoxIsLoop.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBoxIsLoop.Location = new System.Drawing.Point(916, 200);
+            this.checkBoxIsLoop.Location = new System.Drawing.Point(536, 25);
             this.checkBoxIsLoop.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.checkBoxIsLoop.Name = "checkBoxIsLoop";
             this.checkBoxIsLoop.Size = new System.Drawing.Size(61, 19);
@@ -715,7 +715,7 @@
             // 
             this.label5.AutoSize = true;
             this.label5.Font = new System.Drawing.Font("SimSun", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label5.Location = new System.Drawing.Point(7, 334);
+            this.label5.Location = new System.Drawing.Point(39, 506);
             this.label5.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(94, 24);
@@ -726,7 +726,7 @@
             // 
             this.labelSpeed1.AutoSize = true;
             this.labelSpeed1.Font = new System.Drawing.Font("SimSun", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.labelSpeed1.Location = new System.Drawing.Point(992, 334);
+            this.labelSpeed1.Location = new System.Drawing.Point(1013, 506);
             this.labelSpeed1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.labelSpeed1.Name = "labelSpeed1";
             this.labelSpeed1.Size = new System.Drawing.Size(34, 24);
@@ -735,11 +735,12 @@
             // 
             // trackBarSetSpeed1
             // 
-            this.trackBarSetSpeed1.Location = new System.Drawing.Point(120, 316);
+            this.trackBarSetSpeed1.AutoSize = false;
+            this.trackBarSetSpeed1.Location = new System.Drawing.Point(141, 420);
             this.trackBarSetSpeed1.Margin = new System.Windows.Forms.Padding(4);
             this.trackBarSetSpeed1.Maximum = 200;
             this.trackBarSetSpeed1.Name = "trackBarSetSpeed1";
-            this.trackBarSetSpeed1.Size = new System.Drawing.Size(864, 56);
+            this.trackBarSetSpeed1.Size = new System.Drawing.Size(864, 124);
             this.trackBarSetSpeed1.TabIndex = 24;
             this.trackBarSetSpeed1.Value = 20;
             this.trackBarSetSpeed1.Scroll += new System.EventHandler(this.trackBarSetSpeed1_Scroll);

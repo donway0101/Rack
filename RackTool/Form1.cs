@@ -18,6 +18,8 @@ using ACS.SPiiPlusNET;
 using Input = EcatIo.Input;
 using Outout = EcatIo.Output;
 using ShieldBox;
+using System.IO.Ports;
+
 namespace RackTool
 {
     public partial class Form1 : Form
@@ -68,33 +70,38 @@ namespace RackTool
         private StepperMotor _selectedGripper;
         private Thread _uiUpdateThread;
 
-        private void button_Start_Click(object sender, EventArgs e)
+        private async void button_Start_Click(object sender, EventArgs e)
         {
-            try
+            buttonStart.Enabled = false;
+            await Task.Run(() =>
             {
-                _rack.Start();
-                SetupForTeaching();
-
-                if (_uiUpdateThread == null)
+                try
                 {
-                    _uiUpdateThread = new Thread(UiUpdate)
+                    _rack.Start();
+                    SetupForTeaching();
+
+                    if (_uiUpdateThread == null)
                     {
-                        IsBackground = true
-                    };
-                }
+                        _uiUpdateThread = new Thread(UiUpdate)
+                        {
+                            IsBackground = true
+                        };
+                    }
 
-                if (_uiUpdateThread.IsAlive == false)
+                    if (_uiUpdateThread.IsAlive == false)
+                    {
+                        _uiUpdateThread.Start();
+                    }
+                    
+                }
+                catch (Exception ex)
                 {
-                    _uiUpdateThread.Start();
+
+                    MessageBox.Show(ex.Message);
                 }
-
-                buttonHome.Enabled = true;
-            }
-            catch (Exception ex)
-            {
-
-                MessageBox.Show(ex.Message);
-            }
+            });
+            buttonHome.Enabled = true;
+            buttonStart.Enabled = true;
         }
         private void UiUpdate()
         {
@@ -139,9 +146,9 @@ namespace RackTool
             }
         }
 
-        private void button_Home_Click(object sender, EventArgs e)
+        private async void button_Home_Click(object sender, EventArgs e)
         {
-            Task.Run(() =>
+            await Task.Run(() =>
             {
 
                 try
@@ -156,7 +163,7 @@ namespace RackTool
         }
 
         //Test
-        private void button3_Click(object sender, EventArgs e)
+        private async void button3_Click(object sender, EventArgs e)
         {
             //DialogResult result = MessageBox.Show("是否所有屏蔽箱门都打开了？", "!!!", MessageBoxButtons.YesNo);
             //if (result == DialogResult.No)
@@ -165,9 +172,8 @@ namespace RackTool
             //}
             _rack.SetSpeed(defaultTestSpeed);
 
-            Task.Run(() =>
+            await Task.Run(() =>
             {
-
                 try
                 {
                     _rack.Test();
