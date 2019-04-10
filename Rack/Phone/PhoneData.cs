@@ -6,7 +6,7 @@
         High,
     }
 
-    public enum PhoneId
+    public enum PhoneType
     {
         Normal,
         Golden,

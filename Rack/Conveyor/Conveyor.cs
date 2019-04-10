@@ -26,6 +26,9 @@ namespace Rack
 
         public bool CommandInposForPicking { get; set; }
 
+        /// <summary>
+        /// If there is phone can be place or bin, then Ok to ready the phone.
+        /// </summary>
         public bool CommandReadyForPicking { get; set; }
 
         #region Events

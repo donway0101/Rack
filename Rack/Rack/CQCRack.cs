@@ -39,9 +39,14 @@ namespace Rack
         private Thread _phoneServerThread;
         private readonly object _phoneToBeServedLocker = new object();
         /// <summary>
-        /// Phones on conveyor or in box or gold.
+        /// Phones only which already has place to go can add to the list.
         /// </summary>
         public List<Phone> PhoneToBeServed = new List<Phone>();
+
+        /// <summary>
+        /// Set, to serve, if exception, has to set again to continue.
+        /// </summary>
+        public ManualResetEvent PhoneServerManualResetEvent = new ManualResetEvent(false);
 
         public bool RobotHomeComplete { get; set; }
         public bool SetupComplete { get; set; }

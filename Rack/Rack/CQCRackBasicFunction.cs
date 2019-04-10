@@ -12,6 +12,12 @@ namespace Rack
         public CqcRack(string controllerIp)
         {
             _ip = controllerIp;
+            Conveyor.ErrorOccured += Conveyor_ErrorOccured;
+        }
+
+        private void Conveyor_ErrorOccured(object sender, string description)
+        {
+            OnErrorOccured(description);
         }
 
         public void Start()
