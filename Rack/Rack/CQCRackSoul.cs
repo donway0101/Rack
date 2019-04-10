@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -8,8 +9,53 @@ namespace Rack
 {
     public partial class CqcRack
     {
+        private void PhoneServer()
+        {
+            while (true)
+            {
+                try
+                {
+                    //phone in service
+                    Phone phoneSome;
+                    lock (_phoneToBeServedLocker)
+                    {
+                        foreach (var phone in PhoneToBeServed)
+                        {
 
-        public void StartShieldBoxServer()
+                        }
+                    }
+                  
+
+                    //Phone to be served
+
+
+                }
+                catch (Exception e)
+                {
+                    OnErrorOccured(e.Message);
+                }
+
+                Delay(50);
+            }
+        }
+
+        private void AddPhoneToBeServed(Phone phone)
+        {
+            lock (_phoneToBeServedLocker)
+            {
+                PhoneToBeServed.Add(phone);
+            }
+        }
+
+        private void RemovePhoneToBeServed(Phone phone)
+        {
+            lock (_phoneToBeServedLocker)
+            {
+                PhoneToBeServed.Add(phone);
+            }
+        }
+
+        public void StartPhoneServer()
         {
             if (_phoneServerThread == null)
             {
@@ -28,15 +74,6 @@ namespace Rack
         private void Delay(int millisec)
         {
             Thread.Sleep(millisec);
-        }
-
-        private void PhoneServer()
-        {
-            while (true)
-            {
-
-                Delay(50);
-            }
         }
 
         public void StopPhoneServer()

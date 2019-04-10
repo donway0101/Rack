@@ -1,30 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Xml.Linq;
-using System.Diagnostics;
-using Rack;
-using Rack;
-using Rack;
 using Rack;
 using System.Threading;
 using ACS.SPiiPlusNET;
-using Input = Rack.Input;
-using Outout = Rack.Output;
-using System.IO;
 using System.IO.Ports;
 using System.Collections;
-using Rack;
 
 namespace RackTool
 {
-    public partial class Form1 : Form
+    public partial class Main : Form
     {
         private readonly CqcRack _rack = new CqcRack("192.168.8.18");
         private TeachPos _selectedTargetPosition;
@@ -32,17 +18,11 @@ namespace RackTool
         private Thread _uiUpdateThread;
         private ArrayList _portName;
 
-        public Form1()
+        public Main()
         {
             InitializeComponent();
             //Todo set tab draw mode to ownerdraw
             tabControl1.DrawItem += new DrawItemEventHandler(tabControl1_DrawItem);
-            _rack.ErrorOccured += _rack_ErrorOccured;
-        }
-
-        private void _rack_ErrorOccured(object sender, string description)
-        {
-            
         }
 
         private void tabControl1_DrawItem(Object sender, System.Windows.Forms.DrawItemEventArgs e)
@@ -119,12 +99,12 @@ namespace RackTool
             {
                 try
                 {
-                    labelPositionG1.Invoke((MethodInvoker) (() => { labelPositionG1.Text=_rack.Steppers.GetPosition(StepperMotor.One).ToString(); }));
-                    labelPositionG2.Invoke((MethodInvoker)(() => { labelPositionG2.Text = _rack.Steppers.GetPosition(StepperMotor.Two).ToString(); }));
-                    labelPositionX.Invoke((MethodInvoker)(() => { labelPositionX.Text = _rack.Motion.GetPositionX().ToString(); }));
-                    labelPositionY.Invoke((MethodInvoker)(() => { labelPositionY.Text = _rack.Motion.GetPosition(_rack.Motion.MotorY).ToString(); }));
-                    labelPositionZ.Invoke((MethodInvoker)(() => { labelPositionZ.Text = _rack.Motion.GetPosition(_rack.Motion.MotorZ).ToString(); }));
-                    labelPositionR.Invoke((MethodInvoker)(() => { labelPositionR.Text = _rack.Motion.GetPosition(_rack.Motion.MotorR).ToString(); }));
+                    labelPositionG1.Invoke((MethodInvoker) (() => { labelPositionG1.Text=_rack.Steppers.GetPosition(StepperMotor.One).ToString("F2"); }));
+                    labelPositionG2.Invoke((MethodInvoker)(() => { labelPositionG2.Text = _rack.Steppers.GetPosition(StepperMotor.Two).ToString("F2"); }));
+                    labelPositionX.Invoke((MethodInvoker)(() => { labelPositionX.Text = _rack.Motion.GetPositionX().ToString("F2"); }));
+                    labelPositionY.Invoke((MethodInvoker)(() => { labelPositionY.Text = _rack.Motion.GetPosition(_rack.Motion.MotorY).ToString("F2"); }));
+                    labelPositionZ.Invoke((MethodInvoker)(() => { labelPositionZ.Text = _rack.Motion.GetPosition(_rack.Motion.MotorZ).ToString("F2"); }));
+                    labelPositionR.Invoke((MethodInvoker)(() => { labelPositionR.Text = _rack.Motion.GetPosition(_rack.Motion.MotorR).ToString("F2"); }));
                     Thread.Sleep(1000);
                 }
                 catch (Exception e)
@@ -953,6 +933,7 @@ namespace RackTool
             }
         }
 
+        #region SpeedSwitch
         private void buttonLowSpeed_Click(object sender, EventArgs e)
         {
             trackBarSetSpeed2.Value = 5;
@@ -966,26 +947,26 @@ namespace RackTool
         {
             trackBarSetSpeed2.Value = trackBarSetSpeed2.Maximum;
         }
+        #endregion
 
-        private void 启用ToolStripMenuItem_Click(object sender, EventArgs e)
+        #region ShieldBoxOperate
+
+        private void OpenToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            int BoxId = 0;
             if (listViewBox.SelectedItems.Count != 0)
             {
                 listViewBox.SelectedItems[0].ImageIndex = 0;
                 switch (listViewBox.SelectedItems[0].Text)
                 {
-                    case "Box1": BoxId = 1;  break;
-                    case "Box2": BoxId = 2;  break;
-                    case "Box3": BoxId = 3; break;
-                    case "Box4": BoxId = 4;  break;
-                    case "Box5": BoxId = 5; break;
-                    case "Box6": BoxId = 6;  break;
+                    case "Box1": _rack.ShieldBox1.OpenBox(); break;
+                    case "Box2": _rack.ShieldBox2.OpenBox(); break;
+                    case "Box3": _rack.ShieldBox3.OpenBox(); break;
+                    case "Box4": _rack.ShieldBox4.OpenBox(); break;
+                    case "Box5": _rack.ShieldBox5.OpenBox(); break;
+                    case "Box6": _rack.ShieldBox6.OpenBox(); break;
                     default:
                         break;
                 }
-                XmlReaderWriter.SetBoxAttribute(Files.BoxData, BoxId, ShieldBoxItem.State, "Enable");
-                buttonBoxLoad_Click(null,null);
             }
             else
             {
@@ -993,7 +974,55 @@ namespace RackTool
             }
         }
 
-        private void 禁用ToolStripMenuItem_Click(object sender, EventArgs e)
+        private void CloseToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (listViewBox.SelectedItems.Count != 0)
+            {
+                listViewBox.SelectedItems[0].ImageIndex = 0;
+                switch (listViewBox.SelectedItems[0].Text)
+                {
+                    case "Box1": _rack.ShieldBox1.CloseBox(); break;
+                    case "Box2": _rack.ShieldBox2.CloseBox(); break;
+                    case "Box3": _rack.ShieldBox3.CloseBox(); break;
+                    case "Box4": _rack.ShieldBox4.CloseBox(); break;
+                    case "Box5": _rack.ShieldBox5.CloseBox(); break;
+                    case "Box6": _rack.ShieldBox6.CloseBox(); break;
+                    default:
+                        break;
+                }
+            }
+            else
+            {
+                MessageBox.Show("Please Select Box!");
+            }
+        }
+        private void EnableToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            int BoxId = 0;
+            if (listViewBox.SelectedItems.Count != 0)
+            {
+                listViewBox.SelectedItems[0].ImageIndex = 0;
+                switch (listViewBox.SelectedItems[0].Text)
+                {
+                    case "Box1": BoxId = 1; break;
+                    case "Box2": BoxId = 2; break;
+                    case "Box3": BoxId = 3; break;
+                    case "Box4": BoxId = 4; break;
+                    case "Box5": BoxId = 5; break;
+                    case "Box6": BoxId = 6; break;
+                    default:
+                        break;
+                }
+                XmlReaderWriter.SetBoxAttribute(Files.BoxData, BoxId, ShieldBoxItem.State, "Enable");
+                buttonBoxLoad_Click(null, null);
+            }
+            else
+            {
+                MessageBox.Show("Please Select Box!");
+            }
+        }
+
+        private void DisableToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (listViewBox.SelectedItems.Count != 0)
             {
@@ -1004,12 +1033,12 @@ namespace RackTool
                     listViewBox.SelectedItems[0].ImageIndex = 1;
                     switch (listViewBox.SelectedItems[0].Text)
                     {
-                        case "Box1": BoxId = 1; Com = comboBox1.Text; comboBox1.Text = "None";  break;
-                        case "Box2": BoxId = 2; Com = comboBox2.Text; comboBox2.Text = "None";  break;
-                        case "Box3": BoxId = 3; Com = comboBox3.Text; comboBox3.Text = "None";  break;
-                        case "Box4": BoxId = 4; Com = comboBox4.Text; comboBox4.Text = "None";  break;
-                        case "Box5": BoxId = 5; Com = comboBox5.Text; comboBox5.Text = "None";  break;
-                        case "Box6": BoxId = 6; Com = comboBox6.Text; comboBox6.Text = "None";  break;
+                        case "Box1": BoxId = 1; Com = comboBox1.Text; comboBox1.Text = "None"; break;
+                        case "Box2": BoxId = 2; Com = comboBox2.Text; comboBox2.Text = "None"; break;
+                        case "Box3": BoxId = 3; Com = comboBox3.Text; comboBox3.Text = "None"; break;
+                        case "Box4": BoxId = 4; Com = comboBox4.Text; comboBox4.Text = "None"; break;
+                        case "Box5": BoxId = 5; Com = comboBox5.Text; comboBox5.Text = "None"; break;
+                        case "Box6": BoxId = 6; Com = comboBox6.Text; comboBox6.Text = "None"; break;
                         default:
                             break;
                     }
@@ -1055,7 +1084,7 @@ namespace RackTool
             comboBox4.Text = XmlReaderWriter.GetBoxAttribute(Files.BoxData, 4, ShieldBoxItem.COM);
             comboBox5.Text = XmlReaderWriter.GetBoxAttribute(Files.BoxData, 5, ShieldBoxItem.COM);
             comboBox6.Text = XmlReaderWriter.GetBoxAttribute(Files.BoxData, 6, ShieldBoxItem.COM);
-           
+
             listViewBox.Items[0].ImageIndex = XmlReaderWriter.GetBoxAttribute(Files.BoxData, 1, ShieldBoxItem.State) == "Enable" ? 0 : 1;
             listViewBox.Items[1].ImageIndex = XmlReaderWriter.GetBoxAttribute(Files.BoxData, 2, ShieldBoxItem.State) == "Enable" ? 0 : 1;
             listViewBox.Items[2].ImageIndex = XmlReaderWriter.GetBoxAttribute(Files.BoxData, 3, ShieldBoxItem.State) == "Enable" ? 0 : 1;
@@ -1084,9 +1113,8 @@ namespace RackTool
 
         private void listViewBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            
-        }
 
+        }
         #region ButtonOk
         private void buttonOK1_Click(object sender, EventArgs e)
         {
@@ -1097,7 +1125,7 @@ namespace RackTool
                 ClearItem();
                 if (comboBox1.Items.Contains(Com) == false)
                     comboBox1.Items.Add(Com);
-                XmlReaderWriter.SetBoxAttribute(Files.BoxData, 1,ShieldBoxItem.COM,Com);
+                XmlReaderWriter.SetBoxAttribute(Files.BoxData, 1, ShieldBoxItem.COM, Com);
             }
             catch (Exception ex)
             {
@@ -1194,11 +1222,154 @@ namespace RackTool
                 MessageBox.Show(ex.Message);
             }
         }
+
+        #endregion
         #endregion
 
-        private void button1_Click(object sender, EventArgs e)
+        #region ConveyorCylinderOperate
+        private void buttonConveyorLoad_Click(object sender, EventArgs e)
         {
-            label1.Text = "";
+            try
+            {
+                RefleshConveyorUI();
+            }
+            catch (Exception ex)
+            {
+
+                MessageBox.Show(ex.Message);
+            }
+
         }
+        private void buttonUpBlockSeparateForward_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (buttonUpBlockSeparateForward.Text == "Down")
+                    _rack.Conveyor.SetCylinder(Output.UpBlockSeparateForward, Input.UpBlockSeparateForward, false);
+                else
+                    _rack.Conveyor.ResetCylinder(Output.UpBlockSeparateForward, Input.UpBlockSeparateForward);
+            }
+            catch (Exception ex)
+            {
+
+                MessageBox.Show(ex.Message);
+            }
+        }
+        private void buttonClampOrLoose_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (buttonOpenOrClose.Text == "Close")
+                    _rack.Conveyor.Clamp(true);
+                else
+                    _rack.Conveyor.Clamp(false);
+            }
+            catch (Exception ex)
+            {
+
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private void buttonSideBlockPick_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (buttonSideBlockPick.Text == "Stretch")
+                    _rack.Conveyor.PushPickInpos(true);
+                else
+                    _rack.Conveyor.PushPickInpos(false);
+            }
+            catch (Exception ex)
+            {
+
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private void buttonSideBlockSeparateForward_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (buttonSideBlockSeparateForward.Text == "Stretch")
+                    _rack.Conveyor.SetCylinder(Output.SideBlockSeparateForward, Input.SideBlockSeparateForward, false);
+                else
+                    _rack.Conveyor.ResetCylinder(Output.SideBlockSeparateForward, Input.SideBlockSeparateForward);
+            }
+            catch (Exception ex)
+            {
+
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private void buttonSideBlockSeparateBackward_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (buttonSideBlockSeparateBackward.Text == "Stretch")
+                    _rack.Conveyor.SetCylinder(Output.SideBlockSeparateBackward, Input.SideBlockSeparateBackward, false);
+                else
+                    _rack.Conveyor.ResetCylinder(Output.SideBlockSeparateBackward, Input.SideBlockSeparateBackward);
+            }
+            catch (Exception ex)
+            {
+
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private void buttonUpBlockPickBackward_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (buttonUpBlockPickBackward.Text == "Down")
+                    _rack.Conveyor.SetCylinder(Output.UpBlockPickBackward, Input.UpBlockPickBackward, false);
+                else
+                    _rack.Conveyor.ResetCylinder(Output.UpBlockPickBackward, Input.UpBlockPickBackward);
+
+
+            }
+            catch (Exception ex)
+            {
+
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private void buttonUpBlockPickForward_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (buttonUpBlockPickForward.Text == "Down")
+                    _rack.Conveyor.SetCylinder(Output.UpBlockPickForward, Input.UpBlockPickForward, false);
+                else
+                    _rack.Conveyor.ResetCylinder(Output.UpBlockPickForward, Input.UpBlockPickForward);
+            }
+            catch (Exception ex)
+            {
+
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private void buttonUpBlockSeparateBackward_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (buttonUpBlockSeparateBackward.Text == "Down")
+                    _rack.Conveyor.SetCylinder(Output.UpBlockSeparateBackward, Input.UpBlockSeparateBackward, false);
+                else
+                    _rack.Conveyor.ResetCylinder(Output.UpBlockSeparateBackward, Input.UpBlockSeparateBackward);
+            }
+            catch (Exception ex)
+            {
+
+                MessageBox.Show(ex.Message);
+            }
+        } 
+        #endregion
+
+        
     }
 }

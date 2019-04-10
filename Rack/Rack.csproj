@@ -47,6 +47,7 @@
     <Compile Include="Conveyor\Conveyor.cs" />
     <Compile Include="Phone\PhoneData.cs" />
     <Compile Include="Phone\Phone.cs" />
+    <Compile Include="Rack\CqcRackException.cs" />
     <Compile Include="Rack\CqcRack - Copy.cs" />
     <Compile Include="Rack\CqcRackData.cs" />
     <Compile Include="Rack\CqcRackSoul.cs" />

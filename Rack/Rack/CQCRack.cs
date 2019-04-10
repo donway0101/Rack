@@ -43,16 +43,42 @@ namespace Rack
         /// </summary>
         public List<Phone> PhoneToBeServed = new List<Phone>();
 
-        private readonly object _phoneInServiceLocker = new object();
-        /// <summary>
-        /// Phones which can be served by robot.
-        /// </summary>
-        public List<Phone> PhoneInService = new List<Phone>();
-
         public bool RobotHomeComplete { get; set; }
         public bool SetupComplete { get; set; }
 
         private readonly string _ip;
+
+        public long PhoneCount { get; set; }
+
+        #region Events
+        public delegate void ErrorOccuredEventHandler(object sender, string description);
+
+        public event ErrorOccuredEventHandler ErrorOccured;
+
+        protected void OnErrorOccured(string description)
+        {
+            ErrorOccured?.Invoke(this, description);
+        }
+
+        public delegate void WarningOccuredEventHandler(object sender, string description);
+
+        public event WarningOccuredEventHandler WarningOccured;
+
+        protected void OnWarningOccured(string description)
+        {
+            WarningOccured?.Invoke(this, description);
+        }
+
+        public delegate void InfoOccuredEventHandler(object sender, string description);
+
+        public event InfoOccuredEventHandler InfoOccured;
+
+        protected void OnInfoOccured(string description)
+        {
+            InfoOccured?.Invoke(this, description);
+        }
+
+        #endregion
 
     }
 }
