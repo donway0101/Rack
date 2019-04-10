@@ -97,7 +97,7 @@ namespace Rack
             {
                 if (currentPosition.YPos > YIsInBox) //Y is dangerous
                 {
-                    TargetPosition currentHolder = new TargetPosition() { Id = Location.Home };
+                    TargetPosition currentHolder = new TargetPosition() { Id = TeachPos.Home };
                     double tolerance = 50;
                     foreach (var pos in Motion.Locations)
                     {
@@ -109,7 +109,7 @@ namespace Rack
                         }
                     }
 
-                    if (currentHolder.Id != Location.Home)
+                    if (currentHolder.Id != TeachPos.Home)
                     {
                         Motion.ToPointWaitTillEnd(Motion.MotorZ, currentHolder.ApproachHeight);
                         Motion.ToPointWaitTillEnd(Motion.MotorR, currentHolder.RPos);
@@ -151,7 +151,7 @@ namespace Rack
                     //Todo, need to check X?
                     //X Y Z tolerance 50mm. then is inside box
 
-                    TargetPosition currentHolder = new TargetPosition() { Id = Location.Home };
+                    TargetPosition currentHolder = new TargetPosition() { Id = TeachPos.Home };
                     double tolerance = 50;
                     foreach (var pos in Motion.Locations)
                     {
@@ -164,7 +164,7 @@ namespace Rack
                         }
                     }
 
-                    if (currentHolder.Id != Location.Home)
+                    if (currentHolder.Id != TeachPos.Home)
                     {
                         Motion.ToPointWaitTillEnd(Motion.MotorZ, currentHolder.ApproachHeight);
                         Motion.ToPointWaitTillEnd(Motion.MotorR, currentHolder.RPos);
@@ -377,7 +377,7 @@ namespace Rack
 
         private TargetPosition AddOffset(StepperMotor gripper, TargetPosition target)
         {
-            if (gripper == StepperMotor.Two & target.Id != Location.Pick)
+            if (gripper == StepperMotor.Two & target.Id != TeachPos.Pick)
             {
                 target.XPos = target.XPos + Motion.G1ToG2Offset.XPos;
                 target.YPos = target.YPos - Motion.G1ToG2Offset.YPos;

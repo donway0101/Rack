@@ -1,4 +1,6 @@
-﻿namespace Rack
+﻿using System.Security.AccessControl;
+
+namespace Rack
 {
     public class Phone
     {
@@ -6,6 +8,7 @@
         public PhoneType Type { get; set; } = PhoneType.Normal;
         public string SerialNumber { get; set; }
         public TargetPosition NextTargetPosition { get; set; }
+        public TeachPos CurrentTeachPos { get; set; }
         public TargetPosition CurrentTargetPosition { get; set; }
         public bool ReadyForNextProcedure { get; set; }
         public PhonePriority Priority { get; set; } = PhonePriority.Low;

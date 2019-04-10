@@ -21,6 +21,7 @@ namespace Rack
         public bool Enabled { get; set; }
         public bool Empty { get; set; }
         public bool Available { get; set; }
+        public TeachPos TeachPos { get; set; }
         /// <summary>
         /// Checked by golden phone.
         /// </summary>

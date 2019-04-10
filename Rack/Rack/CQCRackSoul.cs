@@ -14,11 +14,11 @@ namespace Rack
             while (true)
             {
                 PhoneServerManualResetEvent.WaitOne();
-
-                List<Phone> luckyPhones = FindPhones();
+                List<Phone> luckyPhones = new List<Phone>();
 
                 try
                 {
+                    luckyPhones = FindPhones();
                     //Phone to be served
                     Phone mostLuckyPhone = luckyPhones.First();
 
@@ -56,10 +56,11 @@ namespace Rack
 
             List<Phone> phonesToBin = new List<Phone>();
             List<Phone> phonesToPlace = new List<Phone>();
-            //If previous phone is empty, than no load, likewise, no phone next, no unload.
+            //If previous phone is empty, then no load, likewise, no phone next, no unload.
             List<Phone> phonesToUnloadAndLoad = new List<Phone>();
             List<Phone> phonesToPick = new List<Phone>();
 
+            //Sort phones by next procedure.
             lock (_phoneToBeServedLocker)
             {
                 if (PhoneToBeServed.Count > 0)
@@ -87,16 +88,31 @@ namespace Rack
                 }
             }
 
-            // For optimise robot move efficiency.
-            // Release box imaginely and redistribute it for best robot routine
-
+            // For optimize robot move efficiency.
+            // Release box imaginely and redistribute it for best robot routine.
+            // Find out available boxes.
+            List<TeachPos> availableBox = new List<TeachPos>();
+            foreach (var box in ShieldBoxs)
+            {
+                if (box.Enabled & box.Available)
+                {
+                    availableBox.Add(box.TeachPos);
+                }
+            }
 
             //Like a bus, out first.
             //The first phone's next target position better match the second 
             // phone's current position.
+            //Can't full fill all box cause no AB mode available.
+
+            //Find the circle.
             if (phonesToBin.Count > 0)
             {
-                chosenPhones.Add(phonesToBin.First());
+                foreach (var phone in phonesToBin)
+                {
+                    //Imaginely release.
+                    availableBox.Add(phone.CurrentTeachPos);
+                }
             }
             else
             {
@@ -115,6 +131,17 @@ namespace Rack
             {
             }
 
+            //Remove chosen phones.
+            lock (_phoneToBeServedLocker)
+            {
+                if (chosenPhones.Count>0)
+                {
+                    foreach (var phone in chosenPhones)
+                    {
+                        PhoneToBeServed.Remove(phone);
+                    }
+                }
+            }
             return chosenPhones;
         }
 
