@@ -9,6 +9,15 @@ namespace Rack
 {
     public partial class CqcRack
     {
+        private void HomeGrippers()
+        {
+            if (_gripperIsOnline)
+            {
+                Stepper.HomeMotor(StepperMotor.One, -6);
+                Stepper.HomeMotor(StepperMotor.Two, -2);
+            }
+        }
+
         public void CloseGripper(StepperMotor gripper, int timeout=1000)
         {
             Io.SetOutput(gripper == StepperMotor.One ? Output.GripperOne : Output.GripperTwo, false);
