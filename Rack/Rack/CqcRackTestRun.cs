@@ -9,8 +9,6 @@ namespace Rack
 {
     public partial class CqcRack
     {
-
-
         public void Test()
         {
             RunShieldBox();

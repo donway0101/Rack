@@ -87,10 +87,6 @@
       <Project>{e6fa979e-de28-4840-9e84-b86d3a64a9b6}</Project>
       <Name>Conveyor</Name>
     </ProjectReference>
-    <ProjectReference Include="..\IO\IO.csproj">
-      <Project>{08b41e19-bb93-4308-9bb8-53ee23ed9211}</Project>
-      <Name>IO</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

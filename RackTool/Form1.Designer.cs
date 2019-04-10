@@ -29,19 +29,19 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.ListViewGroup listViewGroup3 = new System.Windows.Forms.ListViewGroup("Up", System.Windows.Forms.HorizontalAlignment.Left);
-            System.Windows.Forms.ListViewGroup listViewGroup4 = new System.Windows.Forms.ListViewGroup("Down", System.Windows.Forms.HorizontalAlignment.Left);
-            System.Windows.Forms.ListViewItem listViewItem7 = new System.Windows.Forms.ListViewItem(new string[] {
+            System.Windows.Forms.ListViewGroup listViewGroup1 = new System.Windows.Forms.ListViewGroup("Up", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewGroup listViewGroup2 = new System.Windows.Forms.ListViewGroup("Down", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewItem listViewItem1 = new System.Windows.Forms.ListViewItem(new string[] {
             "Box1"}, 0, System.Drawing.Color.Empty, System.Drawing.Color.Empty, new System.Drawing.Font("SimSun", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134))));
-            System.Windows.Forms.ListViewItem listViewItem8 = new System.Windows.Forms.ListViewItem(new string[] {
+            System.Windows.Forms.ListViewItem listViewItem2 = new System.Windows.Forms.ListViewItem(new string[] {
             "Box2"}, 0, System.Drawing.Color.Empty, System.Drawing.Color.Empty, new System.Drawing.Font("SimSun", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134))));
-            System.Windows.Forms.ListViewItem listViewItem9 = new System.Windows.Forms.ListViewItem(new string[] {
+            System.Windows.Forms.ListViewItem listViewItem3 = new System.Windows.Forms.ListViewItem(new string[] {
             "Box3"}, 0, System.Drawing.Color.Empty, System.Drawing.Color.Empty, new System.Drawing.Font("SimSun", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134))));
-            System.Windows.Forms.ListViewItem listViewItem10 = new System.Windows.Forms.ListViewItem(new string[] {
+            System.Windows.Forms.ListViewItem listViewItem4 = new System.Windows.Forms.ListViewItem(new string[] {
             "Box4"}, 0, System.Drawing.Color.Empty, System.Drawing.Color.Empty, new System.Drawing.Font("SimSun", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134))));
-            System.Windows.Forms.ListViewItem listViewItem11 = new System.Windows.Forms.ListViewItem(new string[] {
+            System.Windows.Forms.ListViewItem listViewItem5 = new System.Windows.Forms.ListViewItem(new string[] {
             "Box5"}, 0, System.Drawing.Color.Empty, System.Drawing.Color.Empty, new System.Drawing.Font("SimSun", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134))));
-            System.Windows.Forms.ListViewItem listViewItem12 = new System.Windows.Forms.ListViewItem(new string[] {
+            System.Windows.Forms.ListViewItem listViewItem6 = new System.Windows.Forms.ListViewItem(new string[] {
             "Box6"}, 0, System.Drawing.Color.Empty, System.Drawing.Color.Empty, new System.Drawing.Font("SimSun", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134))));
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.buttonStart = new System.Windows.Forms.Button();
@@ -406,7 +406,7 @@
             // buttonG1TightOrLoose
             // 
             this.buttonG1TightOrLoose.Location = new System.Drawing.Point(407, 239);
-            this.buttonG1TightOrLoose.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.buttonG1TightOrLoose.Margin = new System.Windows.Forms.Padding(4);
             this.buttonG1TightOrLoose.Name = "buttonG1TightOrLoose";
             this.buttonG1TightOrLoose.Size = new System.Drawing.Size(93, 62);
             this.buttonG1TightOrLoose.TabIndex = 16;
@@ -417,7 +417,7 @@
             // buttonG2TightOrLoose
             // 
             this.buttonG2TightOrLoose.Location = new System.Drawing.Point(523, 239);
-            this.buttonG2TightOrLoose.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.buttonG2TightOrLoose.Margin = new System.Windows.Forms.Padding(4);
             this.buttonG2TightOrLoose.Name = "buttonG2TightOrLoose";
             this.buttonG2TightOrLoose.Size = new System.Drawing.Size(93, 62);
             this.buttonG2TightOrLoose.TabIndex = 17;
@@ -428,7 +428,7 @@
             // buttonLowSpeed
             // 
             this.buttonLowSpeed.Location = new System.Drawing.Point(979, 244);
-            this.buttonLowSpeed.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.buttonLowSpeed.Margin = new System.Windows.Forms.Padding(4);
             this.buttonLowSpeed.Name = "buttonLowSpeed";
             this.buttonLowSpeed.Size = new System.Drawing.Size(73, 58);
             this.buttonLowSpeed.TabIndex = 40;
@@ -439,7 +439,7 @@
             // buttonMiddleSpeed
             // 
             this.buttonMiddleSpeed.Location = new System.Drawing.Point(979, 134);
-            this.buttonMiddleSpeed.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.buttonMiddleSpeed.Margin = new System.Windows.Forms.Padding(4);
             this.buttonMiddleSpeed.Name = "buttonMiddleSpeed";
             this.buttonMiddleSpeed.Size = new System.Drawing.Size(73, 58);
             this.buttonMiddleSpeed.TabIndex = 39;
@@ -450,7 +450,7 @@
             // buttonHighSpeed
             // 
             this.buttonHighSpeed.Location = new System.Drawing.Point(979, 24);
-            this.buttonHighSpeed.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.buttonHighSpeed.Margin = new System.Windows.Forms.Padding(4);
             this.buttonHighSpeed.Name = "buttonHighSpeed";
             this.buttonHighSpeed.Size = new System.Drawing.Size(73, 58);
             this.buttonHighSpeed.TabIndex = 38;
@@ -774,7 +774,7 @@
             // trackBarSetSpeed1
             // 
             this.trackBarSetSpeed1.Location = new System.Drawing.Point(120, 316);
-            this.trackBarSetSpeed1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.trackBarSetSpeed1.Margin = new System.Windows.Forms.Padding(4);
             this.trackBarSetSpeed1.Maximum = 100;
             this.trackBarSetSpeed1.Name = "trackBarSetSpeed1";
             this.trackBarSetSpeed1.Size = new System.Drawing.Size(864, 56);
@@ -1021,7 +1021,7 @@
             // 
             // buttonForPicked
             // 
-            this.buttonForPicked.Location = new System.Drawing.Point(51, 214);
+            this.buttonForPicked.Location = new System.Drawing.Point(521, 170);
             this.buttonForPicked.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.buttonForPicked.Name = "buttonForPicked";
             this.buttonForPicked.Size = new System.Drawing.Size(101, 32);
@@ -1032,7 +1032,7 @@
             // 
             // buttonForReady
             // 
-            this.buttonForReady.Location = new System.Drawing.Point(51, 165);
+            this.buttonForReady.Location = new System.Drawing.Point(391, 170);
             this.buttonForReady.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.buttonForReady.Name = "buttonForReady";
             this.buttonForReady.Size = new System.Drawing.Size(101, 32);
@@ -1043,7 +1043,7 @@
             // 
             // buttonForInpos
             // 
-            this.buttonForInpos.Location = new System.Drawing.Point(51, 116);
+            this.buttonForInpos.Location = new System.Drawing.Point(304, 66);
             this.buttonForInpos.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.buttonForInpos.Name = "buttonForInpos";
             this.buttonForInpos.Size = new System.Drawing.Size(101, 32);
@@ -1105,7 +1105,7 @@
             // buttonBoxSave
             // 
             this.buttonBoxSave.Location = new System.Drawing.Point(685, 349);
-            this.buttonBoxSave.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.buttonBoxSave.Margin = new System.Windows.Forms.Padding(4);
             this.buttonBoxSave.Name = "buttonBoxSave";
             this.buttonBoxSave.Size = new System.Drawing.Size(101, 50);
             this.buttonBoxSave.TabIndex = 14;
@@ -1116,7 +1116,7 @@
             // buttonBoxLoad
             // 
             this.buttonBoxLoad.Location = new System.Drawing.Point(685, 260);
-            this.buttonBoxLoad.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.buttonBoxLoad.Margin = new System.Windows.Forms.Padding(4);
             this.buttonBoxLoad.Name = "buttonBoxLoad";
             this.buttonBoxLoad.Size = new System.Drawing.Size(101, 50);
             this.buttonBoxLoad.TabIndex = 13;
@@ -1127,7 +1127,7 @@
             // buttonOK6
             // 
             this.buttonOK6.Location = new System.Drawing.Point(495, 408);
-            this.buttonOK6.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.buttonOK6.Margin = new System.Windows.Forms.Padding(4);
             this.buttonOK6.Name = "buttonOK6";
             this.buttonOK6.Size = new System.Drawing.Size(60, 29);
             this.buttonOK6.TabIndex = 12;
@@ -1139,7 +1139,7 @@
             // 
             this.comboBox6.FormattingEnabled = true;
             this.comboBox6.Location = new System.Drawing.Point(412, 408);
-            this.comboBox6.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.comboBox6.Margin = new System.Windows.Forms.Padding(4);
             this.comboBox6.Name = "comboBox6";
             this.comboBox6.Size = new System.Drawing.Size(73, 23);
             this.comboBox6.TabIndex = 11;
@@ -1147,7 +1147,7 @@
             // buttonOK5
             // 
             this.buttonOK5.Location = new System.Drawing.Point(304, 409);
-            this.buttonOK5.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.buttonOK5.Margin = new System.Windows.Forms.Padding(4);
             this.buttonOK5.Name = "buttonOK5";
             this.buttonOK5.Size = new System.Drawing.Size(60, 29);
             this.buttonOK5.TabIndex = 10;
@@ -1159,7 +1159,7 @@
             // 
             this.comboBox5.FormattingEnabled = true;
             this.comboBox5.Location = new System.Drawing.Point(221, 409);
-            this.comboBox5.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.comboBox5.Margin = new System.Windows.Forms.Padding(4);
             this.comboBox5.Name = "comboBox5";
             this.comboBox5.Size = new System.Drawing.Size(73, 23);
             this.comboBox5.TabIndex = 9;
@@ -1167,7 +1167,7 @@
             // buttonOK4
             // 
             this.buttonOK4.Location = new System.Drawing.Point(112, 405);
-            this.buttonOK4.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.buttonOK4.Margin = new System.Windows.Forms.Padding(4);
             this.buttonOK4.Name = "buttonOK4";
             this.buttonOK4.Size = new System.Drawing.Size(60, 29);
             this.buttonOK4.TabIndex = 8;
@@ -1179,7 +1179,7 @@
             // 
             this.comboBox4.FormattingEnabled = true;
             this.comboBox4.Location = new System.Drawing.Point(29, 405);
-            this.comboBox4.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.comboBox4.Margin = new System.Windows.Forms.Padding(4);
             this.comboBox4.Name = "comboBox4";
             this.comboBox4.Size = new System.Drawing.Size(73, 23);
             this.comboBox4.TabIndex = 7;
@@ -1187,7 +1187,7 @@
             // buttonOK3
             // 
             this.buttonOK3.Location = new System.Drawing.Point(495, 192);
-            this.buttonOK3.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.buttonOK3.Margin = new System.Windows.Forms.Padding(4);
             this.buttonOK3.Name = "buttonOK3";
             this.buttonOK3.Size = new System.Drawing.Size(60, 29);
             this.buttonOK3.TabIndex = 6;
@@ -1199,7 +1199,7 @@
             // 
             this.comboBox3.FormattingEnabled = true;
             this.comboBox3.Location = new System.Drawing.Point(412, 192);
-            this.comboBox3.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.comboBox3.Margin = new System.Windows.Forms.Padding(4);
             this.comboBox3.Name = "comboBox3";
             this.comboBox3.Size = new System.Drawing.Size(73, 23);
             this.comboBox3.TabIndex = 5;
@@ -1207,7 +1207,7 @@
             // buttonOK2
             // 
             this.buttonOK2.Location = new System.Drawing.Point(304, 192);
-            this.buttonOK2.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.buttonOK2.Margin = new System.Windows.Forms.Padding(4);
             this.buttonOK2.Name = "buttonOK2";
             this.buttonOK2.Size = new System.Drawing.Size(60, 29);
             this.buttonOK2.TabIndex = 4;
@@ -1219,7 +1219,7 @@
             // 
             this.comboBox2.FormattingEnabled = true;
             this.comboBox2.Location = new System.Drawing.Point(221, 192);
-            this.comboBox2.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.comboBox2.Margin = new System.Windows.Forms.Padding(4);
             this.comboBox2.Name = "comboBox2";
             this.comboBox2.Size = new System.Drawing.Size(73, 23);
             this.comboBox2.TabIndex = 3;
@@ -1227,7 +1227,7 @@
             // buttonOK1
             // 
             this.buttonOK1.Location = new System.Drawing.Point(112, 192);
-            this.buttonOK1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.buttonOK1.Margin = new System.Windows.Forms.Padding(4);
             this.buttonOK1.Name = "buttonOK1";
             this.buttonOK1.Size = new System.Drawing.Size(60, 29);
             this.buttonOK1.TabIndex = 2;
@@ -1239,7 +1239,7 @@
             // 
             this.comboBox1.FormattingEnabled = true;
             this.comboBox1.Location = new System.Drawing.Point(29, 192);
-            this.comboBox1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.comboBox1.Margin = new System.Windows.Forms.Padding(4);
             this.comboBox1.Name = "comboBox1";
             this.comboBox1.Size = new System.Drawing.Size(73, 23);
             this.comboBox1.TabIndex = 1;
@@ -1250,29 +1250,29 @@
             this.columnHeader1,
             this.columnHeader2});
             this.listViewBox.ContextMenuStrip = this.contextMenuStrip1;
-            listViewGroup3.Header = "Up";
-            listViewGroup3.Name = "上层";
-            listViewGroup4.Header = "Down";
-            listViewGroup4.Name = "下层";
+            listViewGroup1.Header = "Up";
+            listViewGroup1.Name = "上层";
+            listViewGroup2.Header = "Down";
+            listViewGroup2.Name = "下层";
             this.listViewBox.Groups.AddRange(new System.Windows.Forms.ListViewGroup[] {
-            listViewGroup3,
-            listViewGroup4});
-            listViewItem7.Group = listViewGroup3;
-            listViewItem8.Group = listViewGroup3;
-            listViewItem9.Group = listViewGroup3;
-            listViewItem10.Group = listViewGroup4;
-            listViewItem11.Group = listViewGroup4;
-            listViewItem12.Group = listViewGroup4;
+            listViewGroup1,
+            listViewGroup2});
+            listViewItem1.Group = listViewGroup1;
+            listViewItem2.Group = listViewGroup1;
+            listViewItem3.Group = listViewGroup1;
+            listViewItem4.Group = listViewGroup2;
+            listViewItem5.Group = listViewGroup2;
+            listViewItem6.Group = listViewGroup2;
             this.listViewBox.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
-            listViewItem7,
-            listViewItem8,
-            listViewItem9,
-            listViewItem10,
-            listViewItem11,
-            listViewItem12});
+            listViewItem1,
+            listViewItem2,
+            listViewItem3,
+            listViewItem4,
+            listViewItem5,
+            listViewItem6});
             this.listViewBox.LargeImageList = this.imageList1;
             this.listViewBox.Location = new System.Drawing.Point(1, 0);
-            this.listViewBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.listViewBox.Margin = new System.Windows.Forms.Padding(4);
             this.listViewBox.Name = "listViewBox";
             this.listViewBox.Size = new System.Drawing.Size(1071, 593);
             this.listViewBox.TabIndex = 0;

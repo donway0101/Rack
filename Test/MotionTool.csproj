@@ -83,10 +83,6 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\IO\IO.csproj">
-      <Project>{08b41e19-bb93-4308-9bb8-53ee23ed9211}</Project>
-      <Name>IO</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Motion\Motion.csproj">
       <Project>{9d555f20-a4d7-4f2a-a425-3fd8f086358a}</Project>
       <Name>Motion</Name>

@@ -30,7 +30,7 @@ namespace RackTool
         private TeachPos _selectedTargetPosition;
         private StepperMotor _selectedGripper;
         private Thread _uiUpdateThread;
-        private ArrayList PortName;
+        private ArrayList _portName;
 
         public Form1()
         {
@@ -645,6 +645,7 @@ namespace RackTool
         private void button39_Click(object sender, EventArgs e)
         {
             _rack.Conveyor.CommandInposForPicking = true;
+ 
         }
 
         private void button40_Click(object sender, EventArgs e)
@@ -689,8 +690,8 @@ namespace RackTool
                             break;
                     }
                 }
-                buttonG1TightOrLoose.Text = _rack.Io.GetInput(Input.Gripper01Tight) ? "G1Open" : "G1Close";
-                buttonG2TightOrLoose.Text = _rack.Io.GetInput(Input.Gripper02Tight) ? "G2Open" : "G2Close";
+                buttonG1TightOrLoose.Text = _rack.EcatIo.GetInput(Input.Gripper01Tight) ? "G1Open" : "G1Close";
+                buttonG2TightOrLoose.Text = _rack.EcatIo.GetInput(Input.Gripper02Tight) ? "G2Open" : "G2Close";
                 buttonEableG1.Text = _rack.Stepper.GetStatus(StepperMotor.One, StatusCode.Enabled) ? "Disable" : "Enable";
                 buttonEableG2.Text = _rack.Stepper.GetStatus(StepperMotor.Two, StatusCode.Enabled) ? "Disable" : "Enable";
             }
@@ -1008,8 +1009,8 @@ namespace RackTool
                     }
                     XmlReaderWriter.SetBoxAttribute(Files.BoxData, BoxId, ShieldBoxItem.State, "Disable");
                     XmlReaderWriter.SetBoxAttribute(Files.BoxData, BoxId, ShieldBoxItem.COM, "None");
-                    if (PortName.Contains(Com) == false)
-                        PortName.Add(Com);
+                    if (_portName.Contains(Com) == false)
+                        _portName.Add(Com);
                     buttonBoxLoad_Click(null, null);
                 }
                 else
@@ -1030,10 +1031,10 @@ namespace RackTool
         private void buttonBoxLoad_Click(object sender, EventArgs e)
         {
             string[] _PortName = SerialPort.GetPortNames();
-            if (PortName == null)
-                PortName = new ArrayList(_PortName);
+            if (_portName == null)
+                _portName = new ArrayList(_PortName);
             ClearItem();
-            foreach (var item in PortName)
+            foreach (var item in _portName)
             {
                 comboBox1.Items.Add(item);
                 comboBox2.Items.Add(item);
@@ -1086,7 +1087,7 @@ namespace RackTool
             try
             {
                 string Com = comboBox1.SelectedItem.ToString();
-                PortName.Remove(Com);
+                _portName.Remove(Com);
                 ClearItem();
                 if (comboBox1.Items.Contains(Com) == false)
                     comboBox1.Items.Add(Com);
@@ -1103,7 +1104,7 @@ namespace RackTool
             try
             {
                 string Com = comboBox1.SelectedItem.ToString();
-                PortName.Remove(Com);
+                _portName.Remove(Com);
                 ClearItem();
                 if (comboBox2.Items.Contains(Com) == false)
                     comboBox2.Items.Add(Com);
@@ -1121,7 +1122,7 @@ namespace RackTool
             try
             {
                 string Com = comboBox3.SelectedItem.ToString();
-                PortName.Remove(Com);
+                _portName.Remove(Com);
                 ClearItem();
                 if (comboBox3.Items.Contains(Com) == false)
                     comboBox3.Items.Add(Com);
@@ -1139,7 +1140,7 @@ namespace RackTool
             try
             {
                 string Com = comboBox4.SelectedItem.ToString();
-                PortName.Remove(Com);
+                _portName.Remove(Com);
                 ClearItem();
                 if (comboBox4.Items.Contains(Com) == false)
                     comboBox4.Items.Add(Com);
@@ -1157,7 +1158,7 @@ namespace RackTool
             try
             {
                 string Com = comboBox5.SelectedItem.ToString();
-                PortName.Remove(Com);
+                _portName.Remove(Com);
                 ClearItem();
                 if (comboBox5.Items.Contains(Com) == false)
                     comboBox5.Items.Add(Com);
@@ -1175,7 +1176,7 @@ namespace RackTool
             try
             {
                 string Com = comboBox6.SelectedItem.ToString();
-                PortName.Remove(Com);
+                _portName.Remove(Com);
                 ClearItem();
                 if (comboBox6.Items.Contains(Com) == false)
                     comboBox6.Items.Add(Com);

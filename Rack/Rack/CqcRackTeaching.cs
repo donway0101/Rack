@@ -98,18 +98,18 @@ namespace Rack
             Conveyor.UpBlockPick(false);
             Conveyor.SideBlockSeparate(false);
             Conveyor.ConveyorMovingForward = !Conveyor.ConveyorMovingForward;
-            Io.SetOutput(Output.ClampPick, true);
+            EcatIo.SetOutput(Output.ClampPick, true);
             Stopwatch sw = new Stopwatch();
             sw.Start();
-            while (!Io.GetInput(Input.ClampTightPick))
+            while (!EcatIo.GetInput(Input.ClampTightPick))
             {
                 if (sw.ElapsedMilliseconds > timeout) throw new TimeoutException();
                 Thread.Sleep(10);
             }
 
-            Io.SetOutput(Output.SideBlockPick, true);
+            EcatIo.SetOutput(Output.SideBlockPick, true);
             sw.Restart();
-            while (Io.GetInput(Input.SideBlockPick))
+            while (EcatIo.GetInput(Input.SideBlockPick))
             {
                 if (sw.ElapsedMilliseconds > timeout) throw new TimeoutException();
                 Thread.Sleep(10);
@@ -117,18 +117,18 @@ namespace Rack
 
             Thread.Sleep(500);
 
-            Io.SetOutput(Output.SideBlockPick, false);
+            EcatIo.SetOutput(Output.SideBlockPick, false);
             sw.Restart();
-            while (!Io.GetInput(Input.SideBlockPick))
+            while (!EcatIo.GetInput(Input.SideBlockPick))
             {
                 if (sw.ElapsedMilliseconds > timeout) throw new TimeoutException();
                 Thread.Sleep(10);
             }
 
-            Io.SetOutput(Output.ClampPick, false);
+            EcatIo.SetOutput(Output.ClampPick, false);
             sw = new Stopwatch();
             sw.Restart();
-            while (!Io.GetInput(Input.ClampLoosePick))
+            while (!EcatIo.GetInput(Input.ClampLoosePick))
             {
                 if (sw.ElapsedMilliseconds > timeout) throw new TimeoutException();
                 Thread.Sleep(10);

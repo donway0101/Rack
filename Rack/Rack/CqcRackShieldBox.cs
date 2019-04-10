@@ -12,7 +12,6 @@ namespace Rack
     public partial class CqcRack
     {
  
-
         public void ShieldBoxSetup()
         {
             ShieldBox1 = new BpShieldBox(1, "COM3");

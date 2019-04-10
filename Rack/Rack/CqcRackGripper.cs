@@ -20,11 +20,11 @@ namespace Rack
 
         public void CloseGripper(StepperMotor gripper, int timeout=1000)
         {
-            Io.SetOutput(gripper == StepperMotor.One ? Output.GripperOne : Output.GripperTwo, false);
+            EcatIo.SetOutput(gripper == StepperMotor.One ? Output.GripperOne : Output.GripperTwo, false);
             Stopwatch sw = new Stopwatch();
             sw.Start();
             Input sensor = gripper == StepperMotor.One ? Input.Gripper01Tight : Input.Gripper02Tight;
-            while (!Io.GetInput(sensor))
+            while (!EcatIo.GetInput(sensor))
             {
                 if (sw.ElapsedMilliseconds > timeout) throw new TimeoutException();
                 Thread.Sleep(10);
@@ -33,11 +33,11 @@ namespace Rack
 
         public void OpenGripper(StepperMotor gripper, int timeout= 1000)
         {
-            Io.SetOutput(gripper == StepperMotor.One ? Output.GripperOne : Output.GripperTwo, true);
+            EcatIo.SetOutput(gripper == StepperMotor.One ? Output.GripperOne : Output.GripperTwo, true);
             Stopwatch sw = new Stopwatch();
             sw.Start();
             Input sensor = gripper == StepperMotor.One ? Input.Gripper01Loose : Input.Gripper02Loose;
-            while (!Io.GetInput(sensor))
+            while (!EcatIo.GetInput(sensor))
             {
                 if (sw.ElapsedMilliseconds > timeout) throw new TimeoutException();
                 Thread.Sleep(10);
