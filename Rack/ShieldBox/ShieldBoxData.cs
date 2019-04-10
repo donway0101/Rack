@@ -1,6 +1,6 @@
 ﻿namespace Rack
 {
-    public enum Command
+    public enum ShieldBoxCommand
     {
         OPEN, //
         CLOSE,
@@ -11,7 +11,7 @@
         SWITCHRF,
     }
 
-    public enum State
+    public enum ShieldBoxState
     {
         Testing,
         Fail,
@@ -20,7 +20,7 @@
         Close,
     }
 
-    public static class Response
+    public static class ShieldBoxResponse
     {
         private const string ResponseEnding = "\r\n";
         public const string OpenSuccessful = ResponseEnding + "OK" + ResponseEnding;
@@ -31,7 +31,7 @@
         public const string BoxIsClosed = "CLOSE" + ResponseEnding;
     }
 
-    public enum TestResult
+    public enum ShieldBoxTestResult
     {
         Pass,
         Fail,

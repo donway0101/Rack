@@ -9,28 +9,57 @@ namespace Rack
     /// Power up, Ethercat error occur, wire problem? 
     public partial class CqcRack
     {
+        public CqcRack(string controllerIp)
+        {
+            _ip = controllerIp;
+        }
+
         public void Start()
         {
+            SetupComplete = false;
+
             if (_ch.IsConnected == false)
             {
                 _ch.OpenCommEthernet(_ip, 701);
             }
-            Motion = new EthercatMotion(_ch, 5);
-            Motion.Setup();
-            EcatIo = new EthercatIo(_ch, 72, 7, 4);
+
+            if (Motion == null)
+            {
+                Motion = new EthercatMotion(_ch, 5);
+            }
+
+            if (Motion.MotorSetupComplete == false)
+            {
+                Motion.Setup();
+            }                        
+            Motion.LoadPositions();
+
+            if (EcatIo == null)
+            {
+                EcatIo = new EthercatIo(_ch, 72, 7, 4);
+            }            
             EcatIo.Setup();
-            Conveyor = new Conveyor(EcatIo);
+
+            if (Conveyor == null)
+            {
+                Conveyor = new Conveyor(EcatIo);
+            }           
+            Conveyor.Start();
+
+            if (Steppers == null)
+            {
+                Steppers = new Stepper("COM3");
+            }
 
             if (_gripperIsOnline)
             {
-                if (Stepper == null)
-                {
-                    Stepper = new Stepper("COM3");
-                }
-                Stepper.Setup();
+                Steppers.Setup();
             }
 
-            ShieldBoxSetup();
+            //Todo read xml and setup boxes.
+            ShieldBox1 = new ShieldBox(1, "COM3");
+
+            //ShieldBoxs = new ShieldBox[1] { ShieldBox1 };
 
             SetSpeed(10);
 
@@ -55,8 +84,7 @@ namespace Rack
 
             //Box state should either be open or close.
 
-            TargetPosition currentPosition;
-            currentPosition = GetRobotCurrentPose();
+            var currentPosition = GetRobotCurrentPose();
 
             if (currentPosition.XPos < Motion.ConveyorRightPosition.XPos &
                 currentPosition.XPos > Motion.ConveyorLeftPosition.XPos) //Robot is in conveyor zone.
@@ -206,6 +234,8 @@ namespace Rack
             //Close cylinder.
             CloseGripper(gripper);
             Motion.ToPointWaitTillEnd(Motion.MotorZ, Motion.PickPosition.ApproachHeight);
+
+            Conveyor.PickBeltOkToRun = true;
             //Check.
         }
 
@@ -242,10 +272,10 @@ namespace Rack
             Motion.ToPointWaitTillEnd(Motion.MotorY, Motion.PickPosition.YPos);
         }
 
-        public void Load(StepperMotor gripper, BpShieldBox shieldBox)
+        public void Load(StepperMotor gripper, ShieldBox shieldBox)
         {
             TargetPosition holder = ConvertShieldBoxToTargetPosition(shieldBox);
-            if (shieldBox.State != State.Open)
+            if (shieldBox.State != ShieldBoxState.Open)
             {
                 throw new Exception("Box " + shieldBox.Id + " is not opened");
             }
@@ -257,7 +287,7 @@ namespace Rack
             Motion.ToPointWaitTillEnd(Motion.MotorY, Motion.PickPosition.YPos);
         }
 
-        private TargetPosition ConvertShieldBoxToTargetPosition(BpShieldBox shieldBox)
+        private TargetPosition ConvertShieldBoxToTargetPosition(ShieldBox shieldBox)
         {
             TargetPosition target = Motion.HomePosition;
             switch (shieldBox.Id)

@@ -52,6 +52,8 @@ namespace Rack
         public TargetPosition[] Locations { get; set; } 
         #endregion
 
+        public bool MotorSetupComplete { get; set; }
+
         public EthercatMotion(Api Controller, int axisNum)
         {
             _ch = Controller;
@@ -60,8 +62,9 @@ namespace Rack
 
         public void Setup()
         {
-            #region Motor parameters setup
+            MotorSetupComplete = false;
 
+            #region Motor parameters setup
             MotorZ = new Motor(Axis.ACSC_AXIS_0)
             {
                 EcatPosActValAddr = 145,
@@ -162,21 +165,26 @@ namespace Rack
                 SetSafety(mtr);
             }
             EnableAll();
-            //Todo script inside acs to stop all motor is any error occur.
 
+            MotorSetupComplete = true;
+            //Todo script inside acs to stop all motor is any error occur.          
+        }
+
+        public void LoadPositions()
+        {
             HomePosition = LoadPosition(TeachPos.Home, Location.Home);
             PickPosition = LoadPosition(TeachPos.Pick, Location.Pick);
             BinPosition = LoadPosition(TeachPos.Bin, Location.Bin);
             ConveyorLeftPosition = LoadPosition(TeachPos.ConveyorLeft, Location.NoWhere);
             ConveyorRightPosition = LoadPosition(TeachPos.ConveyorRight, Location.NoWhere);
-             
+
             ShieldBox1 = LoadPosition(TeachPos.Holder1, Location.Holder1);
             ShieldBox2 = LoadPosition(TeachPos.Holder2, Location.Holder2);
             ShieldBox3 = LoadPosition(TeachPos.Holder3, Location.Holder3);
             ShieldBox4 = LoadPosition(TeachPos.Holder4, Location.Holder4);
             ShieldBox5 = LoadPosition(TeachPos.Holder5, Location.Holder5);
-            ShieldBox6 = LoadPosition(TeachPos.Holder6, Location.Holder6);           
-             
+            ShieldBox6 = LoadPosition(TeachPos.Holder6, Location.Holder6);
+
             Gold1 = LoadPosition(TeachPos.Gold1, Location.Gold1);
             Gold2 = LoadPosition(TeachPos.Gold2, Location.Gold2);
             Gold3 = LoadPosition(TeachPos.Gold3, Location.Gold3);
@@ -186,8 +194,11 @@ namespace Rack
             G1ToG2Offset = LoadPosition(TeachPos.G1ToG2Offset, Location.NoWhere);
             PickOffset = LoadPosition(TeachPos.PickOffset, Location.NoWhere);
 
-            Locations = new TargetPosition[14] { ShieldBox1, ShieldBox2, ShieldBox3, ShieldBox4, ShieldBox5, ShieldBox6,
-            HomePosition,PickPosition, BinPosition, Gold1, Gold2, Gold3, Gold4, Gold5};
+            Locations = new TargetPosition[14]
+            {
+                ShieldBox1, ShieldBox2, ShieldBox3, ShieldBox4, ShieldBox5, ShieldBox6,
+                HomePosition, PickPosition, BinPosition, Gold1, Gold2, Gold3, Gold4, Gold5
+            };
         }
 
         private TargetPosition LoadPosition(TeachPos pos, Location id)

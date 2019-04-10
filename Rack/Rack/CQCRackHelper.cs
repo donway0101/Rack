@@ -76,8 +76,8 @@ namespace Rack
                 {
                     stepperSpeed = 30;
                 }
-                Stepper.SetSpeed(StepperMotor.One, stepperSpeed);
-                Stepper.SetSpeed(StepperMotor.Two, stepperSpeed);
+                Steppers.SetSpeed(StepperMotor.One, stepperSpeed);
+                Steppers.SetSpeed(StepperMotor.Two, stepperSpeed);
             }
         }
 

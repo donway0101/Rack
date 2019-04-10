@@ -10,8 +10,8 @@ namespace Rack
         {
             if (_gripperIsOnline)
             {
-                Stepper.HomeMotor(StepperMotor.One, -6);
-                Stepper.HomeMotor(StepperMotor.Two, -2);
+                Steppers.HomeMotor(StepperMotor.One, -6);
+                Steppers.HomeMotor(StepperMotor.Two, -2);
             }
         }
 
@@ -47,20 +47,20 @@ namespace Rack
             if (gripper == StepperMotor.One)
             {
                 Motion.ToPoint(Motion.MotorR, target.RPos);
-                Stepper.ToPoint(StepperMotor.One, target.APos);
-                Stepper.ToPoint(StepperMotor.Two, 0);
+                Steppers.ToPoint(StepperMotor.One, target.APos);
+                Steppers.ToPoint(StepperMotor.Two, 0);
                 Motion.WaitTillEnd(Motion.MotorR);
-                Stepper.WaitTillEnd(StepperMotor.One, target.APos);
-                Stepper.WaitTillEnd(StepperMotor.Two, 0);
+                Steppers.WaitTillEnd(StepperMotor.One, target.APos);
+                Steppers.WaitTillEnd(StepperMotor.Two, 0);
             }
             else
             {
                 Motion.ToPoint(Motion.MotorR, target.RPos - 60);
-                Stepper.ToPoint(StepperMotor.Two, target.APos);
-                Stepper.ToPoint(StepperMotor.One, 0);
+                Steppers.ToPoint(StepperMotor.Two, target.APos);
+                Steppers.ToPoint(StepperMotor.One, 0);
                 Motion.WaitTillEnd(Motion.MotorR);
-                Stepper.WaitTillEnd(StepperMotor.One, 0);
-                Stepper.WaitTillEnd(StepperMotor.Two, target.APos);
+                Steppers.WaitTillEnd(StepperMotor.One, 0);
+                Steppers.WaitTillEnd(StepperMotor.Two, target.APos);
             }
         }
 
@@ -69,13 +69,13 @@ namespace Rack
             Motion.WaitTillEnd(Motion.MotorR);
             if (gripper == StepperMotor.One)
             {
-                Stepper.WaitTillEnd(StepperMotor.One, target.APos);
-                Stepper.WaitTillEnd(StepperMotor.Two, 0);
+                Steppers.WaitTillEnd(StepperMotor.One, target.APos);
+                Steppers.WaitTillEnd(StepperMotor.Two, 0);
             }
             else
             {
-                Stepper.WaitTillEnd(StepperMotor.One, 0);
-                Stepper.WaitTillEnd(StepperMotor.Two, target.APos);
+                Steppers.WaitTillEnd(StepperMotor.One, 0);
+                Steppers.WaitTillEnd(StepperMotor.Two, target.APos);
             }
         }
 
@@ -84,14 +84,14 @@ namespace Rack
             if (gripper == StepperMotor.One)
             {
                 Motion.ToPoint(Motion.MotorR, target.RPos);
-                Stepper.ToPoint(StepperMotor.One, target.APos);
-                Stepper.ToPoint(StepperMotor.Two, 0);
+                Steppers.ToPoint(StepperMotor.One, target.APos);
+                Steppers.ToPoint(StepperMotor.Two, 0);
             }
             else
             {
                 Motion.ToPoint(Motion.MotorR, target.RPos - 60);
-                Stepper.ToPoint(StepperMotor.Two, target.APos);
-                Stepper.ToPoint(StepperMotor.One, 0);
+                Steppers.ToPoint(StepperMotor.Two, target.APos);
+                Steppers.ToPoint(StepperMotor.One, 0);
             }
         }
        

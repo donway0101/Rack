@@ -9,11 +9,6 @@ namespace Rack
         private readonly EthercatIo _io;
         private Thread _conveyorWorkingThread;
 
-        public Conveyor(EthercatIo ethercatIo)
-        {
-            _io = ethercatIo;
-        }
-
         public bool ConveyorMovingForward { get; set; } = true;
 
         /// <summary>
@@ -21,6 +16,7 @@ namespace Rack
         ///     After Picking, reset it by host.
         /// </summary>
         public bool ReadyForPicking { get; set; }
+        public bool PickBeltOkToRun { get; set; }
 
         /// <summary>
         ///     Phone already under the sensor, tightened.
@@ -31,6 +27,42 @@ namespace Rack
         public bool CommandInposForPicking { get; set; }
 
         public bool CommandReadyForPicking { get; set; }
+
+        #region Events
+
+        public delegate void ErrorOccuredEventHandler(object sender, string description);
+
+        public event ErrorOccuredEventHandler ErrorOccured;
+
+        protected void OnErrorOccured(string description)
+        {
+            ErrorOccured?.Invoke(this, description);
+        }
+
+        public delegate void PhoneReadyForPickingEventHandler(object sender, string description);
+
+        public event PhoneReadyForPickingEventHandler PhoneReadyForPicking;
+
+        protected void OnPhoneReadyForPicking(string description)
+        {
+            PhoneReadyForPicking?.Invoke(this, description);
+        }
+
+        public delegate void PickBufferHasPhoneEventHandler(object sender, string description);
+
+        public event PickBufferHasPhoneEventHandler PickBufferHasPhone;
+
+        protected void OnPickBufferHasPhone(string description)
+        {
+            PickBufferHasPhone?.Invoke(this, description);
+        }
+
+        #endregion
+
+        public Conveyor(EthercatIo ethercatIo)
+        {
+            _io = ethercatIo;
+        }
 
         public void SetCylinder(Output output, Input input, bool sensorState = true, int timeout = 1000)
         {
@@ -185,6 +217,7 @@ namespace Rack
                     if (CommandReadyForPicking)
                     {
                         ReadyForPicking = false;
+                        PickBeltOkToRun = false;
                         if (InposForPicking)
                         {
                             RunBeltPick(false);
@@ -196,6 +229,7 @@ namespace Rack
 
                             CommandReadyForPicking = false;
                             ReadyForPicking = true;
+                            OnPhoneReadyForPicking("");
                         }
                         else
                         {
@@ -203,11 +237,17 @@ namespace Rack
                         }
                     }
 
+                    //Todo combine other condition.
+                    if (PickBeltOkToRun)
+                    {
+                        RunBeltPick(true);
+                    }
+
                     if (CommandInposForPicking & (InposForPicking == false))
                     {
                         CommandInposForPicking = false;
                         ReadyForPicking = false;
-                        RunBeltPick(true);
+                        
                         if (_io.GetInput(Input.PickHasPhone) == false)
                         {
                             WaitTill(
@@ -225,6 +265,7 @@ namespace Rack
                         Clamp(true);
 
                         InposForPicking = true;
+                        OnPickBufferHasPhone("");
 
                         UpBlockSeparate(true);
                         SideBlockSeparate(false);
@@ -248,17 +289,6 @@ namespace Rack
             }
         }
 
-        #region Error occured Event
 
-        public delegate void ErrorOccuredEventHandler(object sender, string description);
-
-        public event ErrorOccuredEventHandler ErrorOccured;
-
-        protected void OnErrorOccured(string description)
-        {
-            ErrorOccured?.Invoke(this, description);
-        }
-
-        #endregion
     }
 }

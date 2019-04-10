@@ -142,7 +142,7 @@ namespace Rack
         private void MotorYOutThenBreakMotorZDown(TargetPosition target)
         {
             Motion.ToPointWaitTillEnd(Motion.MotorY, target.YPos);
-            Stepper.CheckEnabled();
+            Steppers.CheckEnabled();
             Motion.BreakToPointWaitTillEnd(Motion.MotorZ, target.ZPos);
         }
 
@@ -194,7 +194,7 @@ namespace Rack
         private void MotorYOutThenMotorZDown(TargetPosition target)
         {
             Motion.ToPointWaitTillEnd(Motion.MotorY, target.YPos);
-            Stepper.CheckEnabled();
+            Steppers.CheckEnabled();
             Motion.ToPointWaitTillEnd(Motion.MotorZ, target.ZPos);
         }
 

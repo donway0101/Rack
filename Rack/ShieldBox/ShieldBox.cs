@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Rack
 {
-    public class BpShieldBox
+    public class ShieldBox
     {
         private readonly SerialPort _serial = null;
         private readonly object _sendLock = new object();
@@ -14,7 +14,7 @@ namespace Rack
         private string _response;
         public readonly int Id;
 
-        public State State { get; set; } = State.Close;
+        public ShieldBoxState State { get; set; } = ShieldBoxState.Close;
         public int PassRate { get; set; }
         public int TestCount { get; set; }
         public int PassCount { get; set; }
@@ -26,7 +26,7 @@ namespace Rack
         /// </summary>
         public bool Golded { get; set; }
 
-        public BpShieldBox(int id, string serialPortName, int serialBaudRate = 9600,
+        public ShieldBox(int id, string serialPortName, int serialBaudRate = 9600,
             Parity serialParity = Parity.None, int serialDataBit = 8,
             StopBits serialStopBits = StopBits.One)
         {
@@ -53,7 +53,7 @@ namespace Rack
             _serial.Dispose();
         }
 
-        public void SendCmd(Command command)
+        public void SendCmd(ShieldBoxCommand command)
         {
             lock (_sendLock)
             {
@@ -75,8 +75,8 @@ namespace Rack
         {
             try
             {
-                SendCommand(Command.OPEN, Response.OpenSuccessful, timeout);
-                State = State.Open;
+                SendCommand(ShieldBoxCommand.OPEN, ShieldBoxResponse.OpenSuccessful, timeout);
+                State = ShieldBoxState.Open;
             }
             catch (Exception e)
             {
@@ -92,8 +92,8 @@ namespace Rack
         {
             try
             {
-                SendCommand(Command.CLOSE, Response.CloseSuccessful, timeout);
-                State = State.Close;
+                SendCommand(ShieldBoxCommand.CLOSE, ShieldBoxResponse.CloseSuccessful, timeout);
+                State = ShieldBoxState.Close;
             }
             catch (Exception e)
             {
@@ -105,7 +105,7 @@ namespace Rack
         {
             try
             {
-                SendCommand(Command.PASS, Response.LightOnSuccessful, timeout);
+                SendCommand(ShieldBoxCommand.PASS, ShieldBoxResponse.LightOnSuccessful, timeout);
             }
             catch (Exception e)
             {
@@ -113,7 +113,7 @@ namespace Rack
             }
         }
 
-        private void SendCommand(Command command, string response, int timeout = 5000)
+        private void SendCommand(ShieldBoxCommand command, string response, int timeout = 5000)
         {
             SendCmd(command);
             Stopwatch stopwatch = new Stopwatch();
@@ -133,10 +133,10 @@ namespace Rack
 
         public bool BoxIsClosed(int timeout = 1000)
         {
-            SendCmd(Command.STATUS);
+            SendCmd(ShieldBoxCommand.STATUS);
             Stopwatch stopwatch = new Stopwatch();
             stopwatch.Start();
-            while (_response != Response.BoxIsOpened & _response != Response.BoxIsClosed)
+            while (_response != ShieldBoxResponse.BoxIsOpened & _response != ShieldBoxResponse.BoxIsClosed)
             {
                 if (stopwatch.ElapsedMilliseconds > timeout)
                 {
@@ -146,7 +146,7 @@ namespace Rack
                 Delay(100);
             }
 
-            if (_response != Response.BoxIsClosed)
+            if (_response != ShieldBoxResponse.BoxIsClosed)
             {
                 _response = String.Empty;
                 return false;
