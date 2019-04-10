@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using ACS.SPiiPlusNET;
 using Motion;
@@ -28,6 +29,12 @@ namespace Rack
         public Stepper Stepper;
         public EthercatIo Io;
         public PickAndPlaceConveyor Conveyor;
+
+        private Thread _shieldBoxServerThread;
+
+        public BpShieldBox ShieldBox1 { get; set; }
+
+        public BpShieldBox[] ShieldBoxs { get; set; }
 
 
         public bool RobotHomeComplete { get; set; }

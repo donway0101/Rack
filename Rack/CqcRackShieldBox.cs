@@ -11,10 +11,7 @@ namespace Rack
 {
     public partial class CqcRack
     {
-        private Thread _shieldBoxServerThread;
-        public BpShieldBox ShieldBox1 { get; set; }
-
-        public BpShieldBox[] ShieldBoxs { get; set; }
+ 
 
         public void ShieldBoxSetup()
         {

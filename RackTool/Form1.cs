@@ -17,13 +17,21 @@ using System.Threading;
 using ACS.SPiiPlusNET;
 using Input = EcatIo.Input;
 using Outout = EcatIo.Output;
-using ShieldBox;
+using System.IO;
 using System.IO.Ports;
+using System.Collections;
+using ShieldBox;
 
 namespace RackTool
 {
     public partial class Form1 : Form
     {
+        private readonly CqcRack _rack = new CqcRack("192.168.8.18");
+        private TeachPos _selectedTargetPosition;
+        private StepperMotor _selectedGripper;
+        private Thread _uiUpdateThread;
+        private ArrayList PortName;
+
         public Form1()
         {
             InitializeComponent();
@@ -65,11 +73,6 @@ namespace RackTool
             g.DrawString(_tabPage.Text, _tabFont, _textBrush, _tabBounds, new StringFormat(_stringFlags));
         }
 
-        private readonly CqcRack _rack = new CqcRack("192.168.8.18");
-        private TeachPos _selectedTargetPosition;
-        private StepperMotor _selectedGripper;
-        private Thread _uiUpdateThread;
-
         private async void button_Start_Click(object sender, EventArgs e)
         {
             buttonStart.Enabled = false;
@@ -78,8 +81,7 @@ namespace RackTool
                 try
                 {
                     _rack.Start();
-                    SetupForTeaching();
-
+                    
                     if (_uiUpdateThread == null)
                     {
                         _uiUpdateThread = new Thread(UiUpdate)
@@ -91,8 +93,7 @@ namespace RackTool
                     if (_uiUpdateThread.IsAlive == false)
                     {
                         _uiUpdateThread.Start();
-                    }
-                    
+                    }                    
                 }
                 catch (Exception ex)
                 {
@@ -100,6 +101,9 @@ namespace RackTool
                     MessageBox.Show(ex.Message);
                 }
             });
+
+            SetupForTeaching();
+
             buttonHome.Enabled = true;
             buttonStart.Enabled = true;
         }
@@ -148,6 +152,7 @@ namespace RackTool
 
         private async void button_Home_Click(object sender, EventArgs e)
         {
+            buttonHome.Enabled = false;
             await Task.Run(() =>
             {
 
@@ -160,10 +165,11 @@ namespace RackTool
                     MessageBox.Show(ex.Message);
                 }
             });
+            buttonHome.Enabled = true;
         }
 
         //Test
-        private async void button3_Click(object sender, EventArgs e)
+        private void button3_Click(object sender, EventArgs e)
         {
             //DialogResult result = MessageBox.Show("是否所有屏蔽箱门都打开了？", "!!!", MessageBoxButtons.YesNo);
             //if (result == DialogResult.No)
@@ -172,8 +178,9 @@ namespace RackTool
             //}
             _rack.SetSpeed(defaultTestSpeed);
 
-            await Task.Run(() =>
+            Task.Run(() =>
             {
+
                 try
                 {
                     _rack.Test();
@@ -856,11 +863,6 @@ namespace RackTool
             }
         }
 
-        private void buttonHighSpeed_Click(object sender, EventArgs e)
-        {
-
-        }
-
         private async void buttonBin_Click(object sender, EventArgs e)
         {
             _rack.SetSpeed(defaultTestSpeed);
@@ -943,5 +945,248 @@ namespace RackTool
                 MessageBox.Show(ex.Message);
             }
         }
+
+        private void buttonLowSpeed_Click(object sender, EventArgs e)
+        {
+            trackBarSetSpeed2.Value = 5;
+        }
+
+        private void buttonMiddleSpeed_Click(object sender, EventArgs e)
+        {
+            trackBarSetSpeed2.Value = trackBarSetSpeed2.Maximum / 2;
+        }
+        private void buttonHighSpeed_Click(object sender, EventArgs e)
+        {
+            trackBarSetSpeed2.Value = trackBarSetSpeed2.Maximum;
+        }
+
+        private void 启用ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            int BoxId = 0;
+            if (listViewBox.SelectedItems.Count != 0)
+            {
+                listViewBox.SelectedItems[0].ImageIndex = 0;
+                switch (listViewBox.SelectedItems[0].Text)
+                {
+                    case "Box1": BoxId = 1;  break;
+                    case "Box2": BoxId = 2;  break;
+                    case "Box3": BoxId = 3; break;
+                    case "Box4": BoxId = 4;  break;
+                    case "Box5": BoxId = 5; break;
+                    case "Box6": BoxId = 6;  break;
+                    default:
+                        break;
+                }
+                XmlReaderWriter.SetBoxAttribute(Files.BoxData, BoxId, ShieldBoxItem.State, "Enable");
+                buttonBoxLoad_Click(null,null);
+            }
+            else
+            {
+                MessageBox.Show("Please Select Box!");
+            }
+        }
+
+        private void 禁用ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (listViewBox.SelectedItems.Count != 0)
+            {
+                int BoxId = 0;
+                string Com = "None";
+                if (listViewBox.SelectedItems.Count != 0)
+                {
+                    listViewBox.SelectedItems[0].ImageIndex = 1;
+                    switch (listViewBox.SelectedItems[0].Text)
+                    {
+                        case "Box1": BoxId = 1; Com = comboBox1.Text; comboBox1.Text = "None";  break;
+                        case "Box2": BoxId = 2; Com = comboBox2.Text; comboBox2.Text = "None";  break;
+                        case "Box3": BoxId = 3; Com = comboBox3.Text; comboBox3.Text = "None";  break;
+                        case "Box4": BoxId = 4; Com = comboBox4.Text; comboBox4.Text = "None";  break;
+                        case "Box5": BoxId = 5; Com = comboBox5.Text; comboBox5.Text = "None";  break;
+                        case "Box6": BoxId = 6; Com = comboBox6.Text; comboBox6.Text = "None";  break;
+                        default:
+                            break;
+                    }
+                    XmlReaderWriter.SetBoxAttribute(Files.BoxData, BoxId, ShieldBoxItem.State, "Disable");
+                    XmlReaderWriter.SetBoxAttribute(Files.BoxData, BoxId, ShieldBoxItem.COM, "None");
+                    if (PortName.Contains(Com) == false)
+                        PortName.Add(Com);
+                    buttonBoxLoad_Click(null, null);
+                }
+                else
+                {
+                    MessageBox.Show("Please Select Box!");
+                }
+            }
+        }
+        private void ClearItem()
+        {
+            comboBox1.Items.Clear();
+            comboBox2.Items.Clear();
+            comboBox3.Items.Clear();
+            comboBox4.Items.Clear();
+            comboBox5.Items.Clear();
+            comboBox6.Items.Clear();
+        }
+        private void buttonBoxLoad_Click(object sender, EventArgs e)
+        {
+            string[] _PortName = SerialPort.GetPortNames();
+            if (PortName == null)
+                PortName = new ArrayList(_PortName);
+            ClearItem();
+            foreach (var item in PortName)
+            {
+                comboBox1.Items.Add(item);
+                comboBox2.Items.Add(item);
+                comboBox3.Items.Add(item);
+                comboBox4.Items.Add(item);
+                comboBox5.Items.Add(item);
+                comboBox6.Items.Add(item);
+            }
+            comboBox1.Text = XmlReaderWriter.GetBoxAttribute(Files.BoxData, 1, ShieldBoxItem.COM);
+            comboBox2.Text = XmlReaderWriter.GetBoxAttribute(Files.BoxData, 2, ShieldBoxItem.COM);
+            comboBox3.Text = XmlReaderWriter.GetBoxAttribute(Files.BoxData, 3, ShieldBoxItem.COM);
+            comboBox4.Text = XmlReaderWriter.GetBoxAttribute(Files.BoxData, 4, ShieldBoxItem.COM);
+            comboBox5.Text = XmlReaderWriter.GetBoxAttribute(Files.BoxData, 5, ShieldBoxItem.COM);
+            comboBox6.Text = XmlReaderWriter.GetBoxAttribute(Files.BoxData, 6, ShieldBoxItem.COM);
+           
+            listViewBox.Items[0].ImageIndex = XmlReaderWriter.GetBoxAttribute(Files.BoxData, 1, ShieldBoxItem.State) == "Enable" ? 0 : 1;
+            listViewBox.Items[1].ImageIndex = XmlReaderWriter.GetBoxAttribute(Files.BoxData, 2, ShieldBoxItem.State) == "Enable" ? 0 : 1;
+            listViewBox.Items[2].ImageIndex = XmlReaderWriter.GetBoxAttribute(Files.BoxData, 3, ShieldBoxItem.State) == "Enable" ? 0 : 1;
+            listViewBox.Items[3].ImageIndex = XmlReaderWriter.GetBoxAttribute(Files.BoxData, 4, ShieldBoxItem.State) == "Enable" ? 0 : 1;
+            listViewBox.Items[4].ImageIndex = XmlReaderWriter.GetBoxAttribute(Files.BoxData, 5, ShieldBoxItem.State) == "Enable" ? 0 : 1;
+            listViewBox.Items[5].ImageIndex = XmlReaderWriter.GetBoxAttribute(Files.BoxData, 6, ShieldBoxItem.State) == "Enable" ? 0 : 1;
+
+            comboBox1.Enabled = XmlReaderWriter.GetBoxAttribute(Files.BoxData, 1, ShieldBoxItem.State) == "Enable" ? true : false;
+            buttonOK1.Enabled = XmlReaderWriter.GetBoxAttribute(Files.BoxData, 1, ShieldBoxItem.State) == "Enable" ? true : false;
+            comboBox2.Enabled = XmlReaderWriter.GetBoxAttribute(Files.BoxData, 2, ShieldBoxItem.State) == "Enable" ? true : false;
+            buttonOK2.Enabled = XmlReaderWriter.GetBoxAttribute(Files.BoxData, 2, ShieldBoxItem.State) == "Enable" ? true : false;
+            comboBox3.Enabled = XmlReaderWriter.GetBoxAttribute(Files.BoxData, 3, ShieldBoxItem.State) == "Enable" ? true : false;
+            buttonOK3.Enabled = XmlReaderWriter.GetBoxAttribute(Files.BoxData, 3, ShieldBoxItem.State) == "Enable" ? true : false;
+            comboBox4.Enabled = XmlReaderWriter.GetBoxAttribute(Files.BoxData, 4, ShieldBoxItem.State) == "Enable" ? true : false;
+            buttonOK4.Enabled = XmlReaderWriter.GetBoxAttribute(Files.BoxData, 4, ShieldBoxItem.State) == "Enable" ? true : false;
+            comboBox5.Enabled = XmlReaderWriter.GetBoxAttribute(Files.BoxData, 5, ShieldBoxItem.State) == "Enable" ? true : false;
+            buttonOK5.Enabled = XmlReaderWriter.GetBoxAttribute(Files.BoxData, 5, ShieldBoxItem.State) == "Enable" ? true : false;
+            comboBox6.Enabled = XmlReaderWriter.GetBoxAttribute(Files.BoxData, 6, ShieldBoxItem.State) == "Enable" ? true : false;
+            buttonOK6.Enabled = XmlReaderWriter.GetBoxAttribute(Files.BoxData, 6, ShieldBoxItem.State) == "Enable" ? true : false;
+        }
+
+        private void buttonBoxSave_Click(object sender, EventArgs e)
+        {
+            XmlReaderWriter.CreateBoxDataFile(Files.BoxData);
+        }
+
+        private void listViewBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            
+        }
+
+        #region ButtonOk
+        private void buttonOK1_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                string Com = comboBox1.SelectedItem.ToString();
+                PortName.Remove(Com);
+                ClearItem();
+                if (comboBox1.Items.Contains(Com) == false)
+                    comboBox1.Items.Add(Com);
+                XmlReaderWriter.SetBoxAttribute(Files.BoxData, 1,ShieldBoxItem.COM,Com);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private void buttonOK2_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                string Com = comboBox1.SelectedItem.ToString();
+                PortName.Remove(Com);
+                ClearItem();
+                if (comboBox2.Items.Contains(Com) == false)
+                    comboBox2.Items.Add(Com);
+                XmlReaderWriter.SetBoxAttribute(Files.BoxData, 2, ShieldBoxItem.COM, Com);
+            }
+            catch (Exception ex)
+            {
+
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private void buttonOK3_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                string Com = comboBox3.SelectedItem.ToString();
+                PortName.Remove(Com);
+                ClearItem();
+                if (comboBox3.Items.Contains(Com) == false)
+                    comboBox3.Items.Add(Com);
+                XmlReaderWriter.SetBoxAttribute(Files.BoxData, 3, ShieldBoxItem.COM, Com);
+            }
+            catch (Exception ex)
+            {
+
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private void buttonOK4_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                string Com = comboBox4.SelectedItem.ToString();
+                PortName.Remove(Com);
+                ClearItem();
+                if (comboBox4.Items.Contains(Com) == false)
+                    comboBox4.Items.Add(Com);
+                XmlReaderWriter.SetBoxAttribute(Files.BoxData, 4, ShieldBoxItem.COM, Com);
+            }
+            catch (Exception ex)
+            {
+
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private void buttonOK5_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                string Com = comboBox5.SelectedItem.ToString();
+                PortName.Remove(Com);
+                ClearItem();
+                if (comboBox5.Items.Contains(Com) == false)
+                    comboBox5.Items.Add(Com);
+                XmlReaderWriter.SetBoxAttribute(Files.BoxData, 5, ShieldBoxItem.COM, Com);
+            }
+            catch (Exception ex)
+            {
+
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private void buttonOK6_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                string Com = comboBox6.SelectedItem.ToString();
+                PortName.Remove(Com);
+                ClearItem();
+                if (comboBox6.Items.Contains(Com) == false)
+                    comboBox6.Items.Add(Com);
+                XmlReaderWriter.SetBoxAttribute(Files.BoxData, 6, ShieldBoxItem.COM, Com);
+            }
+            catch (Exception ex)
+            {
+
+                MessageBox.Show(ex.Message);
+            }
+        } 
+        #endregion
     }
 }

@@ -20,6 +20,11 @@ namespace ShieldBox
         public int PassCount { get; set; }
         public bool Enabled { get; set; }
         public bool Empty { get; set; }
+        public bool Available { get; set; }
+        /// <summary>
+        /// Checked by golden phone.
+        /// </summary>
+        public bool Golded { get; set; }
 
         public BpShieldBox(int id, string serialPortName, int serialBaudRate = 9600,
             Parity serialParity = Parity.None, int serialDataBit = 8,
