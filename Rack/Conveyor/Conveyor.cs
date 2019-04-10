@@ -1,41 +1,30 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
-using EcatIo;
 
-namespace Conveyor
+namespace Rack
 {
-    public class PickAndPlaceConveyor
+    public class Conveyor
     {
         private readonly EthercatIo _io;
         private Thread _conveyorWorkingThread;
 
+        public Conveyor(EthercatIo ethercatIo)
+        {
+            _io = ethercatIo;
+        }
+
         public bool ConveyorMovingForward { get; set; } = true;
 
-        #region Error occured Event
-        public delegate void ErrorOccuredEventHandler(object sender, string description);
-
-        public event ErrorOccuredEventHandler ErrorOccured;
-
-        protected void OnErrorOccured(string description)
-        {
-            ErrorOccured?.Invoke(this, description);
-        }
-        #endregion
-
         /// <summary>
-        /// Release clamp for picking.
-        /// After Picking, reset it by host.
+        ///     Release clamp for picking.
+        ///     After Picking, reset it by host.
         /// </summary>
         public bool ReadyForPicking { get; set; }
 
         /// <summary>
-        /// Phone already under the sensor, tightened.
-        /// After Picking, reset it by host.
+        ///     Phone already under the sensor, tightened.
+        ///     After Picking, reset it by host.
         /// </summary>
         public bool InposForPicking { get; set; }
 
@@ -43,37 +32,26 @@ namespace Conveyor
 
         public bool CommandReadyForPicking { get; set; }
 
-        public PickAndPlaceConveyor(EthercatIo ethercatIo)
-        {
-            _io = ethercatIo;
-        }
-
-        public void SetCylinder(Output output, Input input, bool sensorState = true, int timeout=1000)
+        public void SetCylinder(Output output, Input input, bool sensorState = true, int timeout = 1000)
         {
             _io.SetOutput(output, true);
-            Stopwatch stopwatch = new Stopwatch();
+            var stopwatch = new Stopwatch();
             stopwatch.Start();
             while (_io.GetInput(input) != sensorState)
             {
-                if (stopwatch.ElapsedMilliseconds>timeout)
-                {
-                    throw new Exception("Set" + output + " timeout");
-                }
+                if (stopwatch.ElapsedMilliseconds > timeout) throw new Exception("Set" + output + " timeout");
                 Thread.Sleep(10);
-            }  
+            }
         }
 
         public void ResetCylinder(Output output, Input input, bool sensorState = true, int timeout = 1000)
         {
             _io.SetOutput(output, false);
-            Stopwatch stopwatch = new Stopwatch();
+            var stopwatch = new Stopwatch();
             stopwatch.Start();
             while (_io.GetInput(input) != sensorState)
             {
-                if (stopwatch.ElapsedMilliseconds > timeout)
-                {
-                    throw new Exception("Set" + output + " timeout");
-                }
+                if (stopwatch.ElapsedMilliseconds > timeout) throw new Exception("Set" + output + " timeout");
                 Delay(10);
             }
         }
@@ -83,24 +61,16 @@ namespace Conveyor
             if (state)
             {
                 if (ConveyorMovingForward)
-                {
                     ResetCylinder(Output.UpBlockSeparateForward, Input.UpBlockSeparateForward);
-                }
                 else
-                {
                     ResetCylinder(Output.UpBlockSeparateBackward, Input.UpBlockSeparateBackward);
-                }
             }
             else
             {
                 if (ConveyorMovingForward)
-                {
                     SetCylinder(Output.UpBlockSeparateForward, Input.UpBlockSeparateForward, false);
-                }
                 else
-                {
                     SetCylinder(Output.UpBlockSeparateBackward, Input.UpBlockSeparateBackward, false);
-                }
             }
         }
 
@@ -109,24 +79,16 @@ namespace Conveyor
             if (state)
             {
                 if (ConveyorMovingForward)
-                {
                     ResetCylinder(Output.UpBlockPickForward, Input.UpBlockPickForward);
-                }
                 else
-                {
                     ResetCylinder(Output.UpBlockPickBackward, Input.UpBlockPickBackward);
-                }
             }
             else
             {
                 if (ConveyorMovingForward)
-                {
                     SetCylinder(Output.UpBlockPickForward, Input.UpBlockPickForward, false);
-                }
                 else
-                {
                     SetCylinder(Output.UpBlockPickBackward, Input.UpBlockPickBackward, false);
-                }
             }
         }
 
@@ -135,24 +97,16 @@ namespace Conveyor
             if (!state)
             {
                 if (ConveyorMovingForward)
-                {
                     ResetCylinder(Output.SideBlockSeparateForward, Input.SideBlockSeparateForward);
-                }
                 else
-                {
                     ResetCylinder(Output.SideBlockSeparateBackward, Input.SideBlockSeparateBackward);
-                }
             }
             else
             {
                 if (ConveyorMovingForward)
-                {
                     SetCylinder(Output.SideBlockSeparateForward, Input.SideBlockSeparateForward, false);
-                }
                 else
-                {
                     SetCylinder(Output.SideBlockSeparateBackward, Input.SideBlockSeparateBackward, false);
-                }
             }
         }
 
@@ -164,37 +118,26 @@ namespace Conveyor
         public void PushPickInpos(bool state)
         {
             if (state)
-            {
                 SetCylinder(Output.SideBlockPick, Input.SideBlockPick, false);
-            }
             else
-            {
                 ResetCylinder(Output.SideBlockPick, Input.SideBlockPick);
-            }
         }
 
         public void Clamp(bool state)
         {
             if (state)
-            {
                 SetCylinder(Output.ClampPick, Input.ClampTightPick);
-            }
             else
-            {
                 ResetCylinder(Output.ClampPick, Input.ClampLoosePick);
-            }            
         }
 
-        public void WaitTill(Input input, bool state, int timeout=60000)
+        public void WaitTill(Input input, bool state, int timeout = 60000)
         {
-            Stopwatch stopwatch = new Stopwatch();
+            var stopwatch = new Stopwatch();
             stopwatch.Start();
             while (_io.GetInput(input) != state)
             {
-                if (stopwatch.ElapsedMilliseconds > timeout)
-                {
-                    throw new Exception("Wait" + input + " timeout");
-                }
+                if (stopwatch.ElapsedMilliseconds > timeout) throw new Exception("Wait" + input + " timeout");
                 Delay(10);
             }
         }
@@ -221,31 +164,25 @@ namespace Conveyor
         {
             InitialState();
 
-            if (_conveyorWorkingThread==null)
-            {
+            if (_conveyorWorkingThread == null)
                 _conveyorWorkingThread = new Thread(DoWork)
                 {
                     IsBackground = true
                 };
-            }
 
-            if (_conveyorWorkingThread.IsAlive==false)
-            {
-                _conveyorWorkingThread.Start();
-            }         
+            if (_conveyorWorkingThread.IsAlive == false) _conveyorWorkingThread.Start();
         }
 
         private void DoWork()
         {
             ReadyForPicking = false;
             InposForPicking = false;
-            Stopwatch stopwatch = new Stopwatch();
+            var stopwatch = new Stopwatch();
             stopwatch.Start();
             while (true)
-            {
                 try
                 {
-                    if (CommandReadyForPicking == true)
+                    if (CommandReadyForPicking)
                     {
                         ReadyForPicking = false;
                         if (InposForPicking)
@@ -262,26 +199,27 @@ namespace Conveyor
                         }
                         else
                         {
-                            CommandInposForPicking = true;                         
-                        }                      
+                            CommandInposForPicking = true;
+                        }
                     }
 
-                    if (CommandInposForPicking == true & InposForPicking == false)
+                    if (CommandInposForPicking & (InposForPicking == false))
                     {
                         CommandInposForPicking = false;
                         ReadyForPicking = false;
                         RunBeltPick(true);
-                        if (_io.GetInput(Input.PickHasPhone)==false)
+                        if (_io.GetInput(Input.PickHasPhone) == false)
                         {
                             WaitTill(
                                 ConveyorMovingForward
                                     ? Input.PickBufferHasPhoneForward
                                     : Input.PickBufferHasPhoneBackward, true, 30000);
                             UpBlockPick(true);
-                        }                        
+                        }
+
                         SideBlockSeparate(true);
                         UpBlockSeparate(false);
-                        
+
                         WaitTill(Input.PickHasPhone, true, 5000);
                         Delay(1000);
                         Clamp(true);
@@ -299,7 +237,6 @@ namespace Conveyor
                 {
                     OnErrorOccured(ex.Message);
                 }
-            }
         }
 
         public void Stop()
@@ -310,5 +247,18 @@ namespace Conveyor
                 _conveyorWorkingThread.Join();
             }
         }
+
+        #region Error occured Event
+
+        public delegate void ErrorOccuredEventHandler(object sender, string description);
+
+        public event ErrorOccuredEventHandler ErrorOccured;
+
+        protected void OnErrorOccured(string description)
+        {
+            ErrorOccured?.Invoke(this, description);
+        }
+
+        #endregion
     }
 }

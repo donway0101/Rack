@@ -1,9 +1,6 @@
-﻿using EcatIo;
-using GripperStepper;
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.Threading;
-using Motion;
 
 namespace Rack
 {

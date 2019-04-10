@@ -1,10 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Motion;
-using GripperStepper;
 
 namespace Rack
 {
@@ -14,8 +8,7 @@ namespace Rack
         {
             target = AddOffset(gripper, target);
 
-            TargetPosition currentPosition;
-            currentPosition = GetRobotCurrentPose();
+            var currentPosition = GetRobotCurrentPose();
 
             //if (RobotHomeComplete==false)
             //{

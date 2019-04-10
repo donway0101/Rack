@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace EcatIo
+﻿namespace Rack
 {
     public enum Output
     {
@@ -14,11 +8,12 @@ namespace EcatIo
         RedLight = 00,
         YellowLight = 01,
         GreenLight = 02,
-        Beep=03,
-        GripperTwo = 04, 
-        GripperOne = 05, 
+        Beep = 03,
+        GripperTwo = 04,
+        GripperOne = 05,
         Reserved06 = 06,
         Reserved07 = 07,
+
         //1
         UpBlockPickForward = 22,
         UpBlockPickBackward = 10,
@@ -30,7 +25,7 @@ namespace EcatIo
         BeltNg = 15,
         BeltConveyorOne = 16,
         UpBlockSeparateBackward = 17,
-        UpBlockSeparateForward = 21,
+        UpBlockSeparateForward = 21
 
         //2
         //GripperOne = 20,
@@ -41,7 +36,6 @@ namespace EcatIo
         //GripperOne = 25,
         //GripperOne = 26,
         //GripperOne = 27,
-
     }
 
     /// (ModudleID,Bit)
@@ -52,20 +46,20 @@ namespace EcatIo
     /// (0,6)=夹紧气缸  (2,3)松开传感器 夹紧传感器(2,4)
     /// 输入
     /// (2，2)=检测手机到位传感器
-
     public enum Input
     {
         // 0
-        Start=00,
-        Reset=01,
-        Estop=02,
-        SideBlockPick=03,
-        Reserved04=04,
-        UpBlockPickBackward=05,
-        ClampTightPick=06,
+        Start = 00,
+        Reset = 01,
+        Estop = 02,
+        SideBlockPick = 03,
+        Reserved04 = 04,
+        UpBlockPickBackward = 05,
+        ClampTightPick = 06,
         ClampLoosePick = 07,
+
         // 1
-        SideBlockSeparateForward=33,
+        SideBlockSeparateForward = 33,
         SideBlockSeparateBackward = 10,
         Reserved11 = 11,
         ConveyorOneIn = 12,
@@ -75,6 +69,7 @@ namespace EcatIo
         ConveyorPickInTwo = 15,
         PickHasPhone = 16,
         Reserved17 = 17,
+
         // 2
         Gripper01 = 20,
         Gripper01Tight = 21,
@@ -84,6 +79,7 @@ namespace EcatIo
         Gripper02Loose = 25,
         ConveyorPickOut = 26,
         ConveyorBinIn = 27,
+
         // 3
         ConveyorBinInTwo = 30,
         UpBlockSeparateForward = 34,
@@ -94,6 +90,7 @@ namespace EcatIo
         Reservered35 = 35,
         Reservered36 = 36,
         Reservered37 = 37,
+
         // 4
         Gold1 = 40,
         Gold2 = 41,
@@ -102,6 +99,6 @@ namespace EcatIo
         Gold5 = 44,
         Reservered45 = 45,
         Reservered46 = 46,
-        Reservered47 = 47,
+        Reservered47 = 47
     }
 }

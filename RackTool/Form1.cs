@@ -10,17 +10,17 @@ using System.Windows.Forms;
 using System.Xml.Linq;
 using System.Diagnostics;
 using Rack;
-using Motion;
-using Tools;
-using GripperStepper;
+using Rack;
+using Rack;
+using Rack;
 using System.Threading;
 using ACS.SPiiPlusNET;
-using Input = EcatIo.Input;
-using Outout = EcatIo.Output;
+using Input = Rack.Input;
+using Outout = Rack.Output;
 using System.IO;
 using System.IO.Ports;
 using System.Collections;
-using ShieldBox;
+using Rack;
 
 namespace RackTool
 {
@@ -1187,7 +1187,12 @@ namespace RackTool
 
                 MessageBox.Show(ex.Message);
             }
-        } 
+        }
         #endregion
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            label1.Text = "";
+        }
     }
 }

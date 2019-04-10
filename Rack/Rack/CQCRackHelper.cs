@@ -1,13 +1,4 @@
 ﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
-using ACS.SPiiPlusNET;
-using Motion;
-using GripperStepper;
-using EcatIo;
-using Conveyor;
-using ShieldBox;
-using Tools;
 
 namespace Rack
 {
@@ -73,6 +64,7 @@ namespace Rack
             };
             return currentPosition;
         }
+
         public void SetSpeed(double speed)
         {
             Motion.SetSpeed(speed);

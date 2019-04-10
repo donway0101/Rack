@@ -1,13 +1,5 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using System.Threading;
 using ACS.SPiiPlusNET;
-using Motion;
-using GripperStepper;
-using EcatIo;
-using Conveyor;
-using ShieldBox;
-using Tools;
 
 namespace Rack
 {
@@ -29,7 +21,7 @@ namespace Rack
         public EthercatMotion Motion;
         public Stepper Stepper;
         public EthercatIo EcatIo;
-        public PickAndPlaceConveyor Conveyor;
+        public Conveyor Conveyor;
       
         public BpShieldBox ShieldBox1 { get; set; }
         public BpShieldBox[] ShieldBoxs { get; set; }

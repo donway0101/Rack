@@ -1,4 +1,4 @@
-﻿namespace ShieldBox
+﻿namespace Rack
 {
     public enum Command
     {

@@ -4,7 +4,7 @@ using System.IO.Ports;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace ShieldBox
+namespace Rack
 {
     public class BpShieldBox
     {

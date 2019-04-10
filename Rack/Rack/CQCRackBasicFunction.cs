@@ -1,11 +1,4 @@
 ﻿using System;
-using System.Threading.Tasks;
-using ACS.SPiiPlusNET;
-using Motion;
-using GripperStepper;
-using EcatIo;
-using Conveyor;
-using  ShieldBox;
 
 namespace Rack
 {
@@ -26,7 +19,7 @@ namespace Rack
             Motion.Setup();
             EcatIo = new EthercatIo(_ch, 72, 7, 4);
             EcatIo.Setup();
-            Conveyor = new PickAndPlaceConveyor(EcatIo);
+            Conveyor = new Conveyor(EcatIo);
 
             if (_gripperIsOnline)
             {

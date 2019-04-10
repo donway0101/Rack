@@ -1,12 +1,7 @@
 ﻿using System;
 using System.Globalization;
 using System.Threading;
-using Tools;
-using EcatIo;
 using System.Diagnostics;
-using System.Reflection;
-using GripperStepper;
-using Motion;
 
 namespace Rack
 {

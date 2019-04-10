@@ -148,6 +148,7 @@
             this.tabPage7 = new System.Windows.Forms.TabPage();
             this.label8 = new System.Windows.Forms.Label();
             this.richTextBoxMessage = new System.Windows.Forms.RichTextBox();
+            this.button1 = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarSetSpeed2)).BeginInit();
@@ -732,6 +733,7 @@
             // 
             // tabPage1
             // 
+            this.tabPage1.Controls.Add(this.button1);
             this.tabPage1.Controls.Add(this.buttonHome);
             this.tabPage1.Controls.Add(this.buttonStart);
             this.tabPage1.Controls.Add(this.label5);
@@ -1358,6 +1360,16 @@
             this.richTextBoxMessage.TabIndex = 19;
             this.richTextBoxMessage.Text = "当前设备状态，报警，等待手机，执行任务，解决办法";
             // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(387, 178);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(75, 23);
+            this.button1.TabIndex = 27;
+            this.button1.Text = "button1";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
@@ -1497,6 +1509,7 @@
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
         private System.Windows.Forms.ToolStripMenuItem 启用ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem 禁用ToolStripMenuItem;
+        private System.Windows.Forms.Button button1;
     }
 }
 

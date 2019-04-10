@@ -44,7 +44,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Conveyor\PickAndPlaceConveyor.cs" />
+    <Compile Include="Conveyor\Conveyor.cs" />
+    <Compile Include="Phone\Phone.cs" />
     <Compile Include="Rack\CQCRackSoul.cs" />
     <Compile Include="Rack\CQCRackHelper.cs" />
     <Compile Include="Rack\Class1.cs" />
@@ -54,18 +55,18 @@
     <Compile Include="Rack\CqcRackMotion.cs" />
     <Compile Include="Rack\CqcRackShieldBox.cs" />
     <Compile Include="Rack\CqcRackTestRun.cs" />
-    <Compile Include="EthercatIo\EcatIoData.cs" />
+    <Compile Include="EthercatIo\EthercatIoData.cs" />
     <Compile Include="EthercatIo\EthercatIo.cs" />
-    <Compile Include="Kit\RackData.cs" />
+    <Compile Include="Kit\XmlReaderWriterData.cs" />
     <Compile Include="Kit\XmlReaderWriter.cs" />
     <Compile Include="Motion\EthercatMotion.cs" />
-    <Compile Include="Motion\MotionData.cs" />
+    <Compile Include="Motion\EthercatMotionData.cs" />
     <Compile Include="Motion\Motor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Rack\CqcRackGripper.cs" />
     <Compile Include="ShieldBox\BpShieldBox.cs" />
     <Compile Include="ShieldBox\BpShieldBoxData.cs" />
-    <Compile Include="Stepper\GripperData.cs" />
+    <Compile Include="Stepper\StepperData.cs" />
     <Compile Include="Stepper\Stepper.cs" />
   </ItemGroup>
   <ItemGroup>

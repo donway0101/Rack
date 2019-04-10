@@ -1,14 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using ACS.SPiiPlusNET;
-using Tools;
 
-namespace Motion
+namespace Rack
 {
     public class EthercatMotion
     {
@@ -32,7 +27,6 @@ namespace Motion
         #endregion
 
         #region Targets
-
         public TargetPosition HomePosition { get; set; }
         public TargetPosition PickPosition { get; set; }
         public TargetPosition BinPosition { get; set; }

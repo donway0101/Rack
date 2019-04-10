@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ACS.SPiiPlusNET;
+﻿using ACS.SPiiPlusNET;
 
-namespace Motion
+namespace Rack
 {
     public class Motor
     {
@@ -58,7 +53,6 @@ namespace Motion
         {
             Id = axis;
         }
-
 
     }
 }
