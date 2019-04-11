@@ -30,6 +30,6 @@ namespace Rack
         /// Todo link to shield box test result.
         public int FailCount { get; set; }
 
-        public TestStep Step { get; set; }
+        public TestStep NextStep { get; set; }
     }
 }

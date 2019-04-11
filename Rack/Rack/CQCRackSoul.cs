@@ -57,13 +57,12 @@ namespace Rack
         }
 
         /// <summary>
-        /// Optimize movement efficiency.
+        /// Generate movement by phones.
         /// </summary>
-        /// Follow rule of test mode of rack.
-        ///  if AA mode,  need to reload the phone?
         private List<Phone> SortPhones()
         {
             GetAvailableBox();
+
             switch (TestMode)
             {
                 case RackTestMode.AB:
@@ -86,6 +85,7 @@ namespace Rack
         /// <summary>
         /// 
         /// </summary>
+        /// Thoughts.......
         /// Priority bin, place, retry, gold, pick
         /// Rules:
         /// like a bus, out first.
@@ -97,15 +97,17 @@ namespace Rack
         /// Has to avoid conflict, next target position can not be same.
         /// ABA mode, for one phone, definition of box AB can be different.
         /// Find a procedure circle, those phones's start and ending is both on conveyor.
+        /// Retry testing phone better goes into bin phone or place phone,
+        /// which can has unload and load movement.
+        /// Equal to empty box.
+        /// 
         private List<Phone> ArrangeAbcMode(int maxFailCount = 3)
         {
-            //Retry testing phone better goes into bin phone or place phone,
-            // which can has unload and load movement.
-            // Equal to empty box.
-            List<TeachPos> binOrPlaceBox = new List<TeachPos>();
-            bool hasToBin, hasToPlace, hasToRetry, hasToGold, hasToPick;
             List<Phone> luckyPhones = new List<Phone>();
-            
+
+            List<Phone> binOrPlacePhone = new List<Phone>();
+            List<Phone> retryPhone = new List<Phone>();
+            List<Phone> pickPhone = new List<Phone>();
             lock (_phoneToBeServedLocker)
             {
                 if (PhoneToBeServed.Count > 0)
@@ -117,19 +119,91 @@ namespace Rack
                         {
                             phone.NextTargetPosition = Motion.BinPosition;
                             phone.Procedure = RackProcedure.Bin;
-                            //Better for retry
-                            binOrPlaceBox.Add(phone.CurrentTargetPosition.TeachPos);
-                            continue;
+                            binOrPlacePhone.Add(phone);
                         }
-
-                        //Phone to place.
-                        if (phone.TestResult == ShieldBoxTestResult.Pass)
+                        else
                         {
-                            phone.NextTargetPosition = Motion.PickPosition;
-                            phone.Procedure = RackProcedure.Place;
-                            binOrPlaceBox.Add(phone.CurrentTargetPosition.TeachPos);
-                            continue;
+                            //Phone to place.
+                            if (phone.TestResult == ShieldBoxTestResult.Pass)
+                            {
+                                phone.NextTargetPosition = Motion.PickPosition;
+                                phone.Procedure = RackProcedure.Place;
+                                binOrPlacePhone.Add(phone);
+                            }
+                            else
+                            {
+                                //Phone to retry.
+                                if (phone.TestResult == ShieldBoxTestResult.Fail)
+                                {
+                                    //phone.NextTargetPosition=?
+                                    phone.Procedure = RackProcedure.Retry;
+                                    retryPhone.Add(phone);
+                                }
+                                else
+                                {
+                                    //Phone to pick or it's gold.
+                                    if (phone.TestResult == ShieldBoxTestResult.None)
+                                    {
+                                        phone.Procedure = RackProcedure.Pick;
+                                        pickPhone.Add(phone);
+                                    }
+                                    else
+                                    {
+                                        throw new Exception("Error from method ArrangeAbcMode()");
+                                    }
+                                }
+                            }
                         }
+                    }
+                }
+            }
+
+            //Retry testing a phone, build a unload and load movement.
+            if (retryPhone.Count>0)
+            {
+                
+            }
+            else
+            {
+                //Bin or place a phone build a unload and load movement.
+                if (binOrPlacePhone.Count>0)
+                {
+                    //No retry. Just place and pick.
+                    if (pickPhone.Count>0)
+                    {
+                        //
+                    }
+                    else
+                    {
+                        //Just bin or place.
+                        luckyPhones.Add(binOrPlacePhone.First());
+                        return luckyPhones;
+                    }
+                }
+                else
+                {
+                    //Just pick.
+                    //If it's a gold phone, return it, main thread will deal with its type.
+                    //Todo implement in work thread.
+                    luckyPhones.Add(pickPhone.First());
+                    return luckyPhones;
+                }
+            }
+
+            
+
+            //
+            
+            bool hasToBin, hasToPlace, hasToRetry, hasToGold, hasToPick, retryIsUnloadAndLoad;
+            
+            
+            lock (_phoneToBeServedLocker)
+            {
+                if (PhoneToBeServed.Count > 0)
+                {
+                    foreach (var phone in PhoneToBeServed)
+                    {
+                       
 
                         #region Find a box for retry testing.
                         //Phone to retry testing.
@@ -138,17 +212,19 @@ namespace Rack
                         if (phone.TestResult == ShieldBoxTestResult.Fail & phone.FailCount < maxFailCount)
                         {
                             phone.Procedure = RackProcedure.Retry;
+                            retryPhone.Add(phone);
+                            hasToRetry = true;
                             //Assume found it.
                             bool foundABox = true;
                             TeachPos retryCandidateBox = TeachPos.NoWhere;
                             ShieldBox retryBox = null;
 
                             //Better put phone in a bining or placing box.
-                            foreach (var boxTeachPose in binOrPlaceBox)
+                            foreach (var bOpPhone in binOrPlacePhone)
                             {
                                 //Give box a chance very single time.
                                 foundABox = true;
-                                retryCandidateBox = boxTeachPose;
+                                retryCandidateBox = bOpPhone.CurrentTargetPosition.TeachPos;
                                 foreach (var footprint in phone.TargetPositionFootprint)
                                 {
                                     if (retryCandidateBox == footprint.TeachPos)
@@ -160,45 +236,51 @@ namespace Rack
                                 if (foundABox)
                                 {
                                     //Todo lock to these two phones.
-                                    binOrPlaceBox.Remove(boxTeachPose);
+                                    //Add a bin or place phone to list, first blood.
+                                    luckyPhones.Add(bOpPhone);
+                                    retryIsUnloadAndLoad = true;
+                                    //binOrPlacePhone.Remove(bOpPhone);
                                     break;
-                                }
-                            }
-
-                            //Found a bin or place box for retry.
-                            if (foundABox==false)
-                            { 
-                                //No bin or place box
-                                //Find a empty box for retry.
-                                retryCandidateBox = TeachPos.NoWhere;
-                                foreach (var box in ShieldBoxs)
-                                {
-                                    if (box.Enabled & box.Available & box.Empty)
-                                    {
-                                        
-                                    }
-                                }
-                            }
-
-                            if (foundABox)
-                            {
-                                //Find box by techPos.
-                                foreach (var box in ShieldBoxs)
-                                {
-                                    if (retryCandidateBox == box.TeachPos)
-                                    {
-                                        retryBox = box;
-                                        break;
-                                    }
-                                }
-
-                                if (retryBox == null)
-                                {
-                                    throw new Exception("Find box error code: 5468648945");
                                 }
                             }
                         }
                         #endregion
+
+                        ////Found a bin or place box for retry.
+                        //if (foundABox==false)
+                        //{ 
+                        //    //No bin or place box
+                        //    //Find a empty box for retry.
+                        //    retryCandidateBox = TeachPos.NoWhere;
+                        //    foreach (var box in ShieldBoxs)
+                        //    {
+                        //        if (box.Enabled & box.Available & box.Empty)
+                        //        {
+
+                        //        }
+                        //    }
+                        //}
+
+                        //if (foundABox)
+                        //{
+                        //    //Find box by techPos.
+                        //    foreach (var box in ShieldBoxs)
+                        //    {
+                        //        if (retryCandidateBox == box.TeachPos)
+                        //        {
+                        //            retryBox = box;
+                        //            break;
+                        //        }
+                        //    }
+
+                        //    if (retryBox == null)
+                        //    {
+                        //        throw new Exception("Find box error code: 5468648945");
+                        //    }
+                        //}
+
+
+
 
                     }
                 }
