@@ -32,7 +32,7 @@ namespace Rack
 
     public enum TeachPos
     {
-        NoWhere = 99,
+        None = 99,
         ConveyorLeft= 98,
         ConveyorRight = 98,
         G1ToG2Offset = 96,

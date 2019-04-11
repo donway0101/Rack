@@ -13,13 +13,12 @@ namespace Rack
         /// 
         /// </summary>
         /// Need smart algorithm for next target position decision
-        public TargetPosition NextTargetPosition { get; set; }
+        public TargetPosition NextTargetPosition { get; set; } = new TargetPosition(){TeachPos = TeachPos.None};
         //Todo link to shield box.
         public List<TargetPosition> TargetPositionFootprint { get; set; }
         public TargetPosition CurrentTargetPosition { get; set; }
         public bool ReadyForNextProcedure { get; set; }
         public PhonePriority Priority { get; set; } = PhonePriority.Low;
-        public RackGripper OnWhichGripper { get; set; }
         public RackProcedure Procedure { get; set; }
         public long TestCycleTime { get; set; }
         public ShieldBoxTestResult TestResult { get; set; } = ShieldBoxTestResult.None;
@@ -30,6 +29,11 @@ namespace Rack
         /// Todo link to shield box test result.
         public int FailCount { get; set; }
 
-        public TestStep NextStep { get; set; }
+        //Todo initial phone with shield box type.
+        public ShieldBoxType AtBoxType { get; set; } = ShieldBoxType.RF;
+
+        //Todo will use in a unload and load movement.
+        //Combine check with sensor.
+        public RackGripper OnGripper { get; set; }
     }
 }

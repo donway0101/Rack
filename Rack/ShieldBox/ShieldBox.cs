@@ -30,7 +30,7 @@ namespace Rack
         /// </summary>
         public bool Golded { get; set; }
 
-        public TestStep Step { get; set; } = TestStep.Step1;
+        public ShieldBoxType Type { get; set; } = ShieldBoxType.RF;
 
         public ShieldBox(int id, string serialPortName, int serialBaudRate = 9600,
             Parity serialParity = Parity.None, int serialDataBit = 8,

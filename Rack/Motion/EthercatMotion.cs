@@ -175,8 +175,8 @@ namespace Rack
             HomePosition = LoadPosition(TeachPos.Home, TeachPos.Home);
             PickPosition = LoadPosition(TeachPos.Pick, TeachPos.Pick);
             BinPosition = LoadPosition(TeachPos.Bin, TeachPos.Bin);
-            ConveyorLeftPosition = LoadPosition(TeachPos.ConveyorLeft, TeachPos.NoWhere);
-            ConveyorRightPosition = LoadPosition(TeachPos.ConveyorRight, TeachPos.NoWhere);
+            ConveyorLeftPosition = LoadPosition(TeachPos.ConveyorLeft, TeachPos.None);
+            ConveyorRightPosition = LoadPosition(TeachPos.ConveyorRight, TeachPos.None);
 
             ShieldBox1 = LoadPosition(TeachPos.Holder1, TeachPos.Holder1);
             ShieldBox2 = LoadPosition(TeachPos.Holder2, TeachPos.Holder2);
@@ -191,8 +191,8 @@ namespace Rack
             Gold4 = LoadPosition(TeachPos.Gold4, TeachPos.Gold4);
             Gold5 = LoadPosition(TeachPos.Gold5, TeachPos.Gold5);
 
-            G1ToG2Offset = LoadPosition(TeachPos.G1ToG2Offset, TeachPos.NoWhere);
-            PickOffset = LoadPosition(TeachPos.PickOffset, TeachPos.NoWhere);
+            G1ToG2Offset = LoadPosition(TeachPos.G1ToG2Offset, TeachPos.None);
+            PickOffset = LoadPosition(TeachPos.PickOffset, TeachPos.None);
 
             Locations = new TargetPosition[14]
             {

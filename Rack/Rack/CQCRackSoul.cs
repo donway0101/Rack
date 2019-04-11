@@ -9,6 +9,18 @@ namespace Rack
 {
     public partial class CqcRack
     {
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// Within the list, two close phones, If a phone's next target position match
+        ///  a phone's current target postion, then unload and load could happen.
+        /// Pick first and then bin or place.
+        /// Todo what if all box fails and no break out?
+        /// if next target is unsure, then has to find a box for it.
+        ///   TargetPosition(){TeachPos = TeachPos.None};
+        /// Can exchange between retrys.
+        /// Make sure retry and pick has place to go, otherwise no move.
         private void PhoneServer()
         {           
             while (true)
@@ -32,6 +44,13 @@ namespace Rack
                     //After motion finish, update position of phone.
                     ;
 
+                    //foreach (var footprint in phone.TargetPositionFootprint)
+                    //{
+                    //    if (retryCandidateBox == footprint.TeachPos)
+                    //    {
+                    //        foundABox = false;
+                    //    }
+                    //}
 
                 }
                 catch (Exception e)
@@ -100,7 +119,7 @@ namespace Rack
         /// Retry testing phone better goes into bin phone or place phone,
         /// which can has unload and load movement.
         /// Equal to empty box.
-        /// 
+        /// todo make sure give the right next target position.
         private List<Phone> ArrangeAbcMode(int maxFailCount = 3)
         {
             List<Phone> luckyPhones = new List<Phone>();
@@ -144,6 +163,7 @@ namespace Rack
                                     //Phone to pick or it's gold.
                                     if (phone.TestResult == ShieldBoxTestResult.None)
                                     {
+                                        //phone.NextTargetPosition=?
                                         phone.Procedure = RackProcedure.Pick;
                                         pickPhone.Add(phone);
                                     }
@@ -159,9 +179,132 @@ namespace Rack
             }
 
             //Retry testing a phone, build a unload and load movement.
+            //Build with place or pick, or both.
             if (retryPhone.Count>0)
             {
-                
+                //May build two unload and load movement.
+                if (binOrPlacePhone.Count > 0 & pickPhone.Count>0)
+                {
+                    List<Phone> bOpPhoneCouple = new List<Phone>();
+                    List<Phone> rPhoneCouple = new List<Phone>();
+                    List<Phone> pPhoneCouple = new List<Phone>();
+                    foreach (var rPhone in retryPhone)
+                    {
+                        foreach (var bOpPhone in binOrPlacePhone)
+                        {
+                            if (bOpPhone.AtBoxType == rPhone.AtBoxType)
+                            {
+                                rPhone.NextTargetPosition = bOpPhone.CurrentTargetPosition;
+                                bOpPhoneCouple.Add(bOpPhone); //Order matters.
+                                rPhoneCouple.Add(rPhone);
+                            }
+                        }
+                    }
+
+                    //Has unload and load for bin or place phone.
+                    if (rPhoneCouple.Count>0)
+                    {
+                        //Try to find the second unload and load.
+                        foreach (var rPhone in rPhoneCouple)
+                        {
+                            foreach (var pPhone in pickPhone)
+                            {
+                                if (pPhone.AtBoxType == rPhone.AtBoxType)
+                                {
+                                    pPhone.NextTargetPosition = rPhone.CurrentTargetPosition;
+                                    rPhone.NextTargetPosition = bOpPhoneCouple.ElementAt(rPhoneCouple.IndexOf(rPhone))
+                                        .CurrentTargetPosition;
+                                    luckyPhones.Add(bOpPhoneCouple.ElementAt(rPhoneCouple.IndexOf(rPhone))); //Order matters.
+                                    luckyPhones.Add(rPhone);
+                                    luckyPhones.Add(pPhone);
+                                    return luckyPhones; //Find two unload and load movement.
+                                }
+                            }
+                        }
+
+                        // Can't build unload and load with pick.
+                        //So just leave pick alone.
+                        luckyPhones.Add(bOpPhoneCouple.First());
+                        luckyPhones.Add(rPhoneCouple.First());
+                        return luckyPhones; //Find two unload and load movement.
+                    }
+                    else //No unload and load for place phones.
+                    {
+                        foreach (var rPhone in retryPhone)
+                        {
+                            foreach (var pPhone in pickPhone)
+                            {
+                                if (pPhone.AtBoxType == rPhone.AtBoxType)
+                                {
+                                    pPhone.NextTargetPosition = rPhone.CurrentTargetPosition;
+                                    luckyPhones.Add(rPhone);//Order matters.
+                                    luckyPhones.Add(pPhone);
+                                    return luckyPhones;
+                                }
+                            }
+                        }
+
+                        //No combo movement at all.
+                        luckyPhones.Add(bOpPhoneCouple.First());
+                        luckyPhones.Add(rPhoneCouple.First());
+                        return luckyPhones;
+                    }
+                }
+                else
+                {
+                    if (binOrPlacePhone.Count > 0)
+                    {
+                        //Just retry and bin or place.
+                        foreach (var rPhone in retryPhone)
+                        {
+                            foreach (var bOpPhone in binOrPlacePhone)
+                            {
+                                if (bOpPhone.AtBoxType == rPhone.AtBoxType)
+                                {
+                                    rPhone.NextTargetPosition = bOpPhone.CurrentTargetPosition;
+                                    luckyPhones.Add(bOpPhone); //Order matters.
+                                    luckyPhones.Add(rPhone);
+                                    return luckyPhones;
+                                }
+                            }
+                        }
+                        luckyPhones.Add(binOrPlacePhone.First());
+                        luckyPhones.Add(retryPhone.First());
+                        return luckyPhones;
+                    }
+                    else
+                    {
+                        if (pickPhone.Count > 0)
+                        {
+                            //Can pick and retry.
+                            //Todo return pick and retry phone, in main thread, if no room for pick then just retry.
+                            foreach (var pPhone in pickPhone)
+                            {
+                                foreach (var rPhone in retryPhone)
+                                {
+                                    if (pPhone.AtBoxType == rPhone.AtBoxType)
+                                    {
+                                        pPhone.NextTargetPosition = rPhone.CurrentTargetPosition;
+                                        luckyPhones.Add(rPhone); //Order matters.
+                                        luckyPhones.Add(pPhone);
+                                        return luckyPhones;                                 
+                                    }
+                                }
+                            }
+                            //Choose two ramdon phones.
+                            luckyPhones.Add(retryPhone.First());
+                            luckyPhones.Add(pickPhone.First());
+                            return luckyPhones;
+                        }
+                        else
+                        {
+                            //Just retry.
+                            //Todo Find available box, if two box is both retry, then exchange.
+                            luckyPhones.Add(retryPhone.First());
+                            return luckyPhones;
+                        }
+                    }
+                }
             }
             else
             {
@@ -171,118 +314,39 @@ namespace Rack
                     //No retry. Just place and pick.
                     if (pickPhone.Count>0)
                     {
-                        //
+                        foreach (var pPhone in pickPhone)
+                        {
+                            foreach (var bOpPhone in binOrPlacePhone)
+                            {
+                                if (pPhone.AtBoxType == bOpPhone.AtBoxType)
+                                {
+                                    // pPhone.Procedure is set before.
+                                    pPhone.NextTargetPosition = bOpPhone.CurrentTargetPosition;
+                                    luckyPhones.Add(bOpPhone); //Order matters.
+                                    luckyPhones.Add(pPhone);
+                                    return luckyPhones; //Unload and load.                                  
+                                }
+                            }
+                        }
+                        //No UnloadAndLoad Move;
+                        luckyPhones.Add(binOrPlacePhone.First());
+                        luckyPhones.Add(pickPhone.First());
+                        return luckyPhones; //Load and place or bin separately.
                     }
                     else
                     {
                         //Just bin or place.
                         luckyPhones.Add(binOrPlacePhone.First());
-                        return luckyPhones;
+                        return luckyPhones; 
                     }
                 }
                 else
                 {
                     //Just pick.
                     //If it's a gold phone, return it, main thread will deal with its type.
-                    //Todo implement in work thread.
+                    //Todo find a next target position for it in thread.
                     luckyPhones.Add(pickPhone.First());
                     return luckyPhones;
-                }
-            }
-
-            
-
-            //
-            
-            bool hasToBin, hasToPlace, hasToRetry, hasToGold, hasToPick, retryIsUnloadAndLoad;
-            
-            
-            lock (_phoneToBeServedLocker)
-            {
-                if (PhoneToBeServed.Count > 0)
-                {
-                    foreach (var phone in PhoneToBeServed)
-                    {
-                       
-
-                        #region Find a box for retry testing.
-                        //Phone to retry testing.
-                        //First try to find a box which need bin or place, if fail, 
-                        // try to find an empty box.
-                        if (phone.TestResult == ShieldBoxTestResult.Fail & phone.FailCount < maxFailCount)
-                        {
-                            phone.Procedure = RackProcedure.Retry;
-                            retryPhone.Add(phone);
-                            hasToRetry = true;
-                            //Assume found it.
-                            bool foundABox = true;
-                            TeachPos retryCandidateBox = TeachPos.NoWhere;
-                            ShieldBox retryBox = null;
-
-                            //Better put phone in a bining or placing box.
-                            foreach (var bOpPhone in binOrPlacePhone)
-                            {
-                                //Give box a chance very single time.
-                                foundABox = true;
-                                retryCandidateBox = bOpPhone.CurrentTargetPosition.TeachPos;
-                                foreach (var footprint in phone.TargetPositionFootprint)
-                                {
-                                    if (retryCandidateBox == footprint.TeachPos)
-                                    {
-                                        foundABox = false;
-                                    }
-                                }
-
-                                if (foundABox)
-                                {
-                                    //Todo lock to these two phones.
-                                    //Add a bin or place phone to list, first blood.
-                                    luckyPhones.Add(bOpPhone);
-                                    retryIsUnloadAndLoad = true;
-                                    //binOrPlacePhone.Remove(bOpPhone);
-                                    break;
-                                }
-                            }
-                        }
-                        #endregion
-
-                        ////Found a bin or place box for retry.
-                        //if (foundABox==false)
-                        //{ 
-                        //    //No bin or place box
-                        //    //Find a empty box for retry.
-                        //    retryCandidateBox = TeachPos.NoWhere;
-                        //    foreach (var box in ShieldBoxs)
-                        //    {
-                        //        if (box.Enabled & box.Available & box.Empty)
-                        //        {
-
-                        //        }
-                        //    }
-                        //}
-
-                        //if (foundABox)
-                        //{
-                        //    //Find box by techPos.
-                        //    foreach (var box in ShieldBoxs)
-                        //    {
-                        //        if (retryCandidateBox == box.TeachPos)
-                        //        {
-                        //            retryBox = box;
-                        //            break;
-                        //        }
-                        //    }
-
-                        //    if (retryBox == null)
-                        //    {
-                        //        throw new Exception("Find box error code: 5468648945");
-                        //    }
-                        //}
-
-
-
-
-                    }
                 }
             }
         }
