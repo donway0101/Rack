@@ -41,7 +41,7 @@ namespace Rack
         /// Todo: current there is only one type of shiled box.
         ///  if more than one type, create another list,
         ///     change next target position strategy.
-        /// <seealso cref="ArrangeNextTargetPosition"/>
+        /// <seealso cref="SortPhones"/>
         public List<ShieldBox> ShieldBoxs = new List<ShieldBox>();
 
         private Thread _phoneServerThread;

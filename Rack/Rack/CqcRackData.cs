@@ -18,7 +18,7 @@ namespace Rack
     {
         Bin,
         Place,
-        AnotherBox,
+        Retry,
         Pick,
     }
 
