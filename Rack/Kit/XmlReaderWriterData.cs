@@ -1,11 +1,5 @@
 ﻿namespace Rack
 {
-    public struct Files
-    {
-        public const string RackData = "RackData.xml";
-        public const string BoxData = "BoxData.xml";
-    }
-
     public enum PosItem
     {
         Teach,
@@ -43,5 +37,31 @@
         BT,
     }
 
+    public struct Files
+    {
+        public const string RackData = "RackData.xml";
+        public const string BoxData = "BoxData.xml";
+        public const string LoginData = "LoginData.xml";
+    }
+    public enum LoginType
+    {
+        LogicType,
+        Accout,
 
+        Administrator,
+        Technician,
+        Operator,
+    }
+    public enum Power
+    {
+        None,
+        Administrator,
+        Technician,
+        Operator
+    }
+    public enum LogicInformation
+    {
+        LoginName,
+        LoginPassWord,
+    }
 }
