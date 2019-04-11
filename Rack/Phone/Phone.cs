@@ -13,6 +13,8 @@ namespace Rack
         /// </summary>
         /// Need smart algorithm for next target position decision
         public TargetPosition NextTargetPosition { get; set; }
+        //Todo link to shield box.
+        public TargetPosition[] TargetPositionFootprint { get; set; }
         public TargetPosition CurrentTargetPosition { get; set; }
         public bool ReadyForNextProcedure { get; set; }
         public PhonePriority Priority { get; set; } = PhonePriority.Low;
@@ -20,5 +22,13 @@ namespace Rack
         public RackProcedure Procedure { get; set; }
         public long TestCycleTime { get; set; }
         public ShieldBoxTestResult TestResult { get; set; } = ShieldBoxTestResult.None;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// Todo link to shield box test result.
+        public int FailCount { get; set; }
+
+        public TestStep Step { get; set; }
     }
 }

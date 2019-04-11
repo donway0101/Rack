@@ -82,6 +82,15 @@ namespace Rack
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// Priority bin, place, retry, gold, pick
+        /// Rules:
+        /// 1. like a bus, out first.
+        /// retry than pick
+        /// Gold go back to gold.
+        /// Todo match shieldbox test step and phone's step
         private void ArrangeAbcMode()
         {
             lock (_phoneToBeServedLocker)
@@ -90,10 +99,38 @@ namespace Rack
                 {
                     foreach (var phone in PhoneToBeServed)
                     {
-                        if (SetupComplete)
+                        if (phone.FailCount==3)
                         {
-                            
+                            //Phone has to bin.
+                            phone.NextTargetPosition = Motion.BinPosition;
                         }
+                        else
+                        {
+                            //Find another box to retry testing.
+                            if (phone.TestResult == ShieldBoxTestResult.Fail)
+                            {
+                                bool foundABox = true;
+                                ShieldBox candidateBox;
+                                lock (_availableBoxLocker)
+                                {
+                                    foreach (var box in AvailableBox)
+                                    {
+                                        candidateBox = box;
+                                        foreach (var footprint in phone.TargetPositionFootprint)
+                                        {
+                                            //Todo match type.
+                                            if (footprint.TeachPos == box.TeachPos)
+                                            {
+                                                foundABox = false;
+                                            }
+                                        }
+                                    }
+                                }
+
+                                
+                            }
+                        }
+                       
                     }
                 }
             }
