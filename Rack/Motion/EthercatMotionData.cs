@@ -2,7 +2,7 @@
 {
     public struct TargetPosition
     {
-        public TeachPos Id { get; set; }
+        public TeachPos TeachPos { get; set; }
         public double XPos { get; set; }
         public double YPos { get; set; }
         public double ZPos { get; set; }

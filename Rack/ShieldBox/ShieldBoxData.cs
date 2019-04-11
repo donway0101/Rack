@@ -33,6 +33,7 @@
 
     public enum ShieldBoxTestResult
     {
+        None,
         Pass,
         Fail,
         Testing,

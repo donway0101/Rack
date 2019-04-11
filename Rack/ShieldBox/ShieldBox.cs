@@ -18,8 +18,11 @@ namespace Rack
         public int PassRate { get; set; }
         public int TestCount { get; set; }
         public int PassCount { get; set; }
-        public bool Enabled { get; set; }
+        public bool Enabled { get; set; } = false;
         public bool Empty { get; set; }
+        /// <summary>
+        /// Box is enabled and test is finished.
+        /// </summary>
         public bool Available { get; set; }
         public TeachPos TeachPos { get; set; }
         /// <summary>

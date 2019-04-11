@@ -18,7 +18,7 @@ namespace Rack
     {
         Bin,
         Place,
-        UnloadAndLoad,
+        AnotherBox,
         Pick,
     }
 
@@ -33,10 +33,10 @@ namespace Rack
     public enum TeachPos
     {
         NoWhere = 99,
-        ConveyorLeft= 99,
-        ConveyorRight = 99,
-        G1ToG2Offset = 99,
-        PickOffset = 99,
+        ConveyorLeft= 98,
+        ConveyorRight = 98,
+        G1ToG2Offset = 96,
+        PickOffset = 96,
         
         Home = 41,
         Pick = 42,

@@ -9,16 +9,11 @@ namespace Rack
             TargetPosition target = Motion.HomePosition;
             switch (teachPos)
             {
-                case TeachPos.Home:
-                    break;
                 case TeachPos.Pick:
                     target = Motion.PickPosition;
                     break;
                 case TeachPos.Bin:
-                    break;
-                case TeachPos.ConveyorLeft:
-                    break;
-                case TeachPos.ConveyorRight:
+                    target = Motion.BinPosition;
                     break;
                 case TeachPos.Holder1:
                     target = Motion.ShieldBox1;
@@ -39,14 +34,21 @@ namespace Rack
                     target = Motion.ShieldBox6;
                     break;
                 case TeachPos.Gold1:
+                    target = Motion.Gold1;
                     break;
                 case TeachPos.Gold2:
+                    target = Motion.Gold2;
                     break;
                 case TeachPos.Gold3:
+                    target = Motion.Gold3;
                     break;
                 case TeachPos.Gold4:
+                    target = Motion.Gold4;
                     break;
                 case TeachPos.Gold5:
+                    target = Motion.Gold5;
+                    break;
+                default:
                     break;
             }
 

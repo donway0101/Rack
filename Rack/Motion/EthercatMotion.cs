@@ -205,7 +205,7 @@ namespace Rack
         {
             TargetPosition target = new TargetPosition
             {
-                Id = id,
+                TeachPos = id,
                 XPos = Convert.ToDouble(
                     XmlReaderWriter.GetTeachAttribute(Files.RackData, pos, PosItem.XPos)),
                 YPos = Convert.ToDouble(

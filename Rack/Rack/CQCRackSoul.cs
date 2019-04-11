@@ -14,6 +14,13 @@ namespace Rack
             while (true)
             {
                 PhoneServerManualResetEvent.WaitOne();
+
+                Delay(500);
+                if (HasNoPhoneToBeServed())
+                    continue;
+
+                ArrangeNextTargetPosition();
+
                 List<Phone> luckyPhones = new List<Phone>();
 
                 try
@@ -24,7 +31,7 @@ namespace Rack
 
 
                     //Collect fails
-                    
+                    //After motion finish, update position of phone.
                     ;
 
 
@@ -38,9 +45,73 @@ namespace Rack
                     OnErrorOccured(e.Message);
                     PhoneServerManualResetEvent.Reset();
                 }
-
-                Delay(500);
+                
             }
+        }
+
+        private bool HasNoPhoneToBeServed()
+        {
+            lock (_phoneToBeServedLocker)
+            {
+                return PhoneToBeServed.Count == 0;
+            }
+        }
+
+        /// <summary>
+        /// Optimize movement efficiency.
+        /// </summary>
+        /// Follow rule of test mode of rack.
+        ///  if AA mode,  need to reload the phone?
+        private void ArrangeNextTargetPosition()
+        {
+            GetAvailableBox();
+            switch (TestMode)
+            {
+                case RackTestMode.AB:
+                    
+                    break;
+                case RackTestMode.AAB:
+                    //In use.
+                    break;
+                case RackTestMode.ABC:
+                    //In use.
+                    ArrangeAbcMode();
+                    break;
+                case RackTestMode.ABA:
+                    break;
+            }
+        }
+
+        private void ArrangeAbcMode()
+        {
+            lock (_phoneToBeServedLocker)
+            {
+                if (PhoneToBeServed.Count > 0)
+                {
+                    foreach (var phone in PhoneToBeServed)
+                    {
+                        if (SetupComplete)
+                        {
+                            
+                        }
+                    }
+                }
+            }
+        }
+
+        private void GetAvailableBox()
+        {
+            lock (_availableBoxLocker)
+            {
+                AvailableBox.Clear();
+                foreach (var box in ShieldBoxs)
+                {
+                    if (box.Enabled & box.Available)
+                    {
+                        AvailableBox.Add(box);
+                    }
+                }
+            }           
         }
 
         /// <summary>
@@ -57,7 +128,7 @@ namespace Rack
             List<Phone> phonesToBin = new List<Phone>();
             List<Phone> phonesToPlace = new List<Phone>();
             //If previous phone is empty, then no load, likewise, no phone next, no unload.
-            List<Phone> phonesToUnloadAndLoad = new List<Phone>();
+            List<Phone> phonesToAnotherBox = new List<Phone>();
             List<Phone> phonesToPick = new List<Phone>();
 
             //Sort phones by next procedure.
@@ -75,8 +146,8 @@ namespace Rack
                             case RackProcedure.Place:
                                 phonesToPlace.Add(phone);
                                 break;
-                            case RackProcedure.UnloadAndLoad:
-                                phonesToUnloadAndLoad.Add(phone);
+                            case RackProcedure.AnotherBox:
+                                phonesToAnotherBox.Add(phone);
                                 break;
                             case RackProcedure.Pick:
                                 phonesToPick.Add(phone);
@@ -91,27 +162,36 @@ namespace Rack
             // For optimize robot move efficiency.
             // Release box imaginely and redistribute it for best robot routine.
             // Find out available boxes.
-            List<TeachPos> availableBox = new List<TeachPos>();
-            foreach (var box in ShieldBoxs)
-            {
-                if (box.Enabled & box.Available)
-                {
-                    availableBox.Add(box.TeachPos);
-                }
-            }
+            
 
-            //Like a bus, out first.
-            //The first phone's next target position better match the second 
-            // phone's current position.
+
+            //Like a bus, out first.         
             //Can't full fill all box cause no AB mode available.
-
+            //After chosen, set next target position of phone, so the motion could decide where to go.
+            // and for phone which want to go to another box, choose the right box for it.
             //Find the circle.
+            List<TeachPos> binFromBox = new List<TeachPos>();
             if (phonesToBin.Count > 0)
             {
-                foreach (var phone in phonesToBin)
+                //Imaginely release position.
+                //availableBox.Add(phone.CurrentTeachPos);
+
+                //The first phone's next target position better match the second 
+                // phone's current position. This combine a unload and load movement.
+                if (phonesToAnotherBox.Count > 0)
                 {
-                    //Imaginely release.
-                    availableBox.Add(phone.CurrentTeachPos);
+                    foreach (var phoneBin in phonesToBin)
+                    {
+                        //availableBox.Add(phone.CurrentTeachPos);
+                        //Choose next target by test mode.
+                        foreach (var phoneUnL in phonesToAnotherBox)
+                        {
+                            if (phoneBin.CurrentTargetPosition.TeachPos == phoneUnL.NextTargetPosition.TeachPos)
+                            {
+
+                            }
+                        }
+                    }
                 }
             }
             else
@@ -122,9 +202,9 @@ namespace Rack
                 }
             }
 
-            if (phonesToUnloadAndLoad.Count > 0)
+            if (phonesToAnotherBox.Count > 0)
             {
-                chosenPhones.Add(phonesToUnloadAndLoad.First());
+                chosenPhones.Add(phonesToAnotherBox.First());
             }
 
             if (phonesToPick.Count > 0)
