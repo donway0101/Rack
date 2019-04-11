@@ -90,7 +90,8 @@ namespace Rack
         /// 1. like a bus, out first.
         /// retry than pick
         /// Gold go back to gold.
-        /// Todo match shieldbox test step and phone's step
+        /// Todo match shieldbox test step and phone's step.
+        /// Has to avoid conflict, next target position can not be same.
         private void ArrangeAbcMode()
         {
             lock (_phoneToBeServedLocker)
@@ -99,42 +100,59 @@ namespace Rack
                 {
                     foreach (var phone in PhoneToBeServed)
                     {
+                        //Phone to bin.
                         if (phone.FailCount==3)
-                        {
-                            //Phone has to bin.
+                        {                            
                             phone.NextTargetPosition = Motion.BinPosition;
+                            phone.Procedure = RackProcedure.Bin;
+
+                            continue;
                         }
-                        else
+
+                        //Phone to place.
+                        if (phone.TestResult== ShieldBoxTestResult.Pass)
                         {
-                            //Find another box to retry testing.
-                            if (phone.TestResult == ShieldBoxTestResult.Fail)
+                            phone.NextTargetPosition = Motion.PickPosition;
+                            phone.Procedure = RackProcedure.Place;
+                            continue;
+                        }
+
+                        //Phone to retry testing.
+                        if (phone.TestResult == ShieldBoxTestResult.Fail)
+                        {
+                            //Assume has such box.
+                            bool foundABox = true;
+                            ShieldBox candidateBox;
+                            lock (_availableBoxLocker)
                             {
-                                bool foundABox = true;
-                                ShieldBox candidateBox;
-                                lock (_availableBoxLocker)
+                                foreach (var box in AvailableBox)
                                 {
-                                    foreach (var box in AvailableBox)
+                                    candidateBox = box;
+                                    foreach (var footprint in phone.TargetPositionFootprint)
                                     {
-                                        candidateBox = box;
-                                        foreach (var footprint in phone.TargetPositionFootprint)
+                                        //Todo match shield box type.
+                                        if (footprint.TeachPos == box.TeachPos)
                                         {
-                                            //Todo match type.
-                                            if (footprint.TeachPos == box.TeachPos)
-                                            {
-                                                foundABox = false;
-                                            }
+                                            foundABox = false;
                                         }
                                     }
                                 }
-
-                                
                             }
+                            //Found it.
+                            if (foundABox)
+                            {
+
+                            }
+
+
                         }
-                       
+
+
                     }
                 }
             }
         }
+
 
         private void GetAvailableBox()
         {

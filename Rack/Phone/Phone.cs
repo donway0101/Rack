@@ -1,4 +1,5 @@
-﻿using System.Security.AccessControl;
+﻿using System.Collections.Generic;
+using System.Security.AccessControl;
 
 namespace Rack
 {
@@ -14,7 +15,7 @@ namespace Rack
         /// Need smart algorithm for next target position decision
         public TargetPosition NextTargetPosition { get; set; }
         //Todo link to shield box.
-        public TargetPosition[] TargetPositionFootprint { get; set; }
+        public List<TargetPosition> TargetPositionFootprint { get; set; }
         public TargetPosition CurrentTargetPosition { get; set; }
         public bool ReadyForNextProcedure { get; set; }
         public PhonePriority Priority { get; set; } = PhonePriority.Low;
