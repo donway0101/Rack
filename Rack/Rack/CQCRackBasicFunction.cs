@@ -12,12 +12,7 @@ namespace Rack
         public CqcRack(string controllerIp)
         {
             _ip = controllerIp;
-            Conveyor.ErrorOccured += Conveyor_ErrorOccured;
-        }
-
-        private void Conveyor_ErrorOccured(object sender, string description)
-        {
-            OnErrorOccured(description);
+            //Conveyor.ErrorOccured += Conveyor_ErrorOccured;
         }
 
         public void Start()
@@ -280,6 +275,7 @@ namespace Rack
 
         public void Load(StepperMotor gripper, ShieldBox shieldBox)
         {
+            //Todo if not test run, than check empty and shield box open.
             TargetPosition holder = ConvertShieldBoxToTargetPosition(shieldBox);
             if (shieldBox.State != ShieldBoxState.Open)
             {

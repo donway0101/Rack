@@ -42,7 +42,8 @@ namespace Rack
                     {
                         RecyclePhones(luckyPhones);
                     }
-                    OnErrorOccured(e.Message);
+                    //Todo error code
+                    OnErrorOccured(0,e.Message);
                     PhoneServerManualResetEvent.Reset();
                 }
                 
@@ -92,8 +93,13 @@ namespace Rack
         /// Gold go back to gold.
         /// Todo match shieldbox test step and phone's step.
         /// Has to avoid conflict, next target position can not be same.
-        private void ArrangeAbcMode()
+        private void ArrangeAbcMode(int maxFailCount = 3)
         {
+            //Retry testing phone better goes into bin phone or place phone,
+            // which can has unload and load movement.
+            // Equal to empty box.
+            List<TeachPos> binOrPlaceBox = new List<TeachPos>();
+            
             lock (_phoneToBeServedLocker)
             {
                 if (PhoneToBeServed.Count > 0)
@@ -101,11 +107,12 @@ namespace Rack
                     foreach (var phone in PhoneToBeServed)
                     {
                         //Phone to bin.
-                        if (phone.FailCount==3)
+                        if (phone.FailCount >= maxFailCount)
                         {                            
                             phone.NextTargetPosition = Motion.BinPosition;
                             phone.Procedure = RackProcedure.Bin;
-
+                            //Better for retry
+                            binOrPlaceBox.Add(phone.CurrentTargetPosition.TeachPos);
                             continue;
                         }
 
@@ -114,35 +121,70 @@ namespace Rack
                         {
                             phone.NextTargetPosition = Motion.PickPosition;
                             phone.Procedure = RackProcedure.Place;
+                            binOrPlaceBox.Add(phone.CurrentTargetPosition.TeachPos);
                             continue;
                         }
 
                         //Phone to retry testing.
-                        if (phone.TestResult == ShieldBoxTestResult.Fail)
+                        //First try to find a box which need bin or place, if fail, 
+                        // try to find an empty box.
+                        if (phone.TestResult == ShieldBoxTestResult.Fail & phone.FailCount< maxFailCount)
                         {
-                            //Assume has such box.
+                            //Assume found it.
                             bool foundABox = true;
-                            ShieldBox candidateBox;
+                            TeachPos candidateBox;
+
+                            //Better put phone in a bining or placing box.
+                            foreach (var boxTeachPose in binOrPlaceBox)
+                            {
+                                //Give box a chance very single time.
+                                foundABox = true;
+                                candidateBox = boxTeachPose;
+                                foreach (var footprint in phone.TargetPositionFootprint)
+                                {
+                                    if (candidateBox == footprint.TeachPos)
+                                    {
+                                        foundABox = false;
+                                    }
+                                }
+                                if (foundABox)
+                                {
+                                    break;
+                                }
+                            }
+
+                            //Found a bin or place box for retry.
+                            if (foundABox)
+                            {
+                                foreach (var location in Motion.Locations)
+                                {
+                                    
+                                }
+                                //phone.NextTargetPosition
+                            }
+                            else
+                            {
+                                //Find a empty box for retry.
+
+                            }
+
+
                             lock (_availableBoxLocker)
                             {
                                 foreach (var box in AvailableBox)
                                 {
-                                    candidateBox = box;
-                                    foreach (var footprint in phone.TargetPositionFootprint)
-                                    {
-                                        //Todo match shield box type.
-                                        if (footprint.TeachPos == box.TeachPos)
-                                        {
-                                            foundABox = false;
-                                        }
-                                    }
+                                    //candidateBox = box;
+                                    //foreach (var footprint in phone.TargetPositionFootprint)
+                                    //{
+                                    //    //Todo match shield box type.
+                                    //    if (footprint.TeachPos == box.TeachPos)
+                                    //    {
+                                    //        foundABox = false;
+                                    //    }
+                                    //}
                                 }
                             }
-                            //Found it.
-                            if (foundABox)
-                            {
 
-                            }
 
 
                         }

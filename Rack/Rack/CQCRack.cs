@@ -65,31 +65,31 @@ namespace Rack
         public long PhoneCount { get; set; }
 
         #region Events
-        public delegate void ErrorOccuredEventHandler(object sender, string description);
+        public delegate void ErrorOccuredEventHandler(object sender, int code, string description);
 
         public event ErrorOccuredEventHandler ErrorOccured;
 
-        protected void OnErrorOccured(string description)
+        protected void OnErrorOccured(int code, string description)
         {
-            ErrorOccured?.Invoke(this, description);
+            ErrorOccured?.Invoke(this, code, description);
         }
 
-        public delegate void WarningOccuredEventHandler(object sender, string description);
+        public delegate void WarningOccuredEventHandler(object sender, int code, string description);
 
         public event WarningOccuredEventHandler WarningOccured;
 
-        protected void OnWarningOccured(string description)
+        protected void OnWarningOccured(int code, string description)
         {
-            WarningOccured?.Invoke(this, description);
+            WarningOccured?.Invoke(this, code, description);
         }
 
-        public delegate void InfoOccuredEventHandler(object sender, string description);
+        public delegate void InfoOccuredEventHandler(object sender, int code, string description);
 
         public event InfoOccuredEventHandler InfoOccured;
 
-        protected void OnInfoOccured(string description)
+        protected void OnInfoOccured(int code, string description)
         {
-            InfoOccured?.Invoke(this, description);
+            InfoOccured?.Invoke(this, code, description);
         }
 
         #endregion

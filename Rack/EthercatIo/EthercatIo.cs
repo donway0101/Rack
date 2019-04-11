@@ -161,7 +161,7 @@ namespace Rack
             return GetBit(OutputValue, outputPinNum);
         }
 
-        public void SetOutput(int moduleId, int outputPinNum, bool value)
+        public void SetOutput(int moduleId, int outputPinNum, bool value, int failRetry = 5)
         {
             var variableName = GetOutputName(moduleId);
             var OutputValue = Convert.ToInt32(Ch.ReadVariable(variableName));
@@ -172,6 +172,17 @@ namespace Rack
                 ResetBit(ref OutputValue, outputPinNum);
 
             Ch.WriteVariable(OutputValue, variableName, ProgramBuffer.ACSC_NONE);
+
+            int failCount = 0;
+            while (OutputValue != Convert.ToInt32(Ch.ReadVariable(variableName)))
+            {
+                failCount++;
+                if (failCount>failRetry)
+                {
+                    throw new Exception("Write ACS variable " + variableName + " fail.");
+                }
+                Ch.WriteVariable(OutputValue, variableName, ProgramBuffer.ACSC_NONE);
+            }           
         }
 
         public void SetOutput(Output output, bool value)

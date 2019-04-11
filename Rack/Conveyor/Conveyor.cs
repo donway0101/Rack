@@ -33,13 +33,13 @@ namespace Rack
 
         #region Events
 
-        public delegate void ErrorOccuredEventHandler(object sender, string description);
+        public delegate void ErrorOccuredEventHandler(object sender, int code, string description);
 
         public event ErrorOccuredEventHandler ErrorOccured;
 
-        protected void OnErrorOccured(string description)
+        protected void OnErrorOccured(int code, string description)
         {
-            ErrorOccured?.Invoke(this, description);
+            ErrorOccured?.Invoke(this, code, description);
         }
 
         public delegate void PhoneReadyForPickingEventHandler(object sender, string description);
@@ -158,12 +158,12 @@ namespace Rack
                 ResetCylinder(Output.SideBlockPick, Input.SideBlockPick);
         }
 
-        public void Clamp(bool state)
+        public void Clamp(bool state, int timeout=3000)
         {
             if (state)
-                SetCylinder(Output.ClampPick, Input.ClampTightPick);
+                SetCylinder(Output.ClampPick, Input.ClampTightPick, true, timeout);
             else
-                ResetCylinder(Output.ClampPick, Input.ClampLoosePick);
+                ResetCylinder(Output.ClampPick, Input.ClampLoosePick, true, timeout);
         }
 
         public void WaitTill(Input input, bool state, int timeout = 60000)
@@ -279,7 +279,8 @@ namespace Rack
                 }
                 catch (Exception ex)
                 {
-                    OnErrorOccured(ex.Message);
+                    //Todo write document about error code.
+                    OnErrorOccured(0,ex.Message);
                 }
         }
 
