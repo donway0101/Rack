@@ -16,8 +16,13 @@ namespace Rack
         private const double YIsInBox = 200;
         private const double YIsNearHome = 10;
 
-        private bool _gripperIsOnline = true;     
-        private bool _testRun = false;
+        public bool ShieldBoxOnline { get; set; } = true;
+        public bool TestRun { get; set; }
+        public bool StepperOnline { get; set; } = true;
+        public bool ConveyorOnline { get; set; } = true;
+        public bool MotorsOnline { get; set; } = true;
+        public bool EthercatOnline { get; set; } = true;
+        public double DefaultRobotSpeed { get; set; } = 10;
 
         public bool RobotHomeComplete { get; set; }
         public bool SetupComplete { get; set; }

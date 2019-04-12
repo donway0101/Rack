@@ -8,7 +8,7 @@ namespace Rack
     {
         private void HomeGrippers()
         {
-            if (_gripperIsOnline)
+            if (StepperOnline)
             {
                 Steppers.HomeMotor(StepperMotor.One, -6);
                 Steppers.HomeMotor(StepperMotor.Two, -2);

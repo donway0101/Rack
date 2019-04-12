@@ -19,47 +19,57 @@ namespace Rack
         {
             SetupComplete = false;
 
-            if (_ch.IsConnected == false)
+            if (EthercatOnline)
             {
-                _ch.OpenCommEthernet(_ip, 701);
+                if (_ch.IsConnected == false)
+                {
+                    _ch.OpenCommEthernet(_ip, 701);
+                }
+                if (EcatIo == null)
+                {
+                    EcatIo = new EthercatIo(_ch, 72, 7, 4);
+                }
+                EcatIo.Setup();
             }
 
-            if (Motion == null)
+            if (MotorsOnline)
             {
-                Motion = new EthercatMotion(_ch, 5);
+                if (Motion == null)
+                {
+                    Motion = new EthercatMotion(_ch, 5);
+                }
+
+                if (Motion.MotorSetupComplete == false)
+                {
+                    Motion.Setup();
+                }
+                Motion.LoadPositions();
+                SetSpeed(DefaultRobotSpeed);
             }
 
-            if (Motion.MotorSetupComplete == false)
+            if (ConveyorOnline)
             {
-                Motion.Setup();
-            }                        
-            Motion.LoadPositions();
 
-            if (EcatIo == null)
-            {
-                EcatIo = new EthercatIo(_ch, 72, 7, 4);
-            }            
-            EcatIo.Setup();
-
-            if (Conveyor == null)
-            {
-                Conveyor = new Conveyor(EcatIo);
-            }           
-            Conveyor.Start();
-
-            if (Steppers == null)
-            {
-                Steppers = new Stepper("COM3");
+                if (Conveyor == null)
+                {
+                    Conveyor = new Conveyor(EcatIo);
+                }
+                Conveyor.Start();
             }
-
-            if (_gripperIsOnline)
+            
+            if (StepperOnline)
             {
+                if (Steppers == null)
+                {
+                    Steppers = new Stepper("COM3");
+                }
                 Steppers.Setup();
             }
 
-            ShieldBoxSetup();
-
-            SetSpeed(10);
+            if (ShieldBoxOnline)
+            {
+                ShieldBoxSetup();
+            }           
 
             SetupComplete = true;
         }
@@ -196,7 +206,7 @@ namespace Rack
 
         public void Pick(StepperMotor gripper)
         {
-            if ( Conveyor.ReadyForPicking & _testRun==false)
+            if ( Conveyor.ReadyForPicking & TestRun==false)
             {
                 Conveyor.ReadyForPicking = false;
             }

@@ -24,8 +24,7 @@ namespace Rack
                 {
                     try
                     {
-                        //Todo try other command.
-                        box.OpenBox();
+                        box.GreenLight();
                     }
                     catch (Exception e)
                     {
@@ -37,7 +36,7 @@ namespace Rack
             }
         }
  
-        public void ShieldBoxInitialization()
+        public void OpenAllBox()
         {
             foreach (var box in ShieldBoxs)
             {

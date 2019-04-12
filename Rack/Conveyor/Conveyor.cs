@@ -8,26 +8,30 @@ namespace Rack
     {
         private readonly EthercatIo _io;
         private Thread _conveyorWorkingThread;
+        private bool _pickBufferHasPhone;
 
         public bool ConveyorMovingForward { get; set; } = true;
 
         /// <summary>
-        ///     Release clamp for picking.
-        ///     After Picking, reset it by host.
+        /// Release clamp for picking.
         /// </summary>
+        /// Todo After Picking, reset it by host.
         public bool ReadyForPicking { get; set; }
         public bool PickBeltOkToRun { get; set; }
 
         /// <summary>
-        ///     Phone already under the sensor, tightened.
-        ///     After Picking, reset it by host.
+        ///  Phone clamped under pick position.
         /// </summary>
+        /// Todo After Picking, reset it by host.
         public bool InposForPicking { get; set; }
 
+        /// <summary>
+        /// About to pick a phone.
+        /// </summary>
         public bool CommandInposForPicking { get; set; }
 
         /// <summary>
-        /// If there is phone can be place or bin, then Ok to ready the phone.
+        /// Stop conveyor, Open clamp for picking.
         /// </summary>
         public bool CommandReadyForPicking { get; set; }
 
@@ -51,13 +55,13 @@ namespace Rack
             PhoneReadyForPicking?.Invoke(this, description);
         }
 
-        public delegate void PickBufferHasPhoneEventHandler(object sender, string description);
+        public delegate void PickBufferPhoneComingEventHandler(object sender, string description);
 
-        public event PickBufferHasPhoneEventHandler PickBufferHasPhone;
+        public event PickBufferPhoneComingEventHandler PickBufferPhoneComing;
 
-        protected void OnPickBufferHasPhone(string description)
+        protected void OnPickBufferPhoneComing(string description)
         {
-            PickBufferHasPhone?.Invoke(this, description);
+            PickBufferPhoneComing?.Invoke(this, description);
         }
 
         #endregion
@@ -210,6 +214,7 @@ namespace Rack
 
         private void DoWork()
         {
+            int pickBufferSensorCount = 0;
             ReadyForPicking = false;
             InposForPicking = false;
             var stopwatch = new Stopwatch();
@@ -246,7 +251,7 @@ namespace Rack
                         RunBeltPick(true);
                     }
 
-                    if (CommandInposForPicking & (InposForPicking == false))
+                    if (CommandInposForPicking & (InposForPicking == false) & _pickBufferHasPhone)
                     {
                         CommandInposForPicking = false;
                         ReadyForPicking = false;
@@ -268,11 +273,26 @@ namespace Rack
                         Clamp(true);
 
                         InposForPicking = true;
-                        OnPickBufferHasPhone("");
 
                         UpBlockSeparate(true);
                         SideBlockSeparate(false);
                         UpBlockPick(false);
+                    }
+
+                    if (PickBufferPhoneSensor())
+                    {
+                        pickBufferSensorCount++;
+                        if (pickBufferSensorCount>10)
+                        {
+                            _pickBufferHasPhone = true;
+                            OnPickBufferPhoneComing("");
+                            pickBufferSensorCount = 0;
+                        }
+                    }
+                    else
+                    {
+                        pickBufferSensorCount = 0;
+                        _pickBufferHasPhone = false;
                     }
 
                     Delay(10);
@@ -282,6 +302,14 @@ namespace Rack
                     //Todo write document about error code.
                     OnErrorOccured(0,ex.Message);
                 }
+        }
+
+        private bool PickBufferPhoneSensor()
+        {
+            if (ConveyorMovingForward)
+               return _io.GetInput(Input.PickBufferHasPhoneForward);
+            else
+               return _io.GetInput(Input.PickBufferHasPhoneForward);
         }
 
         public void Stop()

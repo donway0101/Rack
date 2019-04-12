@@ -114,7 +114,7 @@ namespace Rack
             }            
         }
 
-        public void GreenLight(int timeout = 5000)
+        public void GreenLight(int timeout = 1000)
         {
             try
             {
@@ -123,6 +123,30 @@ namespace Rack
             catch (Exception e)
             {
                 throw new Exception("GreenLight " + Id + " timeout");
+            }
+        }
+
+        public void RedLight(int timeout = 1000)
+        {
+            try
+            {
+                SendCommand(ShieldBoxCommand.FAIL, ShieldBoxResponse.LightOnSuccessful, timeout);
+            }
+            catch (Exception e)
+            {
+                throw new Exception("RedLight " + Id + " timeout");
+            }
+        }
+
+        public void YellowLight(int timeout = 1000)
+        {
+            try
+            {
+                SendCommand(ShieldBoxCommand.TESTING, ShieldBoxResponse.LightOnSuccessful, timeout);
+            }
+            catch (Exception e)
+            {
+                throw new Exception("YellowLight " + Id + " timeout");
             }
         }
 

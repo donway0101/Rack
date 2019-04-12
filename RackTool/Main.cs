@@ -147,6 +147,7 @@ namespace RackTool
                 try
                 {
                     _rack.HomeRobot();
+                    
                 }
                 catch (Exception ex)
                 {
@@ -644,9 +645,7 @@ namespace RackTool
         private void button41_Click(object sender, EventArgs e)
         {
             _rack.Conveyor.InposForPicking = false;
-        }
-
-        
+        }        
 
         private void trackBarSetSpeed_Scroll(object sender, EventArgs e)
         {
