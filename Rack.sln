@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rack", "Rack\Rack.csproj", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RackTool", "RackTool\RackTool.csproj", "{B6155890-E482-4954-90B2-10F327A294F3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RackFunctionTester", "RackFunctionTester\RackFunctionTester.csproj", "{3CBE3B18-3338-4362-8936-B68CC472953B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{B6155890-E482-4954-90B2-10F327A294F3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B6155890-E482-4954-90B2-10F327A294F3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B6155890-E482-4954-90B2-10F327A294F3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3CBE3B18-3338-4362-8936-B68CC472953B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3CBE3B18-3338-4362-8936-B68CC472953B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3CBE3B18-3338-4362-8936-B68CC472953B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3CBE3B18-3338-4362-8936-B68CC472953B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
