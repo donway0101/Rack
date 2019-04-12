@@ -72,7 +72,7 @@ namespace Rack
             Motion.SetSpeed(speed);
             if (_gripperIsOnline)
             {
-                int stepperSpeed = Convert.ToInt16(speed / 20.0);
+                int stepperSpeed = Convert.ToInt16(speed / 5.0);
                 stepperSpeed++;
                 if (stepperSpeed > 30)
                 {

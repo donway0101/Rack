@@ -57,10 +57,7 @@ namespace Rack
                 Steppers.Setup();
             }
 
-            //Todo read xml and setup boxes.
-            ShieldBox1 = new ShieldBox(1, "COM3");
-
-            //ShieldBoxs = new ShieldBox[1] { ShieldBox1 };
+            ShieldBoxSetup();
 
             SetSpeed(10);
 

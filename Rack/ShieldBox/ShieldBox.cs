@@ -8,11 +8,12 @@ namespace Rack
 {
     public class ShieldBox
     {
-        private readonly SerialPort _serial = null;
+        private SerialPort _serial = null;
         private readonly object _sendLock = new object();
         private const string CmdEnding = "\r";
         private string _response;
         public readonly int Id;
+        public string PortName = "COM3";
 
         public ShieldBoxState State { get; set; } = ShieldBoxState.Close;
         public int PassRate { get; set; }
@@ -32,18 +33,20 @@ namespace Rack
 
         public ShieldBoxType Type { get; set; } = ShieldBoxType.RF;
 
-        public ShieldBox(int id, string serialPortName, int serialBaudRate = 9600,
-            Parity serialParity = Parity.None, int serialDataBit = 8,
-            StopBits serialStopBits = StopBits.One)
+        public ShieldBox(int id)
         {
-            _serial = new SerialPort(serialPortName, serialBaudRate, serialParity,
-                    serialDataBit, serialStopBits)
-                { ReadTimeout = 1000};
             Id = id;
         }
 
-        public void Start()
+        public void Start(int serialBaudRate = 9600,
+            Parity serialParity = Parity.None, int serialDataBit = 8,
+            StopBits serialStopBits = StopBits.One)
         {
+            Stop();
+            
+            _serial = new SerialPort(PortName, serialBaudRate, serialParity,
+                    serialDataBit, serialStopBits)
+                { ReadTimeout = 1000 };
             _serial.Open();
             _serial.DataReceived += _serial_DataReceived;
         }
@@ -55,8 +58,12 @@ namespace Rack
 
         public void Stop()
         {
-            _serial.Close();
-            _serial.Dispose();
+            if (_serial != null)
+            {
+                _serial.Close();
+                _serial.Dispose();
+                Delay(500);
+            }
         }
 
         public void SendCmd(ShieldBoxCommand command)

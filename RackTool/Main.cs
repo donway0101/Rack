@@ -7,6 +7,8 @@ using System.Threading;
 using ACS.SPiiPlusNET;
 using System.IO.Ports;
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace RackTool
 {
@@ -1367,9 +1369,20 @@ namespace RackTool
 
                 MessageBox.Show(ex.Message);
             }
-        } 
+        }
+
         #endregion
 
-        
+        List<Phone> phones = new List<Phone>();
+        private void button1_Click(object sender, EventArgs e)
+        {
+            //phones.Add(new Phone());
+            //phones.Add(new Phone());
+            //Phone a = phones.First();
+            //int i = phones.Count;
+            //phones.Remove(a);
+            //i = phones.Count;
+            //int j = 0;
+        }
     }
 }

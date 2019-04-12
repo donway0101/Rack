@@ -35,6 +35,7 @@ namespace Rack
         public ShieldBox ShieldBox6 { get; set; }        
 
         private readonly object _shieldBoxsLocker = new object();
+
         /// <summary>
         /// Boxes which is available.
         /// </summary>
@@ -42,7 +43,7 @@ namespace Rack
         ///  if more than one type, create another list,
         ///     change next target position strategy.
         /// <seealso cref="SortPhones"/>
-        public List<ShieldBox> ShieldBoxs = new List<ShieldBox>();
+        public ShieldBox[] ShieldBoxs;
 
         private Thread _phoneServerThread;
         private readonly object _phoneToBeServedLocker = new object();

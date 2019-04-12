@@ -21,6 +21,7 @@ namespace Rack
         ///   TargetPosition(){TeachPos = TeachPos.None};
         /// Can exchange between retrys.
         /// Make sure retry and pick has place to go, otherwise no move.
+        /// After motion finish, update position of phone in box.
         private void PhoneServer()
         {           
             while (true)
@@ -35,14 +36,48 @@ namespace Rack
 
                 try
                 {
-                    //luckyPhones = FindPhones();
-                    //Phone to be served
-                    Phone mostLuckyPhone = luckyPhones.First();
+                    while (luckyPhones.Count > 0)
+                    {
+                        //After finish, remove phone from the list.
+                        Phone firstPhone;
+                        Phone secondPhone;
+                        //If there is three phones, most likely has two combo move.
+                        if (luckyPhones.Count >= 2)
+                        {
+                            firstPhone = luckyPhones.First();
+                            secondPhone = luckyPhones.First();
+                            if (firstPhone.NextTargetPosition.TeachPos == secondPhone.CurrentTargetPosition.TeachPos)
+                            {
+
+                            }
+                            else
+                            {
+                                //Maybe it's 
+                            }
+                        }
+                        else
+                        {
+                            //Only one phone.
+                            firstPhone = luckyPhones.First();
+                            switch (firstPhone.Procedure)
+                            {
+                                case RackProcedure.Bin:
+                                    break;
+                                case RackProcedure.Place:
+                                    break;
+                                case RackProcedure.Retry:
+                                    break;
+                                case RackProcedure.Pick:
+                                    break;
+                                default:
+                                    throw new ArgumentOutOfRangeException();
+                            }
+
+                        }
+                    }
 
 
-                    //Collect fails
-                    //After motion finish, update position of phone.
-                    ;
+
 
                     //foreach (var footprint in phone.TargetPositionFootprint)
                     //{
@@ -66,6 +101,8 @@ namespace Rack
                 
             }
         }
+
+
 
         private bool HasNoPhoneToBeServed()
         {
