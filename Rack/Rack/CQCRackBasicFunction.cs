@@ -44,17 +44,17 @@ namespace Rack
                     Motion.Setup();
                 }
                 Motion.LoadPositions();
-                SetSpeed(DefaultRobotSpeed);
+                SetMotorSpeed(DefaultRobotSpeed);
             }
 
             if (ConveyorOnline)
             {
-
                 if (Conveyor == null)
                 {
                     Conveyor = new Conveyor(EcatIo);
                 }
                 Conveyor.Start();
+                Conveyor.PickBufferPhoneComing += Conveyor_PickBufferPhoneComing;
             }
             
             if (StepperOnline)
@@ -64,14 +64,34 @@ namespace Rack
                     Steppers = new Stepper("COM3");
                 }
                 Steppers.Setup();
+                SetStepperSpeed(DefaultRobotSpeed);
             }
 
             if (ShieldBoxOnline)
             {
                 ShieldBoxSetup();
-            }           
+            } 
+            
+            SelfChecking();
 
             SetupComplete = true;
+        }
+
+        private void Conveyor_PickBufferPhoneComing(object sender, string description)
+        {
+            AddPhoneToBeServed(new Phone()
+            {
+                AtBoxType = ShieldBoxType.RF, CurrentTargetPosition = Motion.PickPosition,
+                FailCount = 0, Id = PhoneCount++,
+                NextTargetPosition = new TargetPosition() { TeachPos = TeachPos.None},
+                OnGripper = RackGripper.None, Priority = PhonePriority.Low,
+                Procedure = RackProcedure.Pick, ReadyForNextProcedure = true, SerialNumber = ""
+            });
+        }
+
+        public void SelfChecking()
+        {
+            //Todo if gripper is not empty, then exception.
         }
 
         public void Stop()

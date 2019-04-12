@@ -49,7 +49,9 @@ namespace Rack
 
         public TargetPosition PickOffset { get; set; }
 
-        public TargetPosition[] Locations { get; set; } 
+        public TargetPosition[] Locations { get; set; }
+
+        public TargetPosition AEmptyTargetPosition { get; set; }
         #endregion
 
         public bool MotorSetupComplete { get; set; }
@@ -172,7 +174,7 @@ namespace Rack
 
         public void LoadPositions()
         {
-            HomePosition = LoadPosition(TeachPos.Home, TeachPos.Home);
+            HomePosition = LoadPosition(TeachPos.Home, TeachPos.None);
             PickPosition = LoadPosition(TeachPos.Pick, TeachPos.Pick);
             BinPosition = LoadPosition(TeachPos.Bin, TeachPos.Bin);
             ConveyorLeftPosition = LoadPosition(TeachPos.ConveyorLeft, TeachPos.None);
@@ -193,6 +195,8 @@ namespace Rack
 
             G1ToG2Offset = LoadPosition(TeachPos.G1ToG2Offset, TeachPos.None);
             PickOffset = LoadPosition(TeachPos.PickOffset, TeachPos.None);
+
+            AEmptyTargetPosition = HomePosition;
 
             Locations = new TargetPosition[14]
             {

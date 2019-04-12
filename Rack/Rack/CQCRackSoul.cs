@@ -68,6 +68,9 @@ namespace Rack
                                 case RackProcedure.Retry:
                                     break;
                                 case RackProcedure.Pick:
+                                    //Todo...
+                                    luckyPhones.Remove(firstPhone);
+                                    RemovePhoneToBeServed(firstPhone);
                                     break;
                                 default:
                                     throw new ArgumentOutOfRangeException();
@@ -75,8 +78,6 @@ namespace Rack
 
                         }
                     }
-
-
 
 
                     //foreach (var footprint in phone.TargetPositionFootprint)
@@ -390,17 +391,20 @@ namespace Rack
 
         private void GetAvailableBox()
         {
-            lock (_availableBoxLocker)
+            if (ShieldBoxOnline)
             {
-                AvailableBox.Clear();
-                foreach (var box in ShieldBoxs)
+                lock (_availableBoxLocker)
                 {
-                    if (box.Enabled & box.Available)
+                    AvailableBox.Clear();
+                    foreach (var box in ShieldBoxs)
                     {
-                        AvailableBox.Add(box);
+                        if (box.Enabled & box.Available)
+                        {
+                            AvailableBox.Add(box);
+                        }
                     }
                 }
-            }           
+            }
         }
 
         private void RecyclePhones(IEnumerable<Phone> phones)

@@ -67,9 +67,14 @@ namespace Rack
             return currentPosition;
         }
 
-        public void SetSpeed(double speed)
+        public void SetRobotSpeed(double speed)
         {
             Motion.SetSpeed(speed);
+            
+        }
+
+        public void SetStepperSpeed(double speed)
+        {
             if (StepperOnline)
             {
                 int stepperSpeed = Convert.ToInt16(speed / 5.0);
@@ -81,6 +86,11 @@ namespace Rack
                 Steppers.SetSpeed(StepperMotor.One, stepperSpeed);
                 Steppers.SetSpeed(StepperMotor.Two, stepperSpeed);
             }
+        }
+
+        public void SetMotorSpeed(double speed)
+        {
+            Motion.SetSpeed(speed);
         }
 
         public void SetSpeedImm(double speed)

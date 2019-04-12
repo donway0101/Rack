@@ -165,7 +165,7 @@ namespace RackTool
             //{
             //    return;
             //}
-            _rack.SetSpeed(defaultTestSpeed);
+            _rack.SetRobotSpeed(defaultTestSpeed);
 
             Task.Run(() =>
             {
@@ -527,7 +527,7 @@ namespace RackTool
         #endregion
         private async void buttonLoad_Click(object sender, EventArgs e)
         {
-            _rack.SetSpeed(defaultTestSpeed);
+            _rack.SetRobotSpeed(defaultTestSpeed);
 
             await Task.Run((Action)(() =>
             {
@@ -560,7 +560,7 @@ namespace RackTool
 
         private async void buttonPick_Click(object sender, EventArgs e)
         {
-            _rack.SetSpeed(defaultTestSpeed);
+            _rack.SetRobotSpeed(defaultTestSpeed);
 
             await Task.Run(() =>
             {
@@ -578,7 +578,7 @@ namespace RackTool
 
         private async void buttonPlace_Click(object sender, EventArgs e)
         {
-            _rack.SetSpeed(defaultTestSpeed);
+            _rack.SetRobotSpeed(defaultTestSpeed);
 
             await Task.Run(() =>
             {
@@ -595,7 +595,7 @@ namespace RackTool
         }
         private async void buttonUnload_Click(object sender, EventArgs e)
         {
-            _rack.SetSpeed(defaultTestSpeed);
+            _rack.SetRobotSpeed(defaultTestSpeed);
 
             await Task.Run((Action)(() =>
             {
@@ -853,7 +853,7 @@ namespace RackTool
 
         private async void buttonBin_Click(object sender, EventArgs e)
         {
-            _rack.SetSpeed(defaultTestSpeed);
+            _rack.SetRobotSpeed(defaultTestSpeed);
 
             await Task.Run(() =>
             {
@@ -872,7 +872,7 @@ namespace RackTool
 
         private async void buttonUnloadAndLoad_Click(object sender, EventArgs e)
         {
-            _rack.SetSpeed(defaultTestSpeed);
+            _rack.SetRobotSpeed(defaultTestSpeed);
 
             await Task.Run(() =>
             {
@@ -905,7 +905,7 @@ namespace RackTool
 
         private async void buttonLoadForTeach_Click(object sender, EventArgs e)
         {
-            _rack.SetSpeed(defaultTestSpeed);
+            _rack.SetRobotSpeed(defaultTestSpeed);
 
             await Task.Run(() =>
             {
@@ -1382,6 +1382,9 @@ namespace RackTool
             //phones.Remove(a);
             //i = phones.Count;
             //int j = 0;
+
+            _rack.StartPhoneServer();
+            _rack.PhoneServerManualResetEvent.Set();
         }
     }
 }

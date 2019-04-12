@@ -16,13 +16,15 @@ namespace Rack
         private const double YIsInBox = 200;
         private const double YIsNearHome = 10;
 
-        public bool ShieldBoxOnline { get; set; } = true;
+        public bool ShieldBoxOnline { get; set; } = false;
         public bool TestRun { get; set; }
         public bool StepperOnline { get; set; } = true;
         public bool ConveyorOnline { get; set; } = true;
         public bool MotorsOnline { get; set; } = true;
         public bool EthercatOnline { get; set; } = true;
         public double DefaultRobotSpeed { get; set; } = 10;
+
+        public long PhoneCount { get; set; }
 
         public bool RobotHomeComplete { get; set; }
         public bool SetupComplete { get; set; }
@@ -66,9 +68,7 @@ namespace Rack
         /// </summary>
         public ManualResetEvent PhoneServerManualResetEvent = new ManualResetEvent(false);
 
-        public RackTestMode TestMode { get; set; } = RackTestMode.AB;
-        
-        public long PhoneCount { get; set; }
+        public RackTestMode TestMode { get; set; } = RackTestMode.ABC;        
 
         #region Events
         public delegate void ErrorOccuredEventHandler(object sender, int code, string description);

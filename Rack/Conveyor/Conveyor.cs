@@ -17,6 +17,13 @@ namespace Rack
         /// </summary>
         /// Todo After Picking, reset it by host.
         public bool ReadyForPicking { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// Todo set by Rack after picking.
+        public bool RobotHasPickedAPhone { get; set; } = true;
+
         public bool PickBeltOkToRun { get; set; }
 
         /// <summary>
@@ -186,7 +193,7 @@ namespace Rack
             Thread.Sleep(millisecond);
         }
 
-        public void InitialState()
+        public void ResetOutputs()
         {
             Clamp(false);
             UpBlockSeparate(true);
@@ -201,7 +208,7 @@ namespace Rack
 
         public void Start()
         {
-            InitialState();
+            ResetOutputs();
 
             if (_conveyorWorkingThread == null)
                 _conveyorWorkingThread = new Thread(DoWork)
@@ -246,7 +253,8 @@ namespace Rack
                     }
 
                     //Todo combine other condition.
-                    if (PickBeltOkToRun)
+                    //Todo When to run?
+                    if (PickBeltOkToRun & ReadyForPicking==false)
                     {
                         RunBeltPick(true);
                     }
@@ -255,7 +263,7 @@ namespace Rack
                     {
                         CommandInposForPicking = false;
                         ReadyForPicking = false;
-                        
+                        RunBeltPick(true);
                         if (_io.GetInput(Input.PickHasPhone) == false)
                         {
                             WaitTill(
@@ -285,14 +293,26 @@ namespace Rack
                         if (pickBufferSensorCount>10)
                         {
                             _pickBufferHasPhone = true;
-                            OnPickBufferPhoneComing("");
                             pickBufferSensorCount = 0;
+                        }
+
+                        if (_pickBufferHasPhone & RobotHasPickedAPhone)
+                        {
+                            OnPickBufferPhoneComing("");
+                            //Todo, means the new info can call for serve,
+                            // it can join list of PhoneToBeServed.
+                            RobotHasPickedAPhone = false;
                         }
                     }
                     else
                     {
-                        pickBufferSensorCount = 0;
-                        _pickBufferHasPhone = false;
+                        pickBufferSensorCount++;
+                        if (pickBufferSensorCount > 10)
+                        {
+                            _pickBufferHasPhone = false;
+                            pickBufferSensorCount = 0;
+                        }
+                        
                     }
 
                     Delay(10);

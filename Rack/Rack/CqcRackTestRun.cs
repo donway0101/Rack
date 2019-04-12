@@ -54,7 +54,7 @@ namespace Rack
         {
             Task.Run(() =>
             {
-                SetSpeed(20);
+                SetRobotSpeed(20);
                 Unload(StepperMotor.Two, Motion.ShieldBox1);
                 Unload(StepperMotor.Two, Motion.BinPosition);
                 Unload(StepperMotor.Two, Motion.ShieldBox2);
@@ -75,7 +75,7 @@ namespace Rack
         {
             Task.Run(() =>
             {
-                SetSpeed(20);
+                SetRobotSpeed(20);
                 UnloadAndLoad(Motion.PickPosition, StepperMotor.One);
                 //UnloadAndLoad(_motion.Holder1, Gripper.Two);
                 //UnloadAndLoad(_motion.PickPosition, Gripper.One);

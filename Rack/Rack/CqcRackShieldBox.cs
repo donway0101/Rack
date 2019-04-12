@@ -19,7 +19,7 @@ namespace Rack
             foreach (var box in ShieldBoxs)
             {
                 box.PortName = XmlReaderWriter.GetBoxAttribute(Files.BoxData, box.Id, ShieldBoxItem.COM);
-                box.Enabled = Convert.ToBoolean(XmlReaderWriter.GetBoxAttribute(Files.BoxData, box.Id, ShieldBoxItem.State));
+                box.Enabled = XmlReaderWriter.GetBoxAttribute(Files.BoxData, box.Id, ShieldBoxItem.State) == "Enable";
                 if (box.Enabled)
                 {
                     try
