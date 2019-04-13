@@ -7,24 +7,81 @@ using System.Threading;
 using ACS.SPiiPlusNET;
 using System.IO.Ports;
 using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
+using System.Text;
+using System.Security.Cryptography;
+using System.Diagnostics;
+using System.Data;
+using System.IO;
 
 namespace RackTool
 {
     public partial class Main : Form
     {
-        private readonly CqcRack _rack = new CqcRack("192.168.8.18");
+        #region Define
+        private bool testLoop = true;
+        private readonly CqcRack _rack = new CqcRack("192.168.8.18"); //"192.168.8.18"
         private TeachPos _selectedTargetPosition;
         private StepperMotor _selectedGripper;
         private Thread _uiUpdateThread;
         private ArrayList _portName;
+        private Power _power = Power.None; 
+        #endregion
 
+        #region Struct
         public Main()
         {
             InitializeComponent();
             //Todo set tab draw mode to ownerdraw
             tabControl1.DrawItem += new DrawItemEventHandler(tabControl1_DrawItem);
+            tabControl1.SelectedIndex = 6;
+            comboBoxPower.SelectedIndex = 0;
+
+            _rack.ErrorOccured += OnErrorOccured;
+            _rack.WarningOccured += OnWarningOccured;
+            _rack.InfoOccured += OnInfoOccured;
+        }
+        #endregion
+
+        #region EventMethod
+        private void OnInfoOccured(object sender, int code, string description)
+        {
+            try
+            {
+
+                NewLog.Instance.Info(code.ToString(), description);
+            }
+            catch (Exception ex)
+            {
+
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private void OnWarningOccured(object sender, int code, string description)
+        {
+            try
+            {
+                NewLog.Instance.Warn(code.ToString(), description);
+            }
+            catch (Exception ex)
+            {
+
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private void OnErrorOccured(object sender, int code, string description)
+        {
+            try
+            {
+                NewLog.Instance.Error(code.ToString() + " " + description);
+
+            }
+            catch (Exception ex)
+            {
+
+                MessageBox.Show(ex.Message);
+            }
         }
 
         private void tabControl1_DrawItem(Object sender, System.Windows.Forms.DrawItemEventArgs e)
@@ -61,6 +118,14 @@ namespace RackTool
             g.DrawString(_tabPage.Text, _tabFont, _textBrush, _tabBounds, new StringFormat(_stringFlags));
         }
 
+        #endregion
+
+        #region Main
+        private void checkBox1_CheckedChanged(object sender, EventArgs e)
+        {
+            testLoop = checkBoxIsLoop.Enabled;
+            buttonTest.Enabled = true;
+        }
         private async void button_Start_Click(object sender, EventArgs e)
         {
             buttonStart.Enabled = false;
@@ -69,10 +134,10 @@ namespace RackTool
                 try
                 {
                     _rack.Start();
-                    
+
                     if (_uiUpdateThread == null)
                     {
-                        _uiUpdateThread = new Thread(UiUpdate)
+                        _uiUpdateThread = new Thread(PositionUpdate)
                         {
                             IsBackground = true
                         };
@@ -81,11 +146,10 @@ namespace RackTool
                     if (_uiUpdateThread.IsAlive == false)
                     {
                         _uiUpdateThread.Start();
-                    }                    
+                    }
                 }
                 catch (Exception ex)
                 {
-
                     MessageBox.Show(ex.Message);
                 }
             });
@@ -95,69 +159,6 @@ namespace RackTool
             buttonHome.Enabled = true;
             buttonStart.Enabled = true;
         }
-        private void UiUpdate()
-        {
-            while (true)
-            {
-                try
-                {
-                    labelPositionG1.Invoke((MethodInvoker) (() => { labelPositionG1.Text=_rack.Steppers.GetPosition(StepperMotor.One).ToString("F2"); }));
-                    labelPositionG2.Invoke((MethodInvoker)(() => { labelPositionG2.Text = _rack.Steppers.GetPosition(StepperMotor.Two).ToString("F2"); }));
-                    labelPositionX.Invoke((MethodInvoker)(() => { labelPositionX.Text = _rack.Motion.GetPositionX().ToString("F2"); }));
-                    labelPositionY.Invoke((MethodInvoker)(() => { labelPositionY.Text = _rack.Motion.GetPosition(_rack.Motion.MotorY).ToString("F2"); }));
-                    labelPositionZ.Invoke((MethodInvoker)(() => { labelPositionZ.Text = _rack.Motion.GetPosition(_rack.Motion.MotorZ).ToString("F2"); }));
-                    labelPositionR.Invoke((MethodInvoker)(() => { labelPositionR.Text = _rack.Motion.GetPosition(_rack.Motion.MotorR).ToString("F2"); }));
-                    Thread.Sleep(1000);
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine(e);
-                    break;
-                }
-            }
-        }
-
-        private void Invoke(Control control, MethodInvoker action)
-        {
-            control.Invoke(action);
-        }
-
-        private void SetupForTeaching()
-        {
-
-            comboBox_Gripper.Items.Clear();
-            foreach (var pos in Enum.GetValues(typeof(StepperMotor)))
-            {
-                comboBox_Gripper.Items.Add(pos);
-            }
-
-            comboBoxMovePos.Items.Clear();
-            foreach (var pos in Enum.GetValues(typeof(TeachPos)))
-            {
-                comboBoxMovePos.Items.Add(pos);
-            }
-        }
-
-        private async void button_Home_Click(object sender, EventArgs e)
-        {
-            buttonHome.Enabled = false;
-            await Task.Run(() =>
-            {
-
-                try
-                {
-                    _rack.HomeRobot();
-                    
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.Message);
-                }
-            });
-            buttonHome.Enabled = true;
-        }
-
-        //Test
         private void button3_Click(object sender, EventArgs e)
         {
             //DialogResult result = MessageBox.Show("是否所有屏蔽箱门都打开了？", "!!!", MessageBoxButtons.YesNo);
@@ -181,12 +182,11 @@ namespace RackTool
                 }
             });
         }
-
         private void button5_Click(object sender, EventArgs e)
         {
             try
             {
-                _rack.Stop();     
+                _rack.Stop();
             }
             catch (Exception ex)
             {
@@ -194,11 +194,96 @@ namespace RackTool
                 MessageBox.Show(ex.Message);
             }
         }
-        private void buttonCreateXml_Click(object sender, EventArgs e)
+        private async void buttonAutoRun_Click(object sender, EventArgs e)
         {
             try
             {
-                XmlReaderWriter.CreateStorageFile("RackData.xml");
+                await Task.Run(() =>
+                {
+                    while (checkBoxAutoRun.Checked == true)
+                    {
+                        Stopwatch watch = new Stopwatch();
+                        _rack.SetRobotSpeed(500);
+                        //_rack.HomeRobot();
+                        _rack.ReadyThePhone();
+                        _rack.OpenGripper(StepperMotor.One);
+                        _rack.OpenGripper(StepperMotor.Two);
+                        watch.Start();
+                        _rack.Pick(StepperMotor.One);
+                        //Thread.Sleep(200);
+                        TargetPosition target = _rack.TeachPos2TargetConverter(TeachPos.Holder1);
+                        _rack.UnloadAndLoad(target, StepperMotor.Two);
+                        //Thread.Sleep(200);
+                        _rack.Place(StepperMotor.Two);
+                    }
+
+                    //MessageBox.Show(watch.ElapsedMilliseconds.ToString());
+                });
+
+            }
+            catch (Exception ex)
+            {
+
+                MessageBox.Show(ex.Message);
+            }
+        }
+        private void Invoke(Control control, MethodInvoker action)
+        {
+            control.Invoke(action);
+        }
+
+        private void SetupForTeaching()
+        {
+
+            comboBoxGripper.Items.Clear();
+            foreach (var pos in Enum.GetValues(typeof(StepperMotor)))
+            {
+                comboBoxGripper.Items.Add(pos);
+            }
+
+            comboBoxMovePos.Items.Clear();
+            foreach (var pos in Enum.GetValues(typeof(TeachPos)))
+            {
+                comboBoxMovePos.Items.Add(pos);
+            }
+        }
+
+        private async void button_Home_Click(object sender, EventArgs e)
+        {
+            buttonHome.Enabled = false;
+            await Task.Run(() =>
+            {
+
+                try
+                {
+                    _rack.Motion.EnableAll();
+                    _rack.HomeRobot();
+                    MessageBox.Show("Home Succeed!");
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
+            });
+            buttonHome.Enabled = true;
+        }
+        #endregion
+
+        #region Robot
+        private void buttonG1TightOrLoose_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (buttonG1TightOrLoose.Text == "G1Open")
+                {
+                    _rack.OpenGripper(StepperMotor.One);
+                    buttonG1TightOrLoose.Text = "G1Close";
+                }
+                else
+                {
+                    _rack.CloseGripper(StepperMotor.One);
+                    buttonG1TightOrLoose.Text = "G1Open";
+                }
             }
             catch (Exception ex)
             {
@@ -207,11 +292,275 @@ namespace RackTool
             }
         }
 
-        bool testLoop = true;
-        private void checkBox1_CheckedChanged(object sender, EventArgs e)
+        private void buttonG2TightOrLoose_Click(object sender, EventArgs e)
         {
-            testLoop = checkBoxIsLoop.Enabled;
-            buttonTest.Enabled = true;
+            try
+            {
+                if (buttonG2TightOrLoose.Text == "G2Open")
+                {
+                    _rack.OpenGripper(StepperMotor.Two);
+                    buttonG2TightOrLoose.Text = "G2Close";
+                }
+                else
+                {
+                    _rack.CloseGripper(StepperMotor.Two);
+                    buttonG2TightOrLoose.Text = "G2Open";
+                }
+            }
+            catch (Exception ex)
+            {
+
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private async void buttonBin_Click(object sender, EventArgs e)
+        {
+            _rack.SetRobotSpeed(defaultTestSpeed);
+
+            await Task.Run(() =>
+            {
+                try
+                {
+                    //Todo check Box closed.
+                    _rack.Bin(_selectedGripper);
+                }
+                catch (Exception ex)
+                {
+
+                    MessageBox.Show(ex.Message);
+                }
+            });
+        }
+
+        private async void buttonUnloadAndLoad_Click(object sender, EventArgs e)
+        {
+            _rack.SetRobotSpeed(defaultTestSpeed);
+
+            await Task.Run(() =>
+            {
+                try
+                {
+                    DialogResult Result = MessageBox.Show("Now run the \"Unload And Load\", Please make sure the Unload Gripper not clamping the phone");
+                    if (Result == DialogResult.No)
+                        return;
+                    TargetPosition target = _rack.TeachPos2TargetConverter(_selectedTargetPosition);
+                    //Todo check Box closed.
+                    _rack.UnloadAndLoad(target, _selectedGripper);
+                }
+                catch (Exception ex)
+                {
+
+                    MessageBox.Show(ex.Message);
+                }
+            });
+        }
+
+        private void buttonReadyForPick_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                _rack.ReadyThePhone();
+            }
+            catch (Exception ex)
+            {
+
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private async void buttonLoadForTeach_Click(object sender, EventArgs e)
+        {
+            _rack.SetRobotSpeed(defaultTestSpeed);
+
+            await Task.Run(() =>
+            {
+                try
+                {
+                    _rack.LoadForTeaching(_selectedGripper, _selectedTargetPosition);
+                    RefleshRobotUi();
+                }
+                catch (Exception ex)
+                {
+
+                    MessageBox.Show(ex.Message);
+                }
+            });
+        }
+
+        private void buttonCalOffset_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                _rack.CalculateG1ToG2Offset(_selectedTargetPosition);
+            }
+            catch (Exception ex)
+            {
+
+                MessageBox.Show(ex.Message);
+            }
+        }
+        private async void buttonLoad_Click(object sender, EventArgs e)
+        {
+            _rack.SetRobotSpeed(defaultTestSpeed);
+
+            await Task.Run((Action)(() =>
+            {
+                //Todo complete condition.
+                TargetPosition target = _rack.TeachPos2TargetConverter(_selectedTargetPosition);
+
+                try
+                {
+                    _rack.Load(_selectedGripper, target);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
+            }));
+
+        }
+
+        private void comboBox_Gripper_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            _selectedGripper = (StepperMotor)comboBoxGripper.SelectedItem;
+        }
+
+        private void comboBoxMovePos_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            _selectedTargetPosition = (TeachPos)comboBoxMovePos.SelectedItem;
+        }
+
+        private double defaultTestSpeed = 5;
+
+        private async void buttonPick_Click(object sender, EventArgs e)
+        {
+            _rack.SetRobotSpeed(defaultTestSpeed);
+
+            await Task.Run(() =>
+            {
+                try
+                {
+                    _rack.Pick(_selectedGripper);
+                }
+                catch (Exception ex)
+                {
+
+                    MessageBox.Show(ex.Message);
+                }
+            });
+        }
+
+        private async void buttonPlace_Click(object sender, EventArgs e)
+        {
+            _rack.SetRobotSpeed(defaultTestSpeed);
+
+            await Task.Run(() =>
+            {
+                try
+                {
+                    _rack.Place(_selectedGripper);
+                }
+                catch (Exception ex)
+                {
+
+                    MessageBox.Show(ex.Message);
+                }
+            });
+        }
+        private async void buttonUnload_Click(object sender, EventArgs e)
+        {
+            _rack.SetRobotSpeed(defaultTestSpeed);
+
+            await Task.Run((Action)(() =>
+            {
+                //Todo complete condition.
+                TargetPosition target = _rack.TeachPos2TargetConverter(_selectedTargetPosition);
+
+                try
+                {
+                    _rack.Unload(_selectedGripper, target);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
+            }));
+        }
+        private void button26_Click(object sender, EventArgs e)
+        {
+            _rack.ReadyThePhone();
+        }
+
+        private void checkBoxPickConveyorMoveForward_CheckedChanged(object sender, EventArgs e)
+        {
+            _rack.Conveyor.ConveyorMovingForward = checkBoxPickConveyorMoveForward.Checked;
+        }
+
+        private void button38_Click(object sender, EventArgs e)
+        {
+            //_rack._conveyor.UpBlockSeparate(false);
+            //_rack._conveyor.InitialState();
+            //_rack._conveyor.UpBlockSeparate(true);
+            _rack.Conveyor.Start();
+        }
+
+        private void button39_Click(object sender, EventArgs e)
+        {
+            _rack.Conveyor.CommandInposForPicking = true;
+
+        }
+
+        private void button40_Click(object sender, EventArgs e)
+        {
+            _rack.Conveyor.CommandReadyForPicking = true;
+        }
+
+        private void button41_Click(object sender, EventArgs e)
+        {
+            _rack.Conveyor.InposForPicking = false;
+        }
+
+        private void trackBarSetSpeed2_ValueChanged(object sender, EventArgs e)
+        {
+            labelSpeed2.Text = trackBarSetSpeed2.Value.ToString();
+            _rack.SetRobotSpeedImm(Convert.ToDouble(trackBarSetSpeed2.Value));
+        }
+
+        private void trackBarSetSpeed1_ValueChanged(object sender, EventArgs e)
+        {
+            labelSpeed1.Text = trackBarSetSpeed1.Value.ToString();
+            _rack.SetRobotSpeedImm(Convert.ToDouble(trackBarSetSpeed1.Value));
+        }
+        private void RefleshRobotUi()
+        {
+            try
+            {
+                foreach (var item in _rack.Motion.Motors)
+                {
+                    MotorStates State = _rack.Motion.GetRobotState(item);
+                    switch (item.Id)
+                    {
+                        case Axis.ACSC_AXIS_0: buttonEableZ.Text = Convert.ToBoolean(State & MotorStates.ACSC_MST_ENABLE) ? "Disable" : "Enable"; break;
+                        case Axis.ACSC_AXIS_1: buttonEableX1.Text = Convert.ToBoolean(State & MotorStates.ACSC_MST_ENABLE) ? "Disable" : "Enable"; break;
+                        case Axis.ACSC_AXIS_2: buttonEableX2.Text = Convert.ToBoolean(State & MotorStates.ACSC_MST_ENABLE) ? "Disable" : "Enable"; break;
+                        case Axis.ACSC_AXIS_3: buttonEableY.Text = Convert.ToBoolean(State & MotorStates.ACSC_MST_ENABLE) ? "Disable" : "Enable"; break;
+                        case Axis.ACSC_AXIS_4: buttonEableR.Text = Convert.ToBoolean(State & MotorStates.ACSC_MST_ENABLE) ? "Disable" : "Enable"; break;
+                        default:
+                            break;
+                    }
+                }
+                buttonG1TightOrLoose.Text = _rack.EcatIo.GetInput(Input.Gripper01Tight) ? "G1Open" : "G1Close";
+                buttonG2TightOrLoose.Text = _rack.EcatIo.GetInput(Input.Gripper02Tight) ? "G2Open" : "G2Close";
+                buttonEableG1.Text = _rack.Steppers.GetStatus(StepperMotor.One, StatusCode.Enabled) ? "Disable" : "Enable";
+                buttonEableG2.Text = _rack.Steppers.GetStatus(StepperMotor.Two, StatusCode.Enabled) ? "Disable" : "Enable";
+            }
+            catch (Exception ex)
+            {
+
+                MessageBox.Show(ex.Message);
+            }
+
         }
         private void buttonSave_Click(object sender, EventArgs e)
         {
@@ -238,8 +587,41 @@ namespace RackTool
                 MessageBox.Show(exception.Message);
             }
         }
+        private void PositionUpdate()
+        {
+            while (true)
+            {
+                try
+                {
+                    labelPositionG1.Invoke((MethodInvoker)(() => { labelPositionG1.Text = _rack.Steppers.GetPosition(StepperMotor.One).ToString("F2"); }));
+                    labelPositionG2.Invoke((MethodInvoker)(() => { labelPositionG2.Text = _rack.Steppers.GetPosition(StepperMotor.Two).ToString("F2"); }));
+                    labelPositionX.Invoke((MethodInvoker)(() => { labelPositionX.Text = _rack.Motion.GetPositionX().ToString("F2"); }));
+                    labelPositionY.Invoke((MethodInvoker)(() => { labelPositionY.Text = _rack.Motion.GetPosition(_rack.Motion.MotorY).ToString("F2"); }));
+                    labelPositionZ.Invoke((MethodInvoker)(() => { labelPositionZ.Text = _rack.Motion.GetPosition(_rack.Motion.MotorZ).ToString("F2"); }));
+                    labelPositionR.Invoke((MethodInvoker)(() => { labelPositionR.Text = _rack.Motion.GetPosition(_rack.Motion.MotorR).ToString("F2"); }));
+                    Thread.Sleep(1000);
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                    break;
+                }
+            }
+        }
+        private void buttonCreateXml_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                XmlReaderWriter.CreateStorageFile("RackData.xml");
+            }
+            catch (Exception ex)
+            {
 
+                MessageBox.Show(ex.Message);
+            }
+        }
         #region Manual control
+
 
         private void button8_MouseDown(object sender, MouseEventArgs e)
         {
@@ -263,12 +645,12 @@ namespace RackTool
             {
                 MessageBox.Show(ex.Message);
             }
-            
+
         }
 
         private void button9_MouseDown(object sender, MouseEventArgs e)
         {
-            
+
             try
             {
                 _rack.Motion.Jog(_rack.Motion.MotorX1, true);
@@ -294,7 +676,7 @@ namespace RackTool
 
         private void button10_MouseDown(object sender, MouseEventArgs e)
         {
-            
+
             try
             {
                 _rack.Motion.Jog(_rack.Motion.MotorX2, false);
@@ -331,7 +713,7 @@ namespace RackTool
 
         private void button15_MouseDown(object sender, MouseEventArgs e)
         {
-            
+
             try
             {
                 _rack.Motion.Jog(_rack.Motion.MotorY, false);
@@ -524,171 +906,23 @@ namespace RackTool
             }
         }
 
+        #region SpeedSwitch
+        private void buttonLowSpeed_Click(object sender, EventArgs e)
+        {
+            trackBarSetSpeed2.Value = 5;
+        }
+
+        private void buttonMiddleSpeed_Click(object sender, EventArgs e)
+        {
+            trackBarSetSpeed2.Value = trackBarSetSpeed2.Maximum / 2;
+        }
+        private void buttonHighSpeed_Click(object sender, EventArgs e)
+        {
+            trackBarSetSpeed2.Value = trackBarSetSpeed2.Maximum;
+        }
         #endregion
-        private async void buttonLoad_Click(object sender, EventArgs e)
-        {
-            _rack.SetRobotSpeed(defaultTestSpeed);
-
-            await Task.Run((Action)(() =>
-            {
-                //Todo complete condition.
-                TargetPosition target = _rack.TeachPos2TargetConverter(_selectedTargetPosition);
-
-                try
-                {
-                    _rack.Load(_selectedGripper, target);
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.Message);
-                }
-            }));
-
-        }
-
-        private void comboBox_Gripper_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            _selectedGripper = (StepperMotor)comboBox_Gripper.SelectedItem;
-        }
-
-        private void comboBoxMovePos_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            _selectedTargetPosition = (TeachPos)comboBoxMovePos.SelectedItem;
-        }
-
-        private double defaultTestSpeed = 5;
-
-        private async void buttonPick_Click(object sender, EventArgs e)
-        {
-            _rack.SetRobotSpeed(defaultTestSpeed);
-
-            await Task.Run(() =>
-            {
-                try
-                {
-                    _rack.Pick(_selectedGripper);
-                }
-                catch (Exception ex)
-                {
-
-                    MessageBox.Show(ex.Message);
-                }
-            });
-        }
-
-        private async void buttonPlace_Click(object sender, EventArgs e)
-        {
-            _rack.SetRobotSpeed(defaultTestSpeed);
-
-            await Task.Run(() =>
-            {
-                try
-                {
-                    _rack.Place(_selectedGripper);
-                }
-                catch (Exception ex)
-                {
-
-                    MessageBox.Show(ex.Message);
-                }
-            });
-        }
-        private async void buttonUnload_Click(object sender, EventArgs e)
-        {
-            _rack.SetRobotSpeed(defaultTestSpeed);
-
-            await Task.Run((Action)(() =>
-            {
-                //Todo complete condition.
-                TargetPosition target = _rack.TeachPos2TargetConverter(_selectedTargetPosition);
-
-                try
-                {
-                    _rack.Unload(_selectedGripper, target);
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.Message);
-                }
-            }));
-        }
-
-        private void button26_Click(object sender, EventArgs e)
-        {
-            _rack.ReadyThePhone();
-        }
-
-        private void checkBoxPickConveyorMoveForward_CheckedChanged(object sender, EventArgs e)
-        {
-            _rack.Conveyor.ConveyorMovingForward = checkBoxPickConveyorMoveForward.Checked;
-        }
-
-        private void button38_Click(object sender, EventArgs e)
-        {
-            //_rack._conveyor.UpBlockSeparate(false);
-            //_rack._conveyor.InitialState();
-            //_rack._conveyor.UpBlockSeparate(true);
-            _rack.Conveyor.Start();
-        }
-
-        private void button39_Click(object sender, EventArgs e)
-        {
-            _rack.Conveyor.CommandInposForPicking = true;
- 
-        }
-
-        private void button40_Click(object sender, EventArgs e)
-        {
-            _rack.Conveyor.CommandReadyForPicking = true;
-        }
-
-        private void button41_Click(object sender, EventArgs e)
-        {
-            _rack.Conveyor.InposForPicking = false;
-        }        
-
-        private void trackBarSetSpeed_Scroll(object sender, EventArgs e)
-        {
-            labelSpeed2.Text = trackBarSetSpeed2.Value.ToString();
-            _rack.SetSpeedImm(Convert.ToDouble(trackBarSetSpeed2.Value));
-        }
-
-        private void trackBarSetSpeed1_Scroll(object sender, EventArgs e)
-        {
-            labelSpeed1.Text = trackBarSetSpeed1.Value.ToString();
-            _rack.SetSpeedImm(Convert.ToDouble(trackBarSetSpeed1.Value));
-        }
-
-        private void RefleshRobotUi()
-        {
-            try
-            {
-                foreach (var item in _rack.Motion.Motors)
-                {
-                    MotorStates State = _rack.Motion.GetRobotState(item);
-                    switch (item.Id)
-                    {
-                        case Axis.ACSC_AXIS_0: buttonEableZ.Text = Convert.ToBoolean(State & MotorStates.ACSC_MST_ENABLE) ? "Disable" : "Enable"; break;
-                        case Axis.ACSC_AXIS_1: buttonEableX1.Text = Convert.ToBoolean(State & MotorStates.ACSC_MST_ENABLE) ? "Disable" : "Enable"; break;
-                        case Axis.ACSC_AXIS_2: buttonEableX2.Text = Convert.ToBoolean(State & MotorStates.ACSC_MST_ENABLE) ? "Disable" : "Enable"; break;
-                        case Axis.ACSC_AXIS_3: buttonEableY.Text = Convert.ToBoolean(State & MotorStates.ACSC_MST_ENABLE) ? "Disable" : "Enable"; break;
-                        case Axis.ACSC_AXIS_4: buttonEableR.Text = Convert.ToBoolean(State & MotorStates.ACSC_MST_ENABLE) ? "Disable" : "Enable"; break;
-                        default:
-                            break;
-                    }
-                }
-                buttonG1TightOrLoose.Text = _rack.EcatIo.GetInput(Input.Gripper01Tight) ? "G1Open" : "G1Close";
-                buttonG2TightOrLoose.Text = _rack.EcatIo.GetInput(Input.Gripper02Tight) ? "G2Open" : "G2Close";
-                buttonEableG1.Text = _rack.Steppers.GetStatus(StepperMotor.One, StatusCode.Enabled) ? "Disable" : "Enable";
-                buttonEableG2.Text = _rack.Steppers.GetStatus(StepperMotor.Two, StatusCode.Enabled) ? "Disable" : "Enable";
-            }
-            catch (Exception ex)
-            {
-
-                MessageBox.Show(ex.Message);
-            }
-           
-        }
+        #endregion 
+        #endregion
 
         #region Enable
         private void button22_Click(object sender, EventArgs e)
@@ -722,8 +956,9 @@ namespace RackTool
             try
             {
                 if (buttonEableX1.Text == "Enable")
+                {
                     _rack.Motion.Enable(_rack.Motion.MotorX1);
-
+                }
                 else
                     _rack.Motion.Disable(_rack.Motion.MotorX1);
                 RefleshRobotUi();
@@ -807,150 +1042,236 @@ namespace RackTool
         }
         #endregion
 
-        private void buttonG1TightOrLoose_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                if (buttonG1TightOrLoose.Text == "G1Open")
-                {
-                   _rack.OpenGripper(StepperMotor.One);
-                    buttonG1TightOrLoose.Text = "G1Close";
-                }
-                else
-                {
-                    _rack.CloseGripper(StepperMotor.One);
-                    buttonG1TightOrLoose.Text = "G1Open";
-                }
-            }
-            catch (Exception ex)
-            {
-
-                MessageBox.Show(ex.Message);
-            }
-        }
-
-        private void buttonG2TightOrLoose_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                if (buttonG2TightOrLoose.Text == "G2Open")
-                {
-                    _rack.OpenGripper(StepperMotor.Two);
-                    buttonG2TightOrLoose.Text = "G2Close";
-                }
-                else
-                {
-                    _rack.CloseGripper(StepperMotor.Two);
-                    buttonG2TightOrLoose.Text = "G2Open";
-                }
-            }
-            catch (Exception ex)
-            {
-
-                MessageBox.Show(ex.Message);
-            }
-        }
-
-        private async void buttonBin_Click(object sender, EventArgs e)
-        {
-            _rack.SetRobotSpeed(defaultTestSpeed);
-
-            await Task.Run(() =>
-            {
-                try
-                {
-                    //Todo check Box closed.
-                    _rack.Bin(_selectedGripper);
-                }
-                catch (Exception ex)
-                {
-
-                    MessageBox.Show(ex.Message);
-                }
-            });
-        }
-
-        private async void buttonUnloadAndLoad_Click(object sender, EventArgs e)
-        {
-            _rack.SetRobotSpeed(defaultTestSpeed);
-
-            await Task.Run(() =>
-            {
-                try
-                {
-                    TargetPosition target = _rack.TeachPos2TargetConverter(_selectedTargetPosition);
-                    //Todo check Box closed.
-                    _rack.UnloadAndLoad(target, _selectedGripper);
-                }
-                catch (Exception ex)
-                {
-
-                    MessageBox.Show(ex.Message);
-                }
-            });
-        }
-
-        private void buttonReadyForPick_Click(object sender, EventArgs e)
-        {            
-            try
-            {
-                _rack.ReadyThePhone();
-            }
-            catch (Exception ex)
-            {
-
-                MessageBox.Show(ex.Message);
-            }
-        }
-
-        private async void buttonLoadForTeach_Click(object sender, EventArgs e)
-        {
-            _rack.SetRobotSpeed(defaultTestSpeed);
-
-            await Task.Run(() =>
-            {
-                try
-                {
-                    _rack.LoadForTeaching(_selectedGripper, _selectedTargetPosition);
-                }
-                catch (Exception ex)
-                {
-
-                    MessageBox.Show(ex.Message);
-                }
-            });
-        }
-
-        private void buttonCalOffset_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                _rack.CalculateG1ToG2Offset( _selectedTargetPosition);
-            }
-            catch (Exception ex)
-            {
-
-                MessageBox.Show(ex.Message);
-            }
-        }
-
-        #region SpeedSwitch
-        private void buttonLowSpeed_Click(object sender, EventArgs e)
-        {
-            trackBarSetSpeed2.Value = 5;
-        }
-
-        private void buttonMiddleSpeed_Click(object sender, EventArgs e)
-        {
-            trackBarSetSpeed2.Value = trackBarSetSpeed2.Maximum / 2;
-        }
-        private void buttonHighSpeed_Click(object sender, EventArgs e)
-        {
-            trackBarSetSpeed2.Value = trackBarSetSpeed2.Maximum;
-        }
-        #endregion
-
         #region ShieldBoxOperate
+
+        #region Right-click menu Event
+        private void bTToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            wIFIToolStripMenuItem.Checked = false;
+            rFToolStripMenuItem.Checked = false;
+            bTToolStripMenuItem.Checked = true;
+            if (listViewBox.SelectedItems.Count != 0)
+            {
+                switch (listViewBox.SelectedItems[0].Text)
+                {
+                    case "Box1": XmlReaderWriter.SetBoxAttribute(Files.BoxData, 1, ShieldBoxItem.Type, ShieldBoxType.BT.ToString()); break;
+                    case "Box2": XmlReaderWriter.SetBoxAttribute(Files.BoxData, 2, ShieldBoxItem.Type, ShieldBoxType.BT.ToString()); break;
+                    case "Box3": XmlReaderWriter.SetBoxAttribute(Files.BoxData, 3, ShieldBoxItem.Type, ShieldBoxType.BT.ToString()); break;
+                    case "Box4": XmlReaderWriter.SetBoxAttribute(Files.BoxData, 4, ShieldBoxItem.Type, ShieldBoxType.BT.ToString()); break;
+                    case "Box5": XmlReaderWriter.SetBoxAttribute(Files.BoxData, 5, ShieldBoxItem.Type, ShieldBoxType.BT.ToString()); break;
+                    case "Box6": XmlReaderWriter.SetBoxAttribute(Files.BoxData, 6, ShieldBoxItem.Type, ShieldBoxType.BT.ToString()); break;
+                    default:
+                        break;
+                }
+            }
+            else
+            {
+                MessageBox.Show("Please Select Box!");
+            }
+
+        }
+
+        private void wIFIToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            wIFIToolStripMenuItem.Checked = true;
+            rFToolStripMenuItem.Checked = false;
+            bTToolStripMenuItem.Checked = false;
+            if (listViewBox.SelectedItems.Count != 0)
+            {
+                switch (listViewBox.SelectedItems[0].Text)
+                {
+                    case "Box1": XmlReaderWriter.SetBoxAttribute(Files.BoxData, 1, ShieldBoxItem.Type, ShieldBoxType.WIFI.ToString()); break;
+                    case "Box2": XmlReaderWriter.SetBoxAttribute(Files.BoxData, 2, ShieldBoxItem.Type, ShieldBoxType.WIFI.ToString()); break;
+                    case "Box3": XmlReaderWriter.SetBoxAttribute(Files.BoxData, 3, ShieldBoxItem.Type, ShieldBoxType.WIFI.ToString()); break;
+                    case "Box4": XmlReaderWriter.SetBoxAttribute(Files.BoxData, 4, ShieldBoxItem.Type, ShieldBoxType.WIFI.ToString()); break;
+                    case "Box5": XmlReaderWriter.SetBoxAttribute(Files.BoxData, 5, ShieldBoxItem.Type, ShieldBoxType.WIFI.ToString()); break;
+                    case "Box6": XmlReaderWriter.SetBoxAttribute(Files.BoxData, 6, ShieldBoxItem.Type, ShieldBoxType.WIFI.ToString()); break;
+                    default:
+                        break;
+                }
+            }
+            else
+            {
+                MessageBox.Show("Please Select Box!");
+            }
+        }
+
+        private void rFToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            wIFIToolStripMenuItem.Checked = false;
+            rFToolStripMenuItem.Checked = true;
+            bTToolStripMenuItem.Checked = false;
+            if (listViewBox.SelectedItems.Count != 0)
+            {
+                switch (listViewBox.SelectedItems[0].Text)
+                {
+                    case "Box1": XmlReaderWriter.SetBoxAttribute(Files.BoxData, 1, ShieldBoxItem.Type, ShieldBoxType.RF.ToString()); break;
+                    case "Box2": XmlReaderWriter.SetBoxAttribute(Files.BoxData, 2, ShieldBoxItem.Type, ShieldBoxType.RF.ToString()); break;
+                    case "Box3": XmlReaderWriter.SetBoxAttribute(Files.BoxData, 3, ShieldBoxItem.Type, ShieldBoxType.RF.ToString()); break;
+                    case "Box4": XmlReaderWriter.SetBoxAttribute(Files.BoxData, 4, ShieldBoxItem.Type, ShieldBoxType.RF.ToString()); break;
+                    case "Box5": XmlReaderWriter.SetBoxAttribute(Files.BoxData, 5, ShieldBoxItem.Type, ShieldBoxType.RF.ToString()); break;
+                    case "Box6": XmlReaderWriter.SetBoxAttribute(Files.BoxData, 6, ShieldBoxItem.Type, ShieldBoxType.RF.ToString()); break;
+                    default:
+                        break;
+                }
+            }
+            else
+            {
+                MessageBox.Show("Please Select Box!");
+            }
+        }
+        private void labelTypeToolStripMenuItem_MouseEnter(object sender, EventArgs e)
+        {
+            if (listViewBox.SelectedItems.Count != 0)
+            {
+                ToolStripMenuItem[] Items = { aToolStripMenuItem, bToolStripMenuItem, cToolStripMenuItem };
+                switch (listViewBox.SelectedItems[0].Text)
+                {
+                    case "Box1": Check(Items, 1, ShieldBoxItem.Label); break;
+                    case "Box2": Check(Items, 2, ShieldBoxItem.Label); break;
+                    case "Box3": Check(Items, 3, ShieldBoxItem.Label); break;
+                    case "Box4": Check(Items, 4, ShieldBoxItem.Label); break;
+                    case "Box5": Check(Items, 5, ShieldBoxItem.Label); break;
+                    case "Box6": Check(Items, 6, ShieldBoxItem.Label); break;
+                    default:
+                        break;
+                }
+            }
+        }
+        private void typeToolStripMenuItem_MouseEnter(object sender, EventArgs e)
+        {
+            if (listViewBox.SelectedItems.Count != 0)
+            {
+                ToolStripMenuItem[] Items = { bTToolStripMenuItem, wIFIToolStripMenuItem, rFToolStripMenuItem };
+                switch (listViewBox.SelectedItems[0].Text)
+                {
+                    case "Box1": Check(Items, 1, ShieldBoxItem.Type); break;
+                    case "Box2": Check(Items, 2, ShieldBoxItem.Type); break;
+                    case "Box3": Check(Items, 3, ShieldBoxItem.Type); break;
+                    case "Box4": Check(Items, 4, ShieldBoxItem.Type); break;
+                    case "Box5": Check(Items, 5, ShieldBoxItem.Type); break;
+                    case "Box6": Check(Items, 6, ShieldBoxItem.Type); break;
+                    default:
+                        break;
+                }
+            }
+        }
+
+        private void Check(ToolStripMenuItem[] items, int boxId, ShieldBoxItem shieldBoxItem)
+        {
+            string Result = XmlReaderWriter.GetBoxAttribute(Files.BoxData, boxId, shieldBoxItem);
+            switch (Result)
+            {
+                case "BT":
+                    items[0].Checked = true;
+                    items[1].Checked = false;
+                    items[2].Checked = false;
+                    break;
+                case "WIFI":
+                    items[0].Checked = false;
+                    items[1].Checked = true;
+                    items[2].Checked = false;
+                    break;
+                case "RF":
+                    items[0].Checked = false;
+                    items[1].Checked = false;
+                    items[2].Checked = true;
+                    break;
+                case "A":
+                    items[0].Checked = true;
+                    items[1].Checked = false;
+                    items[2].Checked = false;
+                    break;
+                case "B":
+                    items[0].Checked = false;
+                    items[1].Checked = true;
+                    items[2].Checked = false;
+                    break;
+                case "C":
+                    items[0].Checked = false;
+                    items[1].Checked = false;
+                    items[2].Checked = true;
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        private void aToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            aToolStripMenuItem.Checked = true;
+            bTToolStripMenuItem.Checked = false;
+            cToolStripMenuItem.Checked = false;
+            if (listViewBox.SelectedItems.Count != 0)
+            {
+                switch (listViewBox.SelectedItems[0].Text)
+                {
+                    case "Box1": XmlReaderWriter.SetBoxAttribute(Files.BoxData, 1, ShieldBoxItem.Label, LabelType.A.ToString()); break;
+                    case "Box2": XmlReaderWriter.SetBoxAttribute(Files.BoxData, 2, ShieldBoxItem.Label, LabelType.A.ToString()); break;
+                    case "Box3": XmlReaderWriter.SetBoxAttribute(Files.BoxData, 3, ShieldBoxItem.Label, LabelType.A.ToString()); break;
+                    case "Box4": XmlReaderWriter.SetBoxAttribute(Files.BoxData, 4, ShieldBoxItem.Label, LabelType.A.ToString()); break;
+                    case "Box5": XmlReaderWriter.SetBoxAttribute(Files.BoxData, 5, ShieldBoxItem.Label, LabelType.A.ToString()); break;
+                    case "Box6": XmlReaderWriter.SetBoxAttribute(Files.BoxData, 6, ShieldBoxItem.Label, LabelType.A.ToString()); break;
+                    default:
+                        break;
+                }
+            }
+            else
+            {
+                MessageBox.Show("Please Select Box!");
+            }
+        }
+
+        private void bToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            aToolStripMenuItem.Checked = false;
+            bTToolStripMenuItem.Checked = true;
+            cToolStripMenuItem.Checked = false;
+            if (listViewBox.SelectedItems.Count != 0)
+            {
+                switch (listViewBox.SelectedItems[0].Text)
+                {
+                    case "Box1": XmlReaderWriter.SetBoxAttribute(Files.BoxData, 1, ShieldBoxItem.Label, LabelType.B.ToString()); break;
+                    case "Box2": XmlReaderWriter.SetBoxAttribute(Files.BoxData, 2, ShieldBoxItem.Label, LabelType.B.ToString()); break;
+                    case "Box3": XmlReaderWriter.SetBoxAttribute(Files.BoxData, 3, ShieldBoxItem.Label, LabelType.B.ToString()); break;
+                    case "Box4": XmlReaderWriter.SetBoxAttribute(Files.BoxData, 4, ShieldBoxItem.Label, LabelType.B.ToString()); break;
+                    case "Box5": XmlReaderWriter.SetBoxAttribute(Files.BoxData, 5, ShieldBoxItem.Label, LabelType.B.ToString()); break;
+                    case "Box6": XmlReaderWriter.SetBoxAttribute(Files.BoxData, 6, ShieldBoxItem.Label, LabelType.B.ToString()); break;
+                    default:
+                        break;
+                }
+            }
+            else
+            {
+                MessageBox.Show("Please Select Box!");
+            }
+
+        }
+
+        private void cToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            aToolStripMenuItem.Checked = false;
+            bTToolStripMenuItem.Checked = false;
+            cToolStripMenuItem.Checked = true;
+            if (listViewBox.SelectedItems.Count != 0)
+            {
+                switch (listViewBox.SelectedItems[0].Text)
+                {
+                    case "Box1": XmlReaderWriter.SetBoxAttribute(Files.BoxData, 1, ShieldBoxItem.Label, LabelType.C.ToString()); break;
+                    case "Box2": XmlReaderWriter.SetBoxAttribute(Files.BoxData, 2, ShieldBoxItem.Label, LabelType.C.ToString()); break;
+                    case "Box3": XmlReaderWriter.SetBoxAttribute(Files.BoxData, 3, ShieldBoxItem.Label, LabelType.C.ToString()); break;
+                    case "Box4": XmlReaderWriter.SetBoxAttribute(Files.BoxData, 4, ShieldBoxItem.Label, LabelType.C.ToString()); break;
+                    case "Box5": XmlReaderWriter.SetBoxAttribute(Files.BoxData, 5, ShieldBoxItem.Label, LabelType.C.ToString()); break;
+                    case "Box6": XmlReaderWriter.SetBoxAttribute(Files.BoxData, 6, ShieldBoxItem.Label, LabelType.C.ToString()); break;
+                    default:
+                        break;
+                }
+            }
+            else
+            {
+                MessageBox.Show("Please Select Box!");
+            }
+        }
 
         private void OpenToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -1015,7 +1336,7 @@ namespace RackTool
                         break;
                 }
                 XmlReaderWriter.SetBoxAttribute(Files.BoxData, BoxId, ShieldBoxItem.State, "Enable");
-                buttonBoxLoad_Click(null, null);
+                RefleshBoxUi();
             }
             else
             {
@@ -1047,7 +1368,7 @@ namespace RackTool
                     XmlReaderWriter.SetBoxAttribute(Files.BoxData, BoxId, ShieldBoxItem.COM, "None");
                     if (_portName.Contains(Com) == false)
                         _portName.Add(Com);
-                    buttonBoxLoad_Click(null, null);
+                    RefleshBoxUi();
                 }
                 else
                 {
@@ -1055,6 +1376,8 @@ namespace RackTool
                 }
             }
         }
+        #endregion
+
         private void ClearItem()
         {
             comboBox1.Items.Clear();
@@ -1064,7 +1387,8 @@ namespace RackTool
             comboBox5.Items.Clear();
             comboBox6.Items.Clear();
         }
-        private void buttonBoxLoad_Click(object sender, EventArgs e)
+
+        private void RefleshBoxUi()
         {
             string[] _PortName = SerialPort.GetPortNames();
             if (_portName == null)
@@ -1105,17 +1429,24 @@ namespace RackTool
             buttonOK5.Enabled = XmlReaderWriter.GetBoxAttribute(Files.BoxData, 5, ShieldBoxItem.State) == "Enable" ? true : false;
             comboBox6.Enabled = XmlReaderWriter.GetBoxAttribute(Files.BoxData, 6, ShieldBoxItem.State) == "Enable" ? true : false;
             buttonOK6.Enabled = XmlReaderWriter.GetBoxAttribute(Files.BoxData, 6, ShieldBoxItem.State) == "Enable" ? true : false;
+
+            //Reflesh ShieldBoxType（BT,RF,WIFI） in here
+            //for (int i = 1; i <= 6; i++)
+            //{
+            //    ShieldBoxType shieldBoxTpye =(ShieldBoxType) XmlReaderWriter.GetBoxAttribute(Files.BoxData,i,ShieldBoxItem.Type);
+            //    switch (shieldBoxTpye)
+            //    {
+            //        default:
+            //            break;
+            //    }
+            //}
         }
 
         private void buttonBoxSave_Click(object sender, EventArgs e)
         {
-            XmlReaderWriter.CreateBoxDataFile(Files.BoxData);
+            //XmlReaderWriter.CreateBoxDataFile(Files.BoxData);
         }
 
-        private void listViewBox_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
-        }
         #region ButtonOk
         private void buttonOK1_Click(object sender, EventArgs e)
         {
@@ -1123,10 +1454,10 @@ namespace RackTool
             {
                 string Com = comboBox1.SelectedItem.ToString();
                 _portName.Remove(Com);
-                ClearItem();
                 if (comboBox1.Items.Contains(Com) == false)
                     comboBox1.Items.Add(Com);
                 XmlReaderWriter.SetBoxAttribute(Files.BoxData, 1, ShieldBoxItem.COM, Com);
+                RefleshBoxUi();
             }
             catch (Exception ex)
             {
@@ -1138,12 +1469,12 @@ namespace RackTool
         {
             try
             {
-                string Com = comboBox1.SelectedItem.ToString();
+                string Com = comboBox2.SelectedItem.ToString();
                 _portName.Remove(Com);
-                ClearItem();
                 if (comboBox2.Items.Contains(Com) == false)
                     comboBox2.Items.Add(Com);
                 XmlReaderWriter.SetBoxAttribute(Files.BoxData, 2, ShieldBoxItem.COM, Com);
+                RefleshBoxUi();
             }
             catch (Exception ex)
             {
@@ -1158,10 +1489,10 @@ namespace RackTool
             {
                 string Com = comboBox3.SelectedItem.ToString();
                 _portName.Remove(Com);
-                ClearItem();
                 if (comboBox3.Items.Contains(Com) == false)
                     comboBox3.Items.Add(Com);
                 XmlReaderWriter.SetBoxAttribute(Files.BoxData, 3, ShieldBoxItem.COM, Com);
+                RefleshBoxUi();
             }
             catch (Exception ex)
             {
@@ -1176,10 +1507,10 @@ namespace RackTool
             {
                 string Com = comboBox4.SelectedItem.ToString();
                 _portName.Remove(Com);
-                ClearItem();
                 if (comboBox4.Items.Contains(Com) == false)
                     comboBox4.Items.Add(Com);
                 XmlReaderWriter.SetBoxAttribute(Files.BoxData, 4, ShieldBoxItem.COM, Com);
+                RefleshBoxUi();
             }
             catch (Exception ex)
             {
@@ -1194,10 +1525,10 @@ namespace RackTool
             {
                 string Com = comboBox5.SelectedItem.ToString();
                 _portName.Remove(Com);
-                ClearItem();
                 if (comboBox5.Items.Contains(Com) == false)
                     comboBox5.Items.Add(Com);
                 XmlReaderWriter.SetBoxAttribute(Files.BoxData, 5, ShieldBoxItem.COM, Com);
+                RefleshBoxUi();
             }
             catch (Exception ex)
             {
@@ -1212,10 +1543,10 @@ namespace RackTool
             {
                 string Com = comboBox6.SelectedItem.ToString();
                 _portName.Remove(Com);
-                ClearItem();
                 if (comboBox6.Items.Contains(Com) == false)
                     comboBox6.Items.Add(Com);
                 XmlReaderWriter.SetBoxAttribute(Files.BoxData, 6, ShieldBoxItem.COM, Com);
+                RefleshBoxUi();
             }
             catch (Exception ex)
             {
@@ -1228,19 +1559,6 @@ namespace RackTool
         #endregion
 
         #region ConveyorCylinderOperate
-        private void buttonConveyorLoad_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                RefleshConveyorUI();
-            }
-            catch (Exception ex)
-            {
-
-                MessageBox.Show(ex.Message);
-            }
-
-        }
         private void buttonUpBlockSeparateForward_Click(object sender, EventArgs e)
         {
             try
@@ -1249,6 +1567,7 @@ namespace RackTool
                     _rack.Conveyor.SetCylinder(Output.UpBlockSeparateForward, Input.UpBlockSeparateForward, false);
                 else
                     _rack.Conveyor.ResetCylinder(Output.UpBlockSeparateForward, Input.UpBlockSeparateForward);
+                RefleshConveyorUi();
             }
             catch (Exception ex)
             {
@@ -1261,9 +1580,16 @@ namespace RackTool
             try
             {
                 if (buttonOpenOrClose.Text == "Close")
+
+                {
                     _rack.Conveyor.Clamp(true);
+                    buttonOpenOrClose.Text = "Open";
+                }
                 else
+                {
                     _rack.Conveyor.Clamp(false);
+                    buttonOpenOrClose.Text = "Close";
+                }
             }
             catch (Exception ex)
             {
@@ -1280,6 +1606,7 @@ namespace RackTool
                     _rack.Conveyor.PushPickInpos(true);
                 else
                     _rack.Conveyor.PushPickInpos(false);
+                RefleshConveyorUi();
             }
             catch (Exception ex)
             {
@@ -1296,6 +1623,7 @@ namespace RackTool
                     _rack.Conveyor.SetCylinder(Output.SideBlockSeparateForward, Input.SideBlockSeparateForward, false);
                 else
                     _rack.Conveyor.ResetCylinder(Output.SideBlockSeparateForward, Input.SideBlockSeparateForward);
+                RefleshConveyorUi();
             }
             catch (Exception ex)
             {
@@ -1312,6 +1640,7 @@ namespace RackTool
                     _rack.Conveyor.SetCylinder(Output.SideBlockSeparateBackward, Input.SideBlockSeparateBackward, false);
                 else
                     _rack.Conveyor.ResetCylinder(Output.SideBlockSeparateBackward, Input.SideBlockSeparateBackward);
+                RefleshConveyorUi();
             }
             catch (Exception ex)
             {
@@ -1329,7 +1658,7 @@ namespace RackTool
                 else
                     _rack.Conveyor.ResetCylinder(Output.UpBlockPickBackward, Input.UpBlockPickBackward);
 
-
+                RefleshConveyorUi();
             }
             catch (Exception ex)
             {
@@ -1346,6 +1675,7 @@ namespace RackTool
                     _rack.Conveyor.SetCylinder(Output.UpBlockPickForward, Input.UpBlockPickForward, false);
                 else
                     _rack.Conveyor.ResetCylinder(Output.UpBlockPickForward, Input.UpBlockPickForward);
+                RefleshConveyorUi();
             }
             catch (Exception ex)
             {
@@ -1362,6 +1692,282 @@ namespace RackTool
                     _rack.Conveyor.SetCylinder(Output.UpBlockSeparateBackward, Input.UpBlockSeparateBackward, false);
                 else
                     _rack.Conveyor.ResetCylinder(Output.UpBlockSeparateBackward, Input.UpBlockSeparateBackward);
+                RefleshConveyorUi();
+            }
+            catch (Exception ex)
+            {
+
+                MessageBox.Show(ex.Message);
+            }
+        }
+        #endregion
+
+        #region Login
+        #region Encrypt And Decryption
+        private String Encrypt(string information)
+        {
+            try
+            {
+                string EncryptKey = "Test";
+                byte[] Data = Encoding.UTF8.GetBytes(information);
+                using (MD5CryptoServiceProvider Md5 = new MD5CryptoServiceProvider())
+                {
+                    byte[] Keys = Md5.ComputeHash(Encoding.UTF8.GetBytes(EncryptKey));
+                    using (TripleDESCryptoServiceProvider Triple = new TripleDESCryptoServiceProvider()
+                    {
+                        Key = Keys,
+                        Mode = CipherMode.ECB,
+                        Padding = PaddingMode.PKCS7
+                    })
+                    {
+                        ICryptoTransform TranForm = Triple.CreateEncryptor();
+                        byte[] Result = TranForm.TransformFinalBlock(Data, 0, Data.Length);
+                        return Convert.ToBase64String(Result, 0, Result.Length);
+                    }
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+        private String Decryption(string EncryptStr)
+        {
+            try
+            {
+                string EncryptKey = "Test";
+                byte[] Data = Convert.FromBase64String(EncryptStr);
+                using (MD5CryptoServiceProvider Md5 = new MD5CryptoServiceProvider())
+                {
+                    byte[] Keys = Md5.ComputeHash(Encoding.UTF8.GetBytes(EncryptKey));
+                    using (TripleDESCryptoServiceProvider Triple = new TripleDESCryptoServiceProvider()
+                    {
+                        Key = Keys,
+                        Mode = CipherMode.ECB,
+                        Padding = PaddingMode.PKCS7
+                    })
+                    {
+                        ICryptoTransform TranForm = Triple.CreateDecryptor();
+                        byte[] Result = TranForm.TransformFinalBlock(Data, 0, Data.Length);
+                        return Encoding.UTF8.GetString(Result);
+                    }
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+        #endregion
+        private void buttonLogin_Click_1(object sender, EventArgs e)
+        {
+            try
+            {
+                string LoginName = string.Empty;
+                string Password = string.Empty;
+                if (textBoxLoginName.Text == string.Empty)
+                {
+                    throw new Exception("Please Input Login Name!");
+                }
+                if (textBoxPassWord.Text == string.Empty)
+                {
+                    throw new Exception("Please Input Password!");
+                }
+                if (comboBoxPower.Text == string.Empty)
+                {
+                    throw new Exception("Please Select Power!");
+                }
+                switch (comboBoxPower.SelectedIndex)
+                {
+                    case 0:
+                        LoginName = XmlReaderWriter.GetLoginAttribute(Files.LoginData, LoginType.Administrator, LogicInformation.LoginName);
+                        Password = XmlReaderWriter.GetLoginAttribute(Files.LoginData, LoginType.Administrator, LogicInformation.LoginPassWord);
+                        if (textBoxLoginName.Text != LoginName)
+                            throw new Exception("LoginName is error,Please check!");
+                        if (textBoxPassWord.Text != Decryption(Password))
+                            throw new Exception("PassWord is error,Please check!");
+                        _power = Power.Administrator;
+                        buttonChangePassword.Enabled = true;
+                        break;
+                    case 1:
+                        LoginName = XmlReaderWriter.GetLoginAttribute(Files.LoginData, LoginType.Technician, LogicInformation.LoginName);
+                        Password = XmlReaderWriter.GetLoginAttribute(Files.LoginData, LoginType.Technician, LogicInformation.LoginPassWord);
+                        if (textBoxLoginName.Text != LoginName)
+                            throw new Exception("LoginName is error,Please check!");
+                        if (textBoxPassWord.Text != Decryption(Password))
+                            throw new Exception("PassWord is error,Please check!");
+                        _power = Power.Technician;
+                        buttonChangePassword.Enabled = false;
+                        break;
+                    case 2:
+                        LoginName = XmlReaderWriter.GetLoginAttribute(Files.LoginData, LoginType.Operator, LogicInformation.LoginName);
+                        Password = XmlReaderWriter.GetLoginAttribute(Files.LoginData, LoginType.Operator, LogicInformation.LoginPassWord);
+                        if (textBoxLoginName.Text != LoginName)
+                            throw new Exception("LoginName is error,Please check!");
+                        if (textBoxPassWord.Text != Decryption(Password))
+                            throw new Exception("PassWord is error,Please check!");
+                        _power = Power.Operator;
+                        buttonChangePassword.Enabled = false;
+                        break;
+                    default:
+                        throw new Exception("Please do not input power ");
+                        //Enable controls of disable controls in here.
+
+                }
+                switch (_power)
+                {
+                    case Power.Administrator:
+                        buttonSaveApproach.Enabled = true;
+                        buttonCalOffset.Enabled = true;
+                        buttonCreateXml.Enabled = true;
+                        buttonBoxSave.Enabled = true;
+                        buttonCreateFile.Enabled = true;
+                        labelTypeToolStripMenuItem.Enabled = true;
+                        typeToolStripMenuItem.Enabled = true;
+                        break;
+                    case Power.Technician:
+                        buttonSaveApproach.Enabled = false;
+                        buttonCalOffset.Enabled = false;
+                        buttonCreateXml.Enabled = false;
+                        buttonBoxSave.Enabled = false;
+                        buttonCreateFile.Enabled = false;
+                        labelTypeToolStripMenuItem.Enabled = false;
+                        typeToolStripMenuItem.Enabled = false;
+                        break;
+                    case Power.Operator:
+                        buttonSaveApproach.Enabled = false;
+                        buttonCalOffset.Enabled = false;
+                        buttonCreateXml.Enabled = false;
+                        buttonBoxSave.Enabled = false;
+                        buttonCreateFile.Enabled = false;
+                        labelTypeToolStripMenuItem.Enabled = false;
+                        typeToolStripMenuItem.Enabled = false;
+                        break;
+                    default:
+                        break;
+                }
+                toolStripStatusLabelName.Text = LoginName;
+                toolStripStatusLabelPower.Text = _power.ToString();
+                MessageBox.Show("Login Succeed!");
+
+            }
+            catch (Exception ex)
+            {
+
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            //XmlReaderWriter.CreateLoginDataFile(Files.LoginData);
+
+        }
+
+        private void buttonChangePassword_Click(object sender, EventArgs e)
+        {
+            groupBoxChangePassword.Visible = true;
+            textBoxChangeLoginName.Text = string.Empty;
+            textBoxOldPassword.Text = string.Empty;
+            textBoxNewPassword.Text = string.Empty;
+        }
+
+        private void buttonComfirm_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                string LoginName = string.Empty;
+                string Password = string.Empty;
+                if (textBoxChangeLoginName.Text == string.Empty)
+                {
+                    throw new Exception("Please Input Login Name!");
+                }
+                if (textBoxOldPassword.Text == string.Empty)
+                {
+                    throw new Exception("Please Input Old Password!");
+                }
+                if (comboBoxChangePower.Text == string.Empty)
+                {
+                    throw new Exception("Please Select Power!");
+                }
+                switch (comboBoxChangePower.SelectedIndex)
+                {
+                    case 0:
+                        LoginName = XmlReaderWriter.GetLoginAttribute(Files.LoginData, LoginType.Administrator, LogicInformation.LoginName);
+                        Password = XmlReaderWriter.GetLoginAttribute(Files.LoginData, LoginType.Administrator, LogicInformation.LoginPassWord);
+                        if (textBoxChangeLoginName.Text != LoginName)
+                            throw new Exception("LoginName is error,Please check!");
+                        if (textBoxOldPassword.Text != Decryption(Password))
+                            throw new Exception("Old PassWord is error,Please check!");
+                        XmlReaderWriter.SetLoginAttribute(Files.LoginData, LoginType.Administrator, LogicInformation.LoginPassWord, Encrypt(textBoxNewPassword.Text));
+                        MessageBox.Show("Change Succeed!");
+                        break;
+                    case 1:
+                        LoginName = XmlReaderWriter.GetLoginAttribute(Files.LoginData, LoginType.Technician, LogicInformation.LoginName);
+                        Password = XmlReaderWriter.GetLoginAttribute(Files.LoginData, LoginType.Technician, LogicInformation.LoginPassWord);
+                        if (textBoxChangeLoginName.Text != LoginName)
+                            throw new Exception("LoginName is error,Please check!");
+                        if (textBoxOldPassword.Text != Decryption(Password))
+                            throw new Exception("Old PassWord is error,Please check!");
+                        XmlReaderWriter.SetLoginAttribute(Files.LoginData, LoginType.Technician, LogicInformation.LoginPassWord, Encrypt(textBoxNewPassword.Text));
+                        MessageBox.Show("Change Succeed!");
+                        break;
+                    case 2:
+                        LoginName = XmlReaderWriter.GetLoginAttribute(Files.LoginData, LoginType.Operator, LogicInformation.LoginName);
+                        Password = XmlReaderWriter.GetLoginAttribute(Files.LoginData, LoginType.Operator, LogicInformation.LoginPassWord);
+                        if (textBoxChangeLoginName.Text != LoginName)
+                            throw new Exception("LoginName is error,Please check!");
+                        if (textBoxOldPassword.Text != Decryption(Password))
+                            throw new Exception("Old PassWord is error,Please check!");
+                        XmlReaderWriter.SetLoginAttribute(Files.LoginData, LoginType.Operator, LogicInformation.LoginPassWord, Encrypt(textBoxNewPassword.Text));
+                        MessageBox.Show("Change Succeed!");
+                        break;
+                    default:
+                        throw new Exception("Please do not input power ");
+                }
+                groupBoxChangePassword.Visible = false;
+            }
+            catch (Exception ex)
+            {
+
+                MessageBox.Show(ex.Message);
+            }
+        }
+        #endregion
+
+        #region Tabcontrol page change event
+        private void tabControl1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                if (toolStripStatusLabelPower.Text == "None")
+                {
+                    if (tabControl1.SelectedIndex != 6)
+                    {
+                        tabControl1.SelectedIndex = 6;
+                        throw new Exception("Please Login in");
+                    }
+                }
+                //tabControl1.TabPage
+                switch (tabControl1.SelectedIndex)
+                {
+                    case 0: break;
+                    case 1: RefleshRobotUi(); break;
+                    case 2: RefleshConveyorUi(); break;
+                    case 3:
+                        string[] _PortName = SerialPort.GetPortNames();
+                        _portName = new ArrayList(_PortName);
+                        RefleshBoxUi();
+                        break;
+                    case 4: break;
+                    case 5: break;
+                    case 6: break;
+                    default:
+                        break;
+                }
             }
             catch (Exception ex)
             {
@@ -1372,19 +1978,51 @@ namespace RackTool
 
         #endregion
 
-        List<Phone> phones = new List<Phone>();
-        private void button1_Click(object sender, EventArgs e)
+        #region Log
+        private void buttonLogLoad_Click_1(object sender, EventArgs e)
         {
-            //phones.Add(new Phone());
-            //phones.Add(new Phone());
-            //Phone a = phones.First();
-            //int i = phones.Count;
-            //phones.Remove(a);
-            //i = phones.Count;
-            //int j = 0;
+            try
+            {
+                string FileName = string.Empty;
+                OpenFileDialog OpenFile = new OpenFileDialog();
+                DialogResult Result = OpenFile.ShowDialog();
+                if (Result == DialogResult.OK)
+                    FileName = OpenFile.FileName;
+                else
+                    return;
+                dataGridView1.Rows.Clear();
+                StreamReader Reader = new StreamReader(FileName, Encoding.Default); ;
+                while (!Reader.EndOfStream)
+                {
 
-            _rack.StartPhoneServer();
-            _rack.PhoneServerManualResetEvent.Set();
+                    string[] Items = Reader.ReadLine().Split(' ');
+                    if (Items.Length != 5)
+                    {
+                        Reader.Close();
+                        Reader.Dispose();
+                        continue;
+                    }
+
+                    DataGridViewRow dataGridViewRow = new DataGridViewRow();
+                    foreach (DataGridViewColumn Item in dataGridView1.Columns)
+                    {
+                        dataGridViewRow.Cells.Add(Item.CellTemplate.Clone() as DataGridViewCell);
+                    }
+                    dataGridViewRow.Cells[0].Value = Items[0] + Items[1];
+                    dataGridViewRow.Cells[1].Value = Items[2];
+                    dataGridViewRow.Cells[2].Value = Items[3];
+                    dataGridViewRow.Cells[3].Value = Items[4]; ;
+                    dataGridView1.Rows.Add(dataGridViewRow);
+                }
+            }
+            catch (Exception ex)
+            {
+
+                MessageBox.Show(ex.Message);
+            }
         }
+
+        #endregion
+
     }
 }

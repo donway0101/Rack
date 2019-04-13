@@ -340,7 +340,5 @@ namespace Rack
                 _conveyorWorkingThread.Join();
             }
         }
-
-
     }
 }

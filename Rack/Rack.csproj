@@ -71,6 +71,7 @@
     <Compile Include="ShieldBox\ShieldBoxData.cs" />
     <Compile Include="Stepper\StepperData.cs" />
     <Compile Include="Stepper\Stepper.cs" />
+    <Compile Include="Tester\TesterData.cs" />
     <Compile Include="Tester\Tester.cs" />
   </ItemGroup>
   <ItemGroup>

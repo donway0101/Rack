@@ -69,8 +69,7 @@ namespace Rack
 
         public void SetRobotSpeed(double speed)
         {
-            Motion.SetSpeed(speed);
-            
+            Motion.SetSpeed(speed);           
         }
 
         public void SetStepperSpeed(double speed)

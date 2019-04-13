@@ -9,7 +9,7 @@ namespace RackTool
 {
     public partial class Main
     {
-        private void RefleshConveyorUI()
+        private void RefleshConveyorUi()
         {
             try
             {

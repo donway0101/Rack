@@ -29,20 +29,6 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.ListViewGroup listViewGroup1 = new System.Windows.Forms.ListViewGroup("Up", System.Windows.Forms.HorizontalAlignment.Left);
-            System.Windows.Forms.ListViewGroup listViewGroup2 = new System.Windows.Forms.ListViewGroup("Down", System.Windows.Forms.HorizontalAlignment.Left);
-            System.Windows.Forms.ListViewItem listViewItem1 = new System.Windows.Forms.ListViewItem(new string[] {
-            "Box1"}, 0, System.Drawing.Color.Empty, System.Drawing.Color.Empty, new System.Drawing.Font("SimSun", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134))));
-            System.Windows.Forms.ListViewItem listViewItem2 = new System.Windows.Forms.ListViewItem(new string[] {
-            "Box2"}, 0, System.Drawing.Color.Empty, System.Drawing.Color.Empty, new System.Drawing.Font("SimSun", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134))));
-            System.Windows.Forms.ListViewItem listViewItem3 = new System.Windows.Forms.ListViewItem(new string[] {
-            "Box3"}, 0, System.Drawing.Color.Empty, System.Drawing.Color.Empty, new System.Drawing.Font("SimSun", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134))));
-            System.Windows.Forms.ListViewItem listViewItem4 = new System.Windows.Forms.ListViewItem(new string[] {
-            "Box4"}, 0, System.Drawing.Color.Empty, System.Drawing.Color.Empty, new System.Drawing.Font("SimSun", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134))));
-            System.Windows.Forms.ListViewItem listViewItem5 = new System.Windows.Forms.ListViewItem(new string[] {
-            "Box5"}, 0, System.Drawing.Color.Empty, System.Drawing.Color.Empty, new System.Drawing.Font("SimSun", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134))));
-            System.Windows.Forms.ListViewItem listViewItem6 = new System.Windows.Forms.ListViewItem(new string[] {
-            "Box6"}, 0, System.Drawing.Color.Empty, System.Drawing.Color.Empty, new System.Drawing.Font("SimSun", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134))));
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Main));
             this.buttonStart = new System.Windows.Forms.Button();
             this.buttonHome = new System.Windows.Forms.Button();
@@ -93,8 +79,11 @@
             this.buttonNagetiveX1 = new System.Windows.Forms.Button();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
-            this.label5 = new System.Windows.Forms.Label();
+            this.groupBoxMain = new System.Windows.Forms.GroupBox();
             this.labelSpeed1 = new System.Windows.Forms.Label();
+            this.label5 = new System.Windows.Forms.Label();
+            this.checkBoxAutoRun = new System.Windows.Forms.CheckBox();
+            this.buttonAutoRun = new System.Windows.Forms.Button();
             this.trackBarSetSpeed1 = new System.Windows.Forms.TrackBar();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
@@ -113,9 +102,15 @@
             this.buttonPick = new System.Windows.Forms.Button();
             this.buttonUnload = new System.Windows.Forms.Button();
             this.comboBoxMovePos = new System.Windows.Forms.ComboBox();
-            this.comboBox_Gripper = new System.Windows.Forms.ComboBox();
+            this.comboBoxGripper = new System.Windows.Forms.ComboBox();
             this.label3 = new System.Windows.Forms.Label();
             this.tabPage4 = new System.Windows.Forms.TabPage();
+            this.groupBoxConveyorOpreate = new System.Windows.Forms.GroupBox();
+            this.checkBoxPickConveyorMoveForward = new System.Windows.Forms.CheckBox();
+            this.buttonConveyorStart = new System.Windows.Forms.Button();
+            this.buttonForInpos = new System.Windows.Forms.Button();
+            this.buttonForPicked = new System.Windows.Forms.Button();
+            this.buttonForReady = new System.Windows.Forms.Button();
             this.groupBox6 = new System.Windows.Forms.GroupBox();
             this.label17 = new System.Windows.Forms.Label();
             this.label18 = new System.Windows.Forms.Label();
@@ -127,7 +122,6 @@
             this.labelGold2 = new System.Windows.Forms.Label();
             this.labelGold3 = new System.Windows.Forms.Label();
             this.labelGold1 = new System.Windows.Forms.Label();
-            this.buttonConveyorLoad = new System.Windows.Forms.Button();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
             this.buttonUpBlockSeparateBackward = new System.Windows.Forms.Button();
             this.buttonUpBlockSeparateForward = new System.Windows.Forms.Button();
@@ -145,14 +139,8 @@
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.labelConveyorBinIn = new System.Windows.Forms.Label();
             this.labelConveyorBinInTwo = new System.Windows.Forms.Label();
-            this.buttonForPicked = new System.Windows.Forms.Button();
-            this.buttonForReady = new System.Windows.Forms.Button();
-            this.buttonForInpos = new System.Windows.Forms.Button();
-            this.checkBoxPickConveyorMoveForward = new System.Windows.Forms.CheckBox();
-            this.buttonConveyorStart = new System.Windows.Forms.Button();
             this.tabPage3 = new System.Windows.Forms.TabPage();
             this.buttonBoxSave = new System.Windows.Forms.Button();
-            this.buttonBoxLoad = new System.Windows.Forms.Button();
             this.buttonOK6 = new System.Windows.Forms.Button();
             this.comboBox6 = new System.Windows.Forms.ComboBox();
             this.buttonOK5 = new System.Windows.Forms.Button();
@@ -173,86 +161,109 @@
             this.DisableToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.OpenToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.CloseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.typeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.bTToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.wIFIToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.rFToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.labelTypeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.aToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.bToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.cToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.imageList1 = new System.Windows.Forms.ImageList(this.components);
             this.tabPage5 = new System.Windows.Forms.TabPage();
             this.tabPage6 = new System.Windows.Forms.TabPage();
+            this.buttonLogLoad = new System.Windows.Forms.Button();
+            this.dataGridView1 = new System.Windows.Forms.DataGridView();
+            this.Column1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column4 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.tabPage7 = new System.Windows.Forms.TabPage();
+            this.groupBoxChangePassword = new System.Windows.Forms.GroupBox();
+            this.label16 = new System.Windows.Forms.Label();
+            this.textBoxNewPassword = new System.Windows.Forms.TextBox();
+            this.label7 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
+            this.comboBoxChangePower = new System.Windows.Forms.ComboBox();
+            this.buttonComfirm = new System.Windows.Forms.Button();
+            this.textBoxChangeLoginName = new System.Windows.Forms.TextBox();
+            this.label9 = new System.Windows.Forms.Label();
+            this.textBoxOldPassword = new System.Windows.Forms.TextBox();
+            this.groupBox7 = new System.Windows.Forms.GroupBox();
+            this.buttonChangePassword = new System.Windows.Forms.Button();
+            this.labelLoginName = new System.Windows.Forms.Label();
+            this.label4 = new System.Windows.Forms.Label();
+            this.comboBoxPower = new System.Windows.Forms.ComboBox();
+            this.buttonLogin = new System.Windows.Forms.Button();
+            this.textBoxLoginName = new System.Windows.Forms.TextBox();
+            this.label6 = new System.Windows.Forms.Label();
+            this.textBoxPassWord = new System.Windows.Forms.TextBox();
+            this.buttonCreateFile = new System.Windows.Forms.Button();
             this.richTextBoxMessage = new System.Windows.Forms.RichTextBox();
-            this.button1 = new System.Windows.Forms.Button();
+            this.statusStrip1 = new System.Windows.Forms.StatusStrip();
+            this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
+            this.toolStripStatusLabelName = new System.Windows.Forms.ToolStripStatusLabel();
+            this.toolStripStatusLabel3 = new System.Windows.Forms.ToolStripStatusLabel();
+            this.toolStripStatusLabel4 = new System.Windows.Forms.ToolStripStatusLabel();
+            this.toolStripStatusLabelPower = new System.Windows.Forms.ToolStripStatusLabel();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarSetSpeed2)).BeginInit();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
+            this.groupBoxMain.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarSetSpeed1)).BeginInit();
             this.tabPage2.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.tabPage4.SuspendLayout();
+            this.groupBoxConveyorOpreate.SuspendLayout();
             this.groupBox6.SuspendLayout();
             this.groupBox5.SuspendLayout();
             this.groupBox4.SuspendLayout();
             this.tabPage3.SuspendLayout();
             this.contextMenuStrip1.SuspendLayout();
+            this.tabPage6.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.tabPage7.SuspendLayout();
+            this.groupBoxChangePassword.SuspendLayout();
+            this.groupBox7.SuspendLayout();
+            this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // buttonStart
             // 
-            this.buttonStart.Location = new System.Drawing.Point(27, 18);
-            this.buttonStart.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            resources.ApplyResources(this.buttonStart, "buttonStart");
             this.buttonStart.Name = "buttonStart";
-            this.buttonStart.Size = new System.Drawing.Size(111, 82);
-            this.buttonStart.TabIndex = 0;
-            this.buttonStart.Text = "Start";
             this.buttonStart.UseVisualStyleBackColor = true;
             this.buttonStart.Click += new System.EventHandler(this.button_Start_Click);
             // 
             // buttonHome
             // 
-            this.buttonHome.Enabled = false;
-            this.buttonHome.Location = new System.Drawing.Point(27, 131);
-            this.buttonHome.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            resources.ApplyResources(this.buttonHome, "buttonHome");
             this.buttonHome.Name = "buttonHome";
-            this.buttonHome.Size = new System.Drawing.Size(111, 35);
-            this.buttonHome.TabIndex = 1;
-            this.buttonHome.Text = "Home";
             this.buttonHome.UseVisualStyleBackColor = true;
             this.buttonHome.Click += new System.EventHandler(this.button_Home_Click);
             // 
             // buttonTest
             // 
-            this.buttonTest.Location = new System.Drawing.Point(436, 18);
-            this.buttonTest.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            resources.ApplyResources(this.buttonTest, "buttonTest");
             this.buttonTest.Name = "buttonTest";
-            this.buttonTest.Size = new System.Drawing.Size(119, 35);
-            this.buttonTest.TabIndex = 2;
-            this.buttonTest.Text = "Test";
             this.buttonTest.UseVisualStyleBackColor = true;
             this.buttonTest.Click += new System.EventHandler(this.button3_Click);
             // 
             // buttonStop
             // 
-            this.buttonStop.Location = new System.Drawing.Point(219, 18);
-            this.buttonStop.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            resources.ApplyResources(this.buttonStop, "buttonStop");
             this.buttonStop.Name = "buttonStop";
-            this.buttonStop.Size = new System.Drawing.Size(111, 82);
-            this.buttonStop.TabIndex = 4;
-            this.buttonStop.Text = "Stop";
             this.buttonStop.UseVisualStyleBackColor = true;
             this.buttonStop.Click += new System.EventHandler(this.button5_Click);
             // 
             // checkBoxIsLoop
             // 
-            this.checkBoxIsLoop.AutoSize = true;
+            resources.ApplyResources(this.checkBoxIsLoop, "checkBoxIsLoop");
             this.checkBoxIsLoop.Checked = true;
             this.checkBoxIsLoop.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBoxIsLoop.Location = new System.Drawing.Point(561, 26);
-            this.checkBoxIsLoop.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.checkBoxIsLoop.Name = "checkBoxIsLoop";
-            this.checkBoxIsLoop.Size = new System.Drawing.Size(61, 19);
-            this.checkBoxIsLoop.TabIndex = 6;
-            this.checkBoxIsLoop.Text = "Loop";
             this.checkBoxIsLoop.UseVisualStyleBackColor = true;
             this.checkBoxIsLoop.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
             // 
@@ -271,132 +282,74 @@
             this.groupBox1.Controls.Add(this.labelPositionZ);
             this.groupBox1.Controls.Add(this.labelPositionY);
             this.groupBox1.Controls.Add(this.labelPositionX);
-            this.groupBox1.Location = new System.Drawing.Point(633, 24);
-            this.groupBox1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            resources.ApplyResources(this.groupBox1, "groupBox1");
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.groupBox1.Size = new System.Drawing.Size(152, 278);
-            this.groupBox1.TabIndex = 9;
             this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Position";
             // 
             // label10
             // 
-            this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(5, 218);
+            resources.ApplyResources(this.label10, "label10");
             this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(31, 15);
-            this.label10.TabIndex = 11;
-            this.label10.Text = "G2:";
             // 
             // label11
             // 
-            this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(5, 179);
+            resources.ApplyResources(this.label11, "label11");
             this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(31, 15);
-            this.label11.TabIndex = 10;
-            this.label11.Text = "G1:";
             // 
             // label12
             // 
-            this.label12.AutoSize = true;
-            this.label12.Location = new System.Drawing.Point(5, 140);
+            resources.ApplyResources(this.label12, "label12");
             this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(23, 15);
-            this.label12.TabIndex = 9;
-            this.label12.Text = "R:";
             // 
             // label13
             // 
-            this.label13.AutoSize = true;
-            this.label13.Location = new System.Drawing.Point(5, 101);
+            resources.ApplyResources(this.label13, "label13");
             this.label13.Name = "label13";
-            this.label13.Size = new System.Drawing.Size(23, 15);
-            this.label13.TabIndex = 8;
-            this.label13.Text = "Z:";
             // 
             // label14
             // 
-            this.label14.AutoSize = true;
-            this.label14.Location = new System.Drawing.Point(5, 62);
+            resources.ApplyResources(this.label14, "label14");
             this.label14.Name = "label14";
-            this.label14.Size = new System.Drawing.Size(23, 15);
-            this.label14.TabIndex = 7;
-            this.label14.Text = "Y:";
             // 
             // label15
             // 
-            this.label15.AutoSize = true;
-            this.label15.Location = new System.Drawing.Point(5, 24);
+            resources.ApplyResources(this.label15, "label15");
             this.label15.Name = "label15";
-            this.label15.Size = new System.Drawing.Size(23, 15);
-            this.label15.TabIndex = 6;
-            this.label15.Text = "X:";
             // 
             // labelPositionG2
             // 
-            this.labelPositionG2.AutoSize = true;
-            this.labelPositionG2.Location = new System.Drawing.Point(33, 218);
+            resources.ApplyResources(this.labelPositionG2, "labelPositionG2");
             this.labelPositionG2.Name = "labelPositionG2";
-            this.labelPositionG2.Size = new System.Drawing.Size(15, 15);
-            this.labelPositionG2.TabIndex = 5;
-            this.labelPositionG2.Text = "0";
             // 
             // labelPositionG1
             // 
-            this.labelPositionG1.AutoSize = true;
-            this.labelPositionG1.Location = new System.Drawing.Point(33, 179);
+            resources.ApplyResources(this.labelPositionG1, "labelPositionG1");
             this.labelPositionG1.Name = "labelPositionG1";
-            this.labelPositionG1.Size = new System.Drawing.Size(15, 15);
-            this.labelPositionG1.TabIndex = 4;
-            this.labelPositionG1.Text = "0";
             // 
             // labelPositionR
             // 
-            this.labelPositionR.AutoSize = true;
-            this.labelPositionR.Location = new System.Drawing.Point(33, 140);
+            resources.ApplyResources(this.labelPositionR, "labelPositionR");
             this.labelPositionR.Name = "labelPositionR";
-            this.labelPositionR.Size = new System.Drawing.Size(15, 15);
-            this.labelPositionR.TabIndex = 3;
-            this.labelPositionR.Text = "0";
             // 
             // labelPositionZ
             // 
-            this.labelPositionZ.AutoSize = true;
-            this.labelPositionZ.Location = new System.Drawing.Point(33, 101);
+            resources.ApplyResources(this.labelPositionZ, "labelPositionZ");
             this.labelPositionZ.Name = "labelPositionZ";
-            this.labelPositionZ.Size = new System.Drawing.Size(15, 15);
-            this.labelPositionZ.TabIndex = 2;
-            this.labelPositionZ.Text = "0";
             // 
             // labelPositionY
             // 
-            this.labelPositionY.AutoSize = true;
-            this.labelPositionY.Location = new System.Drawing.Point(33, 62);
+            resources.ApplyResources(this.labelPositionY, "labelPositionY");
             this.labelPositionY.Name = "labelPositionY";
-            this.labelPositionY.Size = new System.Drawing.Size(15, 15);
-            this.labelPositionY.TabIndex = 1;
-            this.labelPositionY.Text = "0";
             // 
             // labelPositionX
             // 
-            this.labelPositionX.AutoSize = true;
-            this.labelPositionX.Location = new System.Drawing.Point(33, 24);
+            resources.ApplyResources(this.labelPositionX, "labelPositionX");
             this.labelPositionX.Name = "labelPositionX";
-            this.labelPositionX.Size = new System.Drawing.Size(15, 15);
-            this.labelPositionX.TabIndex = 0;
-            this.labelPositionX.Text = "0";
             // 
             // labelSpeed2
             // 
-            this.labelSpeed2.AutoSize = true;
-            this.labelSpeed2.Font = new System.Drawing.Font("SimSun", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.labelSpeed2.Location = new System.Drawing.Point(840, 258);
+            resources.ApplyResources(this.labelSpeed2, "labelSpeed2");
             this.labelSpeed2.Name = "labelSpeed2";
-            this.labelSpeed2.Size = new System.Drawing.Size(34, 24);
-            this.labelSpeed2.TabIndex = 37;
-            this.labelSpeed2.Text = "20";
             // 
             // groupBox2
             // 
@@ -429,325 +382,209 @@
             this.groupBox2.Controls.Add(this.buttonNagetiveX2);
             this.groupBox2.Controls.Add(this.buttonPositiveX1);
             this.groupBox2.Controls.Add(this.buttonNagetiveX1);
-            this.groupBox2.Location = new System.Drawing.Point(19, 18);
-            this.groupBox2.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            resources.ApplyResources(this.groupBox2, "groupBox2");
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.groupBox2.Size = new System.Drawing.Size(1059, 316);
-            this.groupBox2.TabIndex = 14;
             this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "Manual";
             // 
             // buttonG1TightOrLoose
             // 
-            this.buttonG1TightOrLoose.Location = new System.Drawing.Point(407, 239);
-            this.buttonG1TightOrLoose.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            resources.ApplyResources(this.buttonG1TightOrLoose, "buttonG1TightOrLoose");
             this.buttonG1TightOrLoose.Name = "buttonG1TightOrLoose";
-            this.buttonG1TightOrLoose.Size = new System.Drawing.Size(93, 62);
-            this.buttonG1TightOrLoose.TabIndex = 16;
-            this.buttonG1TightOrLoose.Text = "G1Open";
             this.buttonG1TightOrLoose.UseVisualStyleBackColor = true;
             this.buttonG1TightOrLoose.Click += new System.EventHandler(this.buttonG1TightOrLoose_Click);
             // 
             // buttonG2TightOrLoose
             // 
-            this.buttonG2TightOrLoose.Location = new System.Drawing.Point(523, 239);
-            this.buttonG2TightOrLoose.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            resources.ApplyResources(this.buttonG2TightOrLoose, "buttonG2TightOrLoose");
             this.buttonG2TightOrLoose.Name = "buttonG2TightOrLoose";
-            this.buttonG2TightOrLoose.Size = new System.Drawing.Size(93, 62);
-            this.buttonG2TightOrLoose.TabIndex = 17;
-            this.buttonG2TightOrLoose.Text = "G2Open";
             this.buttonG2TightOrLoose.UseVisualStyleBackColor = true;
             this.buttonG2TightOrLoose.Click += new System.EventHandler(this.buttonG2TightOrLoose_Click);
             // 
             // buttonLowSpeed
             // 
-            this.buttonLowSpeed.Location = new System.Drawing.Point(979, 244);
-            this.buttonLowSpeed.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            resources.ApplyResources(this.buttonLowSpeed, "buttonLowSpeed");
             this.buttonLowSpeed.Name = "buttonLowSpeed";
-            this.buttonLowSpeed.Size = new System.Drawing.Size(73, 58);
-            this.buttonLowSpeed.TabIndex = 40;
-            this.buttonLowSpeed.Text = "Low";
             this.buttonLowSpeed.UseVisualStyleBackColor = true;
             this.buttonLowSpeed.Click += new System.EventHandler(this.buttonLowSpeed_Click);
             // 
             // buttonMiddleSpeed
             // 
-            this.buttonMiddleSpeed.Location = new System.Drawing.Point(979, 134);
-            this.buttonMiddleSpeed.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            resources.ApplyResources(this.buttonMiddleSpeed, "buttonMiddleSpeed");
             this.buttonMiddleSpeed.Name = "buttonMiddleSpeed";
-            this.buttonMiddleSpeed.Size = new System.Drawing.Size(73, 58);
-            this.buttonMiddleSpeed.TabIndex = 39;
-            this.buttonMiddleSpeed.Text = "Middle";
             this.buttonMiddleSpeed.UseVisualStyleBackColor = true;
             this.buttonMiddleSpeed.Click += new System.EventHandler(this.buttonMiddleSpeed_Click);
             // 
             // buttonHighSpeed
             // 
-            this.buttonHighSpeed.Location = new System.Drawing.Point(979, 24);
-            this.buttonHighSpeed.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            resources.ApplyResources(this.buttonHighSpeed, "buttonHighSpeed");
             this.buttonHighSpeed.Name = "buttonHighSpeed";
-            this.buttonHighSpeed.Size = new System.Drawing.Size(73, 58);
-            this.buttonHighSpeed.TabIndex = 38;
-            this.buttonHighSpeed.Text = "High";
             this.buttonHighSpeed.UseVisualStyleBackColor = true;
             this.buttonHighSpeed.Click += new System.EventHandler(this.buttonHighSpeed_Click);
             // 
             // trackBarSetSpeed2
             // 
-            this.trackBarSetSpeed2.AutoSize = false;
-            this.trackBarSetSpeed2.Location = new System.Drawing.Point(791, 22);
-            this.trackBarSetSpeed2.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            resources.ApplyResources(this.trackBarSetSpeed2, "trackBarSetSpeed2");
             this.trackBarSetSpeed2.Maximum = 100;
             this.trackBarSetSpeed2.Name = "trackBarSetSpeed2";
-            this.trackBarSetSpeed2.Orientation = System.Windows.Forms.Orientation.Vertical;
-            this.trackBarSetSpeed2.Size = new System.Drawing.Size(165, 279);
-            this.trackBarSetSpeed2.TabIndex = 36;
             this.trackBarSetSpeed2.Value = 10;
-            this.trackBarSetSpeed2.Scroll += new System.EventHandler(this.trackBarSetSpeed_Scroll);
+            this.trackBarSetSpeed2.ValueChanged += new System.EventHandler(this.trackBarSetSpeed2_ValueChanged);
             // 
             // buttonEableR
             // 
-            this.buttonEableR.Location = new System.Drawing.Point(151, 185);
-            this.buttonEableR.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            resources.ApplyResources(this.buttonEableR, "buttonEableR");
             this.buttonEableR.Name = "buttonEableR";
-            this.buttonEableR.Size = new System.Drawing.Size(112, 39);
-            this.buttonEableR.TabIndex = 35;
-            this.buttonEableR.Text = "Enable";
             this.buttonEableR.UseVisualStyleBackColor = true;
             this.buttonEableR.Click += new System.EventHandler(this.buttonEableR_Click);
             // 
             // buttonEableZ
             // 
-            this.buttonEableZ.Location = new System.Drawing.Point(151, 239);
-            this.buttonEableZ.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            resources.ApplyResources(this.buttonEableZ, "buttonEableZ");
             this.buttonEableZ.Name = "buttonEableZ";
-            this.buttonEableZ.Size = new System.Drawing.Size(112, 62);
-            this.buttonEableZ.TabIndex = 34;
-            this.buttonEableZ.Text = "Enable";
             this.buttonEableZ.UseVisualStyleBackColor = true;
             this.buttonEableZ.Click += new System.EventHandler(this.buttonEableZ_Click);
             // 
             // buttonEableY
             // 
-            this.buttonEableY.Location = new System.Drawing.Point(151, 131);
-            this.buttonEableY.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            resources.ApplyResources(this.buttonEableY, "buttonEableY");
             this.buttonEableY.Name = "buttonEableY";
-            this.buttonEableY.Size = new System.Drawing.Size(112, 39);
-            this.buttonEableY.TabIndex = 33;
-            this.buttonEableY.Text = "Enable";
             this.buttonEableY.UseVisualStyleBackColor = true;
             this.buttonEableY.Click += new System.EventHandler(this.buttonEableY_Click);
             // 
             // buttonEableX2
             // 
-            this.buttonEableX2.Location = new System.Drawing.Point(151, 78);
-            this.buttonEableX2.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            resources.ApplyResources(this.buttonEableX2, "buttonEableX2");
             this.buttonEableX2.Name = "buttonEableX2";
-            this.buttonEableX2.Size = new System.Drawing.Size(112, 39);
-            this.buttonEableX2.TabIndex = 32;
-            this.buttonEableX2.Text = "Enable";
             this.buttonEableX2.UseVisualStyleBackColor = true;
             this.buttonEableX2.Click += new System.EventHandler(this.buttonEableX2_Click);
             // 
             // buttonEableX1
             // 
-            this.buttonEableX1.Location = new System.Drawing.Point(151, 24);
-            this.buttonEableX1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            resources.ApplyResources(this.buttonEableX1, "buttonEableX1");
             this.buttonEableX1.Name = "buttonEableX1";
-            this.buttonEableX1.Size = new System.Drawing.Size(112, 39);
-            this.buttonEableX1.TabIndex = 31;
-            this.buttonEableX1.Text = "Enable";
             this.buttonEableX1.UseVisualStyleBackColor = true;
             this.buttonEableX1.Click += new System.EventHandler(this.buttonEableX1_Click);
             // 
             // buttonEableG2
             // 
-            this.buttonEableG2.Location = new System.Drawing.Point(519, 22);
-            this.buttonEableG2.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            resources.ApplyResources(this.buttonEableG2, "buttonEableG2");
             this.buttonEableG2.Name = "buttonEableG2";
-            this.buttonEableG2.Size = new System.Drawing.Size(93, 39);
-            this.buttonEableG2.TabIndex = 30;
-            this.buttonEableG2.Text = "Enable";
             this.buttonEableG2.UseVisualStyleBackColor = true;
             this.buttonEableG2.Click += new System.EventHandler(this.button21_Click);
             // 
             // buttonEableG1
             // 
-            this.buttonEableG1.Location = new System.Drawing.Point(404, 24);
-            this.buttonEableG1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            resources.ApplyResources(this.buttonEableG1, "buttonEableG1");
             this.buttonEableG1.Name = "buttonEableG1";
-            this.buttonEableG1.Size = new System.Drawing.Size(93, 39);
-            this.buttonEableG1.TabIndex = 29;
-            this.buttonEableG1.Text = "Enable";
             this.buttonEableG1.UseVisualStyleBackColor = true;
             this.buttonEableG1.Click += new System.EventHandler(this.button22_Click);
             // 
             // textBoxDistanceG2
             // 
-            this.textBoxDistanceG2.Location = new System.Drawing.Point(519, 120);
-            this.textBoxDistanceG2.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            resources.ApplyResources(this.textBoxDistanceG2, "textBoxDistanceG2");
             this.textBoxDistanceG2.Name = "textBoxDistanceG2";
-            this.textBoxDistanceG2.Size = new System.Drawing.Size(93, 25);
-            this.textBoxDistanceG2.TabIndex = 28;
-            this.textBoxDistanceG2.Text = "0";
-            this.textBoxDistanceG2.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // textBoxDistanceG1
             // 
-            this.textBoxDistanceG1.Location = new System.Drawing.Point(404, 121);
-            this.textBoxDistanceG1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            resources.ApplyResources(this.textBoxDistanceG1, "textBoxDistanceG1");
             this.textBoxDistanceG1.Name = "textBoxDistanceG1";
-            this.textBoxDistanceG1.Size = new System.Drawing.Size(93, 25);
-            this.textBoxDistanceG1.TabIndex = 27;
-            this.textBoxDistanceG1.Text = "0";
-            this.textBoxDistanceG1.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // buttonRunG2
             // 
-            this.buttonRunG2.Location = new System.Drawing.Point(519, 78);
-            this.buttonRunG2.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            resources.ApplyResources(this.buttonRunG2, "buttonRunG2");
             this.buttonRunG2.Name = "buttonRunG2";
-            this.buttonRunG2.Size = new System.Drawing.Size(93, 39);
-            this.buttonRunG2.TabIndex = 26;
-            this.buttonRunG2.Text = "G2MoveTo";
             this.buttonRunG2.UseVisualStyleBackColor = true;
             this.buttonRunG2.Click += new System.EventHandler(this.button18_Click);
             // 
             // buttonRunG1
             // 
-            this.buttonRunG1.Location = new System.Drawing.Point(404, 78);
-            this.buttonRunG1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            resources.ApplyResources(this.buttonRunG1, "buttonRunG1");
             this.buttonRunG1.Name = "buttonRunG1";
-            this.buttonRunG1.Size = new System.Drawing.Size(93, 39);
-            this.buttonRunG1.TabIndex = 25;
-            this.buttonRunG1.Text = "G1MoveTo";
             this.buttonRunG1.UseVisualStyleBackColor = true;
             this.buttonRunG1.Click += new System.EventHandler(this.button19_Click);
             // 
             // buttonPositiveR
             // 
-            this.buttonPositiveR.Location = new System.Drawing.Point(273, 185);
-            this.buttonPositiveR.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            resources.ApplyResources(this.buttonPositiveR, "buttonPositiveR");
             this.buttonPositiveR.Name = "buttonPositiveR";
-            this.buttonPositiveR.Size = new System.Drawing.Size(115, 39);
-            this.buttonPositiveR.TabIndex = 24;
-            this.buttonPositiveR.Text = "R+";
             this.buttonPositiveR.UseVisualStyleBackColor = true;
             this.buttonPositiveR.MouseDown += new System.Windows.Forms.MouseEventHandler(this.button16_MouseDown);
             this.buttonPositiveR.MouseUp += new System.Windows.Forms.MouseEventHandler(this.button16_MouseUp);
             // 
             // buttonNagetiveR
             // 
-            this.buttonNagetiveR.Location = new System.Drawing.Point(20, 185);
-            this.buttonNagetiveR.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            resources.ApplyResources(this.buttonNagetiveR, "buttonNagetiveR");
             this.buttonNagetiveR.Name = "buttonNagetiveR";
-            this.buttonNagetiveR.Size = new System.Drawing.Size(115, 39);
-            this.buttonNagetiveR.TabIndex = 23;
-            this.buttonNagetiveR.Text = "R-";
             this.buttonNagetiveR.UseVisualStyleBackColor = true;
             this.buttonNagetiveR.MouseDown += new System.Windows.Forms.MouseEventHandler(this.button17_MouseDown);
             this.buttonNagetiveR.MouseUp += new System.Windows.Forms.MouseEventHandler(this.button17_MouseUp);
             // 
             // buttonPositiveZ
             // 
-            this.buttonPositiveZ.Location = new System.Drawing.Point(273, 239);
-            this.buttonPositiveZ.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            resources.ApplyResources(this.buttonPositiveZ, "buttonPositiveZ");
             this.buttonPositiveZ.Name = "buttonPositiveZ";
-            this.buttonPositiveZ.Size = new System.Drawing.Size(115, 62);
-            this.buttonPositiveZ.TabIndex = 22;
-            this.buttonPositiveZ.Text = "Z+";
             this.buttonPositiveZ.UseVisualStyleBackColor = true;
             this.buttonPositiveZ.MouseDown += new System.Windows.Forms.MouseEventHandler(this.button12_MouseDown);
             this.buttonPositiveZ.MouseUp += new System.Windows.Forms.MouseEventHandler(this.button12_MouseUp);
             // 
             // buttonNagetiveZ
             // 
-            this.buttonNagetiveZ.Location = new System.Drawing.Point(20, 239);
-            this.buttonNagetiveZ.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            resources.ApplyResources(this.buttonNagetiveZ, "buttonNagetiveZ");
             this.buttonNagetiveZ.Name = "buttonNagetiveZ";
-            this.buttonNagetiveZ.Size = new System.Drawing.Size(115, 62);
-            this.buttonNagetiveZ.TabIndex = 21;
-            this.buttonNagetiveZ.Text = "Z-";
             this.buttonNagetiveZ.UseVisualStyleBackColor = true;
             this.buttonNagetiveZ.MouseDown += new System.Windows.Forms.MouseEventHandler(this.button13_MouseDown);
             this.buttonNagetiveZ.MouseUp += new System.Windows.Forms.MouseEventHandler(this.button13_MouseUp);
             // 
             // buttonPositiveY
             // 
-            this.buttonPositiveY.Location = new System.Drawing.Point(273, 131);
-            this.buttonPositiveY.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            resources.ApplyResources(this.buttonPositiveY, "buttonPositiveY");
             this.buttonPositiveY.Name = "buttonPositiveY";
-            this.buttonPositiveY.Size = new System.Drawing.Size(115, 39);
-            this.buttonPositiveY.TabIndex = 20;
-            this.buttonPositiveY.Text = "Y+";
             this.buttonPositiveY.UseVisualStyleBackColor = true;
             this.buttonPositiveY.MouseDown += new System.Windows.Forms.MouseEventHandler(this.button14_MouseDown);
             this.buttonPositiveY.MouseUp += new System.Windows.Forms.MouseEventHandler(this.button14_MouseUp);
             // 
             // buttonNagetiveY
             // 
-            this.buttonNagetiveY.Location = new System.Drawing.Point(20, 131);
-            this.buttonNagetiveY.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            resources.ApplyResources(this.buttonNagetiveY, "buttonNagetiveY");
             this.buttonNagetiveY.Name = "buttonNagetiveY";
-            this.buttonNagetiveY.Size = new System.Drawing.Size(115, 39);
-            this.buttonNagetiveY.TabIndex = 19;
-            this.buttonNagetiveY.Text = "Y-";
             this.buttonNagetiveY.UseVisualStyleBackColor = true;
             this.buttonNagetiveY.MouseDown += new System.Windows.Forms.MouseEventHandler(this.button15_MouseDown);
             this.buttonNagetiveY.MouseUp += new System.Windows.Forms.MouseEventHandler(this.button15_MouseUp);
             // 
             // buttonPositiveX2
             // 
-            this.buttonPositiveX2.Location = new System.Drawing.Point(273, 78);
-            this.buttonPositiveX2.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            resources.ApplyResources(this.buttonPositiveX2, "buttonPositiveX2");
             this.buttonPositiveX2.Name = "buttonPositiveX2";
-            this.buttonPositiveX2.Size = new System.Drawing.Size(115, 39);
-            this.buttonPositiveX2.TabIndex = 18;
-            this.buttonPositiveX2.Text = "X2+";
             this.buttonPositiveX2.UseVisualStyleBackColor = true;
             this.buttonPositiveX2.MouseDown += new System.Windows.Forms.MouseEventHandler(this.button11_MouseDown);
             this.buttonPositiveX2.MouseUp += new System.Windows.Forms.MouseEventHandler(this.button11_MouseUp);
             // 
             // buttonNagetiveX2
             // 
-            this.buttonNagetiveX2.Location = new System.Drawing.Point(20, 78);
-            this.buttonNagetiveX2.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            resources.ApplyResources(this.buttonNagetiveX2, "buttonNagetiveX2");
             this.buttonNagetiveX2.Name = "buttonNagetiveX2";
-            this.buttonNagetiveX2.Size = new System.Drawing.Size(115, 39);
-            this.buttonNagetiveX2.TabIndex = 17;
-            this.buttonNagetiveX2.Text = "X2-";
             this.buttonNagetiveX2.UseVisualStyleBackColor = true;
             this.buttonNagetiveX2.MouseDown += new System.Windows.Forms.MouseEventHandler(this.button10_MouseDown);
             this.buttonNagetiveX2.MouseUp += new System.Windows.Forms.MouseEventHandler(this.buttonNagetiveX2_MouseUp);
             // 
             // buttonPositiveX1
             // 
-            this.buttonPositiveX1.Location = new System.Drawing.Point(273, 24);
-            this.buttonPositiveX1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            resources.ApplyResources(this.buttonPositiveX1, "buttonPositiveX1");
             this.buttonPositiveX1.Name = "buttonPositiveX1";
-            this.buttonPositiveX1.Size = new System.Drawing.Size(115, 39);
-            this.buttonPositiveX1.TabIndex = 16;
-            this.buttonPositiveX1.Text = "X1+";
             this.buttonPositiveX1.UseVisualStyleBackColor = true;
             this.buttonPositiveX1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.button9_MouseDown);
             this.buttonPositiveX1.MouseUp += new System.Windows.Forms.MouseEventHandler(this.button9_MouseUp);
             // 
             // buttonNagetiveX1
             // 
-            this.buttonNagetiveX1.Location = new System.Drawing.Point(20, 24);
-            this.buttonNagetiveX1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            resources.ApplyResources(this.buttonNagetiveX1, "buttonNagetiveX1");
             this.buttonNagetiveX1.Name = "buttonNagetiveX1";
-            this.buttonNagetiveX1.Size = new System.Drawing.Size(115, 39);
-            this.buttonNagetiveX1.TabIndex = 15;
-            this.buttonNagetiveX1.Text = "X1-";
             this.buttonNagetiveX1.UseVisualStyleBackColor = true;
             this.buttonNagetiveX1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.button8_MouseDown);
             this.buttonNagetiveX1.MouseUp += new System.Windows.Forms.MouseEventHandler(this.button8_MouseUp);
             // 
             // tabControl1
             // 
-            this.tabControl1.Alignment = System.Windows.Forms.TabAlignment.Left;
+            resources.ApplyResources(this.tabControl1, "tabControl1");
             this.tabControl1.Controls.Add(this.tabPage1);
             this.tabControl1.Controls.Add(this.tabPage2);
             this.tabControl1.Controls.Add(this.tabPage4);
@@ -755,80 +592,74 @@
             this.tabControl1.Controls.Add(this.tabPage5);
             this.tabControl1.Controls.Add(this.tabPage6);
             this.tabControl1.Controls.Add(this.tabPage7);
-            this.tabControl1.ItemSize = new System.Drawing.Size(50, 100);
-            this.tabControl1.Location = new System.Drawing.Point(28, 86);
-            this.tabControl1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.tabControl1.Multiline = true;
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(1216, 608);
             this.tabControl1.SizeMode = System.Windows.Forms.TabSizeMode.Fixed;
-            this.tabControl1.TabIndex = 18;
+            this.tabControl1.SelectedIndexChanged += new System.EventHandler(this.tabControl1_SelectedIndexChanged);
             // 
             // tabPage1
             // 
-            this.tabPage1.Controls.Add(this.button1);
-            this.tabPage1.Controls.Add(this.buttonHome);
-            this.tabPage1.Controls.Add(this.buttonStart);
-            this.tabPage1.Controls.Add(this.label5);
-            this.tabPage1.Controls.Add(this.labelSpeed1);
-            this.tabPage1.Controls.Add(this.trackBarSetSpeed1);
-            this.tabPage1.Controls.Add(this.buttonTest);
-            this.tabPage1.Controls.Add(this.checkBoxIsLoop);
-            this.tabPage1.Controls.Add(this.buttonStop);
-            this.tabPage1.Location = new System.Drawing.Point(104, 4);
-            this.tabPage1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.tabPage1.Controls.Add(this.groupBoxMain);
+            resources.ApplyResources(this.tabPage1, "tabPage1");
             this.tabPage1.Name = "tabPage1";
-            this.tabPage1.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.tabPage1.Size = new System.Drawing.Size(1108, 600);
-            this.tabPage1.TabIndex = 0;
-            this.tabPage1.Text = "Main";
             this.tabPage1.UseVisualStyleBackColor = true;
             // 
-            // label5
+            // groupBoxMain
             // 
-            this.label5.AutoSize = true;
-            this.label5.Font = new System.Drawing.Font("SimSun", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label5.Location = new System.Drawing.Point(7, 334);
-            this.label5.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(94, 24);
-            this.label5.TabIndex = 26;
-            this.label5.Text = "Speed: ";
+            this.groupBoxMain.Controls.Add(this.buttonStop);
+            this.groupBoxMain.Controls.Add(this.buttonStart);
+            this.groupBoxMain.Controls.Add(this.buttonHome);
+            this.groupBoxMain.Controls.Add(this.labelSpeed1);
+            this.groupBoxMain.Controls.Add(this.label5);
+            this.groupBoxMain.Controls.Add(this.checkBoxAutoRun);
+            this.groupBoxMain.Controls.Add(this.checkBoxIsLoop);
+            this.groupBoxMain.Controls.Add(this.buttonAutoRun);
+            this.groupBoxMain.Controls.Add(this.buttonTest);
+            this.groupBoxMain.Controls.Add(this.trackBarSetSpeed1);
+            resources.ApplyResources(this.groupBoxMain, "groupBoxMain");
+            this.groupBoxMain.Name = "groupBoxMain";
+            this.groupBoxMain.TabStop = false;
             // 
             // labelSpeed1
             // 
-            this.labelSpeed1.AutoSize = true;
-            this.labelSpeed1.Font = new System.Drawing.Font("SimSun", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.labelSpeed1.Location = new System.Drawing.Point(992, 334);
-            this.labelSpeed1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            resources.ApplyResources(this.labelSpeed1, "labelSpeed1");
             this.labelSpeed1.Name = "labelSpeed1";
-            this.labelSpeed1.Size = new System.Drawing.Size(34, 24);
-            this.labelSpeed1.TabIndex = 25;
-            this.labelSpeed1.Text = "20";
+            // 
+            // label5
+            // 
+            resources.ApplyResources(this.label5, "label5");
+            this.label5.Name = "label5";
+            // 
+            // checkBoxAutoRun
+            // 
+            resources.ApplyResources(this.checkBoxAutoRun, "checkBoxAutoRun");
+            this.checkBoxAutoRun.Checked = true;
+            this.checkBoxAutoRun.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBoxAutoRun.Name = "checkBoxAutoRun";
+            this.checkBoxAutoRun.UseVisualStyleBackColor = true;
+            // 
+            // buttonAutoRun
+            // 
+            resources.ApplyResources(this.buttonAutoRun, "buttonAutoRun");
+            this.buttonAutoRun.Name = "buttonAutoRun";
+            this.buttonAutoRun.UseVisualStyleBackColor = true;
+            this.buttonAutoRun.Click += new System.EventHandler(this.buttonAutoRun_Click);
             // 
             // trackBarSetSpeed1
             // 
-            this.trackBarSetSpeed1.Location = new System.Drawing.Point(120, 316);
-            this.trackBarSetSpeed1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.trackBarSetSpeed1.Maximum = 100;
+            resources.ApplyResources(this.trackBarSetSpeed1, "trackBarSetSpeed1");
+            this.trackBarSetSpeed1.Maximum = 1000;
             this.trackBarSetSpeed1.Name = "trackBarSetSpeed1";
-            this.trackBarSetSpeed1.Size = new System.Drawing.Size(864, 56);
-            this.trackBarSetSpeed1.TabIndex = 24;
             this.trackBarSetSpeed1.Value = 20;
-            this.trackBarSetSpeed1.Scroll += new System.EventHandler(this.trackBarSetSpeed1_Scroll);
+            this.trackBarSetSpeed1.ValueChanged += new System.EventHandler(this.trackBarSetSpeed1_ValueChanged);
             // 
             // tabPage2
             // 
             this.tabPage2.Controls.Add(this.groupBox3);
             this.tabPage2.Controls.Add(this.groupBox2);
-            this.tabPage2.Location = new System.Drawing.Point(104, 4);
-            this.tabPage2.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            resources.ApplyResources(this.tabPage2, "tabPage2");
             this.tabPage2.Name = "tabPage2";
-            this.tabPage2.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.tabPage2.Size = new System.Drawing.Size(1108, 600);
-            this.tabPage2.TabIndex = 1;
-            this.tabPage2.Text = "Robot";
             this.tabPage2.UseVisualStyleBackColor = true;
             // 
             // groupBox3
@@ -848,216 +679,182 @@
             this.groupBox3.Controls.Add(this.buttonPick);
             this.groupBox3.Controls.Add(this.buttonUnload);
             this.groupBox3.Controls.Add(this.comboBoxMovePos);
-            this.groupBox3.Controls.Add(this.comboBox_Gripper);
+            this.groupBox3.Controls.Add(this.comboBoxGripper);
             this.groupBox3.Controls.Add(this.label3);
-            this.groupBox3.Location = new System.Drawing.Point(19, 338);
-            this.groupBox3.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            resources.ApplyResources(this.groupBox3, "groupBox3");
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.groupBox3.Size = new System.Drawing.Size(977, 244);
-            this.groupBox3.TabIndex = 15;
             this.groupBox3.TabStop = false;
-            this.groupBox3.Text = "Run";
             // 
             // buttonLoadForTeach
             // 
-            this.buttonLoadForTeach.Location = new System.Drawing.Point(541, 72);
-            this.buttonLoadForTeach.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            resources.ApplyResources(this.buttonLoadForTeach, "buttonLoadForTeach");
             this.buttonLoadForTeach.Name = "buttonLoadForTeach";
-            this.buttonLoadForTeach.Size = new System.Drawing.Size(119, 35);
-            this.buttonLoadForTeach.TabIndex = 38;
-            this.buttonLoadForTeach.Text = "Teach Load";
             this.buttonLoadForTeach.UseVisualStyleBackColor = true;
             this.buttonLoadForTeach.Click += new System.EventHandler(this.buttonLoadForTeach_Click);
             // 
             // buttonReadyForPick
             // 
-            this.buttonReadyForPick.Location = new System.Drawing.Point(541, 24);
-            this.buttonReadyForPick.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            resources.ApplyResources(this.buttonReadyForPick, "buttonReadyForPick");
             this.buttonReadyForPick.Name = "buttonReadyForPick";
-            this.buttonReadyForPick.Size = new System.Drawing.Size(119, 35);
-            this.buttonReadyForPick.TabIndex = 37;
-            this.buttonReadyForPick.Text = "Ready Phone";
             this.buttonReadyForPick.UseVisualStyleBackColor = true;
             this.buttonReadyForPick.Click += new System.EventHandler(this.buttonReadyForPick_Click);
             // 
             // buttonCalOffset
             // 
-            this.buttonCalOffset.Location = new System.Drawing.Point(677, 116);
-            this.buttonCalOffset.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            resources.ApplyResources(this.buttonCalOffset, "buttonCalOffset");
             this.buttonCalOffset.Name = "buttonCalOffset";
-            this.buttonCalOffset.Size = new System.Drawing.Size(160, 35);
-            this.buttonCalOffset.TabIndex = 36;
-            this.buttonCalOffset.Text = "Calculate Offset";
             this.buttonCalOffset.UseVisualStyleBackColor = true;
             this.buttonCalOffset.Click += new System.EventHandler(this.buttonCalOffset_Click);
             // 
             // buttonBin
             // 
-            this.buttonBin.Location = new System.Drawing.Point(255, 118);
-            this.buttonBin.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            resources.ApplyResources(this.buttonBin, "buttonBin");
             this.buttonBin.Name = "buttonBin";
-            this.buttonBin.Size = new System.Drawing.Size(119, 35);
-            this.buttonBin.TabIndex = 35;
-            this.buttonBin.Text = "Bin";
             this.buttonBin.UseVisualStyleBackColor = true;
             this.buttonBin.Click += new System.EventHandler(this.buttonBin_Click);
             // 
             // buttonUnloadAndLoad
             // 
-            this.buttonUnloadAndLoad.Location = new System.Drawing.Point(381, 118);
-            this.buttonUnloadAndLoad.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            resources.ApplyResources(this.buttonUnloadAndLoad, "buttonUnloadAndLoad");
             this.buttonUnloadAndLoad.Name = "buttonUnloadAndLoad";
-            this.buttonUnloadAndLoad.Size = new System.Drawing.Size(119, 35);
-            this.buttonUnloadAndLoad.TabIndex = 34;
-            this.buttonUnloadAndLoad.Text = "Unload N Load";
             this.buttonUnloadAndLoad.UseVisualStyleBackColor = true;
             this.buttonUnloadAndLoad.Click += new System.EventHandler(this.buttonUnloadAndLoad_Click);
             // 
             // buttonSaveApproach
             // 
-            this.buttonSaveApproach.Location = new System.Drawing.Point(677, 71);
-            this.buttonSaveApproach.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            resources.ApplyResources(this.buttonSaveApproach, "buttonSaveApproach");
             this.buttonSaveApproach.Name = "buttonSaveApproach";
-            this.buttonSaveApproach.Size = new System.Drawing.Size(160, 35);
-            this.buttonSaveApproach.TabIndex = 30;
-            this.buttonSaveApproach.Text = "Save Approach";
             this.buttonSaveApproach.UseVisualStyleBackColor = true;
             this.buttonSaveApproach.Click += new System.EventHandler(this.buttonSaveApproach_Click);
             // 
             // label1
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(205, 39);
-            this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            resources.ApplyResources(this.label1, "label1");
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(0, 15);
-            this.label1.TabIndex = 31;
             // 
             // buttonSavePosition
             // 
-            this.buttonSavePosition.Location = new System.Drawing.Point(677, 22);
-            this.buttonSavePosition.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            resources.ApplyResources(this.buttonSavePosition, "buttonSavePosition");
             this.buttonSavePosition.Name = "buttonSavePosition";
-            this.buttonSavePosition.Size = new System.Drawing.Size(157, 35);
-            this.buttonSavePosition.TabIndex = 29;
-            this.buttonSavePosition.Text = "Save Position";
             this.buttonSavePosition.UseVisualStyleBackColor = true;
             this.buttonSavePosition.Click += new System.EventHandler(this.buttonSave_Click);
             // 
             // label2
             // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(7, 24);
-            this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            resources.ApplyResources(this.label2, "label2");
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(71, 15);
-            this.label2.TabIndex = 32;
-            this.label2.Text = "Gripper:";
             // 
             // buttonCreateXml
             // 
-            this.buttonCreateXml.Location = new System.Drawing.Point(883, 22);
-            this.buttonCreateXml.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            resources.ApplyResources(this.buttonCreateXml, "buttonCreateXml");
             this.buttonCreateXml.Name = "buttonCreateXml";
-            this.buttonCreateXml.Size = new System.Drawing.Size(73, 58);
-            this.buttonCreateXml.TabIndex = 27;
-            this.buttonCreateXml.Text = "Xml";
             this.buttonCreateXml.UseVisualStyleBackColor = true;
             this.buttonCreateXml.Click += new System.EventHandler(this.buttonCreateXml_Click);
             // 
             // buttonPlace
             // 
-            this.buttonPlace.Location = new System.Drawing.Point(255, 69);
-            this.buttonPlace.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            resources.ApplyResources(this.buttonPlace, "buttonPlace");
             this.buttonPlace.Name = "buttonPlace";
-            this.buttonPlace.Size = new System.Drawing.Size(119, 35);
-            this.buttonPlace.TabIndex = 25;
-            this.buttonPlace.Text = "Place";
             this.buttonPlace.UseVisualStyleBackColor = true;
             this.buttonPlace.Click += new System.EventHandler(this.buttonPlace_Click);
             // 
             // buttonLoad
             // 
-            this.buttonLoad.Location = new System.Drawing.Point(381, 22);
-            this.buttonLoad.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            resources.ApplyResources(this.buttonLoad, "buttonLoad");
             this.buttonLoad.Name = "buttonLoad";
-            this.buttonLoad.Size = new System.Drawing.Size(119, 35);
-            this.buttonLoad.TabIndex = 21;
-            this.buttonLoad.Text = "Load";
             this.buttonLoad.UseVisualStyleBackColor = true;
             this.buttonLoad.Click += new System.EventHandler(this.buttonLoad_Click);
             // 
             // buttonPick
             // 
-            this.buttonPick.Location = new System.Drawing.Point(256, 20);
-            this.buttonPick.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            resources.ApplyResources(this.buttonPick, "buttonPick");
             this.buttonPick.Name = "buttonPick";
-            this.buttonPick.Size = new System.Drawing.Size(119, 35);
-            this.buttonPick.TabIndex = 24;
-            this.buttonPick.Text = "Pick";
             this.buttonPick.UseVisualStyleBackColor = true;
             this.buttonPick.Click += new System.EventHandler(this.buttonPick_Click);
             // 
             // buttonUnload
             // 
-            this.buttonUnload.Location = new System.Drawing.Point(381, 70);
-            this.buttonUnload.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            resources.ApplyResources(this.buttonUnload, "buttonUnload");
             this.buttonUnload.Name = "buttonUnload";
-            this.buttonUnload.Size = new System.Drawing.Size(119, 35);
-            this.buttonUnload.TabIndex = 26;
-            this.buttonUnload.Text = "Unload";
             this.buttonUnload.UseVisualStyleBackColor = true;
             this.buttonUnload.Click += new System.EventHandler(this.buttonUnload_Click);
             // 
             // comboBoxMovePos
             // 
             this.comboBoxMovePos.FormattingEnabled = true;
-            this.comboBoxMovePos.Location = new System.Drawing.Point(91, 59);
-            this.comboBoxMovePos.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            resources.ApplyResources(this.comboBoxMovePos, "comboBoxMovePos");
             this.comboBoxMovePos.Name = "comboBoxMovePos";
-            this.comboBoxMovePos.Size = new System.Drawing.Size(159, 23);
-            this.comboBoxMovePos.TabIndex = 23;
             this.comboBoxMovePos.SelectedIndexChanged += new System.EventHandler(this.comboBoxMovePos_SelectedIndexChanged);
             // 
-            // comboBox_Gripper
+            // comboBoxGripper
             // 
-            this.comboBox_Gripper.FormattingEnabled = true;
-            this.comboBox_Gripper.Location = new System.Drawing.Point(91, 20);
-            this.comboBox_Gripper.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.comboBox_Gripper.Name = "comboBox_Gripper";
-            this.comboBox_Gripper.Size = new System.Drawing.Size(159, 23);
-            this.comboBox_Gripper.TabIndex = 22;
-            this.comboBox_Gripper.SelectedIndexChanged += new System.EventHandler(this.comboBox_Gripper_SelectedIndexChanged);
+            this.comboBoxGripper.FormattingEnabled = true;
+            resources.ApplyResources(this.comboBoxGripper, "comboBoxGripper");
+            this.comboBoxGripper.Name = "comboBoxGripper";
+            this.comboBoxGripper.SelectedIndexChanged += new System.EventHandler(this.comboBox_Gripper_SelectedIndexChanged);
             // 
             // label3
             // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(7, 62);
-            this.label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            resources.ApplyResources(this.label3, "label3");
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(63, 15);
-            this.label3.TabIndex = 33;
-            this.label3.Text = "Target:";
             // 
             // tabPage4
             // 
+            this.tabPage4.Controls.Add(this.groupBoxConveyorOpreate);
             this.tabPage4.Controls.Add(this.groupBox6);
-            this.tabPage4.Controls.Add(this.buttonConveyorLoad);
             this.tabPage4.Controls.Add(this.groupBox5);
             this.tabPage4.Controls.Add(this.groupBox4);
-            this.tabPage4.Controls.Add(this.buttonForPicked);
-            this.tabPage4.Controls.Add(this.buttonForReady);
-            this.tabPage4.Controls.Add(this.buttonForInpos);
-            this.tabPage4.Controls.Add(this.checkBoxPickConveyorMoveForward);
-            this.tabPage4.Controls.Add(this.buttonConveyorStart);
-            this.tabPage4.Location = new System.Drawing.Point(104, 4);
-            this.tabPage4.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            resources.ApplyResources(this.tabPage4, "tabPage4");
             this.tabPage4.Name = "tabPage4";
-            this.tabPage4.Size = new System.Drawing.Size(1108, 600);
-            this.tabPage4.TabIndex = 3;
-            this.tabPage4.Text = "Conveyor";
             this.tabPage4.UseVisualStyleBackColor = true;
+            // 
+            // groupBoxConveyorOpreate
+            // 
+            this.groupBoxConveyorOpreate.Controls.Add(this.checkBoxPickConveyorMoveForward);
+            this.groupBoxConveyorOpreate.Controls.Add(this.buttonConveyorStart);
+            this.groupBoxConveyorOpreate.Controls.Add(this.buttonForInpos);
+            this.groupBoxConveyorOpreate.Controls.Add(this.buttonForPicked);
+            this.groupBoxConveyorOpreate.Controls.Add(this.buttonForReady);
+            resources.ApplyResources(this.groupBoxConveyorOpreate, "groupBoxConveyorOpreate");
+            this.groupBoxConveyorOpreate.Name = "groupBoxConveyorOpreate";
+            this.groupBoxConveyorOpreate.TabStop = false;
+            // 
+            // checkBoxPickConveyorMoveForward
+            // 
+            resources.ApplyResources(this.checkBoxPickConveyorMoveForward, "checkBoxPickConveyorMoveForward");
+            this.checkBoxPickConveyorMoveForward.Checked = true;
+            this.checkBoxPickConveyorMoveForward.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBoxPickConveyorMoveForward.Name = "checkBoxPickConveyorMoveForward";
+            this.checkBoxPickConveyorMoveForward.UseVisualStyleBackColor = true;
+            this.checkBoxPickConveyorMoveForward.CheckedChanged += new System.EventHandler(this.checkBoxPickConveyorMoveForward_CheckedChanged);
+            // 
+            // buttonConveyorStart
+            // 
+            resources.ApplyResources(this.buttonConveyorStart, "buttonConveyorStart");
+            this.buttonConveyorStart.Name = "buttonConveyorStart";
+            this.buttonConveyorStart.UseVisualStyleBackColor = true;
+            this.buttonConveyorStart.Click += new System.EventHandler(this.button38_Click);
+            // 
+            // buttonForInpos
+            // 
+            resources.ApplyResources(this.buttonForInpos, "buttonForInpos");
+            this.buttonForInpos.Name = "buttonForInpos";
+            this.buttonForInpos.UseVisualStyleBackColor = true;
+            this.buttonForInpos.Click += new System.EventHandler(this.button39_Click);
+            // 
+            // buttonForPicked
+            // 
+            resources.ApplyResources(this.buttonForPicked, "buttonForPicked");
+            this.buttonForPicked.Name = "buttonForPicked";
+            this.buttonForPicked.UseVisualStyleBackColor = true;
+            this.buttonForPicked.Click += new System.EventHandler(this.button41_Click);
+            // 
+            // buttonForReady
+            // 
+            resources.ApplyResources(this.buttonForReady, "buttonForReady");
+            this.buttonForReady.Name = "buttonForReady";
+            this.buttonForReady.UseVisualStyleBackColor = true;
+            this.buttonForReady.Click += new System.EventHandler(this.button40_Click);
             // 
             // groupBox6
             // 
@@ -1071,145 +868,69 @@
             this.groupBox6.Controls.Add(this.labelGold2);
             this.groupBox6.Controls.Add(this.labelGold3);
             this.groupBox6.Controls.Add(this.labelGold1);
-            this.groupBox6.Location = new System.Drawing.Point(17, 376);
-            this.groupBox6.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            resources.ApplyResources(this.groupBox6, "groupBox6");
             this.groupBox6.Name = "groupBox6";
-            this.groupBox6.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.groupBox6.Size = new System.Drawing.Size(440, 181);
-            this.groupBox6.TabIndex = 17;
             this.groupBox6.TabStop = false;
-            this.groupBox6.Text = "Gold";
             // 
             // label17
             // 
-            this.label17.AutoSize = true;
-            this.label17.Font = new System.Drawing.Font("SimSun", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            resources.ApplyResources(this.label17, "label17");
             this.label17.ForeColor = System.Drawing.Color.Black;
-            this.label17.Location = new System.Drawing.Point(355, 49);
-            this.label17.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label17.Name = "label17";
-            this.label17.Size = new System.Drawing.Size(53, 18);
-            this.label17.TabIndex = 15;
-            this.label17.Text = "Gold5";
             // 
             // label18
             // 
-            this.label18.AutoSize = true;
-            this.label18.Font = new System.Drawing.Font("SimSun", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            resources.ApplyResources(this.label18, "label18");
             this.label18.ForeColor = System.Drawing.Color.Black;
-            this.label18.Location = new System.Drawing.Point(267, 49);
-            this.label18.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label18.Name = "label18";
-            this.label18.Size = new System.Drawing.Size(53, 18);
-            this.label18.TabIndex = 14;
-            this.label18.Text = "Gold4";
             // 
             // label19
             // 
-            this.label19.AutoSize = true;
-            this.label19.Font = new System.Drawing.Font("SimSun", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            resources.ApplyResources(this.label19, "label19");
             this.label19.ForeColor = System.Drawing.Color.Black;
-            this.label19.Location = new System.Drawing.Point(91, 49);
-            this.label19.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label19.Name = "label19";
-            this.label19.Size = new System.Drawing.Size(53, 18);
-            this.label19.TabIndex = 13;
-            this.label19.Text = "Gold2";
             // 
             // label20
             // 
-            this.label20.AutoSize = true;
-            this.label20.Font = new System.Drawing.Font("SimSun", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            resources.ApplyResources(this.label20, "label20");
             this.label20.ForeColor = System.Drawing.Color.Black;
-            this.label20.Location = new System.Drawing.Point(179, 49);
-            this.label20.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label20.Name = "label20";
-            this.label20.Size = new System.Drawing.Size(53, 18);
-            this.label20.TabIndex = 12;
-            this.label20.Text = "Gold3";
             // 
             // label21
             // 
-            this.label21.AutoSize = true;
-            this.label21.Font = new System.Drawing.Font("SimSun", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            resources.ApplyResources(this.label21, "label21");
             this.label21.ForeColor = System.Drawing.Color.Black;
-            this.label21.Location = new System.Drawing.Point(3, 49);
-            this.label21.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label21.Name = "label21";
-            this.label21.Size = new System.Drawing.Size(53, 18);
-            this.label21.TabIndex = 11;
-            this.label21.Text = "Gold1";
             // 
             // labelGold5
             // 
-            this.labelGold5.AutoSize = true;
-            this.labelGold5.Font = new System.Drawing.Font("SimSun", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            resources.ApplyResources(this.labelGold5, "labelGold5");
             this.labelGold5.ForeColor = System.Drawing.Color.Gray;
-            this.labelGold5.Location = new System.Drawing.Point(360, 94);
-            this.labelGold5.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.labelGold5.Name = "labelGold5";
-            this.labelGold5.Size = new System.Drawing.Size(37, 25);
-            this.labelGold5.TabIndex = 10;
-            this.labelGold5.Text = "●";
             // 
             // labelGold4
             // 
-            this.labelGold4.AutoSize = true;
-            this.labelGold4.Font = new System.Drawing.Font("SimSun", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            resources.ApplyResources(this.labelGold4, "labelGold4");
             this.labelGold4.ForeColor = System.Drawing.Color.Gray;
-            this.labelGold4.Location = new System.Drawing.Point(272, 94);
-            this.labelGold4.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.labelGold4.Name = "labelGold4";
-            this.labelGold4.Size = new System.Drawing.Size(37, 25);
-            this.labelGold4.TabIndex = 9;
-            this.labelGold4.Text = "●";
             // 
             // labelGold2
             // 
-            this.labelGold2.AutoSize = true;
-            this.labelGold2.Font = new System.Drawing.Font("SimSun", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            resources.ApplyResources(this.labelGold2, "labelGold2");
             this.labelGold2.ForeColor = System.Drawing.Color.Gray;
-            this.labelGold2.Location = new System.Drawing.Point(96, 94);
-            this.labelGold2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.labelGold2.Name = "labelGold2";
-            this.labelGold2.Size = new System.Drawing.Size(37, 25);
-            this.labelGold2.TabIndex = 8;
-            this.labelGold2.Text = "●";
             // 
             // labelGold3
             // 
-            this.labelGold3.AutoSize = true;
-            this.labelGold3.Font = new System.Drawing.Font("SimSun", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            resources.ApplyResources(this.labelGold3, "labelGold3");
             this.labelGold3.ForeColor = System.Drawing.Color.Gray;
-            this.labelGold3.Location = new System.Drawing.Point(184, 94);
-            this.labelGold3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.labelGold3.Name = "labelGold3";
-            this.labelGold3.Size = new System.Drawing.Size(37, 25);
-            this.labelGold3.TabIndex = 7;
-            this.labelGold3.Text = "●";
             // 
             // labelGold1
             // 
-            this.labelGold1.AutoSize = true;
-            this.labelGold1.Font = new System.Drawing.Font("SimSun", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            resources.ApplyResources(this.labelGold1, "labelGold1");
             this.labelGold1.ForeColor = System.Drawing.Color.Gray;
-            this.labelGold1.Location = new System.Drawing.Point(8, 94);
-            this.labelGold1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.labelGold1.Name = "labelGold1";
-            this.labelGold1.Size = new System.Drawing.Size(37, 25);
-            this.labelGold1.TabIndex = 6;
-            this.labelGold1.Text = "●";
-            // 
-            // buttonConveyorLoad
-            // 
-            this.buttonConveyorLoad.Location = new System.Drawing.Point(584, 104);
-            this.buttonConveyorLoad.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.buttonConveyorLoad.Name = "buttonConveyorLoad";
-            this.buttonConveyorLoad.Size = new System.Drawing.Size(100, 29);
-            this.buttonConveyorLoad.TabIndex = 16;
-            this.buttonConveyorLoad.Text = "Load";
-            this.buttonConveyorLoad.UseVisualStyleBackColor = true;
-            this.buttonConveyorLoad.Click += new System.EventHandler(this.buttonConveyorLoad_Click);
             // 
             // groupBox5
             // 
@@ -1226,263 +947,120 @@
             this.groupBox5.Controls.Add(this.labelPickBufferHasPhoneForward);
             this.groupBox5.Controls.Add(this.labelConveyorOneIn);
             this.groupBox5.Controls.Add(this.labelPickBufferHasPhoneBackward);
-            this.groupBox5.Location = new System.Drawing.Point(17, 204);
-            this.groupBox5.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            resources.ApplyResources(this.groupBox5, "groupBox5");
             this.groupBox5.Name = "groupBox5";
-            this.groupBox5.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.groupBox5.Size = new System.Drawing.Size(925, 151);
-            this.groupBox5.TabIndex = 9;
             this.groupBox5.TabStop = false;
-            this.groupBox5.Text = "Down Conveyor";
             // 
             // buttonUpBlockSeparateBackward
             // 
-            this.buttonUpBlockSeparateBackward.Location = new System.Drawing.Point(787, 25);
-            this.buttonUpBlockSeparateBackward.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            resources.ApplyResources(this.buttonUpBlockSeparateBackward, "buttonUpBlockSeparateBackward");
             this.buttonUpBlockSeparateBackward.Name = "buttonUpBlockSeparateBackward";
-            this.buttonUpBlockSeparateBackward.Size = new System.Drawing.Size(56, 68);
-            this.buttonUpBlockSeparateBackward.TabIndex = 15;
-            this.buttonUpBlockSeparateBackward.Text = "Up";
             this.buttonUpBlockSeparateBackward.UseVisualStyleBackColor = true;
             this.buttonUpBlockSeparateBackward.Click += new System.EventHandler(this.buttonUpBlockSeparateBackward_Click);
             // 
             // buttonUpBlockSeparateForward
             // 
             this.buttonUpBlockSeparateForward.BackColor = System.Drawing.Color.Transparent;
-            this.buttonUpBlockSeparateForward.Location = new System.Drawing.Point(520, 25);
-            this.buttonUpBlockSeparateForward.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            resources.ApplyResources(this.buttonUpBlockSeparateForward, "buttonUpBlockSeparateForward");
             this.buttonUpBlockSeparateForward.Name = "buttonUpBlockSeparateForward";
-            this.buttonUpBlockSeparateForward.Size = new System.Drawing.Size(53, 68);
-            this.buttonUpBlockSeparateForward.TabIndex = 14;
-            this.buttonUpBlockSeparateForward.Text = "Up";
             this.buttonUpBlockSeparateForward.UseVisualStyleBackColor = false;
             this.buttonUpBlockSeparateForward.Click += new System.EventHandler(this.buttonUpBlockSeparateForward_Click);
             // 
             // buttonUpBlockPickForward
             // 
-            this.buttonUpBlockPickForward.Location = new System.Drawing.Point(724, 25);
-            this.buttonUpBlockPickForward.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            resources.ApplyResources(this.buttonUpBlockPickForward, "buttonUpBlockPickForward");
             this.buttonUpBlockPickForward.Name = "buttonUpBlockPickForward";
-            this.buttonUpBlockPickForward.Size = new System.Drawing.Size(55, 68);
-            this.buttonUpBlockPickForward.TabIndex = 13;
-            this.buttonUpBlockPickForward.Text = "Up";
             this.buttonUpBlockPickForward.UseVisualStyleBackColor = true;
             this.buttonUpBlockPickForward.Click += new System.EventHandler(this.buttonUpBlockPickForward_Click);
             // 
             // buttonUpBlockPickBackward
             // 
-            this.buttonUpBlockPickBackward.Location = new System.Drawing.Point(600, 25);
-            this.buttonUpBlockPickBackward.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            resources.ApplyResources(this.buttonUpBlockPickBackward, "buttonUpBlockPickBackward");
             this.buttonUpBlockPickBackward.Name = "buttonUpBlockPickBackward";
-            this.buttonUpBlockPickBackward.Size = new System.Drawing.Size(53, 68);
-            this.buttonUpBlockPickBackward.TabIndex = 12;
-            this.buttonUpBlockPickBackward.Text = "Up";
             this.buttonUpBlockPickBackward.UseVisualStyleBackColor = true;
             this.buttonUpBlockPickBackward.Click += new System.EventHandler(this.buttonUpBlockPickBackward_Click);
             // 
             // buttonOpenOrClose
             // 
-            this.buttonOpenOrClose.Location = new System.Drawing.Point(651, 86);
-            this.buttonOpenOrClose.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            resources.ApplyResources(this.buttonOpenOrClose, "buttonOpenOrClose");
             this.buttonOpenOrClose.Name = "buttonOpenOrClose";
-            this.buttonOpenOrClose.Size = new System.Drawing.Size(77, 29);
-            this.buttonOpenOrClose.TabIndex = 11;
-            this.buttonOpenOrClose.Text = "Open";
             this.buttonOpenOrClose.UseVisualStyleBackColor = true;
             this.buttonOpenOrClose.Click += new System.EventHandler(this.buttonClampOrLoose_Click);
             // 
             // buttonSideBlockPick
             // 
-            this.buttonSideBlockPick.Location = new System.Drawing.Point(652, 122);
-            this.buttonSideBlockPick.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            resources.ApplyResources(this.buttonSideBlockPick, "buttonSideBlockPick");
             this.buttonSideBlockPick.Name = "buttonSideBlockPick";
-            this.buttonSideBlockPick.Size = new System.Drawing.Size(76, 29);
-            this.buttonSideBlockPick.TabIndex = 10;
-            this.buttonSideBlockPick.Text = "Stretch\n\n";
             this.buttonSideBlockPick.UseVisualStyleBackColor = true;
             this.buttonSideBlockPick.Click += new System.EventHandler(this.buttonSideBlockPick_Click);
             // 
             // buttonSideBlockSeparateBackward
             // 
-            this.buttonSideBlockSeparateBackward.Location = new System.Drawing.Point(849, 122);
-            this.buttonSideBlockSeparateBackward.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            resources.ApplyResources(this.buttonSideBlockSeparateBackward, "buttonSideBlockSeparateBackward");
             this.buttonSideBlockSeparateBackward.Name = "buttonSideBlockSeparateBackward";
-            this.buttonSideBlockSeparateBackward.Size = new System.Drawing.Size(76, 29);
-            this.buttonSideBlockSeparateBackward.TabIndex = 10;
-            this.buttonSideBlockSeparateBackward.Text = "Stretch\n\n";
             this.buttonSideBlockSeparateBackward.UseVisualStyleBackColor = true;
             this.buttonSideBlockSeparateBackward.Click += new System.EventHandler(this.buttonSideBlockSeparateBackward_Click);
             // 
             // labelConveyorOneOut
             // 
-            this.labelConveyorOneOut.AutoSize = true;
-            this.labelConveyorOneOut.Font = new System.Drawing.Font("SimSun", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            resources.ApplyResources(this.labelConveyorOneOut, "labelConveyorOneOut");
             this.labelConveyorOneOut.ForeColor = System.Drawing.Color.Gray;
-            this.labelConveyorOneOut.Location = new System.Drawing.Point(347, 21);
-            this.labelConveyorOneOut.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.labelConveyorOneOut.Name = "labelConveyorOneOut";
-            this.labelConveyorOneOut.Size = new System.Drawing.Size(37, 25);
-            this.labelConveyorOneOut.TabIndex = 9;
-            this.labelConveyorOneOut.Text = "●";
             // 
             // labelPickHasPhone
             // 
-            this.labelPickHasPhone.AutoSize = true;
-            this.labelPickHasPhone.Font = new System.Drawing.Font("SimSun", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            resources.ApplyResources(this.labelPickHasPhone, "labelPickHasPhone");
             this.labelPickHasPhone.ForeColor = System.Drawing.Color.Gray;
-            this.labelPickHasPhone.Location = new System.Drawing.Point(671, 56);
-            this.labelPickHasPhone.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.labelPickHasPhone.Name = "labelPickHasPhone";
-            this.labelPickHasPhone.Size = new System.Drawing.Size(37, 25);
-            this.labelPickHasPhone.TabIndex = 8;
-            this.labelPickHasPhone.Text = "●";
             // 
             // buttonSideBlockSeparateForward
             // 
-            this.buttonSideBlockSeparateForward.Location = new System.Drawing.Point(443, 122);
-            this.buttonSideBlockSeparateForward.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            resources.ApplyResources(this.buttonSideBlockSeparateForward, "buttonSideBlockSeparateForward");
             this.buttonSideBlockSeparateForward.Name = "buttonSideBlockSeparateForward";
-            this.buttonSideBlockSeparateForward.Size = new System.Drawing.Size(76, 29);
-            this.buttonSideBlockSeparateForward.TabIndex = 6;
-            this.buttonSideBlockSeparateForward.Text = "Stretch\n\n";
             this.buttonSideBlockSeparateForward.UseVisualStyleBackColor = true;
             this.buttonSideBlockSeparateForward.Click += new System.EventHandler(this.buttonSideBlockSeparateForward_Click);
             // 
             // labelPickBufferHasPhoneForward
             // 
-            this.labelPickBufferHasPhoneForward.AutoSize = true;
-            this.labelPickBufferHasPhoneForward.Font = new System.Drawing.Font("SimSun", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            resources.ApplyResources(this.labelPickBufferHasPhoneForward, "labelPickBufferHasPhoneForward");
             this.labelPickBufferHasPhoneForward.ForeColor = System.Drawing.Color.Gray;
-            this.labelPickBufferHasPhoneForward.Location = new System.Drawing.Point(480, 56);
-            this.labelPickBufferHasPhoneForward.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.labelPickBufferHasPhoneForward.Name = "labelPickBufferHasPhoneForward";
-            this.labelPickBufferHasPhoneForward.Size = new System.Drawing.Size(37, 25);
-            this.labelPickBufferHasPhoneForward.TabIndex = 7;
-            this.labelPickBufferHasPhoneForward.Text = "●";
             // 
             // labelConveyorOneIn
             // 
-            this.labelConveyorOneIn.AutoSize = true;
-            this.labelConveyorOneIn.Font = new System.Drawing.Font("SimSun", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            resources.ApplyResources(this.labelConveyorOneIn, "labelConveyorOneIn");
             this.labelConveyorOneIn.ForeColor = System.Drawing.Color.Gray;
-            this.labelConveyorOneIn.Location = new System.Drawing.Point(8, 21);
-            this.labelConveyorOneIn.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.labelConveyorOneIn.Name = "labelConveyorOneIn";
-            this.labelConveyorOneIn.Size = new System.Drawing.Size(37, 25);
-            this.labelConveyorOneIn.TabIndex = 6;
-            this.labelConveyorOneIn.Text = "●";
             // 
             // labelPickBufferHasPhoneBackward
             // 
-            this.labelPickBufferHasPhoneBackward.AutoSize = true;
-            this.labelPickBufferHasPhoneBackward.Font = new System.Drawing.Font("SimSun", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            resources.ApplyResources(this.labelPickBufferHasPhoneBackward, "labelPickBufferHasPhoneBackward");
             this.labelPickBufferHasPhoneBackward.ForeColor = System.Drawing.Color.Gray;
-            this.labelPickBufferHasPhoneBackward.Location = new System.Drawing.Point(844, 56);
-            this.labelPickBufferHasPhoneBackward.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.labelPickBufferHasPhoneBackward.Name = "labelPickBufferHasPhoneBackward";
-            this.labelPickBufferHasPhoneBackward.Size = new System.Drawing.Size(37, 25);
-            this.labelPickBufferHasPhoneBackward.TabIndex = 5;
-            this.labelPickBufferHasPhoneBackward.Text = "●";
             // 
             // groupBox4
             // 
             this.groupBox4.Controls.Add(this.labelConveyorBinIn);
             this.groupBox4.Controls.Add(this.labelConveyorBinInTwo);
-            this.groupBox4.Location = new System.Drawing.Point(17, 18);
-            this.groupBox4.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            resources.ApplyResources(this.groupBox4, "groupBox4");
             this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.groupBox4.Size = new System.Drawing.Size(472, 164);
-            this.groupBox4.TabIndex = 8;
             this.groupBox4.TabStop = false;
-            this.groupBox4.Text = "Up Conveyor";
             // 
             // labelConveyorBinIn
             // 
-            this.labelConveyorBinIn.AutoSize = true;
-            this.labelConveyorBinIn.Font = new System.Drawing.Font("SimSun", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            resources.ApplyResources(this.labelConveyorBinIn, "labelConveyorBinIn");
             this.labelConveyorBinIn.ForeColor = System.Drawing.Color.Gray;
-            this.labelConveyorBinIn.Location = new System.Drawing.Point(321, 62);
-            this.labelConveyorBinIn.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.labelConveyorBinIn.Name = "labelConveyorBinIn";
-            this.labelConveyorBinIn.Size = new System.Drawing.Size(37, 25);
-            this.labelConveyorBinIn.TabIndex = 8;
-            this.labelConveyorBinIn.Text = "●";
             // 
             // labelConveyorBinInTwo
             // 
-            this.labelConveyorBinInTwo.AutoSize = true;
-            this.labelConveyorBinInTwo.Font = new System.Drawing.Font("SimSun", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            resources.ApplyResources(this.labelConveyorBinInTwo, "labelConveyorBinInTwo");
             this.labelConveyorBinInTwo.ForeColor = System.Drawing.Color.Gray;
-            this.labelConveyorBinInTwo.Location = new System.Drawing.Point(173, 62);
-            this.labelConveyorBinInTwo.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.labelConveyorBinInTwo.Name = "labelConveyorBinInTwo";
-            this.labelConveyorBinInTwo.Size = new System.Drawing.Size(37, 25);
-            this.labelConveyorBinInTwo.TabIndex = 7;
-            this.labelConveyorBinInTwo.Text = "●";
-            // 
-            // buttonForPicked
-            // 
-            this.buttonForPicked.Location = new System.Drawing.Point(875, 149);
-            this.buttonForPicked.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.buttonForPicked.Name = "buttonForPicked";
-            this.buttonForPicked.Size = new System.Drawing.Size(101, 32);
-            this.buttonForPicked.TabIndex = 4;
-            this.buttonForPicked.Text = "Picked";
-            this.buttonForPicked.UseVisualStyleBackColor = true;
-            this.buttonForPicked.Click += new System.EventHandler(this.button41_Click);
-            // 
-            // buttonForReady
-            // 
-            this.buttonForReady.Location = new System.Drawing.Point(875, 100);
-            this.buttonForReady.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.buttonForReady.Name = "buttonForReady";
-            this.buttonForReady.Size = new System.Drawing.Size(101, 32);
-            this.buttonForReady.TabIndex = 3;
-            this.buttonForReady.Text = "Ready";
-            this.buttonForReady.UseVisualStyleBackColor = true;
-            this.buttonForReady.Click += new System.EventHandler(this.button40_Click);
-            // 
-            // buttonForInpos
-            // 
-            this.buttonForInpos.Location = new System.Drawing.Point(875, 51);
-            this.buttonForInpos.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.buttonForInpos.Name = "buttonForInpos";
-            this.buttonForInpos.Size = new System.Drawing.Size(101, 32);
-            this.buttonForInpos.TabIndex = 2;
-            this.buttonForInpos.Text = "Inpos";
-            this.buttonForInpos.UseVisualStyleBackColor = true;
-            this.buttonForInpos.Click += new System.EventHandler(this.button39_Click);
-            // 
-            // checkBoxPickConveyorMoveForward
-            // 
-            this.checkBoxPickConveyorMoveForward.AutoSize = true;
-            this.checkBoxPickConveyorMoveForward.Checked = true;
-            this.checkBoxPickConveyorMoveForward.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBoxPickConveyorMoveForward.Location = new System.Drawing.Point(669, 25);
-            this.checkBoxPickConveyorMoveForward.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.checkBoxPickConveyorMoveForward.Name = "checkBoxPickConveyorMoveForward";
-            this.checkBoxPickConveyorMoveForward.Size = new System.Drawing.Size(197, 19);
-            this.checkBoxPickConveyorMoveForward.TabIndex = 1;
-            this.checkBoxPickConveyorMoveForward.Text = "Conveyor move forward";
-            this.checkBoxPickConveyorMoveForward.UseVisualStyleBackColor = true;
-            this.checkBoxPickConveyorMoveForward.CheckedChanged += new System.EventHandler(this.checkBoxPickConveyorMoveForward_CheckedChanged);
-            // 
-            // buttonConveyorStart
-            // 
-            this.buttonConveyorStart.Location = new System.Drawing.Point(875, 2);
-            this.buttonConveyorStart.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.buttonConveyorStart.Name = "buttonConveyorStart";
-            this.buttonConveyorStart.Size = new System.Drawing.Size(101, 32);
-            this.buttonConveyorStart.TabIndex = 0;
-            this.buttonConveyorStart.Text = "Start";
-            this.buttonConveyorStart.UseVisualStyleBackColor = true;
-            this.buttonConveyorStart.Click += new System.EventHandler(this.button38_Click);
             // 
             // tabPage3
             // 
             this.tabPage3.Controls.Add(this.buttonBoxSave);
-            this.tabPage3.Controls.Add(this.buttonBoxLoad);
             this.tabPage3.Controls.Add(this.buttonOK6);
             this.tabPage3.Controls.Add(this.comboBox6);
             this.tabPage3.Controls.Add(this.buttonOK5);
@@ -1496,155 +1074,94 @@
             this.tabPage3.Controls.Add(this.buttonOK1);
             this.tabPage3.Controls.Add(this.comboBox1);
             this.tabPage3.Controls.Add(this.listViewBox);
-            this.tabPage3.Location = new System.Drawing.Point(104, 4);
-            this.tabPage3.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            resources.ApplyResources(this.tabPage3, "tabPage3");
             this.tabPage3.Name = "tabPage3";
-            this.tabPage3.Size = new System.Drawing.Size(1108, 600);
-            this.tabPage3.TabIndex = 2;
-            this.tabPage3.Text = "Box";
             this.tabPage3.UseVisualStyleBackColor = true;
             // 
             // buttonBoxSave
             // 
-            this.buttonBoxSave.Location = new System.Drawing.Point(685, 349);
-            this.buttonBoxSave.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            resources.ApplyResources(this.buttonBoxSave, "buttonBoxSave");
             this.buttonBoxSave.Name = "buttonBoxSave";
-            this.buttonBoxSave.Size = new System.Drawing.Size(101, 50);
-            this.buttonBoxSave.TabIndex = 14;
-            this.buttonBoxSave.Text = "Save";
             this.buttonBoxSave.UseVisualStyleBackColor = true;
             this.buttonBoxSave.Click += new System.EventHandler(this.buttonBoxSave_Click);
             // 
-            // buttonBoxLoad
-            // 
-            this.buttonBoxLoad.Location = new System.Drawing.Point(685, 260);
-            this.buttonBoxLoad.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.buttonBoxLoad.Name = "buttonBoxLoad";
-            this.buttonBoxLoad.Size = new System.Drawing.Size(101, 50);
-            this.buttonBoxLoad.TabIndex = 13;
-            this.buttonBoxLoad.Text = "Load";
-            this.buttonBoxLoad.UseVisualStyleBackColor = true;
-            this.buttonBoxLoad.Click += new System.EventHandler(this.buttonBoxLoad_Click);
-            // 
             // buttonOK6
             // 
-            this.buttonOK6.Location = new System.Drawing.Point(495, 408);
-            this.buttonOK6.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            resources.ApplyResources(this.buttonOK6, "buttonOK6");
             this.buttonOK6.Name = "buttonOK6";
-            this.buttonOK6.Size = new System.Drawing.Size(60, 29);
-            this.buttonOK6.TabIndex = 12;
-            this.buttonOK6.Text = "OK";
             this.buttonOK6.UseVisualStyleBackColor = true;
             this.buttonOK6.Click += new System.EventHandler(this.buttonOK6_Click);
             // 
             // comboBox6
             // 
             this.comboBox6.FormattingEnabled = true;
-            this.comboBox6.Location = new System.Drawing.Point(412, 408);
-            this.comboBox6.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            resources.ApplyResources(this.comboBox6, "comboBox6");
             this.comboBox6.Name = "comboBox6";
-            this.comboBox6.Size = new System.Drawing.Size(73, 23);
-            this.comboBox6.TabIndex = 11;
             // 
             // buttonOK5
             // 
-            this.buttonOK5.Location = new System.Drawing.Point(304, 409);
-            this.buttonOK5.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            resources.ApplyResources(this.buttonOK5, "buttonOK5");
             this.buttonOK5.Name = "buttonOK5";
-            this.buttonOK5.Size = new System.Drawing.Size(60, 29);
-            this.buttonOK5.TabIndex = 10;
-            this.buttonOK5.Text = "OK";
             this.buttonOK5.UseVisualStyleBackColor = true;
             this.buttonOK5.Click += new System.EventHandler(this.buttonOK5_Click);
             // 
             // comboBox5
             // 
             this.comboBox5.FormattingEnabled = true;
-            this.comboBox5.Location = new System.Drawing.Point(221, 409);
-            this.comboBox5.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            resources.ApplyResources(this.comboBox5, "comboBox5");
             this.comboBox5.Name = "comboBox5";
-            this.comboBox5.Size = new System.Drawing.Size(73, 23);
-            this.comboBox5.TabIndex = 9;
             // 
             // buttonOK4
             // 
-            this.buttonOK4.Location = new System.Drawing.Point(112, 405);
-            this.buttonOK4.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            resources.ApplyResources(this.buttonOK4, "buttonOK4");
             this.buttonOK4.Name = "buttonOK4";
-            this.buttonOK4.Size = new System.Drawing.Size(60, 29);
-            this.buttonOK4.TabIndex = 8;
-            this.buttonOK4.Text = "OK";
             this.buttonOK4.UseVisualStyleBackColor = true;
             this.buttonOK4.Click += new System.EventHandler(this.buttonOK4_Click);
             // 
             // comboBox4
             // 
             this.comboBox4.FormattingEnabled = true;
-            this.comboBox4.Location = new System.Drawing.Point(29, 405);
-            this.comboBox4.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            resources.ApplyResources(this.comboBox4, "comboBox4");
             this.comboBox4.Name = "comboBox4";
-            this.comboBox4.Size = new System.Drawing.Size(73, 23);
-            this.comboBox4.TabIndex = 7;
             // 
             // buttonOK3
             // 
-            this.buttonOK3.Location = new System.Drawing.Point(495, 192);
-            this.buttonOK3.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            resources.ApplyResources(this.buttonOK3, "buttonOK3");
             this.buttonOK3.Name = "buttonOK3";
-            this.buttonOK3.Size = new System.Drawing.Size(60, 29);
-            this.buttonOK3.TabIndex = 6;
-            this.buttonOK3.Text = "OK";
             this.buttonOK3.UseVisualStyleBackColor = true;
             this.buttonOK3.Click += new System.EventHandler(this.buttonOK3_Click);
             // 
             // comboBox3
             // 
             this.comboBox3.FormattingEnabled = true;
-            this.comboBox3.Location = new System.Drawing.Point(412, 192);
-            this.comboBox3.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            resources.ApplyResources(this.comboBox3, "comboBox3");
             this.comboBox3.Name = "comboBox3";
-            this.comboBox3.Size = new System.Drawing.Size(73, 23);
-            this.comboBox3.TabIndex = 5;
             // 
             // buttonOK2
             // 
-            this.buttonOK2.Location = new System.Drawing.Point(304, 192);
-            this.buttonOK2.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            resources.ApplyResources(this.buttonOK2, "buttonOK2");
             this.buttonOK2.Name = "buttonOK2";
-            this.buttonOK2.Size = new System.Drawing.Size(60, 29);
-            this.buttonOK2.TabIndex = 4;
-            this.buttonOK2.Text = "OK";
             this.buttonOK2.UseVisualStyleBackColor = true;
             this.buttonOK2.Click += new System.EventHandler(this.buttonOK2_Click);
             // 
             // comboBox2
             // 
             this.comboBox2.FormattingEnabled = true;
-            this.comboBox2.Location = new System.Drawing.Point(221, 192);
-            this.comboBox2.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            resources.ApplyResources(this.comboBox2, "comboBox2");
             this.comboBox2.Name = "comboBox2";
-            this.comboBox2.Size = new System.Drawing.Size(73, 23);
-            this.comboBox2.TabIndex = 3;
             // 
             // buttonOK1
             // 
-            this.buttonOK1.Location = new System.Drawing.Point(112, 192);
-            this.buttonOK1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            resources.ApplyResources(this.buttonOK1, "buttonOK1");
             this.buttonOK1.Name = "buttonOK1";
-            this.buttonOK1.Size = new System.Drawing.Size(60, 29);
-            this.buttonOK1.TabIndex = 2;
-            this.buttonOK1.Text = "OK";
             this.buttonOK1.UseVisualStyleBackColor = true;
             this.buttonOK1.Click += new System.EventHandler(this.buttonOK1_Click);
             // 
             // comboBox1
             // 
             this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Location = new System.Drawing.Point(29, 192);
-            this.comboBox1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            resources.ApplyResources(this.comboBox1, "comboBox1");
             this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(73, 23);
-            this.comboBox1.TabIndex = 1;
             // 
             // listViewBox
             // 
@@ -1652,35 +1169,20 @@
             this.columnHeader1,
             this.columnHeader2});
             this.listViewBox.ContextMenuStrip = this.contextMenuStrip1;
-            listViewGroup1.Header = "Up";
-            listViewGroup1.Name = "上层";
-            listViewGroup1.Tag = "";
-            listViewGroup2.Header = "Down";
-            listViewGroup2.Name = "下层";
             this.listViewBox.Groups.AddRange(new System.Windows.Forms.ListViewGroup[] {
-            listViewGroup1,
-            listViewGroup2});
-            listViewItem1.Group = listViewGroup1;
-            listViewItem2.Group = listViewGroup1;
-            listViewItem3.Group = listViewGroup1;
-            listViewItem4.Group = listViewGroup2;
-            listViewItem5.Group = listViewGroup2;
-            listViewItem6.Group = listViewGroup2;
+            ((System.Windows.Forms.ListViewGroup)(resources.GetObject("listViewBox.Groups"))),
+            ((System.Windows.Forms.ListViewGroup)(resources.GetObject("listViewBox.Groups1")))});
             this.listViewBox.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
-            listViewItem1,
-            listViewItem2,
-            listViewItem3,
-            listViewItem4,
-            listViewItem5,
-            listViewItem6});
+            ((System.Windows.Forms.ListViewItem)(resources.GetObject("listViewBox.Items"))),
+            ((System.Windows.Forms.ListViewItem)(resources.GetObject("listViewBox.Items1"))),
+            ((System.Windows.Forms.ListViewItem)(resources.GetObject("listViewBox.Items2"))),
+            ((System.Windows.Forms.ListViewItem)(resources.GetObject("listViewBox.Items3"))),
+            ((System.Windows.Forms.ListViewItem)(resources.GetObject("listViewBox.Items4"))),
+            ((System.Windows.Forms.ListViewItem)(resources.GetObject("listViewBox.Items5")))});
             this.listViewBox.LargeImageList = this.imageList1;
-            this.listViewBox.Location = new System.Drawing.Point(1, 0);
-            this.listViewBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            resources.ApplyResources(this.listViewBox, "listViewBox");
             this.listViewBox.Name = "listViewBox";
-            this.listViewBox.Size = new System.Drawing.Size(1071, 593);
-            this.listViewBox.TabIndex = 0;
             this.listViewBox.UseCompatibleStateImageBehavior = false;
-            this.listViewBox.SelectedIndexChanged += new System.EventHandler(this.listViewBox_SelectedIndexChanged);
             // 
             // contextMenuStrip1
             // 
@@ -1689,37 +1191,91 @@
             this.EnableToolStripMenuItem,
             this.DisableToolStripMenuItem,
             this.OpenToolStripMenuItem,
-            this.CloseToolStripMenuItem});
+            this.CloseToolStripMenuItem,
+            this.typeToolStripMenuItem,
+            this.labelTypeToolStripMenuItem});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(132, 100);
+            resources.ApplyResources(this.contextMenuStrip1, "contextMenuStrip1");
             // 
             // EnableToolStripMenuItem
             // 
             this.EnableToolStripMenuItem.Name = "EnableToolStripMenuItem";
-            this.EnableToolStripMenuItem.Size = new System.Drawing.Size(131, 24);
-            this.EnableToolStripMenuItem.Text = "Enable";
+            resources.ApplyResources(this.EnableToolStripMenuItem, "EnableToolStripMenuItem");
             this.EnableToolStripMenuItem.Click += new System.EventHandler(this.EnableToolStripMenuItem_Click);
             // 
             // DisableToolStripMenuItem
             // 
             this.DisableToolStripMenuItem.Name = "DisableToolStripMenuItem";
-            this.DisableToolStripMenuItem.Size = new System.Drawing.Size(131, 24);
-            this.DisableToolStripMenuItem.Text = "Disable";
+            resources.ApplyResources(this.DisableToolStripMenuItem, "DisableToolStripMenuItem");
             this.DisableToolStripMenuItem.Click += new System.EventHandler(this.DisableToolStripMenuItem_Click);
             // 
             // OpenToolStripMenuItem
             // 
             this.OpenToolStripMenuItem.Name = "OpenToolStripMenuItem";
-            this.OpenToolStripMenuItem.Size = new System.Drawing.Size(131, 24);
-            this.OpenToolStripMenuItem.Text = "OPen";
+            resources.ApplyResources(this.OpenToolStripMenuItem, "OpenToolStripMenuItem");
             this.OpenToolStripMenuItem.Click += new System.EventHandler(this.OpenToolStripMenuItem_Click);
             // 
             // CloseToolStripMenuItem
             // 
             this.CloseToolStripMenuItem.Name = "CloseToolStripMenuItem";
-            this.CloseToolStripMenuItem.Size = new System.Drawing.Size(131, 24);
-            this.CloseToolStripMenuItem.Text = "Close";
+            resources.ApplyResources(this.CloseToolStripMenuItem, "CloseToolStripMenuItem");
             this.CloseToolStripMenuItem.Click += new System.EventHandler(this.CloseToolStripMenuItem_Click);
+            // 
+            // typeToolStripMenuItem
+            // 
+            this.typeToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.bTToolStripMenuItem,
+            this.wIFIToolStripMenuItem,
+            this.rFToolStripMenuItem});
+            resources.ApplyResources(this.typeToolStripMenuItem, "typeToolStripMenuItem");
+            this.typeToolStripMenuItem.Name = "typeToolStripMenuItem";
+            this.typeToolStripMenuItem.MouseEnter += new System.EventHandler(this.typeToolStripMenuItem_MouseEnter);
+            // 
+            // bTToolStripMenuItem
+            // 
+            this.bTToolStripMenuItem.Name = "bTToolStripMenuItem";
+            resources.ApplyResources(this.bTToolStripMenuItem, "bTToolStripMenuItem");
+            this.bTToolStripMenuItem.Click += new System.EventHandler(this.bTToolStripMenuItem_Click);
+            // 
+            // wIFIToolStripMenuItem
+            // 
+            this.wIFIToolStripMenuItem.Name = "wIFIToolStripMenuItem";
+            resources.ApplyResources(this.wIFIToolStripMenuItem, "wIFIToolStripMenuItem");
+            this.wIFIToolStripMenuItem.Click += new System.EventHandler(this.wIFIToolStripMenuItem_Click);
+            // 
+            // rFToolStripMenuItem
+            // 
+            this.rFToolStripMenuItem.Name = "rFToolStripMenuItem";
+            resources.ApplyResources(this.rFToolStripMenuItem, "rFToolStripMenuItem");
+            this.rFToolStripMenuItem.Click += new System.EventHandler(this.rFToolStripMenuItem_Click);
+            // 
+            // labelTypeToolStripMenuItem
+            // 
+            this.labelTypeToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.aToolStripMenuItem,
+            this.bToolStripMenuItem,
+            this.cToolStripMenuItem});
+            resources.ApplyResources(this.labelTypeToolStripMenuItem, "labelTypeToolStripMenuItem");
+            this.labelTypeToolStripMenuItem.Name = "labelTypeToolStripMenuItem";
+            this.labelTypeToolStripMenuItem.MouseEnter += new System.EventHandler(this.labelTypeToolStripMenuItem_MouseEnter);
+            // 
+            // aToolStripMenuItem
+            // 
+            this.aToolStripMenuItem.Name = "aToolStripMenuItem";
+            resources.ApplyResources(this.aToolStripMenuItem, "aToolStripMenuItem");
+            this.aToolStripMenuItem.Click += new System.EventHandler(this.aToolStripMenuItem_Click);
+            // 
+            // bToolStripMenuItem
+            // 
+            this.bToolStripMenuItem.Name = "bToolStripMenuItem";
+            resources.ApplyResources(this.bToolStripMenuItem, "bToolStripMenuItem");
+            this.bToolStripMenuItem.Click += new System.EventHandler(this.bToolStripMenuItem_Click);
+            // 
+            // cToolStripMenuItem
+            // 
+            this.cToolStripMenuItem.Name = "cToolStripMenuItem";
+            resources.ApplyResources(this.cToolStripMenuItem, "cToolStripMenuItem");
+            this.cToolStripMenuItem.Click += new System.EventHandler(this.cToolStripMenuItem_Click);
             // 
             // imageList1
             // 
@@ -1730,74 +1286,258 @@
             // 
             // tabPage5
             // 
-            this.tabPage5.Location = new System.Drawing.Point(104, 4);
-            this.tabPage5.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            resources.ApplyResources(this.tabPage5, "tabPage5");
             this.tabPage5.Name = "tabPage5";
-            this.tabPage5.Size = new System.Drawing.Size(1108, 600);
-            this.tabPage5.TabIndex = 4;
-            this.tabPage5.Text = "Tester";
             this.tabPage5.UseVisualStyleBackColor = true;
             // 
             // tabPage6
             // 
-            this.tabPage6.Location = new System.Drawing.Point(104, 4);
-            this.tabPage6.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.tabPage6.Controls.Add(this.buttonLogLoad);
+            this.tabPage6.Controls.Add(this.dataGridView1);
+            resources.ApplyResources(this.tabPage6, "tabPage6");
             this.tabPage6.Name = "tabPage6";
-            this.tabPage6.Size = new System.Drawing.Size(1108, 600);
-            this.tabPage6.TabIndex = 5;
-            this.tabPage6.Text = "Log";
             this.tabPage6.UseVisualStyleBackColor = true;
+            // 
+            // buttonLogLoad
+            // 
+            resources.ApplyResources(this.buttonLogLoad, "buttonLogLoad");
+            this.buttonLogLoad.Name = "buttonLogLoad";
+            this.buttonLogLoad.UseVisualStyleBackColor = true;
+            this.buttonLogLoad.Click += new System.EventHandler(this.buttonLogLoad_Click_1);
+            // 
+            // dataGridView1
+            // 
+            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridView1.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.Column1,
+            this.Column2,
+            this.Column4,
+            this.Column3});
+            resources.ApplyResources(this.dataGridView1, "dataGridView1");
+            this.dataGridView1.Name = "dataGridView1";
+            this.dataGridView1.ReadOnly = true;
+            this.dataGridView1.RowTemplate.Height = 23;
+            // 
+            // Column1
+            // 
+            resources.ApplyResources(this.Column1, "Column1");
+            this.Column1.Name = "Column1";
+            this.Column1.ReadOnly = true;
+            // 
+            // Column2
+            // 
+            resources.ApplyResources(this.Column2, "Column2");
+            this.Column2.Name = "Column2";
+            this.Column2.ReadOnly = true;
+            // 
+            // Column4
+            // 
+            resources.ApplyResources(this.Column4, "Column4");
+            this.Column4.Name = "Column4";
+            this.Column4.ReadOnly = true;
+            // 
+            // Column3
+            // 
+            resources.ApplyResources(this.Column3, "Column3");
+            this.Column3.Name = "Column3";
+            this.Column3.ReadOnly = true;
             // 
             // tabPage7
             // 
-            this.tabPage7.Controls.Add(this.label8);
-            this.tabPage7.Location = new System.Drawing.Point(104, 4);
-            this.tabPage7.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.tabPage7.Controls.Add(this.groupBoxChangePassword);
+            this.tabPage7.Controls.Add(this.groupBox7);
+            this.tabPage7.Controls.Add(this.buttonCreateFile);
+            resources.ApplyResources(this.tabPage7, "tabPage7");
             this.tabPage7.Name = "tabPage7";
-            this.tabPage7.Size = new System.Drawing.Size(1108, 600);
-            this.tabPage7.TabIndex = 6;
-            this.tabPage7.Text = "Setting";
             this.tabPage7.UseVisualStyleBackColor = true;
+            // 
+            // groupBoxChangePassword
+            // 
+            this.groupBoxChangePassword.Controls.Add(this.label16);
+            this.groupBoxChangePassword.Controls.Add(this.textBoxNewPassword);
+            this.groupBoxChangePassword.Controls.Add(this.label7);
+            this.groupBoxChangePassword.Controls.Add(this.label8);
+            this.groupBoxChangePassword.Controls.Add(this.comboBoxChangePower);
+            this.groupBoxChangePassword.Controls.Add(this.buttonComfirm);
+            this.groupBoxChangePassword.Controls.Add(this.textBoxChangeLoginName);
+            this.groupBoxChangePassword.Controls.Add(this.label9);
+            this.groupBoxChangePassword.Controls.Add(this.textBoxOldPassword);
+            resources.ApplyResources(this.groupBoxChangePassword, "groupBoxChangePassword");
+            this.groupBoxChangePassword.Name = "groupBoxChangePassword";
+            this.groupBoxChangePassword.TabStop = false;
+            // 
+            // label16
+            // 
+            resources.ApplyResources(this.label16, "label16");
+            this.label16.Name = "label16";
+            // 
+            // textBoxNewPassword
+            // 
+            resources.ApplyResources(this.textBoxNewPassword, "textBoxNewPassword");
+            this.textBoxNewPassword.Name = "textBoxNewPassword";
+            // 
+            // label7
+            // 
+            resources.ApplyResources(this.label7, "label7");
+            this.label7.Name = "label7";
             // 
             // label8
             // 
-            this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(64, 44);
+            resources.ApplyResources(this.label8, "label8");
             this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(37, 15);
-            this.label8.TabIndex = 0;
-            this.label8.Text = "账户";
+            // 
+            // comboBoxChangePower
+            // 
+            this.comboBoxChangePower.FormattingEnabled = true;
+            this.comboBoxChangePower.Items.AddRange(new object[] {
+            resources.GetString("comboBoxChangePower.Items"),
+            resources.GetString("comboBoxChangePower.Items1"),
+            resources.GetString("comboBoxChangePower.Items2")});
+            resources.ApplyResources(this.comboBoxChangePower, "comboBoxChangePower");
+            this.comboBoxChangePower.Name = "comboBoxChangePower";
+            // 
+            // buttonComfirm
+            // 
+            resources.ApplyResources(this.buttonComfirm, "buttonComfirm");
+            this.buttonComfirm.Name = "buttonComfirm";
+            this.buttonComfirm.UseVisualStyleBackColor = true;
+            this.buttonComfirm.Click += new System.EventHandler(this.buttonComfirm_Click);
+            // 
+            // textBoxChangeLoginName
+            // 
+            resources.ApplyResources(this.textBoxChangeLoginName, "textBoxChangeLoginName");
+            this.textBoxChangeLoginName.Name = "textBoxChangeLoginName";
+            // 
+            // label9
+            // 
+            resources.ApplyResources(this.label9, "label9");
+            this.label9.Name = "label9";
+            // 
+            // textBoxOldPassword
+            // 
+            resources.ApplyResources(this.textBoxOldPassword, "textBoxOldPassword");
+            this.textBoxOldPassword.Name = "textBoxOldPassword";
+            // 
+            // groupBox7
+            // 
+            this.groupBox7.Controls.Add(this.buttonChangePassword);
+            this.groupBox7.Controls.Add(this.labelLoginName);
+            this.groupBox7.Controls.Add(this.label4);
+            this.groupBox7.Controls.Add(this.comboBoxPower);
+            this.groupBox7.Controls.Add(this.buttonLogin);
+            this.groupBox7.Controls.Add(this.textBoxLoginName);
+            this.groupBox7.Controls.Add(this.label6);
+            this.groupBox7.Controls.Add(this.textBoxPassWord);
+            resources.ApplyResources(this.groupBox7, "groupBox7");
+            this.groupBox7.Name = "groupBox7";
+            this.groupBox7.TabStop = false;
+            // 
+            // buttonChangePassword
+            // 
+            resources.ApplyResources(this.buttonChangePassword, "buttonChangePassword");
+            this.buttonChangePassword.Name = "buttonChangePassword";
+            this.buttonChangePassword.UseVisualStyleBackColor = true;
+            this.buttonChangePassword.Click += new System.EventHandler(this.buttonChangePassword_Click);
+            // 
+            // labelLoginName
+            // 
+            resources.ApplyResources(this.labelLoginName, "labelLoginName");
+            this.labelLoginName.Name = "labelLoginName";
+            // 
+            // label4
+            // 
+            resources.ApplyResources(this.label4, "label4");
+            this.label4.Name = "label4";
+            // 
+            // comboBoxPower
+            // 
+            this.comboBoxPower.FormattingEnabled = true;
+            this.comboBoxPower.Items.AddRange(new object[] {
+            resources.GetString("comboBoxPower.Items"),
+            resources.GetString("comboBoxPower.Items1"),
+            resources.GetString("comboBoxPower.Items2")});
+            resources.ApplyResources(this.comboBoxPower, "comboBoxPower");
+            this.comboBoxPower.Name = "comboBoxPower";
+            // 
+            // buttonLogin
+            // 
+            resources.ApplyResources(this.buttonLogin, "buttonLogin");
+            this.buttonLogin.Name = "buttonLogin";
+            this.buttonLogin.UseVisualStyleBackColor = true;
+            this.buttonLogin.Click += new System.EventHandler(this.buttonLogin_Click_1);
+            // 
+            // textBoxLoginName
+            // 
+            resources.ApplyResources(this.textBoxLoginName, "textBoxLoginName");
+            this.textBoxLoginName.Name = "textBoxLoginName";
+            // 
+            // label6
+            // 
+            resources.ApplyResources(this.label6, "label6");
+            this.label6.Name = "label6";
+            // 
+            // textBoxPassWord
+            // 
+            resources.ApplyResources(this.textBoxPassWord, "textBoxPassWord");
+            this.textBoxPassWord.Name = "textBoxPassWord";
+            // 
+            // buttonCreateFile
+            // 
+            resources.ApplyResources(this.buttonCreateFile, "buttonCreateFile");
+            this.buttonCreateFile.Name = "buttonCreateFile";
+            this.buttonCreateFile.UseVisualStyleBackColor = true;
+            this.buttonCreateFile.Click += new System.EventHandler(this.button1_Click);
             // 
             // richTextBoxMessage
             // 
-            this.richTextBoxMessage.Location = new System.Drawing.Point(132, 12);
-            this.richTextBoxMessage.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            resources.ApplyResources(this.richTextBoxMessage, "richTextBoxMessage");
             this.richTextBoxMessage.Name = "richTextBoxMessage";
-            this.richTextBoxMessage.Size = new System.Drawing.Size(1112, 68);
-            this.richTextBoxMessage.TabIndex = 19;
-            this.richTextBoxMessage.Text = "当前设备状态，报警，等待手机，执行任务，解决办法";
             // 
-            // button1
+            // statusStrip1
             // 
-            this.button1.Location = new System.Drawing.Point(425, 161);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
-            this.button1.TabIndex = 27;
-            this.button1.Text = "button1";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripStatusLabel1,
+            this.toolStripStatusLabelName,
+            this.toolStripStatusLabel3,
+            this.toolStripStatusLabel4,
+            this.toolStripStatusLabelPower});
+            resources.ApplyResources(this.statusStrip1, "statusStrip1");
+            this.statusStrip1.Name = "statusStrip1";
+            // 
+            // toolStripStatusLabel1
+            // 
+            this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
+            resources.ApplyResources(this.toolStripStatusLabel1, "toolStripStatusLabel1");
+            // 
+            // toolStripStatusLabelName
+            // 
+            this.toolStripStatusLabelName.Name = "toolStripStatusLabelName";
+            resources.ApplyResources(this.toolStripStatusLabelName, "toolStripStatusLabelName");
+            // 
+            // toolStripStatusLabel3
+            // 
+            this.toolStripStatusLabel3.Name = "toolStripStatusLabel3";
+            resources.ApplyResources(this.toolStripStatusLabel3, "toolStripStatusLabel3");
+            // 
+            // toolStripStatusLabel4
+            // 
+            this.toolStripStatusLabel4.Name = "toolStripStatusLabel4";
+            resources.ApplyResources(this.toolStripStatusLabel4, "toolStripStatusLabel4");
+            // 
+            // toolStripStatusLabelPower
+            // 
+            this.toolStripStatusLabelPower.Name = "toolStripStatusLabelPower";
+            resources.ApplyResources(this.toolStripStatusLabelPower, "toolStripStatusLabelPower");
             // 
             // Main
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
+            resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Control;
-            this.ClientSize = new System.Drawing.Size(1256, 705);
-            this.Controls.Add(this.richTextBoxMessage);
+            this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.tabControl1);
-            this.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.Controls.Add(this.richTextBoxMessage);
             this.Name = "Main";
-            this.Text = "Rack";
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.groupBox2.ResumeLayout(false);
@@ -1805,13 +1545,15 @@
             ((System.ComponentModel.ISupportInitialize)(this.trackBarSetSpeed2)).EndInit();
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
-            this.tabPage1.PerformLayout();
+            this.groupBoxMain.ResumeLayout(false);
+            this.groupBoxMain.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarSetSpeed1)).EndInit();
             this.tabPage2.ResumeLayout(false);
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
             this.tabPage4.ResumeLayout(false);
-            this.tabPage4.PerformLayout();
+            this.groupBoxConveyorOpreate.ResumeLayout(false);
+            this.groupBoxConveyorOpreate.PerformLayout();
             this.groupBox6.ResumeLayout(false);
             this.groupBox6.PerformLayout();
             this.groupBox5.ResumeLayout(false);
@@ -1820,9 +1562,17 @@
             this.groupBox4.PerformLayout();
             this.tabPage3.ResumeLayout(false);
             this.contextMenuStrip1.ResumeLayout(false);
+            this.tabPage6.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.tabPage7.ResumeLayout(false);
-            this.tabPage7.PerformLayout();
+            this.groupBoxChangePassword.ResumeLayout(false);
+            this.groupBoxChangePassword.PerformLayout();
+            this.groupBox7.ResumeLayout(false);
+            this.groupBox7.PerformLayout();
+            this.statusStrip1.ResumeLayout(false);
+            this.statusStrip1.PerformLayout();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -1866,7 +1616,6 @@
         private System.Windows.Forms.TabPage tabPage6;
         private System.Windows.Forms.TabPage tabPage7;
         private System.Windows.Forms.RichTextBox richTextBoxMessage;
-        private System.Windows.Forms.Label label8;
         private System.Windows.Forms.Button buttonEableR;
         private System.Windows.Forms.Button buttonEableZ;
         private System.Windows.Forms.Button buttonEableY;
@@ -1877,7 +1626,7 @@
         private System.Windows.Forms.Button buttonPlace;
         private System.Windows.Forms.Button buttonPick;
         private System.Windows.Forms.ComboBox comboBoxMovePos;
-        private System.Windows.Forms.ComboBox comboBox_Gripper;
+        private System.Windows.Forms.ComboBox comboBoxGripper;
         private System.Windows.Forms.Button buttonLoad;
         private System.Windows.Forms.Button buttonCreateXml;
         private System.Windows.Forms.Button buttonSaveApproach;
@@ -1912,7 +1661,6 @@
         private System.Windows.Forms.Button buttonReadyForPick;
         private System.Windows.Forms.Button buttonLoadForTeach;
         private System.Windows.Forms.Button buttonBoxSave;
-        private System.Windows.Forms.Button buttonBoxLoad;
         private System.Windows.Forms.Button buttonOK6;
         private System.Windows.Forms.ComboBox comboBox6;
         private System.Windows.Forms.Button buttonOK5;
@@ -1944,12 +1692,8 @@
         private System.Windows.Forms.Label labelPickHasPhone;
         private System.Windows.Forms.Label labelPickBufferHasPhoneForward;
         private System.Windows.Forms.Label labelConveyorOneIn;
-        private System.Windows.Forms.GroupBox groupBox4;
-        private System.Windows.Forms.Label labelConveyorBinIn;
-        private System.Windows.Forms.Label labelConveyorBinInTwo;
         private System.Windows.Forms.Button buttonUpBlockSeparateBackward;
         private System.Windows.Forms.Button buttonUpBlockSeparateForward;
-        private System.Windows.Forms.Button buttonConveyorLoad;
         private System.Windows.Forms.GroupBox groupBox6;
         private System.Windows.Forms.Label label17;
         private System.Windows.Forms.Label label18;
@@ -1963,7 +1707,53 @@
         private System.Windows.Forms.Label labelGold1;
         private System.Windows.Forms.ToolStripMenuItem OpenToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem CloseToolStripMenuItem;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button buttonLogin;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.TextBox textBoxPassWord;
+        private System.Windows.Forms.TextBox textBoxLoginName;
+        private System.Windows.Forms.ComboBox comboBoxPower;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Label labelLoginName;
+        private System.Windows.Forms.Button buttonCreateFile;
+        private System.Windows.Forms.GroupBox groupBox7;
+        private System.Windows.Forms.GroupBox groupBoxChangePassword;
+        private System.Windows.Forms.Label label16;
+        private System.Windows.Forms.TextBox textBoxNewPassword;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.ComboBox comboBoxChangePower;
+        private System.Windows.Forms.Button buttonComfirm;
+        private System.Windows.Forms.TextBox textBoxChangeLoginName;
+        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.TextBox textBoxOldPassword;
+        private System.Windows.Forms.Button buttonChangePassword;
+        private System.Windows.Forms.StatusStrip statusStrip1;
+        private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
+        private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabelName;
+        private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel3;
+        private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel4;
+        private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabelPower;
+        private System.Windows.Forms.Button buttonAutoRun;
+        private System.Windows.Forms.DataGridView dataGridView1;
+        private System.Windows.Forms.CheckBox checkBoxAutoRun;
+        private System.Windows.Forms.Button buttonLogLoad;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column1;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column2;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column4;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column3;
+        private System.Windows.Forms.GroupBox groupBoxMain;
+        private System.Windows.Forms.GroupBox groupBoxConveyorOpreate;
+        private System.Windows.Forms.GroupBox groupBox4;
+        private System.Windows.Forms.Label labelConveyorBinIn;
+        private System.Windows.Forms.Label labelConveyorBinInTwo;
+        private System.Windows.Forms.ToolStripMenuItem typeToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem bTToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem wIFIToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem rFToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem labelTypeToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem aToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem bToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem cToolStripMenuItem;
     }
 }
 

@@ -13,11 +13,12 @@
 
     public enum ShieldBoxState
     {
+        //Open and close value for Rack api for our customer
+        Open=1,
+        Close=2,
         Testing,
         Fail,
-        Pass,
-        Open,
-        Close,
+        Pass,       
     }
 
     public static class ShieldBoxResponse
