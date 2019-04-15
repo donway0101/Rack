@@ -20,7 +20,7 @@ namespace Rack
 
         public string Ip { get; set; }
         public int Id { get; set; }
-        public ShieldBox ShieldBox { get; set; } = new ShieldBox(-1);
+        public ShieldBox Box { get; set; }// = new ShieldBox(-1);
         public int RobotState { get; set; } 
 
         public delegate void MessageReceivedEventHandler(object sender, string message);
@@ -146,6 +146,7 @@ namespace Rack
         {
             Task.Run(() =>
             {
+                //Todo message is not just about command, it has para.
                 Enum.TryParse(message, out TesterCommand command);
                 switch (command)
                 {
@@ -155,12 +156,24 @@ namespace Rack
                         break;
                     case TesterCommand.GetShieldedBoxState:
                         //Todo send state.
-                        int state = (int) ShieldBox.State;
+                        int state = (int) Box.State;
                         SendMessage(TesterCommand.GetShieldedBoxState + ","+ state + ";");
                         break;
                     case TesterCommand.SetTestResult:
                         //Todo set result
-                        SendMessage(TesterCommand.SetTestResult + ",OK;");
+                        try
+                        {
+                            Box.Phone.TestResult = TestResult.Fail;
+                            Box.Phone.FailCount++;
+
+                            SendMessage(TesterCommand.SetTestResult + ",OK;");
+                        }
+                        catch (Exception e)
+                        {
+                            Console.WriteLine(e);
+                            throw;
+                        }
+                                               
                         break;
                     default:
                         OnInfoOccured(4,"Receive unknown message " + message);

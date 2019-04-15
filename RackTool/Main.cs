@@ -195,7 +195,7 @@ namespace RackTool
                         watch.Start();
                         _rack.Pick(StepperMotor.One);
                         //Thread.Sleep(200);
-                        TargetPosition target = _rack.TeachPos2TargetConverter(TeachPos.Holder1);
+                        TargetPosition target = _rack.ConverterTeachPosToTargetPosition(TeachPos.Holder1);
                         _rack.UnloadAndLoad(target, StepperMotor.Two);
                         //Thread.Sleep(200);
                         _rack.Place(StepperMotor.Two);
@@ -447,7 +447,7 @@ namespace RackTool
                     DialogResult Result = MessageBox.Show("Now run the \"Unload And Load\", Please make sure the Unload Gripper not clamping the phone");
                     if (Result == DialogResult.No)
                         return;
-                    TargetPosition target = _rack.TeachPos2TargetConverter(_selectedTargetPosition);
+                    TargetPosition target = _rack.ConverterTeachPosToTargetPosition(_selectedTargetPosition);
                     //Todo check Box closed.
                     _rack.UnloadAndLoad(target, _selectedGripper);
                 }
@@ -510,7 +510,7 @@ namespace RackTool
             await Task.Run((Action)(() =>
             {
                 //Todo complete condition.
-                TargetPosition target = _rack.TeachPos2TargetConverter(_selectedTargetPosition);
+                TargetPosition target = _rack.ConverterTeachPosToTargetPosition(_selectedTargetPosition);
 
                 try
                 {
@@ -578,7 +578,7 @@ namespace RackTool
             await Task.Run((Action)(() =>
             {
                 //Todo complete condition.
-                TargetPosition target = _rack.TeachPos2TargetConverter(_selectedTargetPosition);
+                TargetPosition target = _rack.ConverterTeachPosToTargetPosition(_selectedTargetPosition);
 
                 try
                 {

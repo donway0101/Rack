@@ -67,5 +67,43 @@ namespace RackFunctionTester
         {
             _rack.AddRetryPhone();
         }
+
+        private void button8_Click(object sender, EventArgs e)
+        {
+            _rack.AddGoldPhone();
+        }
+
+        private void button9_Click(object sender, EventArgs e)
+        {
+            _rack.ShieldBoxSetupForSimulation();
+        }
+
+        private void button10_Click(object sender, EventArgs e)
+        {
+            _rack.PhoneServerManualResetEvent.Reset();
+        }
+
+        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button11_Click(object sender, EventArgs e)
+        {
+            ShieldBox box = _rack.ConvertIdToShieldBox(comboBox1.SelectedIndex + 1);
+            box.Phone.TestResult = TestResult.Pass;
+            //Todo, in reality, it's true after box is opened.
+            box.Available = true;
+            _rack.AddPhoneToBeServed(box.Phone);
+        }
+
+        private void button12_Click(object sender, EventArgs e)
+        {
+            ShieldBox box = _rack.ConvertIdToShieldBox(comboBox1.SelectedIndex + 1);
+            box.Phone.TestResult = TestResult.Fail;
+            box.Phone.FailCount++;
+            box.Available = true;
+            _rack.AddPhoneToBeServed(box.Phone);
+        }
     }
 }

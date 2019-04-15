@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -6,9 +7,37 @@ using Rack;
 
 namespace Rack
 {
-    public class RackException
+    public class ShieldBoxNotFoundException : Exception
     {
+        public ShieldBoxNotFoundException()
+        {
+        }
 
+        public ShieldBoxNotFoundException(string message)
+            : base(message)
+        {
+        }
 
+        public ShieldBoxNotFoundException(string message, Exception inner)
+            : base(message, inner)
+        {
+        }
+    }
+
+    public class TemplateException : Exception
+    {
+        public TemplateException()
+        {
+        }
+
+        public TemplateException(string message)
+            : base(message)
+        {
+        }
+
+        public TemplateException(string message, Exception inner)
+            : base(message, inner)
+        {
+        }
     }
 }

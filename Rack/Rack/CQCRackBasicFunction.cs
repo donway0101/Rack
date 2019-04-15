@@ -307,37 +307,7 @@ namespace Rack
             Motion.ToPointWaitTillEnd(Motion.MotorZ, holder.ApproachHeight);
             //Box is OK to close.
             Motion.ToPointWaitTillEnd(Motion.MotorY, Motion.PickPosition.YPos);
-        }
-
-        private TargetPosition ConvertShieldBoxToTargetPosition(ShieldBox shieldBox)
-        {
-            TargetPosition target = Motion.HomePosition;
-            switch (shieldBox.Id)
-            {
-                case 1:
-                    target = Motion.ShieldBox1;
-                    break;
-                case 2:
-                    target = Motion.ShieldBox2;
-                    break;
-                case 3:
-                    target = Motion.ShieldBox3;
-                    break;
-                case 4:
-                    target = Motion.ShieldBox4;
-                    break;
-                case 5:
-                    target = Motion.ShieldBox5;
-                    break;
-                case 6:
-                    target = Motion.ShieldBox6;
-                    break;
-                default:
-                    break;
-            }
-
-            return target;
-        }
+        }        
 
         public void Unload(StepperMotor gripper, TargetPosition holder)
         {

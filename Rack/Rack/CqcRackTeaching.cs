@@ -75,7 +75,7 @@ namespace Rack
 
         public void LoadForTeaching(StepperMotor gripper, TeachPos selectedTeachPos)
         {
-            TargetPosition target = TeachPos2TargetConverter(selectedTeachPos);
+            TargetPosition target = ConverterTeachPosToTargetPosition(selectedTeachPos);
             target.ZPos = target.ZPos + 30;
             MoveToTargetPosition(gripper, target);
             DisableMotorsForTeaching();

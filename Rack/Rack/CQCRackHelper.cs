@@ -4,55 +4,102 @@ namespace Rack
 {
     public partial class CqcRack
     {
-        public TargetPosition TeachPos2TargetConverter(TeachPos teachPos)
+        public ShieldBox ConvertIdToShieldBox(int id)
         {
-            TargetPosition target = Motion.HomePosition;
+            switch (id)
+            {
+                case 1:
+                    return ShieldBox1;
+                case 2:
+                    return ShieldBox2;
+                case 3:
+                    return ShieldBox3;
+                case 4:
+                    return ShieldBox4;
+                case 5:
+                    return ShieldBox5;
+                case 6:
+                    return ShieldBox6;
+                default:
+                    throw new Exception("Shield box Id out of range exception.");
+            }
+        }
+
+        private TargetPosition ConvertShieldBoxToTargetPosition(ShieldBox shieldBox)
+        {
+            switch (shieldBox.Id)
+            {
+                case 1:
+                    return Motion.ShieldBox1;
+                case 2:
+                    return Motion.ShieldBox2;
+                case 3:
+                    return Motion.ShieldBox3;
+                case 4:
+                    return Motion.ShieldBox4;
+                case 5:
+                    return Motion.ShieldBox5;
+                case 6:
+                    return Motion.ShieldBox6;
+                default:
+                    throw new Exception("Shield box Id out of range exception.");
+            }
+        }
+
+        public TargetPosition ConverterTeachPosToTargetPosition(TeachPos teachPos)
+        {
             switch (teachPos)
             {
                 case TeachPos.Pick:
-                    target = Motion.PickPosition;
-                    break;
+                    return Motion.PickPosition;
                 case TeachPos.Bin:
-                    target = Motion.BinPosition;
-                    break;
+                    return Motion.BinPosition;
                 case TeachPos.Holder1:
-                    target = Motion.ShieldBox1;
-                    break;
+                    return Motion.ShieldBox1;
                 case TeachPos.Holder2:
-                    target = Motion.ShieldBox2;
-                    break;
+                    return Motion.ShieldBox2;
                 case TeachPos.Holder3:
-                    target = Motion.ShieldBox3;
-                    break;
+                    return Motion.ShieldBox3;
                 case TeachPos.Holder4:
-                    target = Motion.ShieldBox4;
-                    break;
+                    return Motion.ShieldBox4;
                 case TeachPos.Holder5:
-                    target = Motion.ShieldBox5;
-                    break;
+                    return Motion.ShieldBox5;
                 case TeachPos.Holder6:
-                    target = Motion.ShieldBox6;
-                    break;
+                    return Motion.ShieldBox6;
                 case TeachPos.Gold1:
-                    target = Motion.Gold1;
-                    break;
+                    return Motion.Gold1;
                 case TeachPos.Gold2:
-                    target = Motion.Gold2;
-                    break;
+                    return Motion.Gold2;
                 case TeachPos.Gold3:
-                    target = Motion.Gold3;
-                    break;
+                    return Motion.Gold3;
                 case TeachPos.Gold4:
-                    target = Motion.Gold4;
-                    break;
+                    return Motion.Gold4;
                 case TeachPos.Gold5:
-                    target = Motion.Gold5;
-                    break;
+                    return Motion.Gold5;
                 default:
-                    break;
+                    throw new Exception("Shield box Id out of range exception.");
             }
+        }
 
-            return target;
+        private TargetPosition ConvertBoxIdToTargetPosition(int id)
+        {
+            switch (id)
+            {
+                case 1:
+                    return Motion.ShieldBox1;
+                case 2:
+                    return Motion.ShieldBox2;
+                case 3:
+                    return Motion.ShieldBox3;
+                case 4:
+                    return Motion.ShieldBox4;
+                case 5:
+                    return Motion.ShieldBox5;
+                case 6:
+                    return Motion.ShieldBox6;
+                    default:
+                        throw new Exception("Shield box Id out of range exception.");
+            }
         }
 
         private TargetPosition GetRobotCurrentPose()

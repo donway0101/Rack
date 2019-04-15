@@ -12,9 +12,11 @@ namespace Rack
         private readonly object _sendLock = new object();
         private const string CmdEnding = "\r";
         private string _response;
+        /// <summary>
+        /// Match position of box, no matter what kind of box it is.
+        /// </summary>
         public readonly int Id;
         public string PortName = "COM3";
-
         public ShieldBoxState State { get; set; } = ShieldBoxState.Close;
         public int PassRate { get; set; }
         public int TestCount { get; set; }
@@ -27,12 +29,10 @@ namespace Rack
         /// Todo make sure set phone properties before set it available.
         public bool Available { get; set; }
         public TeachPos TeachPos { get; set; }
-        /// <summary>
-        /// Checked by golden phone.
-        /// </summary>
-        public bool Golded { get; set; }
-
+        public bool GoldPhoneChecked { get; set; }
         public ShieldBoxType Type { get; set; } = ShieldBoxType.RF;
+        public TargetPosition Position { get; set; }
+        public Phone Phone { get; set; }
 
         public ShieldBox(int id)
         {

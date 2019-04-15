@@ -17,6 +17,10 @@ namespace Rack
         public PhonePriority Priority { get; set; } = PhonePriority.Low;
         public RackProcedure Procedure { get; set; }
         public long TestCycleTime { get; set; }
+        /// <summary>
+        /// After tester send back test result to shield box,
+        ///  set TestResult of phone, and add add failcount if needed.
+        /// </summary>
         public TestResult TestResult { get; set; } = TestResult.None;
         /// Todo link to shield box test result.
         public int FailCount { get; set; }
@@ -25,5 +29,6 @@ namespace Rack
         //Todo will use in a unload and load movement.
         //Combine check with sensor.
         public RackGripper OnGripper { get; set; }
+        public ShieldBox ShieldBox { get; set; }
     }
 }

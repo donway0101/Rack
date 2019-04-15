@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -9,7 +11,6 @@ namespace Rack
 {
     public partial class CqcRack
     {
-
         /// <summary>
         /// 
         /// </summary>
@@ -32,7 +33,8 @@ namespace Rack
                 if (HasNoPhoneToBeServed())
                     continue;
 
-                List<Phone> luckyPhones = SortPhones(); 
+                List<Phone> luckyPhones = SortPhones();
+                RemovePhoneToBeServed(luckyPhones);
 
                 try
                 {
@@ -62,27 +64,90 @@ namespace Rack
                             switch (firstPhone.Procedure)
                             {
                                 case RackProcedure.Bin:
+                                    if (firstPhone.Type == PhoneType.Normal)
+                                    {
+
+                                    }
+                                    else //A gold phone.
+                                    {
+
+                                    }
+
                                     //Todo...
                                     luckyPhones.Remove(firstPhone);
-                                    RemovePhoneToBeServed(firstPhone);
+
                                     break;
                                 case RackProcedure.Place:
-                                    //Todo...
-                                    luckyPhones.Remove(firstPhone);
-                                    RemovePhoneToBeServed(firstPhone);
+                                    if (firstPhone.Type == PhoneType.Normal)
+                                    {
+                                        firstPhone.NextTargetPosition = Motion.PickPosition;
+                                        //Todo Put the phone back to gold position,
+                                        ShieldBox goldBoxbox = firstPhone.ShieldBox;
+                                        goldBoxbox.Available = true;
+                                        goldBoxbox.Empty = true;
+                                        goldBoxbox.GoldPhoneChecked = true;
+                                        luckyPhones.Remove(firstPhone);
+                                    }
+                                    else //A gold phone.
+                                    {
+                                        //Todo Put the phone back to gold position,
+                                        ShieldBox goldBoxbox = firstPhone.ShieldBox;
+                                        goldBoxbox.Available = true;
+                                        goldBoxbox.Empty = true;
+                                        goldBoxbox.GoldPhoneChecked = true;
+                                        luckyPhones.Remove(firstPhone);
+                                    }
+
                                     break;
                                 case RackProcedure.Retry:
-                                    //Todo...
-                                    luckyPhones.Remove(firstPhone);
-                                    RemovePhoneToBeServed(firstPhone);
+                                    if (firstPhone.Type == PhoneType.Normal)
+                                    {
+                                        ShieldBox goldBoxbox = firstPhone.ShieldBox;
+                                        goldBoxbox.Available = true;
+                                        goldBoxbox.Empty = true;
+                                        luckyPhones.Remove(firstPhone);
+                                    }
+                                    else //A gold phone.
+                                    {
+                                        //Todo Put the phone back to gold position,
+                                        // or retry the test.
+                                        ShieldBox goldBoxbox = firstPhone.ShieldBox;
+                                        goldBoxbox.Available = true;
+                                        goldBoxbox.Empty = true;
+                                        luckyPhones.Remove(firstPhone);
+                                    }
+
                                     break;
                                 case RackProcedure.Pick:
-                                    //Todo...
-                                    //Find a box, load it.
-                                    GetAvailableBoxForNewPhone();
-                                    luckyPhones.Remove(firstPhone);
-                                    RemovePhoneToBeServed(firstPhone);
+                                    #region Pick a phone.
+                                    if (firstPhone.Type == PhoneType.Normal)
+                                    {
+                                        ShieldBox box = GetBoxForNewPhone();
+                                        //Todo, if gold time arrived, then maybe not 
+                                        // place new phone into unchecked box, so the gold phone
+                                        // has chance to work.
+                                        box.Available = false;
+                                        box.Empty = false;
+                                        box.Phone = firstPhone;
+                                        box.Phone.TestResult = TestResult.None;
+                                        box.Phone.ShieldBox = box;
+                                        luckyPhones.Remove(firstPhone);
+                                    }
+                                    else //A gold phone.
+                                    {
+                                        ShieldBox box = GetBoxForGoldPhone();
+                                        //Todo load gold phone till finish.
+                                        firstPhone.CurrentTargetPosition = box.Position;
+                                        box.Available = false;
+                                        box.Empty = false;
+                                        box.Phone = firstPhone;
+                                        box.Phone.TestResult = TestResult.None;
+                                        box.Phone.ShieldBox = box;
+                                        luckyPhones.Remove(firstPhone);
+                                    }
+                                    #endregion
                                     break;
+
                                 default:
                                     throw new ArgumentOutOfRangeException();
                             }
@@ -100,6 +165,17 @@ namespace Rack
                     //}
 
                 }
+                catch (ShieldBoxNotFoundException e)
+                {
+                    //Todo Make sure no gold phone come in after all box checked.
+                    if (luckyPhones.Count > 0)
+                    {
+                        RecyclePhones(luckyPhones);
+                    }
+                    //Todo error code
+                    OnInfoOccured(0, e.Message);
+                    //PhoneServerManualResetEvent.Reset();
+                }
                 catch (Exception e)
                 {
                     if (luckyPhones.Count>0)
@@ -109,8 +185,7 @@ namespace Rack
                     //Todo error code
                     OnErrorOccured(0,e.Message);
                     PhoneServerManualResetEvent.Reset();
-                }
-                
+                }             
             }
         }
 
@@ -166,6 +241,7 @@ namespace Rack
         /// which can has unload and load movement.
         /// Equal to empty box.
         /// todo make sure give the right next target position.
+        /// If gold phone time come, let gold phone come into unchecked box first.
         private List<Phone> ArrangeAbcMode(int maxFailCount = 3)
         {
             List<Phone> luckyPhones = new List<Phone>();
@@ -397,7 +473,7 @@ namespace Rack
             }
         }
 
-        private ShieldBox GetAvailableBoxForNewPhone()
+        private ShieldBox GetBoxForNewPhone()
         {
             //Try to find a empty box.
             foreach (var box in ShieldBoxs)
@@ -417,7 +493,21 @@ namespace Rack
                 }
             }
 
-            throw new Exception("GetAvailableBoxForNewPhone fail.");
+            throw new ShieldBoxNotFoundException("GetAvailableBoxForNewPhone fail.");
+        }
+
+        private ShieldBox GetBoxForGoldPhone()
+        {
+            //If not found a empty box, try to find a available box.
+            foreach (var box in ShieldBoxs)
+            {
+                if (box.Enabled & box.Available & box.GoldPhoneChecked==false)
+                {
+                    return box;
+                }
+            }
+
+            throw new ShieldBoxNotFoundException("GetBoxForGoldPhone fail.");
         }
 
         private void GetAvailableBoxForNewPhone3333()
@@ -435,6 +525,11 @@ namespace Rack
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="phones"></param>
+        /// <seealso cref="RemovePhoneToBeServed"/>
         private void RecyclePhones(IEnumerable<Phone> phones)
         {
             lock (_phoneToBeServedLocker)
@@ -443,7 +538,23 @@ namespace Rack
             }
         }
 
-        private void AddPhoneToBeServed(Phone phone)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="phones"></param>
+        /// <seealso cref="RecyclePhones"/>
+        private void RemovePhoneToBeServed(IEnumerable<Phone> phones)
+        {
+            lock (_phoneToBeServedLocker)
+            {
+                foreach (var phone in phones)
+                {
+                    PhoneToBeServed.Remove(phone);
+                }
+            }
+        }
+
+        public void AddPhoneToBeServed(Phone phone)
         {
             lock (_phoneToBeServedLocker)
             {
