@@ -92,7 +92,7 @@ namespace Rack
             Motion.SetSpeed(speed);
         }
 
-        public void SetSpeedImm(double speed)
+        public void SetRobotSpeedImm(double speed)
         {
             Motion.SetSpeedImm(speed);
         }

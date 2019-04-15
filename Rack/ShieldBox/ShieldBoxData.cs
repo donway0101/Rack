@@ -32,7 +32,7 @@
         public const string BoxIsClosed = "CLOSE" + ResponseEnding;
     }
 
-    public enum ShieldBoxTestResult
+    public enum TestResult
     {
         None,
         Pass,

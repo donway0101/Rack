@@ -24,7 +24,8 @@ namespace RackTool
         private StepperMotor _selectedGripper;
         private Thread _uiUpdateThread;
         private ArrayList _portName;
-        private Power _power = Power.None; 
+        private Power _power = Power.None;
+        private bool _isStart = false;
         #endregion
 
         #region Struct
@@ -121,6 +122,10 @@ namespace RackTool
         #endregion
 
         #region Main
+        private void trackBarSetSpeed1_Scroll(object sender, EventArgs e)
+        {
+            _rack.SetRobotSpeedImm(Convert.ToDouble(trackBarSetSpeed1.Value));
+        }
         private void checkBox1_CheckedChanged(object sender, EventArgs e)
         {
             testLoop = checkBoxIsLoop.Enabled;
@@ -134,10 +139,12 @@ namespace RackTool
                 try
                 {
                     _rack.Start();
+                    _isStart = true;
+
 
                     if (_uiUpdateThread == null)
                     {
-                        _uiUpdateThread = new Thread(PositionUpdate)
+                        _uiUpdateThread = new Thread(PositionAndSpeedUpdate)
                         {
                             IsBackground = true
                         };
@@ -158,29 +165,6 @@ namespace RackTool
 
             buttonHome.Enabled = true;
             buttonStart.Enabled = true;
-        }
-        private void button3_Click(object sender, EventArgs e)
-        {
-            //DialogResult result = MessageBox.Show("是否所有屏蔽箱门都打开了？", "!!!", MessageBoxButtons.YesNo);
-            //if (result == DialogResult.No)
-            //{
-            //    return;
-            //}
-            _rack.SetRobotSpeed(defaultTestSpeed);
-
-            Task.Run(() =>
-            {
-
-                try
-                {
-                    _rack.Test();
-                }
-                catch (Exception ex)
-                {
-
-                    MessageBox.Show(ex.Message);
-                }
-            });
         }
         private void button5_Click(object sender, EventArgs e)
         {
@@ -256,7 +240,6 @@ namespace RackTool
 
                 try
                 {
-                    _rack.Motion.EnableAll();
                     _rack.HomeRobot();
                     MessageBox.Show("Home Succeed!");
                 }
@@ -270,6 +253,127 @@ namespace RackTool
         #endregion
 
         #region Robot
+        #region Enable
+        private void button22_Click(object sender, EventArgs e)
+        {
+            if (_rack.Steppers.GetStatus(StepperMotor.One, StatusCode.Enabled))
+            {
+                _rack.Steppers.Disable(StepperMotor.One);
+            }
+            else
+            {
+                _rack.Steppers.Enable(StepperMotor.One);
+            }
+            RefleshRobotUi();
+        }
+
+        private void button21_Click(object sender, EventArgs e)
+        {
+            if (_rack.Steppers.GetStatus(StepperMotor.Two, StatusCode.Enabled))
+            {
+                _rack.Steppers.Disable(StepperMotor.Two);
+            }
+            else
+            {
+                _rack.Steppers.Enable(StepperMotor.Two);
+            }
+            RefleshRobotUi();
+        }
+
+        private void buttonEableX1_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (buttonEableX1.Text == "Enable")
+                {
+                    _rack.Motion.Enable(_rack.Motion.MotorX1);
+                }
+                else
+                    _rack.Motion.Disable(_rack.Motion.MotorX1);
+                RefleshRobotUi();
+            }
+            catch (Exception ex)
+            {
+
+                MessageBox.Show(ex.Message);
+            }
+        }
+        private void buttonEableX2_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (buttonEableX2.Text == "Enable")
+                    _rack.Motion.Enable(_rack.Motion.MotorX2);
+
+                else
+                    _rack.Motion.Disable(_rack.Motion.MotorX2);
+                RefleshRobotUi();
+            }
+            catch (Exception ex)
+            {
+
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private void buttonEableY_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (buttonEableY.Text == "Enable")
+                    _rack.Motion.Enable(_rack.Motion.MotorY);
+
+                else
+                    _rack.Motion.Disable(_rack.Motion.MotorY);
+                RefleshRobotUi();
+            }
+            catch (Exception ex)
+            {
+
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private void buttonEableR_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (buttonEableR.Text == "Enable")
+                    _rack.Motion.Enable(_rack.Motion.MotorR);
+
+                else
+                    _rack.Motion.Disable(_rack.Motion.MotorR);
+                RefleshRobotUi();
+            }
+            catch (Exception ex)
+            {
+
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private void buttonEableZ_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (buttonEableZ.Text == "Enable")
+                    _rack.Motion.Enable(_rack.Motion.MotorZ);
+
+                else
+                    _rack.Motion.Disable(_rack.Motion.MotorZ);
+                RefleshRobotUi();
+            }
+            catch (Exception ex)
+            {
+
+                MessageBox.Show(ex.Message);
+            }
+        }
+        #endregion
+        private void trackBarSetSpeed2_Scroll(object sender, EventArgs e)
+        {
+            _rack.SetRobotSpeedImm(Convert.ToDouble(trackBarSetSpeed2.Value));
+        }
         private void buttonG1TightOrLoose_Click(object sender, EventArgs e)
         {
             try
@@ -308,8 +412,7 @@ namespace RackTool
                 }
             }
             catch (Exception ex)
-            {
-
+            { 
                 MessageBox.Show(ex.Message);
             }
         }
@@ -524,13 +627,12 @@ namespace RackTool
         private void trackBarSetSpeed2_ValueChanged(object sender, EventArgs e)
         {
             labelSpeed2.Text = trackBarSetSpeed2.Value.ToString();
-            _rack.SetRobotSpeedImm(Convert.ToDouble(trackBarSetSpeed2.Value));
+            
         }
 
         private void trackBarSetSpeed1_ValueChanged(object sender, EventArgs e)
         {
             labelSpeed1.Text = trackBarSetSpeed1.Value.ToString();
-            _rack.SetRobotSpeedImm(Convert.ToDouble(trackBarSetSpeed1.Value));
         }
         private void RefleshRobotUi()
         {
@@ -587,7 +689,7 @@ namespace RackTool
                 MessageBox.Show(exception.Message);
             }
         }
-        private void PositionUpdate()
+        private void PositionAndSpeedUpdate()
         {
             while (true)
             {
@@ -599,7 +701,9 @@ namespace RackTool
                     labelPositionY.Invoke((MethodInvoker)(() => { labelPositionY.Text = _rack.Motion.GetPosition(_rack.Motion.MotorY).ToString("F2"); }));
                     labelPositionZ.Invoke((MethodInvoker)(() => { labelPositionZ.Text = _rack.Motion.GetPosition(_rack.Motion.MotorZ).ToString("F2"); }));
                     labelPositionR.Invoke((MethodInvoker)(() => { labelPositionR.Text = _rack.Motion.GetPosition(_rack.Motion.MotorR).ToString("F2"); }));
-                    Thread.Sleep(1000);
+                    trackBarSetSpeed1.Value = (int)(_rack.Motion.GetVelocity(_rack.Motion.MotorZ)/_rack.Motion.MotorZ.SpeedFactor);
+                    trackBarSetSpeed2.Value = trackBarSetSpeed1.Value;
+                    Thread.Sleep(500);
                 }
                 catch (Exception e)
                 {
@@ -608,11 +712,15 @@ namespace RackTool
                 }
             }
         }
-        private void buttonCreateXml_Click(object sender, EventArgs e)
+        #region Manual control
+
+        private void buttonEnableAll_Click(object sender, EventArgs e)
         {
             try
             {
-                XmlReaderWriter.CreateStorageFile("RackData.xml");
+                _rack.Motion.EnableAll();
+                _rack.Steppers.Enable(StepperMotor.One);
+                _rack.Steppers.Enable(StepperMotor.Two);
             }
             catch (Exception ex)
             {
@@ -620,8 +728,71 @@ namespace RackTool
                 MessageBox.Show(ex.Message);
             }
         }
-        #region Manual control
 
+        private void buttonX1MoveTo_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                _rack.Motion.ToPoint(_rack.Motion.MotorX1, Convert.ToDouble(textBoxDistanceX1.Text));
+            }
+            catch (Exception ex)
+            {
+
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private void buttonX2MoveTo_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                _rack.Motion.ToPoint(_rack.Motion.MotorX2, Convert.ToDouble(textBoxDistanceX2.Text));
+            }
+            catch (Exception ex)
+            {
+
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private void buttonYMoveTo_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                _rack.Motion.ToPoint(_rack.Motion.MotorY, Convert.ToDouble(textBoxDistanceY.Text));
+            }
+            catch (Exception ex)
+            {
+
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private void buttonRMoveTo_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                _rack.Motion.ToPoint(_rack.Motion.MotorR, Convert.ToDouble(textBoxDistanceR.Text));
+            }
+            catch (Exception ex)
+            {
+
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private void buttonZMoveTo_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                _rack.Motion.ToPoint(_rack.Motion.MotorZ, Convert.ToDouble(textBoxDistanceZ.Text));
+            }
+            catch (Exception ex)
+            {
+
+                MessageBox.Show(ex.Message);
+            }
+        }
 
         private void button8_MouseDown(object sender, MouseEventArgs e)
         {
@@ -909,137 +1080,19 @@ namespace RackTool
         #region SpeedSwitch
         private void buttonLowSpeed_Click(object sender, EventArgs e)
         {
-            trackBarSetSpeed2.Value = 5;
+            _rack.SetRobotSpeedImm(1);
         }
 
         private void buttonMiddleSpeed_Click(object sender, EventArgs e)
         {
-            trackBarSetSpeed2.Value = trackBarSetSpeed2.Maximum / 2;
+            _rack.SetRobotSpeedImm(100);
         }
         private void buttonHighSpeed_Click(object sender, EventArgs e)
         {
-            trackBarSetSpeed2.Value = trackBarSetSpeed2.Maximum;
+            _rack.SetRobotSpeedImm(200);
         }
         #endregion
         #endregion 
-        #endregion
-
-        #region Enable
-        private void button22_Click(object sender, EventArgs e)
-        {
-            if (_rack.Steppers.GetStatus(StepperMotor.One, StatusCode.Enabled))
-            {
-                _rack.Steppers.Disable(StepperMotor.One);
-            }
-            else
-            {
-                _rack.Steppers.Enable(StepperMotor.One);
-            }
-            RefleshRobotUi();
-        }
-
-        private void button21_Click(object sender, EventArgs e)
-        {
-            if (_rack.Steppers.GetStatus(StepperMotor.Two, StatusCode.Enabled))
-            {
-                _rack.Steppers.Disable(StepperMotor.Two);
-            }
-            else
-            {
-                _rack.Steppers.Enable(StepperMotor.Two);
-            }
-            RefleshRobotUi();
-        }
-
-        private void buttonEableX1_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                if (buttonEableX1.Text == "Enable")
-                {
-                    _rack.Motion.Enable(_rack.Motion.MotorX1);
-                }
-                else
-                    _rack.Motion.Disable(_rack.Motion.MotorX1);
-                RefleshRobotUi();
-            }
-            catch (Exception ex)
-            {
-
-                MessageBox.Show(ex.Message);
-            }
-        }
-        private void buttonEableX2_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                if (buttonEableX2.Text == "Enable")
-                    _rack.Motion.Enable(_rack.Motion.MotorX2);
-
-                else
-                    _rack.Motion.Disable(_rack.Motion.MotorX2);
-                RefleshRobotUi();
-            }
-            catch (Exception ex)
-            {
-
-                MessageBox.Show(ex.Message);
-            }
-        }
-
-        private void buttonEableY_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                if (buttonEableY.Text == "Enable")
-                    _rack.Motion.Enable(_rack.Motion.MotorY);
-
-                else
-                    _rack.Motion.Disable(_rack.Motion.MotorY);
-                RefleshRobotUi();
-            }
-            catch (Exception ex)
-            {
-
-                MessageBox.Show(ex.Message);
-            }
-        }
-
-        private void buttonEableR_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                if (buttonEableR.Text == "Enable")
-                    _rack.Motion.Enable(_rack.Motion.MotorR);
-
-                else
-                    _rack.Motion.Disable(_rack.Motion.MotorR);
-                RefleshRobotUi();
-            }
-            catch (Exception ex)
-            {
-
-                MessageBox.Show(ex.Message);
-            }
-        }
-
-        private void buttonEableZ_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                if (buttonEableZ.Text == "Enable")
-                    _rack.Motion.Enable(_rack.Motion.MotorZ);
-
-                else
-                    _rack.Motion.Disable(_rack.Motion.MotorZ);
-                RefleshRobotUi();
-            }
-            catch (Exception ex)
-            {
-
-                MessageBox.Show(ex.Message);
-            }
-        }
         #endregion
 
         #region ShieldBoxOperate
@@ -1430,21 +1483,6 @@ namespace RackTool
             comboBox6.Enabled = XmlReaderWriter.GetBoxAttribute(Files.BoxData, 6, ShieldBoxItem.State) == "Enable" ? true : false;
             buttonOK6.Enabled = XmlReaderWriter.GetBoxAttribute(Files.BoxData, 6, ShieldBoxItem.State) == "Enable" ? true : false;
 
-            //Reflesh ShieldBoxType（BT,RF,WIFI） in here
-            //for (int i = 1; i <= 6; i++)
-            //{
-            //    ShieldBoxType shieldBoxTpye =(ShieldBoxType) XmlReaderWriter.GetBoxAttribute(Files.BoxData,i,ShieldBoxItem.Type);
-            //    switch (shieldBoxTpye)
-            //    {
-            //        default:
-            //            break;
-            //    }
-            //}
-        }
-
-        private void buttonBoxSave_Click(object sender, EventArgs e)
-        {
-            //XmlReaderWriter.CreateBoxDataFile(Files.BoxData);
         }
 
         #region ButtonOk
@@ -1454,8 +1492,6 @@ namespace RackTool
             {
                 string Com = comboBox1.SelectedItem.ToString();
                 _portName.Remove(Com);
-                if (comboBox1.Items.Contains(Com) == false)
-                    comboBox1.Items.Add(Com);
                 XmlReaderWriter.SetBoxAttribute(Files.BoxData, 1, ShieldBoxItem.COM, Com);
                 RefleshBoxUi();
             }
@@ -1471,8 +1507,6 @@ namespace RackTool
             {
                 string Com = comboBox2.SelectedItem.ToString();
                 _portName.Remove(Com);
-                if (comboBox2.Items.Contains(Com) == false)
-                    comboBox2.Items.Add(Com);
                 XmlReaderWriter.SetBoxAttribute(Files.BoxData, 2, ShieldBoxItem.COM, Com);
                 RefleshBoxUi();
             }
@@ -1489,8 +1523,6 @@ namespace RackTool
             {
                 string Com = comboBox3.SelectedItem.ToString();
                 _portName.Remove(Com);
-                if (comboBox3.Items.Contains(Com) == false)
-                    comboBox3.Items.Add(Com);
                 XmlReaderWriter.SetBoxAttribute(Files.BoxData, 3, ShieldBoxItem.COM, Com);
                 RefleshBoxUi();
             }
@@ -1507,8 +1539,6 @@ namespace RackTool
             {
                 string Com = comboBox4.SelectedItem.ToString();
                 _portName.Remove(Com);
-                if (comboBox4.Items.Contains(Com) == false)
-                    comboBox4.Items.Add(Com);
                 XmlReaderWriter.SetBoxAttribute(Files.BoxData, 4, ShieldBoxItem.COM, Com);
                 RefleshBoxUi();
             }
@@ -1525,8 +1555,6 @@ namespace RackTool
             {
                 string Com = comboBox5.SelectedItem.ToString();
                 _portName.Remove(Com);
-                if (comboBox5.Items.Contains(Com) == false)
-                    comboBox5.Items.Add(Com);
                 XmlReaderWriter.SetBoxAttribute(Files.BoxData, 5, ShieldBoxItem.COM, Com);
                 RefleshBoxUi();
             }
@@ -1543,8 +1571,6 @@ namespace RackTool
             {
                 string Com = comboBox6.SelectedItem.ToString();
                 _portName.Remove(Com);
-                if (comboBox6.Items.Contains(Com) == false)
-                    comboBox6.Items.Add(Com);
                 XmlReaderWriter.SetBoxAttribute(Files.BoxData, 6, ShieldBoxItem.COM, Com);
                 RefleshBoxUi();
             }
@@ -1702,7 +1728,9 @@ namespace RackTool
         }
         #endregion
 
+        #region Setting
         #region Login
+        
         #region Encrypt And Decryption
         private String Encrypt(string information)
         {
@@ -1817,6 +1845,7 @@ namespace RackTool
                         //Enable controls of disable controls in here.
 
                 }
+                ///Enable some or disable some
                 switch (_power)
                 {
                     case Power.Administrator:
@@ -1851,6 +1880,7 @@ namespace RackTool
                 }
                 toolStripStatusLabelName.Text = LoginName;
                 toolStripStatusLabelPower.Text = _power.ToString();
+                tabControl1.SelectedIndex = 0;
                 MessageBox.Show("Login Succeed!");
 
             }
@@ -1859,12 +1889,6 @@ namespace RackTool
 
                 MessageBox.Show(ex.Message);
             }
-        }
-
-        private void button1_Click(object sender, EventArgs e)
-        {
-            //XmlReaderWriter.CreateLoginDataFile(Files.LoginData);
-
         }
 
         private void buttonChangePassword_Click(object sender, EventArgs e)
@@ -1936,6 +1960,58 @@ namespace RackTool
                 MessageBox.Show(ex.Message);
             }
         }
+        #endregion 
+        private void buttonBoxIpPortOk_Click(object sender, EventArgs e)
+        {
+            switch (comboBoxShieldBox.SelectedIndex)
+            {
+                case 0:
+                    XmlReaderWriter.SetBoxAttribute(Files.BoxData, 1, ShieldBoxItem.Ip, textBoxIp.Text);
+                    XmlReaderWriter.SetBoxAttribute(Files.BoxData, 1, ShieldBoxItem.Port, textBoxPort.Text);
+                    break;
+                case 1:
+                    XmlReaderWriter.SetBoxAttribute(Files.BoxData, 2, ShieldBoxItem.Ip, textBoxIp.Text);
+                    XmlReaderWriter.SetBoxAttribute(Files.BoxData, 2, ShieldBoxItem.Port, textBoxPort.Text);
+                    break;
+                case 2:
+                    XmlReaderWriter.SetBoxAttribute(Files.BoxData, 3, ShieldBoxItem.Ip, textBoxIp.Text);
+                    XmlReaderWriter.SetBoxAttribute(Files.BoxData, 3, ShieldBoxItem.Port, textBoxPort.Text);
+                    break;
+                case 3:
+                    XmlReaderWriter.SetBoxAttribute(Files.BoxData, 4, ShieldBoxItem.Ip, textBoxIp.Text);
+                    XmlReaderWriter.SetBoxAttribute(Files.BoxData, 4, ShieldBoxItem.Port, textBoxPort.Text);
+                    break;
+                case 4:
+                    XmlReaderWriter.SetBoxAttribute(Files.BoxData, 5, ShieldBoxItem.Ip, textBoxIp.Text);
+                    XmlReaderWriter.SetBoxAttribute(Files.BoxData, 5, ShieldBoxItem.Port, textBoxPort.Text);
+                    break;
+                case 5:
+                    XmlReaderWriter.SetBoxAttribute(Files.BoxData, 6, ShieldBoxItem.Ip, textBoxIp.Text);
+                    XmlReaderWriter.SetBoxAttribute(Files.BoxData, 6, ShieldBoxItem.Port, textBoxPort.Text);
+                    break;
+                default:
+                    throw new Exception("Please select the shieldBox");
+            }
+
+        }
+
+        private void buttonStepperOK_Click(object sender, EventArgs e)
+        {
+            string Com = comboBoxStepper.SelectedItem.ToString();
+            _portName.Remove(Com);
+            XmlReaderWriter.SetBoxAttribute(Files.BoxData, 1, ShieldBoxItem.COM, Com);
+        }
+
+        private void comboBoxStepper_Click(object sender, EventArgs e)
+        {
+            string[] PortName = SerialPort.GetPortNames();
+            _portName = new ArrayList(PortName);
+            comboBoxStepper.Items.Clear();
+            foreach (var item in _portName)
+            {
+                comboBoxStepper.Items.Add(item);
+            }
+        }
         #endregion
 
         #region Tabcontrol page change event
@@ -1951,20 +2027,28 @@ namespace RackTool
                         throw new Exception("Please Login in");
                     }
                 }
-                //tabControl1.TabPage
+
+
+                if (_isStart == false && tabControl1.SelectedIndex != 6 && tabControl1.SelectedIndex != 0)
+                {
+                    tabControl1.SelectedIndex = 0;
+                    throw new Exception("Please click \"Start\",or you can not click anywhere except \"Setting\"");
+                }
+
+
                 switch (tabControl1.SelectedIndex)
                 {
                     case 0: break;
                     case 1: RefleshRobotUi(); break;
                     case 2: RefleshConveyorUi(); break;
                     case 3:
-                        string[] _PortName = SerialPort.GetPortNames();
-                        _portName = new ArrayList(_PortName);
+                        string[] PortName = SerialPort.GetPortNames();
+                        _portName = new ArrayList(PortName);
                         RefleshBoxUi();
                         break;
                     case 4: break;
                     case 5: break;
-                    case 6: break;
+                    case 6:
                     default:
                         break;
                 }
@@ -2024,5 +2108,68 @@ namespace RackTool
 
         #endregion
 
+        #region Tester
+
+        private void buttonTest_Click(object sender, EventArgs e)
+        {
+            _rack.SetRobotSpeed(defaultTestSpeed);
+
+            Task.Run(() =>
+            {
+
+                try
+                {
+                    _rack.Test();
+                }
+                catch (Exception ex)
+                {
+
+                    MessageBox.Show(ex.Message);
+                }
+            });
+        }
+        private void buttonBoxSave_Click_1(object sender, EventArgs e)
+        {
+
+            try
+            {
+                XmlReaderWriter.CreateBoxDataFile(Files.BoxData);
+            }
+            catch (Exception ex)
+            {
+
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private void buttonCreateXml_Click_1(object sender, EventArgs e)
+        {
+            try
+            {
+                XmlReaderWriter.CreateStorageFile("RackData.xml");
+            }
+            catch (Exception ex)
+            {
+
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private void buttonCreateFile_Click(object sender, EventArgs e)
+        {
+
+            try
+            {
+                XmlReaderWriter.CreateLoginDataFile(Files.LoginData);
+            }
+            catch (Exception ex)
+            {
+
+                MessageBox.Show(ex.Message);
+            }
+        } 
+        #endregion
+
+        
     }
 }

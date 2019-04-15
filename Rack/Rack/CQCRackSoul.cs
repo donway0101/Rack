@@ -62,13 +62,24 @@ namespace Rack
                             switch (firstPhone.Procedure)
                             {
                                 case RackProcedure.Bin:
+                                    //Todo...
+                                    luckyPhones.Remove(firstPhone);
+                                    RemovePhoneToBeServed(firstPhone);
                                     break;
                                 case RackProcedure.Place:
+                                    //Todo...
+                                    luckyPhones.Remove(firstPhone);
+                                    RemovePhoneToBeServed(firstPhone);
                                     break;
                                 case RackProcedure.Retry:
+                                    //Todo...
+                                    luckyPhones.Remove(firstPhone);
+                                    RemovePhoneToBeServed(firstPhone);
                                     break;
                                 case RackProcedure.Pick:
                                     //Todo...
+                                    //Find a box, load it.
+                                    GetAvailableBoxForNewPhone();
                                     luckyPhones.Remove(firstPhone);
                                     RemovePhoneToBeServed(firstPhone);
                                     break;
@@ -104,7 +115,6 @@ namespace Rack
         }
 
 
-
         private bool HasNoPhoneToBeServed()
         {
             lock (_phoneToBeServedLocker)
@@ -117,9 +127,7 @@ namespace Rack
         /// Generate movement by phones.
         /// </summary>
         private List<Phone> SortPhones()
-        {
-            GetAvailableBox();
-
+        {          
             switch (TestMode)
             {
                 case RackTestMode.AB:
@@ -181,7 +189,7 @@ namespace Rack
                         else
                         {
                             //Phone to place.
-                            if (phone.TestResult == ShieldBoxTestResult.Pass)
+                            if (phone.TestResult == TestResult.Pass)
                             {
                                 phone.NextTargetPosition = Motion.PickPosition;
                                 phone.Procedure = RackProcedure.Place;
@@ -190,7 +198,7 @@ namespace Rack
                             else
                             {
                                 //Phone to retry.
-                                if (phone.TestResult == ShieldBoxTestResult.Fail)
+                                if (phone.TestResult == TestResult.Fail)
                                 {
                                     //phone.NextTargetPosition=?
                                     phone.Procedure = RackProcedure.Retry;
@@ -199,7 +207,7 @@ namespace Rack
                                 else
                                 {
                                     //Phone to pick or it's gold.
-                                    if (phone.TestResult == ShieldBoxTestResult.None)
+                                    if (phone.TestResult == TestResult.None)
                                     {
                                         //phone.NextTargetPosition=?
                                         phone.Procedure = RackProcedure.Pick;
@@ -389,19 +397,39 @@ namespace Rack
             }
         }
 
-        private void GetAvailableBox()
+        private ShieldBox GetAvailableBoxForNewPhone()
         {
-            if (ShieldBoxOnline)
+            //Try to find a empty box.
+            foreach (var box in ShieldBoxs)
             {
-                lock (_availableBoxLocker)
+                if (box.Enabled & box.Empty)
                 {
-                    AvailableBox.Clear();
-                    foreach (var box in ShieldBoxs)
+                    return box;
+                }
+            }
+
+            //If not found a empty box, try to find a available box.
+            foreach (var box in ShieldBoxs)
+            {
+                if (box.Enabled & box.Available)
+                {
+                    return box;
+                }
+            }
+
+            throw new Exception("GetAvailableBoxForNewPhone fail.");
+        }
+
+        private void GetAvailableBoxForNewPhone3333()
+        {
+            lock (_availableBoxLocker)
+            {
+                AvailableBox.Clear();
+                foreach (var box in ShieldBoxs)
+                {
+                    if (box.Enabled & box.Available)
                     {
-                        if (box.Enabled & box.Available)
-                        {
-                            AvailableBox.Add(box);
-                        }
+                        AvailableBox.Add(box);
                     }
                 }
             }

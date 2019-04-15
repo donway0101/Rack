@@ -8,10 +8,6 @@ namespace Rack
         public long Id { get; set; }
         public PhoneType Type { get; set; } = PhoneType.Normal;
         public string SerialNumber { get; set; }
-
-        /// <summary>
-        /// 
-        /// </summary>
         /// Need smart algorithm for next target position decision
         public TargetPosition NextTargetPosition { get; set; } = new TargetPosition(){TeachPos = TeachPos.None};
         //Todo link to shield box.
@@ -21,17 +17,11 @@ namespace Rack
         public PhonePriority Priority { get; set; } = PhonePriority.Low;
         public RackProcedure Procedure { get; set; }
         public long TestCycleTime { get; set; }
-        public ShieldBoxTestResult TestResult { get; set; } = ShieldBoxTestResult.None;
-
-        /// <summary>
-        /// 
-        /// </summary>
+        public TestResult TestResult { get; set; } = TestResult.None;
         /// Todo link to shield box test result.
         public int FailCount { get; set; }
-
         //Todo initial phone with shield box type.
         public ShieldBoxType AtBoxType { get; set; } = ShieldBoxType.RF;
-
         //Todo will use in a unload and load movement.
         //Combine check with sensor.
         public RackGripper OnGripper { get; set; }

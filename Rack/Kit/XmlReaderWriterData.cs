@@ -13,7 +13,6 @@
         ApproachHeight,
     }
 
-
     public enum ShieldBoxItem
     {
         ShieldBox,
@@ -22,6 +21,8 @@
         COM,
         Type,
         Label,
+        Ip,
+        Port,
     }
 
     public enum LabelType

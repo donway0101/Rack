@@ -24,6 +24,7 @@ namespace Rack
         /// <summary>
         /// Box is enabled and test is finished.
         /// </summary>
+        /// Todo make sure set phone properties before set it available.
         public bool Available { get; set; }
         public TeachPos TeachPos { get; set; }
         /// <summary>

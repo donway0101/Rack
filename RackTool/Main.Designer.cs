@@ -32,9 +32,7 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Main));
             this.buttonStart = new System.Windows.Forms.Button();
             this.buttonHome = new System.Windows.Forms.Button();
-            this.buttonTest = new System.Windows.Forms.Button();
             this.buttonStop = new System.Windows.Forms.Button();
-            this.checkBoxIsLoop = new System.Windows.Forms.CheckBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.label10 = new System.Windows.Forms.Label();
             this.label11 = new System.Windows.Forms.Label();
@@ -50,8 +48,25 @@
             this.labelPositionX = new System.Windows.Forms.Label();
             this.labelSpeed2 = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.buttonG1TightOrLoose = new System.Windows.Forms.Button();
+            this.textBoxDistanceX2 = new System.Windows.Forms.TextBox();
+            this.buttonX2MoveTo = new System.Windows.Forms.Button();
+            this.textBoxDistanceY = new System.Windows.Forms.TextBox();
+            this.buttonYMoveTo = new System.Windows.Forms.Button();
+            this.textBoxDistanceZ = new System.Windows.Forms.TextBox();
+            this.buttonZMoveTo = new System.Windows.Forms.Button();
+            this.textBoxDistanceR = new System.Windows.Forms.TextBox();
+            this.buttonRMoveTo = new System.Windows.Forms.Button();
+            this.label28 = new System.Windows.Forms.Label();
+            this.label27 = new System.Windows.Forms.Label();
             this.buttonG2TightOrLoose = new System.Windows.Forms.Button();
+            this.label26 = new System.Windows.Forms.Label();
+            this.label25 = new System.Windows.Forms.Label();
+            this.label24 = new System.Windows.Forms.Label();
+            this.label23 = new System.Windows.Forms.Label();
+            this.textBoxDistanceX1 = new System.Windows.Forms.TextBox();
+            this.buttonX1MoveTo = new System.Windows.Forms.Button();
+            this.label22 = new System.Windows.Forms.Label();
+            this.buttonG1TightOrLoose = new System.Windows.Forms.Button();
             this.buttonLowSpeed = new System.Windows.Forms.Button();
             this.buttonMiddleSpeed = new System.Windows.Forms.Button();
             this.buttonHighSpeed = new System.Windows.Forms.Button();
@@ -65,8 +80,8 @@
             this.buttonEableG1 = new System.Windows.Forms.Button();
             this.textBoxDistanceG2 = new System.Windows.Forms.TextBox();
             this.textBoxDistanceG1 = new System.Windows.Forms.TextBox();
-            this.buttonRunG2 = new System.Windows.Forms.Button();
-            this.buttonRunG1 = new System.Windows.Forms.Button();
+            this.buttonG2MoveTo = new System.Windows.Forms.Button();
+            this.buttonG1MoveTo = new System.Windows.Forms.Button();
             this.buttonPositiveR = new System.Windows.Forms.Button();
             this.buttonNagetiveR = new System.Windows.Forms.Button();
             this.buttonPositiveZ = new System.Windows.Forms.Button();
@@ -87,6 +102,7 @@
             this.trackBarSetSpeed1 = new System.Windows.Forms.TrackBar();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.buttonEnableAll = new System.Windows.Forms.Button();
             this.buttonLoadForTeach = new System.Windows.Forms.Button();
             this.buttonReadyForPick = new System.Windows.Forms.Button();
             this.buttonCalOffset = new System.Windows.Forms.Button();
@@ -96,7 +112,6 @@
             this.label1 = new System.Windows.Forms.Label();
             this.buttonSavePosition = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
-            this.buttonCreateXml = new System.Windows.Forms.Button();
             this.buttonPlace = new System.Windows.Forms.Button();
             this.buttonLoad = new System.Windows.Forms.Button();
             this.buttonPick = new System.Windows.Forms.Button();
@@ -140,7 +155,6 @@
             this.labelConveyorBinIn = new System.Windows.Forms.Label();
             this.labelConveyorBinInTwo = new System.Windows.Forms.Label();
             this.tabPage3 = new System.Windows.Forms.TabPage();
-            this.buttonBoxSave = new System.Windows.Forms.Button();
             this.buttonOK6 = new System.Windows.Forms.Button();
             this.comboBox6 = new System.Windows.Forms.ComboBox();
             this.buttonOK5 = new System.Windows.Forms.Button();
@@ -171,6 +185,13 @@
             this.cToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.imageList1 = new System.Windows.Forms.ImageList(this.components);
             this.tabPage5 = new System.Windows.Forms.TabPage();
+            this.groupBox9 = new System.Windows.Forms.GroupBox();
+            this.buttonCreateFile = new System.Windows.Forms.Button();
+            this.buttonCreateXml = new System.Windows.Forms.Button();
+            this.buttonBoxSave = new System.Windows.Forms.Button();
+            this.groupBox8 = new System.Windows.Forms.GroupBox();
+            this.buttonTest = new System.Windows.Forms.Button();
+            this.checkBoxIsLoop = new System.Windows.Forms.CheckBox();
             this.tabPage6 = new System.Windows.Forms.TabPage();
             this.buttonLogLoad = new System.Windows.Forms.Button();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
@@ -179,6 +200,17 @@
             this.Column4 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Column3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.tabPage7 = new System.Windows.Forms.TabPage();
+            this.groupBox10 = new System.Windows.Forms.GroupBox();
+            this.label33 = new System.Windows.Forms.Label();
+            this.label31 = new System.Windows.Forms.Label();
+            this.buttonStepperOK = new System.Windows.Forms.Button();
+            this.label29 = new System.Windows.Forms.Label();
+            this.comboBoxStepper = new System.Windows.Forms.ComboBox();
+            this.label30 = new System.Windows.Forms.Label();
+            this.textBoxPort = new System.Windows.Forms.TextBox();
+            this.textBoxIp = new System.Windows.Forms.TextBox();
+            this.comboBoxShieldBox = new System.Windows.Forms.ComboBox();
+            this.buttonBoxIpPortOk = new System.Windows.Forms.Button();
             this.groupBoxChangePassword = new System.Windows.Forms.GroupBox();
             this.label16 = new System.Windows.Forms.Label();
             this.textBoxNewPassword = new System.Windows.Forms.TextBox();
@@ -198,7 +230,6 @@
             this.textBoxLoginName = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
             this.textBoxPassWord = new System.Windows.Forms.TextBox();
-            this.buttonCreateFile = new System.Windows.Forms.Button();
             this.richTextBoxMessage = new System.Windows.Forms.RichTextBox();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
@@ -206,6 +237,7 @@
             this.toolStripStatusLabel3 = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripStatusLabel4 = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripStatusLabelPower = new System.Windows.Forms.ToolStripStatusLabel();
+            this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarSetSpeed2)).BeginInit();
@@ -222,9 +254,13 @@
             this.groupBox4.SuspendLayout();
             this.tabPage3.SuspendLayout();
             this.contextMenuStrip1.SuspendLayout();
+            this.tabPage5.SuspendLayout();
+            this.groupBox9.SuspendLayout();
+            this.groupBox8.SuspendLayout();
             this.tabPage6.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.tabPage7.SuspendLayout();
+            this.groupBox10.SuspendLayout();
             this.groupBoxChangePassword.SuspendLayout();
             this.groupBox7.SuspendLayout();
             this.statusStrip1.SuspendLayout();
@@ -244,28 +280,13 @@
             this.buttonHome.UseVisualStyleBackColor = true;
             this.buttonHome.Click += new System.EventHandler(this.button_Home_Click);
             // 
-            // buttonTest
-            // 
-            resources.ApplyResources(this.buttonTest, "buttonTest");
-            this.buttonTest.Name = "buttonTest";
-            this.buttonTest.UseVisualStyleBackColor = true;
-            this.buttonTest.Click += new System.EventHandler(this.button3_Click);
-            // 
             // buttonStop
             // 
+            this.buttonStop.BackColor = System.Drawing.Color.Red;
             resources.ApplyResources(this.buttonStop, "buttonStop");
             this.buttonStop.Name = "buttonStop";
-            this.buttonStop.UseVisualStyleBackColor = true;
+            this.buttonStop.UseVisualStyleBackColor = false;
             this.buttonStop.Click += new System.EventHandler(this.button5_Click);
-            // 
-            // checkBoxIsLoop
-            // 
-            resources.ApplyResources(this.checkBoxIsLoop, "checkBoxIsLoop");
-            this.checkBoxIsLoop.Checked = true;
-            this.checkBoxIsLoop.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBoxIsLoop.Name = "checkBoxIsLoop";
-            this.checkBoxIsLoop.UseVisualStyleBackColor = true;
-            this.checkBoxIsLoop.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
             // 
             // groupBox1
             // 
@@ -353,8 +374,25 @@
             // 
             // groupBox2
             // 
-            this.groupBox2.Controls.Add(this.buttonG1TightOrLoose);
+            this.groupBox2.Controls.Add(this.textBoxDistanceX2);
+            this.groupBox2.Controls.Add(this.buttonX2MoveTo);
+            this.groupBox2.Controls.Add(this.textBoxDistanceY);
+            this.groupBox2.Controls.Add(this.buttonYMoveTo);
+            this.groupBox2.Controls.Add(this.textBoxDistanceZ);
+            this.groupBox2.Controls.Add(this.buttonZMoveTo);
+            this.groupBox2.Controls.Add(this.textBoxDistanceR);
+            this.groupBox2.Controls.Add(this.buttonRMoveTo);
+            this.groupBox2.Controls.Add(this.label28);
+            this.groupBox2.Controls.Add(this.label27);
             this.groupBox2.Controls.Add(this.buttonG2TightOrLoose);
+            this.groupBox2.Controls.Add(this.label26);
+            this.groupBox2.Controls.Add(this.label25);
+            this.groupBox2.Controls.Add(this.label24);
+            this.groupBox2.Controls.Add(this.label23);
+            this.groupBox2.Controls.Add(this.textBoxDistanceX1);
+            this.groupBox2.Controls.Add(this.buttonX1MoveTo);
+            this.groupBox2.Controls.Add(this.label22);
+            this.groupBox2.Controls.Add(this.buttonG1TightOrLoose);
             this.groupBox2.Controls.Add(this.buttonLowSpeed);
             this.groupBox2.Controls.Add(this.buttonMiddleSpeed);
             this.groupBox2.Controls.Add(this.buttonHighSpeed);
@@ -370,8 +408,8 @@
             this.groupBox2.Controls.Add(this.buttonEableG1);
             this.groupBox2.Controls.Add(this.textBoxDistanceG2);
             this.groupBox2.Controls.Add(this.textBoxDistanceG1);
-            this.groupBox2.Controls.Add(this.buttonRunG2);
-            this.groupBox2.Controls.Add(this.buttonRunG1);
+            this.groupBox2.Controls.Add(this.buttonG2MoveTo);
+            this.groupBox2.Controls.Add(this.buttonG1MoveTo);
             this.groupBox2.Controls.Add(this.buttonPositiveR);
             this.groupBox2.Controls.Add(this.buttonNagetiveR);
             this.groupBox2.Controls.Add(this.buttonPositiveZ);
@@ -386,12 +424,63 @@
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.TabStop = false;
             // 
-            // buttonG1TightOrLoose
+            // textBoxDistanceX2
             // 
-            resources.ApplyResources(this.buttonG1TightOrLoose, "buttonG1TightOrLoose");
-            this.buttonG1TightOrLoose.Name = "buttonG1TightOrLoose";
-            this.buttonG1TightOrLoose.UseVisualStyleBackColor = true;
-            this.buttonG1TightOrLoose.Click += new System.EventHandler(this.buttonG1TightOrLoose_Click);
+            resources.ApplyResources(this.textBoxDistanceX2, "textBoxDistanceX2");
+            this.textBoxDistanceX2.Name = "textBoxDistanceX2";
+            // 
+            // buttonX2MoveTo
+            // 
+            resources.ApplyResources(this.buttonX2MoveTo, "buttonX2MoveTo");
+            this.buttonX2MoveTo.Name = "buttonX2MoveTo";
+            this.buttonX2MoveTo.UseVisualStyleBackColor = true;
+            this.buttonX2MoveTo.Click += new System.EventHandler(this.buttonX2MoveTo_Click);
+            // 
+            // textBoxDistanceY
+            // 
+            resources.ApplyResources(this.textBoxDistanceY, "textBoxDistanceY");
+            this.textBoxDistanceY.Name = "textBoxDistanceY";
+            // 
+            // buttonYMoveTo
+            // 
+            resources.ApplyResources(this.buttonYMoveTo, "buttonYMoveTo");
+            this.buttonYMoveTo.Name = "buttonYMoveTo";
+            this.buttonYMoveTo.UseVisualStyleBackColor = true;
+            this.buttonYMoveTo.Click += new System.EventHandler(this.buttonYMoveTo_Click);
+            // 
+            // textBoxDistanceZ
+            // 
+            resources.ApplyResources(this.textBoxDistanceZ, "textBoxDistanceZ");
+            this.textBoxDistanceZ.Name = "textBoxDistanceZ";
+            // 
+            // buttonZMoveTo
+            // 
+            resources.ApplyResources(this.buttonZMoveTo, "buttonZMoveTo");
+            this.buttonZMoveTo.Name = "buttonZMoveTo";
+            this.buttonZMoveTo.UseVisualStyleBackColor = true;
+            this.buttonZMoveTo.Click += new System.EventHandler(this.buttonZMoveTo_Click);
+            // 
+            // textBoxDistanceR
+            // 
+            resources.ApplyResources(this.textBoxDistanceR, "textBoxDistanceR");
+            this.textBoxDistanceR.Name = "textBoxDistanceR";
+            // 
+            // buttonRMoveTo
+            // 
+            resources.ApplyResources(this.buttonRMoveTo, "buttonRMoveTo");
+            this.buttonRMoveTo.Name = "buttonRMoveTo";
+            this.buttonRMoveTo.UseVisualStyleBackColor = true;
+            this.buttonRMoveTo.Click += new System.EventHandler(this.buttonRMoveTo_Click);
+            // 
+            // label28
+            // 
+            resources.ApplyResources(this.label28, "label28");
+            this.label28.Name = "label28";
+            // 
+            // label27
+            // 
+            resources.ApplyResources(this.label27, "label27");
+            this.label27.Name = "label27";
             // 
             // buttonG2TightOrLoose
             // 
@@ -399,6 +488,50 @@
             this.buttonG2TightOrLoose.Name = "buttonG2TightOrLoose";
             this.buttonG2TightOrLoose.UseVisualStyleBackColor = true;
             this.buttonG2TightOrLoose.Click += new System.EventHandler(this.buttonG2TightOrLoose_Click);
+            // 
+            // label26
+            // 
+            resources.ApplyResources(this.label26, "label26");
+            this.label26.Name = "label26";
+            // 
+            // label25
+            // 
+            resources.ApplyResources(this.label25, "label25");
+            this.label25.Name = "label25";
+            // 
+            // label24
+            // 
+            resources.ApplyResources(this.label24, "label24");
+            this.label24.Name = "label24";
+            // 
+            // label23
+            // 
+            resources.ApplyResources(this.label23, "label23");
+            this.label23.Name = "label23";
+            // 
+            // textBoxDistanceX1
+            // 
+            resources.ApplyResources(this.textBoxDistanceX1, "textBoxDistanceX1");
+            this.textBoxDistanceX1.Name = "textBoxDistanceX1";
+            // 
+            // buttonX1MoveTo
+            // 
+            resources.ApplyResources(this.buttonX1MoveTo, "buttonX1MoveTo");
+            this.buttonX1MoveTo.Name = "buttonX1MoveTo";
+            this.buttonX1MoveTo.UseVisualStyleBackColor = true;
+            this.buttonX1MoveTo.Click += new System.EventHandler(this.buttonX1MoveTo_Click);
+            // 
+            // label22
+            // 
+            resources.ApplyResources(this.label22, "label22");
+            this.label22.Name = "label22";
+            // 
+            // buttonG1TightOrLoose
+            // 
+            resources.ApplyResources(this.buttonG1TightOrLoose, "buttonG1TightOrLoose");
+            this.buttonG1TightOrLoose.Name = "buttonG1TightOrLoose";
+            this.buttonG1TightOrLoose.UseVisualStyleBackColor = true;
+            this.buttonG1TightOrLoose.Click += new System.EventHandler(this.buttonG1TightOrLoose_Click);
             // 
             // buttonLowSpeed
             // 
@@ -424,9 +557,10 @@
             // trackBarSetSpeed2
             // 
             resources.ApplyResources(this.trackBarSetSpeed2, "trackBarSetSpeed2");
-            this.trackBarSetSpeed2.Maximum = 100;
+            this.trackBarSetSpeed2.Maximum = 1000;
             this.trackBarSetSpeed2.Name = "trackBarSetSpeed2";
             this.trackBarSetSpeed2.Value = 10;
+            this.trackBarSetSpeed2.Scroll += new System.EventHandler(this.trackBarSetSpeed2_Scroll);
             this.trackBarSetSpeed2.ValueChanged += new System.EventHandler(this.trackBarSetSpeed2_ValueChanged);
             // 
             // buttonEableR
@@ -488,19 +622,19 @@
             resources.ApplyResources(this.textBoxDistanceG1, "textBoxDistanceG1");
             this.textBoxDistanceG1.Name = "textBoxDistanceG1";
             // 
-            // buttonRunG2
+            // buttonG2MoveTo
             // 
-            resources.ApplyResources(this.buttonRunG2, "buttonRunG2");
-            this.buttonRunG2.Name = "buttonRunG2";
-            this.buttonRunG2.UseVisualStyleBackColor = true;
-            this.buttonRunG2.Click += new System.EventHandler(this.button18_Click);
+            resources.ApplyResources(this.buttonG2MoveTo, "buttonG2MoveTo");
+            this.buttonG2MoveTo.Name = "buttonG2MoveTo";
+            this.buttonG2MoveTo.UseVisualStyleBackColor = true;
+            this.buttonG2MoveTo.Click += new System.EventHandler(this.button18_Click);
             // 
-            // buttonRunG1
+            // buttonG1MoveTo
             // 
-            resources.ApplyResources(this.buttonRunG1, "buttonRunG1");
-            this.buttonRunG1.Name = "buttonRunG1";
-            this.buttonRunG1.UseVisualStyleBackColor = true;
-            this.buttonRunG1.Click += new System.EventHandler(this.button19_Click);
+            resources.ApplyResources(this.buttonG1MoveTo, "buttonG1MoveTo");
+            this.buttonG1MoveTo.Name = "buttonG1MoveTo";
+            this.buttonG1MoveTo.UseVisualStyleBackColor = true;
+            this.buttonG1MoveTo.Click += new System.EventHandler(this.button19_Click);
             // 
             // buttonPositiveR
             // 
@@ -613,9 +747,7 @@
             this.groupBoxMain.Controls.Add(this.labelSpeed1);
             this.groupBoxMain.Controls.Add(this.label5);
             this.groupBoxMain.Controls.Add(this.checkBoxAutoRun);
-            this.groupBoxMain.Controls.Add(this.checkBoxIsLoop);
             this.groupBoxMain.Controls.Add(this.buttonAutoRun);
-            this.groupBoxMain.Controls.Add(this.buttonTest);
             this.groupBoxMain.Controls.Add(this.trackBarSetSpeed1);
             resources.ApplyResources(this.groupBoxMain, "groupBoxMain");
             this.groupBoxMain.Name = "groupBoxMain";
@@ -652,6 +784,7 @@
             this.trackBarSetSpeed1.Maximum = 1000;
             this.trackBarSetSpeed1.Name = "trackBarSetSpeed1";
             this.trackBarSetSpeed1.Value = 20;
+            this.trackBarSetSpeed1.Scroll += new System.EventHandler(this.trackBarSetSpeed1_Scroll);
             this.trackBarSetSpeed1.ValueChanged += new System.EventHandler(this.trackBarSetSpeed1_ValueChanged);
             // 
             // tabPage2
@@ -664,6 +797,7 @@
             // 
             // groupBox3
             // 
+            this.groupBox3.Controls.Add(this.buttonEnableAll);
             this.groupBox3.Controls.Add(this.buttonLoadForTeach);
             this.groupBox3.Controls.Add(this.buttonReadyForPick);
             this.groupBox3.Controls.Add(this.buttonCalOffset);
@@ -673,7 +807,6 @@
             this.groupBox3.Controls.Add(this.label1);
             this.groupBox3.Controls.Add(this.buttonSavePosition);
             this.groupBox3.Controls.Add(this.label2);
-            this.groupBox3.Controls.Add(this.buttonCreateXml);
             this.groupBox3.Controls.Add(this.buttonPlace);
             this.groupBox3.Controls.Add(this.buttonLoad);
             this.groupBox3.Controls.Add(this.buttonPick);
@@ -684,6 +817,13 @@
             resources.ApplyResources(this.groupBox3, "groupBox3");
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.TabStop = false;
+            // 
+            // buttonEnableAll
+            // 
+            resources.ApplyResources(this.buttonEnableAll, "buttonEnableAll");
+            this.buttonEnableAll.Name = "buttonEnableAll";
+            this.buttonEnableAll.UseVisualStyleBackColor = true;
+            this.buttonEnableAll.Click += new System.EventHandler(this.buttonEnableAll_Click);
             // 
             // buttonLoadForTeach
             // 
@@ -743,13 +883,6 @@
             // 
             resources.ApplyResources(this.label2, "label2");
             this.label2.Name = "label2";
-            // 
-            // buttonCreateXml
-            // 
-            resources.ApplyResources(this.buttonCreateXml, "buttonCreateXml");
-            this.buttonCreateXml.Name = "buttonCreateXml";
-            this.buttonCreateXml.UseVisualStyleBackColor = true;
-            this.buttonCreateXml.Click += new System.EventHandler(this.buttonCreateXml_Click);
             // 
             // buttonPlace
             // 
@@ -1060,7 +1193,6 @@
             // 
             // tabPage3
             // 
-            this.tabPage3.Controls.Add(this.buttonBoxSave);
             this.tabPage3.Controls.Add(this.buttonOK6);
             this.tabPage3.Controls.Add(this.comboBox6);
             this.tabPage3.Controls.Add(this.buttonOK5);
@@ -1077,13 +1209,6 @@
             resources.ApplyResources(this.tabPage3, "tabPage3");
             this.tabPage3.Name = "tabPage3";
             this.tabPage3.UseVisualStyleBackColor = true;
-            // 
-            // buttonBoxSave
-            // 
-            resources.ApplyResources(this.buttonBoxSave, "buttonBoxSave");
-            this.buttonBoxSave.Name = "buttonBoxSave";
-            this.buttonBoxSave.UseVisualStyleBackColor = true;
-            this.buttonBoxSave.Click += new System.EventHandler(this.buttonBoxSave_Click);
             // 
             // buttonOK6
             // 
@@ -1286,9 +1411,64 @@
             // 
             // tabPage5
             // 
+            this.tabPage5.Controls.Add(this.groupBox9);
+            this.tabPage5.Controls.Add(this.groupBox8);
             resources.ApplyResources(this.tabPage5, "tabPage5");
             this.tabPage5.Name = "tabPage5";
             this.tabPage5.UseVisualStyleBackColor = true;
+            // 
+            // groupBox9
+            // 
+            this.groupBox9.Controls.Add(this.buttonCreateFile);
+            this.groupBox9.Controls.Add(this.buttonCreateXml);
+            this.groupBox9.Controls.Add(this.buttonBoxSave);
+            resources.ApplyResources(this.groupBox9, "groupBox9");
+            this.groupBox9.Name = "groupBox9";
+            this.groupBox9.TabStop = false;
+            // 
+            // buttonCreateFile
+            // 
+            resources.ApplyResources(this.buttonCreateFile, "buttonCreateFile");
+            this.buttonCreateFile.Name = "buttonCreateFile";
+            this.buttonCreateFile.UseVisualStyleBackColor = true;
+            this.buttonCreateFile.Click += new System.EventHandler(this.buttonCreateFile_Click);
+            // 
+            // buttonCreateXml
+            // 
+            resources.ApplyResources(this.buttonCreateXml, "buttonCreateXml");
+            this.buttonCreateXml.Name = "buttonCreateXml";
+            this.buttonCreateXml.UseVisualStyleBackColor = true;
+            this.buttonCreateXml.Click += new System.EventHandler(this.buttonCreateXml_Click_1);
+            // 
+            // buttonBoxSave
+            // 
+            resources.ApplyResources(this.buttonBoxSave, "buttonBoxSave");
+            this.buttonBoxSave.Name = "buttonBoxSave";
+            this.buttonBoxSave.UseVisualStyleBackColor = true;
+            this.buttonBoxSave.Click += new System.EventHandler(this.buttonBoxSave_Click_1);
+            // 
+            // groupBox8
+            // 
+            this.groupBox8.Controls.Add(this.buttonTest);
+            this.groupBox8.Controls.Add(this.checkBoxIsLoop);
+            resources.ApplyResources(this.groupBox8, "groupBox8");
+            this.groupBox8.Name = "groupBox8";
+            this.groupBox8.TabStop = false;
+            // 
+            // buttonTest
+            // 
+            resources.ApplyResources(this.buttonTest, "buttonTest");
+            this.buttonTest.Name = "buttonTest";
+            this.buttonTest.UseVisualStyleBackColor = true;
+            this.buttonTest.Click += new System.EventHandler(this.buttonTest_Click);
+            // 
+            // checkBoxIsLoop
+            // 
+            resources.ApplyResources(this.checkBoxIsLoop, "checkBoxIsLoop");
+            this.checkBoxIsLoop.Checked = true;
+            this.checkBoxIsLoop.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBoxIsLoop.Name = "checkBoxIsLoop";
+            this.checkBoxIsLoop.UseVisualStyleBackColor = true;
             // 
             // tabPage6
             // 
@@ -1344,12 +1524,92 @@
             // 
             // tabPage7
             // 
+            this.tabPage7.Controls.Add(this.groupBox10);
             this.tabPage7.Controls.Add(this.groupBoxChangePassword);
             this.tabPage7.Controls.Add(this.groupBox7);
-            this.tabPage7.Controls.Add(this.buttonCreateFile);
             resources.ApplyResources(this.tabPage7, "tabPage7");
             this.tabPage7.Name = "tabPage7";
             this.tabPage7.UseVisualStyleBackColor = true;
+            // 
+            // groupBox10
+            // 
+            this.groupBox10.Controls.Add(this.label33);
+            this.groupBox10.Controls.Add(this.label31);
+            this.groupBox10.Controls.Add(this.buttonStepperOK);
+            this.groupBox10.Controls.Add(this.label29);
+            this.groupBox10.Controls.Add(this.comboBoxStepper);
+            this.groupBox10.Controls.Add(this.label30);
+            this.groupBox10.Controls.Add(this.textBoxPort);
+            this.groupBox10.Controls.Add(this.textBoxIp);
+            this.groupBox10.Controls.Add(this.comboBoxShieldBox);
+            this.groupBox10.Controls.Add(this.buttonBoxIpPortOk);
+            resources.ApplyResources(this.groupBox10, "groupBox10");
+            this.groupBox10.Name = "groupBox10";
+            this.groupBox10.TabStop = false;
+            // 
+            // label33
+            // 
+            resources.ApplyResources(this.label33, "label33");
+            this.label33.Name = "label33";
+            // 
+            // label31
+            // 
+            resources.ApplyResources(this.label31, "label31");
+            this.label31.Name = "label31";
+            // 
+            // buttonStepperOK
+            // 
+            resources.ApplyResources(this.buttonStepperOK, "buttonStepperOK");
+            this.buttonStepperOK.Name = "buttonStepperOK";
+            this.buttonStepperOK.UseVisualStyleBackColor = true;
+            this.buttonStepperOK.Click += new System.EventHandler(this.buttonStepperOK_Click);
+            // 
+            // label29
+            // 
+            resources.ApplyResources(this.label29, "label29");
+            this.label29.Name = "label29";
+            // 
+            // comboBoxStepper
+            // 
+            this.comboBoxStepper.FormattingEnabled = true;
+            resources.ApplyResources(this.comboBoxStepper, "comboBoxStepper");
+            this.comboBoxStepper.Name = "comboBoxStepper";
+            this.comboBoxStepper.Click += new System.EventHandler(this.comboBoxStepper_Click);
+            // 
+            // label30
+            // 
+            resources.ApplyResources(this.label30, "label30");
+            this.label30.Name = "label30";
+            // 
+            // textBoxPort
+            // 
+            resources.ApplyResources(this.textBoxPort, "textBoxPort");
+            this.textBoxPort.Name = "textBoxPort";
+            // 
+            // textBoxIp
+            // 
+            resources.ApplyResources(this.textBoxIp, "textBoxIp");
+            this.textBoxIp.Name = "textBoxIp";
+            // 
+            // comboBoxShieldBox
+            // 
+            this.comboBoxShieldBox.FormattingEnabled = true;
+            this.comboBoxShieldBox.Items.AddRange(new object[] {
+            resources.GetString("comboBoxShieldBox.Items"),
+            resources.GetString("comboBoxShieldBox.Items1"),
+            resources.GetString("comboBoxShieldBox.Items2"),
+            resources.GetString("comboBoxShieldBox.Items3"),
+            resources.GetString("comboBoxShieldBox.Items4"),
+            resources.GetString("comboBoxShieldBox.Items5")});
+            resources.ApplyResources(this.comboBoxShieldBox, "comboBoxShieldBox");
+            this.comboBoxShieldBox.Name = "comboBoxShieldBox";
+            // 
+            // buttonBoxIpPortOk
+            // 
+            resources.ApplyResources(this.buttonBoxIpPortOk, "buttonBoxIpPortOk");
+            this.buttonBoxIpPortOk.Name = "buttonBoxIpPortOk";
+            this.buttonBoxIpPortOk.UseVisualStyleBackColor = true;
+            this.buttonBoxIpPortOk.Click += new System.EventHandler(this.buttonBoxIpPortOk_Click);
             // 
             // groupBoxChangePassword
             // 
@@ -1481,13 +1741,6 @@
             resources.ApplyResources(this.textBoxPassWord, "textBoxPassWord");
             this.textBoxPassWord.Name = "textBoxPassWord";
             // 
-            // buttonCreateFile
-            // 
-            resources.ApplyResources(this.buttonCreateFile, "buttonCreateFile");
-            this.buttonCreateFile.Name = "buttonCreateFile";
-            this.buttonCreateFile.UseVisualStyleBackColor = true;
-            this.buttonCreateFile.Click += new System.EventHandler(this.button1_Click);
-            // 
             // richTextBoxMessage
             // 
             resources.ApplyResources(this.richTextBoxMessage, "richTextBoxMessage");
@@ -1562,9 +1815,15 @@
             this.groupBox4.PerformLayout();
             this.tabPage3.ResumeLayout(false);
             this.contextMenuStrip1.ResumeLayout(false);
+            this.tabPage5.ResumeLayout(false);
+            this.groupBox9.ResumeLayout(false);
+            this.groupBox8.ResumeLayout(false);
+            this.groupBox8.PerformLayout();
             this.tabPage6.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.tabPage7.ResumeLayout(false);
+            this.groupBox10.ResumeLayout(false);
+            this.groupBox10.PerformLayout();
             this.groupBoxChangePassword.ResumeLayout(false);
             this.groupBoxChangePassword.PerformLayout();
             this.groupBox7.ResumeLayout(false);
@@ -1580,9 +1839,7 @@
 
         private System.Windows.Forms.Button buttonStart;
         private System.Windows.Forms.Button buttonHome;
-        private System.Windows.Forms.Button buttonTest;
         private System.Windows.Forms.Button buttonStop;
-        private System.Windows.Forms.CheckBox checkBoxIsLoop;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.Label labelPositionG1;
         private System.Windows.Forms.Label labelPositionR;
@@ -1600,8 +1857,8 @@
         private System.Windows.Forms.Button buttonNagetiveX1;
         private System.Windows.Forms.Button buttonPositiveR;
         private System.Windows.Forms.Button buttonNagetiveR;
-        private System.Windows.Forms.Button buttonRunG2;
-        private System.Windows.Forms.Button buttonRunG1;
+        private System.Windows.Forms.Button buttonG2MoveTo;
+        private System.Windows.Forms.Button buttonG1MoveTo;
         private System.Windows.Forms.TextBox textBoxDistanceG2;
         private System.Windows.Forms.TextBox textBoxDistanceG1;
         private System.Windows.Forms.Button buttonEableG2;
@@ -1628,7 +1885,6 @@
         private System.Windows.Forms.ComboBox comboBoxMovePos;
         private System.Windows.Forms.ComboBox comboBoxGripper;
         private System.Windows.Forms.Button buttonLoad;
-        private System.Windows.Forms.Button buttonCreateXml;
         private System.Windows.Forms.Button buttonSaveApproach;
         private System.Windows.Forms.Button buttonSavePosition;
         private System.Windows.Forms.Button buttonConveyorStart;
@@ -1660,7 +1916,6 @@
         private System.Windows.Forms.Button buttonCalOffset;
         private System.Windows.Forms.Button buttonReadyForPick;
         private System.Windows.Forms.Button buttonLoadForTeach;
-        private System.Windows.Forms.Button buttonBoxSave;
         private System.Windows.Forms.Button buttonOK6;
         private System.Windows.Forms.ComboBox comboBox6;
         private System.Windows.Forms.Button buttonOK5;
@@ -1714,7 +1969,6 @@
         private System.Windows.Forms.ComboBox comboBoxPower;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label labelLoginName;
-        private System.Windows.Forms.Button buttonCreateFile;
         private System.Windows.Forms.GroupBox groupBox7;
         private System.Windows.Forms.GroupBox groupBoxChangePassword;
         private System.Windows.Forms.Label label16;
@@ -1754,6 +2008,43 @@
         private System.Windows.Forms.ToolStripMenuItem aToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem bToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem cToolStripMenuItem;
+        private System.Windows.Forms.TextBox textBoxDistanceX2;
+        private System.Windows.Forms.Button buttonX2MoveTo;
+        private System.Windows.Forms.TextBox textBoxDistanceY;
+        private System.Windows.Forms.Button buttonYMoveTo;
+        private System.Windows.Forms.TextBox textBoxDistanceZ;
+        private System.Windows.Forms.Button buttonZMoveTo;
+        private System.Windows.Forms.TextBox textBoxDistanceR;
+        private System.Windows.Forms.Button buttonRMoveTo;
+        private System.Windows.Forms.Label label28;
+        private System.Windows.Forms.Label label27;
+        private System.Windows.Forms.Label label26;
+        private System.Windows.Forms.Label label25;
+        private System.Windows.Forms.Label label24;
+        private System.Windows.Forms.Label label23;
+        private System.Windows.Forms.TextBox textBoxDistanceX1;
+        private System.Windows.Forms.Button buttonX1MoveTo;
+        private System.Windows.Forms.Label label22;
+        private System.Windows.Forms.Button buttonEnableAll;
+        private System.Windows.Forms.CheckBox checkBoxIsLoop;
+        private System.Windows.Forms.Button buttonTest;
+        private System.Windows.Forms.GroupBox groupBox9;
+        private System.Windows.Forms.GroupBox groupBox8;
+        private System.Windows.Forms.Timer timer1;
+        private System.Windows.Forms.Button buttonCreateXml;
+        private System.Windows.Forms.Button buttonBoxSave;
+        private System.Windows.Forms.Button buttonCreateFile;
+        private System.Windows.Forms.GroupBox groupBox10;
+        private System.Windows.Forms.Label label33;
+        private System.Windows.Forms.Label label31;
+        private System.Windows.Forms.Button buttonStepperOK;
+        private System.Windows.Forms.Label label29;
+        private System.Windows.Forms.ComboBox comboBoxStepper;
+        private System.Windows.Forms.Label label30;
+        private System.Windows.Forms.TextBox textBoxPort;
+        private System.Windows.Forms.TextBox textBoxIp;
+        private System.Windows.Forms.ComboBox comboBoxShieldBox;
+        private System.Windows.Forms.Button buttonBoxIpPortOk;
     }
 }
 

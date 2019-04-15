@@ -79,14 +79,7 @@ namespace Rack
 
         private void Conveyor_PickBufferPhoneComing(object sender, string description)
         {
-            AddPhoneToBeServed(new Phone()
-            {
-                AtBoxType = ShieldBoxType.RF, CurrentTargetPosition = Motion.PickPosition,
-                FailCount = 0, Id = PhoneCount++,
-                NextTargetPosition = new TargetPosition() { TeachPos = TeachPos.None},
-                OnGripper = RackGripper.None, Priority = PhonePriority.Low,
-                Procedure = RackProcedure.Pick, ReadyForNextProcedure = true, SerialNumber = ""
-            });
+            //AddNewPhone();
         }
 
         public void SelfChecking()

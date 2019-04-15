@@ -61,6 +61,7 @@ namespace Rack
         public List<Phone> PhoneToBeServed = new List<Phone>();
 
         private readonly object _availableBoxLocker = new object();
+
         public List<ShieldBox> AvailableBox = new List<ShieldBox>();
 
         /// <summary>
