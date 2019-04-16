@@ -46,16 +46,6 @@ namespace RackFunctionTester
             _rack.AddNewPhone();
         }
 
-        private void button5_Click(object sender, EventArgs e)
-        {
-            _rack.AddPassPhone();
-        }
-
-        private void button4_Click(object sender, EventArgs e)
-        {
-            _rack.AddFailedPhone();
-        }
-
         private void button6_Click(object sender, EventArgs e)
         {
             _rack.ConveyorOnline = false;
@@ -64,11 +54,6 @@ namespace RackFunctionTester
             _rack.StartPhoneServer();
             _rack.PhoneServerManualResetEvent.Set();
             _rack.ShieldBoxSetupForSimulation();
-        }
-
-        private void button7_Click(object sender, EventArgs e)
-        {
-            _rack.AddRetryPhone();
         }
 
         private void button8_Click(object sender, EventArgs e)

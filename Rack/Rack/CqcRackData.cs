@@ -6,14 +6,6 @@ using Rack;
 
 namespace Rack
 {
-
-    public enum RackGripper
-    {
-        None,
-        One,
-        Two,
-    }
-
     public enum RackProcedure
     {
         Bin,
@@ -42,12 +34,12 @@ namespace Rack
         Pick = 42,
         Bin = 44,
 
-        Holder1 = 1,
-        Holder2 = 2,
-        Holder3 = 3,
-        Holder4 = 4,
-        Holder5 = 5,
-        Holder6 = 6,
+        ShieldBox1 = 1,
+        ShieldBox2 = 2,
+        ShieldBox3 = 3,
+        ShieldBox4 = 4,
+        ShieldBox5 = 5,
+        ShieldBox6 = 6,
 
         Gold1 = 11,
         Gold2 = 12,

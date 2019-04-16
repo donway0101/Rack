@@ -1,8 +1,9 @@
 ﻿namespace Rack
 {
-    public enum StepperMotor
+    public enum RackGripper
     {
-        One=1,
+        None=0,
+        One=1, //Must match Id of stepper motor in 422 communication.
         Two=2,
     }
 

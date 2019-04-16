@@ -217,7 +217,7 @@ namespace Rack
             RobotHomeComplete = true;
         }
 
-        public void Pick(StepperMotor gripper)
+        public void Pick(RackGripper gripper)
         {
             if ( Conveyor.ReadyForPicking & TestRun==false)
             {
@@ -228,7 +228,7 @@ namespace Rack
                 throw new Exception("Phone is not ready.");
             }
 
-            if ( gripper == StepperMotor.One)
+            if ( gripper == RackGripper.One)
             {
                 if ( !EcatIo.GetInput(Input.Gripper01Loose))
                 {
@@ -244,7 +244,7 @@ namespace Rack
             }
 
             TargetPosition target = Motion.PickPosition;
-            if (gripper == StepperMotor.Two)
+            if (gripper == RackGripper.Two)
             {
                 target.XPos = target.XPos + Motion.PickOffset.XPos;
             }
@@ -260,7 +260,7 @@ namespace Rack
             //Check.
         }
 
-        public void Place(StepperMotor gripper)
+        public void Place(RackGripper gripper)
         {
             //After place, conveyor can reload.
             //TODO make sure pick position is empty, conveyor is not stucked and gripper is full.
@@ -274,7 +274,7 @@ namespace Rack
             //Check phone is on conveyor.
         }
 
-        public void Bin(StepperMotor gripper)
+        public void Bin(RackGripper gripper)
         {
             //TODO make sure pick position is empty, conveyor is not stucked and gripper is full.
             MoveToTargetPosition(gripper, Motion.BinPosition);
@@ -283,7 +283,7 @@ namespace Rack
             //Check phone is on conveyor.
         }
 
-        public void Load(StepperMotor gripper, TargetPosition holder)
+        public void Load(RackGripper gripper, TargetPosition holder)
         {
             //Todo make sure box is open.
             MoveToTargetPosition(gripper, holder);
@@ -293,7 +293,7 @@ namespace Rack
             Motion.ToPointWaitTillEnd(Motion.MotorY, Motion.PickPosition.YPos);
         }
 
-        public void Load(StepperMotor gripper, ShieldBox shieldBox)
+        public void Load(RackGripper gripper, ShieldBox shieldBox)
         {
             //Todo if not test run, than check empty and shield box open.
             TargetPosition holder = ConvertShieldBoxToTargetPosition(shieldBox);
@@ -309,9 +309,9 @@ namespace Rack
             Motion.ToPointWaitTillEnd(Motion.MotorY, Motion.PickPosition.YPos);
         }        
 
-        public void Unload(StepperMotor gripper, TargetPosition holder)
+        public void Unload(RackGripper gripper, TargetPosition holder)
         {
-            if (gripper == StepperMotor.One)
+            if (gripper == RackGripper.One)
             {
                 if (!EcatIo.GetInput(Input.Gripper01Loose))
                 {
@@ -333,7 +333,7 @@ namespace Rack
             Motion.ToPointWaitTillEnd(Motion.MotorY, Motion.PickPosition.YPos);
         }
 
-        public void UnloadAndLoad(TargetPosition target, StepperMotor gripper)
+        public void UnloadAndLoad(TargetPosition target, RackGripper gripper)
         {
             //Todo make sure box is open.
             MoveToTargetPosition(gripper, target);
@@ -347,9 +347,9 @@ namespace Rack
             Motion.ToPointWaitTillEnd(Motion.MotorY, Motion.PickPosition.YPos); //Back.
         }
 
-        private void SwitchGripper(TargetPosition target, ref StepperMotor gripper)
+        private void SwitchGripper(TargetPosition target, ref RackGripper gripper)
         {
-            gripper = gripper == StepperMotor.One ? StepperMotor.Two : StepperMotor.One;
+            gripper = gripper == RackGripper.One ? RackGripper.Two : RackGripper.One;
 
             target = AddOffset(gripper, target);
             Motion.ToPointX(target.XPos);
@@ -361,9 +361,9 @@ namespace Rack
             Motion.WaitTillEnd(Motion.MotorY);
         }
 
-        private TargetPosition AddOffset(StepperMotor gripper, TargetPosition target)
+        private TargetPosition AddOffset(RackGripper gripper, TargetPosition target)
         {
-            if (gripper == StepperMotor.Two & target.TeachPos != TeachPos.Pick)
+            if (gripper == RackGripper.Two & target.TeachPos != TeachPos.Pick)
             {
                 target.XPos = target.XPos + Motion.G1ToG2Offset.XPos;
                 target.YPos = target.YPos - Motion.G1ToG2Offset.YPos;

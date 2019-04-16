@@ -10,17 +10,17 @@ namespace Rack
         {
             if (StepperOnline)
             {
-                Steppers.HomeMotor(StepperMotor.One, -6);
-                Steppers.HomeMotor(StepperMotor.Two, -2);
+                Steppers.HomeMotor(RackGripper.One, -6);
+                Steppers.HomeMotor(RackGripper.Two, -2);
             }
         }
 
-        public void CloseGripper(StepperMotor gripper, int timeout=1000)
+        public void CloseGripper(RackGripper gripper, int timeout=1000)
         {
-            EcatIo.SetOutput(gripper == StepperMotor.One ? Output.GripperOne : Output.GripperTwo, false);
+            EcatIo.SetOutput(gripper == RackGripper.One ? Output.GripperOne : Output.GripperTwo, false);
             Stopwatch sw = new Stopwatch();
             sw.Start();
-            Input sensor = gripper == StepperMotor.One ? Input.Gripper01Tight : Input.Gripper02Tight;
+            Input sensor = gripper == RackGripper.One ? Input.Gripper01Tight : Input.Gripper02Tight;
             while (!EcatIo.GetInput(sensor))
             {
                 if (sw.ElapsedMilliseconds > timeout) throw new TimeoutException();
@@ -28,12 +28,12 @@ namespace Rack
             }
         }
 
-        public void OpenGripper(StepperMotor gripper, int timeout= 1000)
+        public void OpenGripper(RackGripper gripper, int timeout= 1000)
         {
-            EcatIo.SetOutput(gripper == StepperMotor.One ? Output.GripperOne : Output.GripperTwo, true);
+            EcatIo.SetOutput(gripper == RackGripper.One ? Output.GripperOne : Output.GripperTwo, true);
             Stopwatch sw = new Stopwatch();
             sw.Start();
-            Input sensor = gripper == StepperMotor.One ? Input.Gripper01Loose : Input.Gripper02Loose;
+            Input sensor = gripper == RackGripper.One ? Input.Gripper01Loose : Input.Gripper02Loose;
             while (!EcatIo.GetInput(sensor))
             {
                 if (sw.ElapsedMilliseconds > timeout) throw new TimeoutException();
@@ -42,56 +42,56 @@ namespace Rack
         }
 
         //Todo add offset to gripper one and gripper two.
-        private void ToPointWaitTillEndGripper(TargetPosition target, StepperMotor gripper)
+        private void ToPointWaitTillEndGripper(TargetPosition target, RackGripper gripper)
         {
-            if (gripper == StepperMotor.One)
+            if (gripper == RackGripper.One)
             {
                 Motion.ToPoint(Motion.MotorR, target.RPos);
-                Steppers.ToPoint(StepperMotor.One, target.APos);
-                Steppers.ToPoint(StepperMotor.Two, 0);
+                Steppers.ToPoint(RackGripper.One, target.APos);
+                Steppers.ToPoint(RackGripper.Two, 0);
                 Motion.WaitTillEnd(Motion.MotorR);
-                Steppers.WaitTillEnd(StepperMotor.One, target.APos);
-                Steppers.WaitTillEnd(StepperMotor.Two, 0);
+                Steppers.WaitTillEnd(RackGripper.One, target.APos);
+                Steppers.WaitTillEnd(RackGripper.Two, 0);
             }
             else
             {
                 Motion.ToPoint(Motion.MotorR, target.RPos - 60);
-                Steppers.ToPoint(StepperMotor.Two, target.APos);
-                Steppers.ToPoint(StepperMotor.One, 0);
+                Steppers.ToPoint(RackGripper.Two, target.APos);
+                Steppers.ToPoint(RackGripper.One, 0);
                 Motion.WaitTillEnd(Motion.MotorR);
-                Steppers.WaitTillEnd(StepperMotor.One, 0);
-                Steppers.WaitTillEnd(StepperMotor.Two, target.APos);
+                Steppers.WaitTillEnd(RackGripper.One, 0);
+                Steppers.WaitTillEnd(RackGripper.Two, target.APos);
             }
         }
 
-        private void WaitTillEndGripper(TargetPosition target, StepperMotor gripper)
+        private void WaitTillEndGripper(TargetPosition target, RackGripper gripper)
         {
             Motion.WaitTillEnd(Motion.MotorR);
-            if (gripper == StepperMotor.One)
+            if (gripper == RackGripper.One)
             {
-                Steppers.WaitTillEnd(StepperMotor.One, target.APos);
-                Steppers.WaitTillEnd(StepperMotor.Two, 0);
+                Steppers.WaitTillEnd(RackGripper.One, target.APos);
+                Steppers.WaitTillEnd(RackGripper.Two, 0);
             }
             else
             {
-                Steppers.WaitTillEnd(StepperMotor.One, 0);
-                Steppers.WaitTillEnd(StepperMotor.Two, target.APos);
+                Steppers.WaitTillEnd(RackGripper.One, 0);
+                Steppers.WaitTillEnd(RackGripper.Two, target.APos);
             }
         }
 
-        private void ToPointGripper(TargetPosition target, StepperMotor gripper)
+        private void ToPointGripper(TargetPosition target, RackGripper gripper)
         {
-            if (gripper == StepperMotor.One)
+            if (gripper == RackGripper.One)
             {
                 Motion.ToPoint(Motion.MotorR, target.RPos);
-                Steppers.ToPoint(StepperMotor.One, target.APos);
-                Steppers.ToPoint(StepperMotor.Two, 0);
+                Steppers.ToPoint(RackGripper.One, target.APos);
+                Steppers.ToPoint(RackGripper.Two, 0);
             }
             else
             {
                 Motion.ToPoint(Motion.MotorR, target.RPos - 60);
-                Steppers.ToPoint(StepperMotor.Two, target.APos);
-                Steppers.ToPoint(StepperMotor.One, 0);
+                Steppers.ToPoint(RackGripper.Two, target.APos);
+                Steppers.ToPoint(RackGripper.One, 0);
             }
         }
        

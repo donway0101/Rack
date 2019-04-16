@@ -8,66 +8,19 @@
             Phone phone = new Phone()
             {
                 AtBoxType = ShieldBoxType.RF,
-                CurrentTargetPosition = new TargetPosition() { TeachPos = TeachPos.Pick },
                 FailCount = 0,
                 Id = PhoneCount++,
-                NextTargetPosition = new TargetPosition() {TeachPos = TeachPos.None},
-                Procedure = RackProcedure.Pick,
-                TestResult = TestResult.None,
             };
 
             AddPhoneToBeServed(phone);
-        }
-
-        public void AddFailedPhone()
-        {
-            AddPhoneToBeServed(new Phone()
-            {
-                AtBoxType = ShieldBoxType.RF,
-                CurrentTargetPosition = new TargetPosition() { TeachPos = TeachPos.Holder1 },
-                FailCount = 3,
-                Id = PhoneCount++,
-                NextTargetPosition = new TargetPosition() { TeachPos = TeachPos.None },         
-                TestResult = TestResult.Fail,
-            });
-        }
-
-        public void AddRetryPhone()
-        {
-            AddPhoneToBeServed(new Phone()
-            {
-                AtBoxType = ShieldBoxType.RF,
-                CurrentTargetPosition = new TargetPosition() { TeachPos = TeachPos.Holder2 },
-                FailCount = 2,
-                Id = PhoneCount++,
-                TestResult = TestResult.Fail,
-            });
-        }
-
-        public void AddPassPhone()
-        {
-            AddPhoneToBeServed(new Phone()
-            {
-                AtBoxType = ShieldBoxType.RF,
-                CurrentTargetPosition = new TargetPosition() { TeachPos = TeachPos.Holder3 },
-                FailCount = 0,
-                Id = PhoneCount++,
-                //NextTargetPosition = new TargetPosition() { TeachPos = TeachPos.None },
-                TestResult = TestResult.Pass,
-            });
-        }
+        }       
 
         public void AddGoldPhone()
         {
             AddPhoneToBeServed(new Phone()
             {
                 AtBoxType = ShieldBoxType.RF,
-                CurrentTargetPosition = new TargetPosition() { TeachPos = TeachPos.Gold1 },
-                FailCount = 0,
                 Id = -1,
-                //NextTargetPosition = new TargetPosition() { TeachPos = TeachPos.None },
-                TestResult = TestResult.None,
-                Procedure = RackProcedure.Pick,
                 Type = PhoneType.Golden,
             });
         }

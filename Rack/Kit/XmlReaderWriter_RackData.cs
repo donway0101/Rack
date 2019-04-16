@@ -117,7 +117,7 @@ namespace Rack
 
             XElement Holder1 = new XElement(PosItem.Pos.ToString());
             Holder1.Add(
-                     new XAttribute(PosItem.Name.ToString(), TeachPos.Holder1.ToString()),
+                     new XAttribute(PosItem.Name.ToString(), TeachPos.ShieldBox1.ToString()),
                      new XAttribute(PosItem.XPos.ToString(), 1300),
                      new XAttribute(PosItem.YPos.ToString(), defaultYPos),
                      new XAttribute(PosItem.ZPos.ToString(), 670),
@@ -128,7 +128,7 @@ namespace Rack
 
             XElement Holder2 = new XElement(PosItem.Pos.ToString());
             Holder2.Add(
-                     new XAttribute(PosItem.Name.ToString(), TeachPos.Holder2.ToString()),
+                     new XAttribute(PosItem.Name.ToString(), TeachPos.ShieldBox2.ToString()),
                      new XAttribute(PosItem.XPos.ToString(), 800),
                      new XAttribute(PosItem.YPos.ToString(), defaultYPos),
                      new XAttribute(PosItem.ZPos.ToString(), defaultZPos),
@@ -139,7 +139,7 @@ namespace Rack
 
             XElement Holder3 = new XElement(PosItem.Pos.ToString());
             Holder3.Add(
-                     new XAttribute(PosItem.Name.ToString(), TeachPos.Holder3.ToString()),
+                     new XAttribute(PosItem.Name.ToString(), TeachPos.ShieldBox3.ToString()),
                      new XAttribute(PosItem.XPos.ToString(), 0),
                      new XAttribute(PosItem.YPos.ToString(), defaultYPos),
                      new XAttribute(PosItem.ZPos.ToString(), defaultZPos),
@@ -150,7 +150,7 @@ namespace Rack
 
             XElement Holder4 = new XElement(PosItem.Pos.ToString());
             Holder4.Add(
-                     new XAttribute(PosItem.Name.ToString(), TeachPos.Holder4.ToString()),
+                     new XAttribute(PosItem.Name.ToString(), TeachPos.ShieldBox4.ToString()),
                      new XAttribute(PosItem.XPos.ToString(), 1300),
                      new XAttribute(PosItem.YPos.ToString(), defaultYPos),
                      new XAttribute(PosItem.ZPos.ToString(), defaultZPos),
@@ -161,7 +161,7 @@ namespace Rack
 
             XElement Holder5 = new XElement(PosItem.Pos.ToString());
             Holder5.Add(
-                     new XAttribute(PosItem.Name.ToString(), TeachPos.Holder5.ToString()),
+                     new XAttribute(PosItem.Name.ToString(), TeachPos.ShieldBox5.ToString()),
                      new XAttribute(PosItem.XPos.ToString(), 800),
                      new XAttribute(PosItem.YPos.ToString(), defaultYPos),
                      new XAttribute(PosItem.ZPos.ToString(), defaultZPos),
@@ -172,7 +172,7 @@ namespace Rack
 
             XElement Holder6 = new XElement(PosItem.Pos.ToString());
             Holder6.Add(
-                     new XAttribute(PosItem.Name.ToString(), TeachPos.Holder6.ToString()),
+                     new XAttribute(PosItem.Name.ToString(), TeachPos.ShieldBox6.ToString()),
                      new XAttribute(PosItem.XPos.ToString(), 0),
                      new XAttribute(PosItem.YPos.ToString(), defaultYPos),
                      new XAttribute(PosItem.ZPos.ToString(), defaultZPos),

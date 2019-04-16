@@ -180,12 +180,12 @@ namespace Rack
             ConveyorLeftPosition = LoadPosition(TeachPos.ConveyorLeft, TeachPos.None);
             ConveyorRightPosition = LoadPosition(TeachPos.ConveyorRight, TeachPos.None);
 
-            ShieldBox1 = LoadPosition(TeachPos.Holder1, TeachPos.Holder1);
-            ShieldBox2 = LoadPosition(TeachPos.Holder2, TeachPos.Holder2);
-            ShieldBox3 = LoadPosition(TeachPos.Holder3, TeachPos.Holder3);
-            ShieldBox4 = LoadPosition(TeachPos.Holder4, TeachPos.Holder4);
-            ShieldBox5 = LoadPosition(TeachPos.Holder5, TeachPos.Holder5);
-            ShieldBox6 = LoadPosition(TeachPos.Holder6, TeachPos.Holder6);
+            ShieldBox1 = LoadPosition(TeachPos.ShieldBox1, TeachPos.ShieldBox1);
+            ShieldBox2 = LoadPosition(TeachPos.ShieldBox2, TeachPos.ShieldBox2);
+            ShieldBox3 = LoadPosition(TeachPos.ShieldBox3, TeachPos.ShieldBox3);
+            ShieldBox4 = LoadPosition(TeachPos.ShieldBox4, TeachPos.ShieldBox4);
+            ShieldBox5 = LoadPosition(TeachPos.ShieldBox5, TeachPos.ShieldBox5);
+            ShieldBox6 = LoadPosition(TeachPos.ShieldBox6, TeachPos.ShieldBox6);
 
             Gold1 = LoadPosition(TeachPos.Gold1, TeachPos.Gold1);
             Gold2 = LoadPosition(TeachPos.Gold2, TeachPos.Gold2);

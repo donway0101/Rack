@@ -28,7 +28,6 @@ namespace Rack
         /// </summary>
         /// Todo make sure set phone properties before set it available.
         public bool Available { get; set; }
-        public TeachPos TeachPos { get; set; }
         public bool GoldPhoneChecked { get; set; }
         public ShieldBoxType Type { get; set; } = ShieldBoxType.RF;
         public TargetPosition Position { get; set; }

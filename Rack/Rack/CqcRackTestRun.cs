@@ -12,41 +12,41 @@ namespace Rack
         public void ExchangeBox()
         {
             ReadyThePhone();
-            Pick(StepperMotor.One);
-            UnloadAndLoad(Motion.ShieldBox4, StepperMotor.Two);
-            UnloadAndLoad(Motion.ShieldBox1, StepperMotor.One);
-            Place(StepperMotor.One);
+            Pick(RackGripper.One);
+            UnloadAndLoad(Motion.ShieldBox4, RackGripper.Two);
+            UnloadAndLoad(Motion.ShieldBox1, RackGripper.One);
+            Place(RackGripper.One);
         }
 
         public void RunShieldBox()
         {
             ReadyThePhone();
-            Pick(StepperMotor.One);
-            UnloadAndLoad(Motion.ShieldBox4, StepperMotor.Two);
-            Place(StepperMotor.Two);
+            Pick(RackGripper.One);
+            UnloadAndLoad(Motion.ShieldBox4, RackGripper.Two);
+            Place(RackGripper.Two);
             ReadyThePhone();
-            Pick(StepperMotor.Two);
-            UnloadAndLoad(Motion.ShieldBox4, StepperMotor.One);
-            Place(StepperMotor.One);
+            Pick(RackGripper.Two);
+            UnloadAndLoad(Motion.ShieldBox4, RackGripper.One);
+            Place(RackGripper.One);
         }
 
         private void TestLoadGold()
         {
             Task.Run(() =>
             {
-                Load(StepperMotor.One, Motion.Gold1);
-                Load(StepperMotor.One, Motion.ShieldBox1);
-                Load(StepperMotor.One, Motion.Gold2);
-                Load(StepperMotor.One, Motion.ShieldBox2);
-                Load(StepperMotor.One, Motion.Gold3);
-                Load(StepperMotor.One, Motion.ShieldBox3);
-                Load(StepperMotor.One, Motion.Gold4);
-                Load(StepperMotor.One, Motion.ShieldBox4);
-                Load(StepperMotor.One, Motion.Gold5);
-                Load(StepperMotor.One, Motion.ShieldBox5);
-                Load(StepperMotor.One, Motion.Gold1);
-                Load(StepperMotor.One, Motion.ShieldBox6);
-                Load(StepperMotor.One, Motion.HomePosition);
+                Load(RackGripper.One, Motion.Gold1);
+                Load(RackGripper.One, Motion.ShieldBox1);
+                Load(RackGripper.One, Motion.Gold2);
+                Load(RackGripper.One, Motion.ShieldBox2);
+                Load(RackGripper.One, Motion.Gold3);
+                Load(RackGripper.One, Motion.ShieldBox3);
+                Load(RackGripper.One, Motion.Gold4);
+                Load(RackGripper.One, Motion.ShieldBox4);
+                Load(RackGripper.One, Motion.Gold5);
+                Load(RackGripper.One, Motion.ShieldBox5);
+                Load(RackGripper.One, Motion.Gold1);
+                Load(RackGripper.One, Motion.ShieldBox6);
+                Load(RackGripper.One, Motion.HomePosition);
             });
         }
 
@@ -55,19 +55,19 @@ namespace Rack
             Task.Run(() =>
             {
                 SetRobotSpeed(20);
-                Unload(StepperMotor.Two, Motion.ShieldBox1);
-                Unload(StepperMotor.Two, Motion.BinPosition);
-                Unload(StepperMotor.Two, Motion.ShieldBox2);
-                Unload(StepperMotor.Two, Motion.BinPosition);
-                Unload(StepperMotor.Two, Motion.ShieldBox3);
-                Unload(StepperMotor.Two, Motion.BinPosition);
-                Unload(StepperMotor.Two, Motion.ShieldBox4);
-                Unload(StepperMotor.Two, Motion.BinPosition);
-                Unload(StepperMotor.Two, Motion.ShieldBox5);
-                Unload(StepperMotor.Two, Motion.BinPosition);
-                Unload(StepperMotor.Two, Motion.ShieldBox6);
-                Unload(StepperMotor.Two, Motion.BinPosition);
-                Unload(StepperMotor.Two, Motion.HomePosition);
+                Unload(RackGripper.Two, Motion.ShieldBox1);
+                Unload(RackGripper.Two, Motion.BinPosition);
+                Unload(RackGripper.Two, Motion.ShieldBox2);
+                Unload(RackGripper.Two, Motion.BinPosition);
+                Unload(RackGripper.Two, Motion.ShieldBox3);
+                Unload(RackGripper.Two, Motion.BinPosition);
+                Unload(RackGripper.Two, Motion.ShieldBox4);
+                Unload(RackGripper.Two, Motion.BinPosition);
+                Unload(RackGripper.Two, Motion.ShieldBox5);
+                Unload(RackGripper.Two, Motion.BinPosition);
+                Unload(RackGripper.Two, Motion.ShieldBox6);
+                Unload(RackGripper.Two, Motion.BinPosition);
+                Unload(RackGripper.Two, Motion.HomePosition);
             });
         }
 
@@ -76,7 +76,7 @@ namespace Rack
             Task.Run(() =>
             {
                 SetRobotSpeed(20);
-                UnloadAndLoad(Motion.PickPosition, StepperMotor.One);
+                UnloadAndLoad(Motion.PickPosition, RackGripper.One);
                 //UnloadAndLoad(_motion.Holder1, Gripper.Two);
                 //UnloadAndLoad(_motion.PickPosition, Gripper.One);
                 //UnloadAndLoad(_motion.Holder2, Gripper.Two);

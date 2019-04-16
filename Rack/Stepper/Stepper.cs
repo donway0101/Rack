@@ -91,11 +91,11 @@ namespace Rack
 
         public void Connect()
         {
-            string res = SendCommand(StepperMotor.One, "IFD");
-            StepperOneIsConnected = MotorAcknowledged(StepperMotor.One, res);
+            string res = SendCommand(RackGripper.One, "IFD");
+            StepperOneIsConnected = MotorAcknowledged(RackGripper.One, res);
 
-            res = SendCommand(StepperMotor.Two, "IFD");
-            StepperTwoIsConnected = MotorAcknowledged(StepperMotor.Two, res);
+            res = SendCommand(RackGripper.Two, "IFD");
+            StepperTwoIsConnected = MotorAcknowledged(RackGripper.Two, res);
 
             StepperIsConnected = StepperOneIsConnected & StepperTwoIsConnected;
 
@@ -128,7 +128,7 @@ namespace Rack
         /// Set driver feedback format to decimal.
         /// </summary>
         /// <param name="motor"></param>
-        public void SetFeedbackFormatDecimal(StepperMotor motor)
+        public void SetFeedbackFormatDecimal(RackGripper motor)
         {
             string res = SendCommand(motor, "IFD");
             if (MotorAcknowledged(motor, res) == false)
@@ -203,12 +203,12 @@ namespace Rack
         /// </summary>
         /// <param name="motor"></param>
         /// <returns></returns>
-        private string GetMotorId(StepperMotor motor)
+        private string GetMotorId(RackGripper motor)
         {
             return Convert.ToString((int)motor);
         }
 
-        public void Stop(StepperMotor motor)
+        public void Stop(RackGripper motor)
         {
             string res = SendCommand(motor, "STD");
 
@@ -223,7 +223,7 @@ namespace Rack
         /// </summary>
         /// <param name="cmd"></param>
         /// <seealso cref="SendCommand"/>
-        public string SendCommand(StepperMotor motor,string cmd)
+        public string SendCommand(RackGripper motor,string cmd)
         {
             lock (PortWriteLocker)
             {
@@ -257,7 +257,7 @@ namespace Rack
         /// Enalbe motor.
         /// </summary>
         /// <param name="motor"></param>
-        public void Enable(StepperMotor motor)
+        public void Enable(RackGripper motor)
         {
             if (GetStatus(motor, StatusCode.Enabled) == true)
             {
@@ -288,7 +288,7 @@ namespace Rack
         /// <param name="motor"></param>
         /// <param name="response"></param>
         /// <returns></returns>
-        private bool MotorAcknowledged(StepperMotor motor, string response)
+        private bool MotorAcknowledged(RackGripper motor, string response)
         {
             bool idMatch = response.Substring(0, 1) == GetMotorId(motor);
             bool endMatch = response.Substring(1, 1) == "%" | response.Substring(1, 1) == "*";
@@ -299,7 +299,7 @@ namespace Rack
         /// Disable motor.
         /// </summary>
         /// <param name="motor"></param>
-        public void Disable(StepperMotor motor)
+        public void Disable(RackGripper motor)
         {
             string res = SendCommand(motor, "MD");
 
@@ -319,7 +319,7 @@ namespace Rack
         /// Must has the right sensor for homing.
         /// </summary>
         /// <param name="motor"></param>
-        public void HomeMotor(StepperMotor motor, double homeOffset, int defaultWorkingSpeed=10)
+        public void HomeMotor(RackGripper motor, double homeOffset, int defaultWorkingSpeed=10)
         {
             SetSpeed(motor, 1); //Default homing speed.
 
@@ -368,7 +368,7 @@ namespace Rack
         /// </summary>
         /// <param name="motor"></param>
         /// <param name="angle"></param>
-        public void ToPoint(StepperMotor motor, double angle)
+        public void ToPoint(RackGripper motor, double angle)
         {
             int target = Convert.ToInt32(angle * _countPerDegree);
             string res = SendCommand(motor, "FP" + target);
@@ -385,7 +385,7 @@ namespace Rack
             Thread.Sleep(50);
         }
 
-        public void ToPointWaitTillEnd(StepperMotor motor, double angle)
+        public void ToPointWaitTillEnd(RackGripper motor, double angle)
         {
             int target = Convert.ToInt32(angle * _countPerDegree);
             string res = SendCommand(motor, "FP" + target);
@@ -399,7 +399,7 @@ namespace Rack
             WaitTillEnd(motor, angle);
         }
 
-        public async Task<bool> ToPointAsync(StepperMotor motor1, double angle1, StepperMotor motor2, double angle2,
+        public async Task<bool> ToPointAsync(RackGripper motor1, double angle1, RackGripper motor2, double angle2,
             int timeout = 10)
         {
             return await Task.Run(() =>
@@ -451,7 +451,7 @@ namespace Rack
         /// </summary>
         /// <param name="motor"></param>
         /// <param name="angle"></param>
-        public void ToPointRelative(StepperMotor motor, double angle, int timeout = 10)
+        public void ToPointRelative(RackGripper motor, double angle, int timeout = 10)
         {
             double lastPos = GetPosition(motor);
 
@@ -472,7 +472,7 @@ namespace Rack
         /// <param name="motor"></param>
         /// <param name="targetAngle"></param>
         /// <param name="timeout"></param>
-        public void WaitTillEnd(StepperMotor motor, double targetAngle, int timeout = 10)
+        public void WaitTillEnd(RackGripper motor, double targetAngle, int timeout = 10)
         {
             Stopwatch stopwatch = new Stopwatch();
             stopwatch.Start();
@@ -503,12 +503,12 @@ namespace Rack
 
         public void CheckEnabled()
         {
-            if (GetStatus(StepperMotor.One, StatusCode.Enabled) == false)
+            if (GetStatus(RackGripper.One, StatusCode.Enabled) == false)
             {
                 throw new Exception("Stepper motor One is disabled.");
             }
 
-            if (GetStatus(StepperMotor.Two, StatusCode.Enabled) == false)
+            if (GetStatus(RackGripper.Two, StatusCode.Enabled) == false)
             {
                 throw new Exception("Stepper motor two is disabled.");
             }
@@ -521,7 +521,7 @@ namespace Rack
         /// <param name="code"></param>
         /// <param name="condition"></param>
         /// <param name="timeout"></param>
-        private void WaitCondition(StepperMotor motor, StatusCode code, bool condition,  int timeout = 20)
+        private void WaitCondition(RackGripper motor, StatusCode code, bool condition,  int timeout = 20)
         {
             Stopwatch stopwatch = new Stopwatch();
             stopwatch.Start();
@@ -544,7 +544,7 @@ namespace Rack
         /// </summary>
         /// <param name="motor"></param>
         /// <param name="acceleration"> degree / sec / sec </param>
-        public void SetAcceleration(StepperMotor motor, int acceleration = 30)
+        public void SetAcceleration(RackGripper motor, int acceleration = 30)
         {
             // rev / sec / sec
             //double acc = GearRatio * acceleration / 360.0;
@@ -572,7 +572,7 @@ namespace Rack
         /// </summary>
         /// <param name="motor"></param>
         /// <param name="velocity">rps</param>
-        public void SetVelocity(StepperMotor motor, int velocity = 30)
+        public void SetVelocity(RackGripper motor, int velocity = 30)
         {
             //double vel = GearRatio * velocity / 360.0;
 
@@ -589,7 +589,7 @@ namespace Rack
             }
         }
 
-        public void SetSpeed(StepperMotor motor, int speed = 30)
+        public void SetSpeed(RackGripper motor, int speed = 30)
         {
             SetVelocity(motor, speed);
             SetAcceleration(motor, speed);
@@ -599,7 +599,7 @@ namespace Rack
         /// Reset all alarm of motor.
         /// </summary>
         /// <param name="motor"></param>
-        public void ResetAlarm(StepperMotor motor)
+        public void ResetAlarm(RackGripper motor)
         {
             string res = SendCommand(motor, "AR");
             if (MotorAcknowledged(motor, res) == false)
@@ -630,7 +630,7 @@ namespace Rack
         /// Asks the drive to respond with what it’s doing
         /// </summary>
         /// <param name="motor"></param>
-        public bool GetStatus(StepperMotor motor, StatusCode status)
+        public bool GetStatus(RackGripper motor, StatusCode status)
         {
             string info = SendCommand(motor, "SC");
             string code = info.Substring(4, info.Length - 4);
@@ -656,7 +656,7 @@ namespace Rack
         /// <param name="motor"></param>
         /// <param name="input"></param>
         /// <returns></returns>
-        public bool GetInput(StepperMotor motor, InputStepper input)
+        public bool GetInput(RackGripper motor, InputStepper input)
         {
             string res = SendCommand(motor, "IS");
             if (res.Length != 12)
@@ -672,7 +672,7 @@ namespace Rack
         /// </summary>
         /// <param name="motor"></param>
         /// <returns></returns>
-        public double GetPosition(StepperMotor motor)
+        public double GetPosition(RackGripper motor)
         {
             // Response of "IP" is always hexadecimal
             string res = SendCommand(motor, "IP");

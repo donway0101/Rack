@@ -21,7 +21,7 @@ namespace RackTool
         private bool testLoop = true;
         private readonly CqcRack _rack = new CqcRack("192.168.8.18"); //"192.168.8.18"
         private TeachPos _selectedTargetPosition;
-        private StepperMotor _selectedGripper;
+        private RackGripper _selectedGripper;
         private Thread _uiUpdateThread;
         private ArrayList _portName;
         private Power _power = Power.None;
@@ -190,15 +190,15 @@ namespace RackTool
                         _rack.SetRobotSpeed(500);
                         //_rack.HomeRobot();
                         _rack.ReadyThePhone();
-                        _rack.OpenGripper(StepperMotor.One);
-                        _rack.OpenGripper(StepperMotor.Two);
+                        _rack.OpenGripper(RackGripper.One);
+                        _rack.OpenGripper(RackGripper.Two);
                         watch.Start();
-                        _rack.Pick(StepperMotor.One);
+                        _rack.Pick(RackGripper.One);
                         //Thread.Sleep(200);
-                        TargetPosition target = _rack.ConverterTeachPosToTargetPosition(TeachPos.Holder1);
-                        _rack.UnloadAndLoad(target, StepperMotor.Two);
+                        TargetPosition target = _rack.ConverterTeachPosToTargetPosition(TeachPos.ShieldBox1);
+                        _rack.UnloadAndLoad(target, RackGripper.Two);
                         //Thread.Sleep(200);
-                        _rack.Place(StepperMotor.Two);
+                        _rack.Place(RackGripper.Two);
                     }
 
                     //MessageBox.Show(watch.ElapsedMilliseconds.ToString());
@@ -220,7 +220,7 @@ namespace RackTool
         {
 
             comboBoxGripper.Items.Clear();
-            foreach (var pos in Enum.GetValues(typeof(StepperMotor)))
+            foreach (var pos in Enum.GetValues(typeof(RackGripper)))
             {
                 comboBoxGripper.Items.Add(pos);
             }
@@ -256,26 +256,26 @@ namespace RackTool
         #region Enable
         private void button22_Click(object sender, EventArgs e)
         {
-            if (_rack.Steppers.GetStatus(StepperMotor.One, StatusCode.Enabled))
+            if (_rack.Steppers.GetStatus(RackGripper.One, StatusCode.Enabled))
             {
-                _rack.Steppers.Disable(StepperMotor.One);
+                _rack.Steppers.Disable(RackGripper.One);
             }
             else
             {
-                _rack.Steppers.Enable(StepperMotor.One);
+                _rack.Steppers.Enable(RackGripper.One);
             }
             RefleshRobotUi();
         }
 
         private void button21_Click(object sender, EventArgs e)
         {
-            if (_rack.Steppers.GetStatus(StepperMotor.Two, StatusCode.Enabled))
+            if (_rack.Steppers.GetStatus(RackGripper.Two, StatusCode.Enabled))
             {
-                _rack.Steppers.Disable(StepperMotor.Two);
+                _rack.Steppers.Disable(RackGripper.Two);
             }
             else
             {
-                _rack.Steppers.Enable(StepperMotor.Two);
+                _rack.Steppers.Enable(RackGripper.Two);
             }
             RefleshRobotUi();
         }
@@ -380,12 +380,12 @@ namespace RackTool
             {
                 if (buttonG1TightOrLoose.Text == "G1Open")
                 {
-                    _rack.OpenGripper(StepperMotor.One);
+                    _rack.OpenGripper(RackGripper.One);
                     buttonG1TightOrLoose.Text = "G1Close";
                 }
                 else
                 {
-                    _rack.CloseGripper(StepperMotor.One);
+                    _rack.CloseGripper(RackGripper.One);
                     buttonG1TightOrLoose.Text = "G1Open";
                 }
             }
@@ -402,12 +402,12 @@ namespace RackTool
             {
                 if (buttonG2TightOrLoose.Text == "G2Open")
                 {
-                    _rack.OpenGripper(StepperMotor.Two);
+                    _rack.OpenGripper(RackGripper.Two);
                     buttonG2TightOrLoose.Text = "G2Close";
                 }
                 else
                 {
-                    _rack.CloseGripper(StepperMotor.Two);
+                    _rack.CloseGripper(RackGripper.Two);
                     buttonG2TightOrLoose.Text = "G2Open";
                 }
             }
@@ -526,7 +526,7 @@ namespace RackTool
 
         private void comboBox_Gripper_SelectedIndexChanged(object sender, EventArgs e)
         {
-            _selectedGripper = (StepperMotor)comboBoxGripper.SelectedItem;
+            _selectedGripper = (RackGripper)comboBoxGripper.SelectedItem;
         }
 
         private void comboBoxMovePos_SelectedIndexChanged(object sender, EventArgs e)
@@ -654,8 +654,8 @@ namespace RackTool
                 }
                 buttonG1TightOrLoose.Text = _rack.EcatIo.GetInput(Input.Gripper01Tight) ? "G1Open" : "G1Close";
                 buttonG2TightOrLoose.Text = _rack.EcatIo.GetInput(Input.Gripper02Tight) ? "G2Open" : "G2Close";
-                buttonEableG1.Text = _rack.Steppers.GetStatus(StepperMotor.One, StatusCode.Enabled) ? "Disable" : "Enable";
-                buttonEableG2.Text = _rack.Steppers.GetStatus(StepperMotor.Two, StatusCode.Enabled) ? "Disable" : "Enable";
+                buttonEableG1.Text = _rack.Steppers.GetStatus(RackGripper.One, StatusCode.Enabled) ? "Disable" : "Enable";
+                buttonEableG2.Text = _rack.Steppers.GetStatus(RackGripper.Two, StatusCode.Enabled) ? "Disable" : "Enable";
             }
             catch (Exception ex)
             {
@@ -695,8 +695,8 @@ namespace RackTool
             {
                 try
                 {
-                    labelPositionG1.Invoke((MethodInvoker)(() => { labelPositionG1.Text = _rack.Steppers.GetPosition(StepperMotor.One).ToString("F2"); }));
-                    labelPositionG2.Invoke((MethodInvoker)(() => { labelPositionG2.Text = _rack.Steppers.GetPosition(StepperMotor.Two).ToString("F2"); }));
+                    labelPositionG1.Invoke((MethodInvoker)(() => { labelPositionG1.Text = _rack.Steppers.GetPosition(RackGripper.One).ToString("F2"); }));
+                    labelPositionG2.Invoke((MethodInvoker)(() => { labelPositionG2.Text = _rack.Steppers.GetPosition(RackGripper.Two).ToString("F2"); }));
                     labelPositionX.Invoke((MethodInvoker)(() => { labelPositionX.Text = _rack.Motion.GetPositionX().ToString("F2"); }));
                     labelPositionY.Invoke((MethodInvoker)(() => { labelPositionY.Text = _rack.Motion.GetPosition(_rack.Motion.MotorY).ToString("F2"); }));
                     labelPositionZ.Invoke((MethodInvoker)(() => { labelPositionZ.Text = _rack.Motion.GetPosition(_rack.Motion.MotorZ).ToString("F2"); }));
@@ -719,8 +719,8 @@ namespace RackTool
             try
             {
                 _rack.Motion.EnableAll();
-                _rack.Steppers.Enable(StepperMotor.One);
-                _rack.Steppers.Enable(StepperMotor.Two);
+                _rack.Steppers.Enable(RackGripper.One);
+                _rack.Steppers.Enable(RackGripper.Two);
             }
             catch (Exception ex)
             {
@@ -925,7 +925,7 @@ namespace RackTool
         {
             try
             {
-                _rack.Steppers.ToPoint(StepperMotor.One, Convert.ToDouble(textBoxDistanceG1.Text));
+                _rack.Steppers.ToPoint(RackGripper.One, Convert.ToDouble(textBoxDistanceG1.Text));
             }
             catch (Exception ex)
             {
@@ -938,7 +938,7 @@ namespace RackTool
         {
             try
             {
-                _rack.Steppers.ToPoint(StepperMotor.Two, Convert.ToDouble(textBoxDistanceG2.Text));
+                _rack.Steppers.ToPoint(RackGripper.Two, Convert.ToDouble(textBoxDistanceG2.Text));
             }
             catch (Exception ex)
             {

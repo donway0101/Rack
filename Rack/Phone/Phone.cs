@@ -5,15 +5,15 @@ namespace Rack
 {
     public class Phone
     {
+        /// <summary>
+        /// Corresponding to target position of phone.
+        /// </summary>
         public long Id { get; set; }
         public PhoneType Type { get; set; } = PhoneType.Normal;
-        public string SerialNumber { get; set; }
-        /// Need smart algorithm for next target position decision
-        public TargetPosition NextTargetPosition { get; set; } = new TargetPosition(){TeachPos = TeachPos.None};
-        //Todo link to shield box.
-        public List<TargetPosition> TargetPositionFootprint { get; set; }
-        public TargetPosition CurrentTargetPosition { get; set; }
-        public bool ReadyForNextProcedure { get; set; }
+        public string SerialNumber { get; set; }     
+        public TargetPosition CurrentTargetPosition { get; set; } = new TargetPosition() { TeachPos = TeachPos.None };
+        public TargetPosition NextTargetPosition { get; set; } = new TargetPosition() { TeachPos = TeachPos.None };
+        public List<TargetPosition> TargetPositionFootprint { get; set; } = new List<TargetPosition>();
         public PhonePriority Priority { get; set; } = PhonePriority.Low;
         public RackProcedure Procedure { get; set; }
         public long TestCycleTime { get; set; }

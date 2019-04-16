@@ -54,17 +54,17 @@ namespace Rack
                     return Motion.PickPosition;
                 case TeachPos.Bin:
                     return Motion.BinPosition;
-                case TeachPos.Holder1:
+                case TeachPos.ShieldBox1:
                     return Motion.ShieldBox1;
-                case TeachPos.Holder2:
+                case TeachPos.ShieldBox2:
                     return Motion.ShieldBox2;
-                case TeachPos.Holder3:
+                case TeachPos.ShieldBox3:
                     return Motion.ShieldBox3;
-                case TeachPos.Holder4:
+                case TeachPos.ShieldBox4:
                     return Motion.ShieldBox4;
-                case TeachPos.Holder5:
+                case TeachPos.ShieldBox5:
                     return Motion.ShieldBox5;
-                case TeachPos.Holder6:
+                case TeachPos.ShieldBox6:
                     return Motion.ShieldBox6;
                 case TeachPos.Gold1:
                     return Motion.Gold1;
@@ -148,8 +148,8 @@ namespace Rack
                 {
                     stepperSpeed = 30;
                 }
-                Steppers.SetSpeed(StepperMotor.One, stepperSpeed);
-                Steppers.SetSpeed(StepperMotor.Two, stepperSpeed);
+                Steppers.SetSpeed(RackGripper.One, stepperSpeed);
+                Steppers.SetSpeed(RackGripper.Two, stepperSpeed);
             }
         }
 
