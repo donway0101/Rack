@@ -41,13 +41,11 @@ namespace Rack
                     while (luckyPhones.Count > 0)
                     {
                         //After finish, remove phone from the list.
-                        Phone firstPhone;
-                        Phone secondPhone;
                         //If there is three phones, most likely has two combo move.
                         if (luckyPhones.Count >= 2)
                         {
-                            firstPhone = luckyPhones.First();
-                            secondPhone = luckyPhones.First();
+                            var firstPhone = luckyPhones.First();
+                            var secondPhone = luckyPhones.First();
                             if (firstPhone.NextTargetPosition.TeachPos == secondPhone.CurrentTargetPosition.TeachPos)
                             {
 
@@ -60,11 +58,11 @@ namespace Rack
                         else
                         {
                             //Only one phone.
-                            firstPhone = luckyPhones.First();
-                            switch (firstPhone.Procedure)
+                            var theOnlyPhone = luckyPhones.First();
+                            switch (theOnlyPhone.Procedure)
                             {
                                 case RackProcedure.Bin:
-                                    if (firstPhone.Type == PhoneType.Normal)
+                                    if (theOnlyPhone.Type == PhoneType.Normal)
                                     {
 
                                     }
@@ -74,53 +72,56 @@ namespace Rack
                                     }
 
                                     //Todo...
-                                    luckyPhones.Remove(firstPhone);
+                                    luckyPhones.Remove(theOnlyPhone);
 
                                     break;
                                 case RackProcedure.Place:
-                                    if (firstPhone.Type == PhoneType.Normal)
+                                    if (theOnlyPhone.Type == PhoneType.Normal)
                                     {
-                                        firstPhone.NextTargetPosition = Motion.PickPosition;
+                                        theOnlyPhone.NextTargetPosition = Motion.PickPosition;
                                         //Todo Put the phone back to gold position,
-                                        ShieldBox goldBoxbox = firstPhone.ShieldBox;
-                                        goldBoxbox.Available = true;
-                                        goldBoxbox.Empty = true;
-                                        goldBoxbox.GoldPhoneChecked = true;
-                                        luckyPhones.Remove(firstPhone);
+                                        ShieldBox box = theOnlyPhone.ShieldBox;
+                                        box.Phone = null;
+                                        box.Available = true;
+                                        box.Empty = true;
+                                        box.GoldPhoneChecked = true;
+                                        luckyPhones.Remove(theOnlyPhone);
                                     }
                                     else //A gold phone.
                                     {
-                                        //Todo Put the phone back to gold position,
-                                        ShieldBox goldBoxbox = firstPhone.ShieldBox;
-                                        goldBoxbox.Available = true;
-                                        goldBoxbox.Empty = true;
-                                        goldBoxbox.GoldPhoneChecked = true;
-                                        luckyPhones.Remove(firstPhone);
+                                        theOnlyPhone.NextTargetPosition = ConvertGoldIdToTargetPosition(theOnlyPhone.Id);
+                                        //Todo move it to gold postion.
+                                        ShieldBox box = theOnlyPhone.ShieldBox;
+                                        box.Phone = null;
+                                        box.Available = true;
+                                        box.Empty = true;
+                                        box.GoldPhoneChecked = true;
+                                        luckyPhones.Remove(theOnlyPhone);
                                     }
 
                                     break;
                                 case RackProcedure.Retry:
-                                    if (firstPhone.Type == PhoneType.Normal)
+                                    if (theOnlyPhone.Type == PhoneType.Normal)
                                     {
-                                        ShieldBox goldBoxbox = firstPhone.ShieldBox;
+                                        ShieldBox goldBoxbox = theOnlyPhone.ShieldBox;
                                         goldBoxbox.Available = true;
                                         goldBoxbox.Empty = true;
-                                        luckyPhones.Remove(firstPhone);
+                                        luckyPhones.Remove(theOnlyPhone);
                                     }
                                     else //A gold phone.
                                     {
-                                        //Todo Put the phone back to gold position,
-                                        // or retry the test.
-                                        ShieldBox goldBoxbox = firstPhone.ShieldBox;
-                                        goldBoxbox.Available = true;
-                                        goldBoxbox.Empty = true;
-                                        luckyPhones.Remove(firstPhone);
+                                        //Todo Put the phone back to gold position, or retry the test.
+                                        ShieldBox box = theOnlyPhone.ShieldBox;
+                                        box.Phone = null;
+                                        box.Available = true;
+                                        box.Empty = true;
+                                        luckyPhones.Remove(theOnlyPhone);
                                     }
 
                                     break;
                                 case RackProcedure.Pick:
                                     #region Pick a phone.
-                                    if (firstPhone.Type == PhoneType.Normal)
+                                    if (theOnlyPhone.Type == PhoneType.Normal)
                                     {
                                         ShieldBox box = GetBoxForNewPhone();
                                         //Todo, if gold time arrived, then maybe not 
@@ -128,22 +129,23 @@ namespace Rack
                                         // has chance to work.
                                         box.Available = false;
                                         box.Empty = false;
-                                        box.Phone = firstPhone;
+                                        box.Phone = theOnlyPhone;
                                         box.Phone.TestResult = TestResult.None;
                                         box.Phone.ShieldBox = box;
-                                        luckyPhones.Remove(firstPhone);
+                                        luckyPhones.Remove(theOnlyPhone);
                                     }
                                     else //A gold phone.
                                     {
                                         ShieldBox box = GetBoxForGoldPhone();
+                                        //Grap a phone
                                         //Todo load gold phone till finish.
-                                        firstPhone.CurrentTargetPosition = box.Position;
+                                        theOnlyPhone.CurrentTargetPosition = box.Position;
                                         box.Available = false;
                                         box.Empty = false;
-                                        box.Phone = firstPhone;
+                                        box.Phone = theOnlyPhone;
                                         box.Phone.TestResult = TestResult.None;
                                         box.Phone.ShieldBox = box;
-                                        luckyPhones.Remove(firstPhone);
+                                        luckyPhones.Remove(theOnlyPhone);
                                     }
                                     #endregion
                                     break;
@@ -155,7 +157,6 @@ namespace Rack
                         }
                     }
 
-
                     //foreach (var footprint in phone.TargetPositionFootprint)
                     //{
                     //    if (retryCandidateBox == footprint.TeachPos)
@@ -164,6 +165,7 @@ namespace Rack
                     //    }
                     //}
 
+                    PrintStateOfBoxes();
                 }
                 catch (ShieldBoxNotFoundException e)
                 {
@@ -189,6 +191,21 @@ namespace Rack
             }
         }
 
+
+
+        private void PrintStateOfBoxes()
+        {
+            foreach (var box in ShieldBoxs)
+            {
+                Console.Write("{0}{1}{2}", box.Id, box.Available, box.Empty);
+                if (box.Phone != null)
+                {
+                    Console.Write("{0}{1}", box.Phone.Id, box.Phone.Type);
+                }
+                Console.WriteLine();
+            }
+            Console.WriteLine();
+        }
 
         private bool HasNoPhoneToBeServed()
         {
@@ -465,8 +482,17 @@ namespace Rack
                 else
                 {
                     //Just pick.
-                    //If it's a gold phone, return it, main thread will deal with its type.
-                    //Todo find a next target position for it in thread.
+                    //Gold phone first.
+                    foreach (var phone in pickPhone)
+                    {
+                        if (phone.Type == PhoneType.Golden)
+                        {
+                            luckyPhones.Add(phone);
+                            return luckyPhones;
+                        }
+                    }
+
+                    //If no gold phone, then a regular phone.
                     luckyPhones.Add(pickPhone.First());
                     return luckyPhones;
                 }

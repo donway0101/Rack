@@ -91,26 +91,26 @@ namespace Rack
             root.Save(file);
         }
 
-        public static void SetBoxAttribute(string file, int BoxId, ShieldBoxItem attribute, string newValue)
+        public static void SetBoxAttribute(string file, long boxId, ShieldBoxItem attribute, string newValue)
         {
             XElement root = XElement.Load(file);
 
             XElement elem = root
                 .Elements(ShieldBoxItem.ShieldBox.ToString())
-                .Single(itemName => itemName.Attribute(ShieldBoxItem.BoxId.ToString()).Value == BoxId.ToString());
+                .Single(itemName => itemName.Attribute(ShieldBoxItem.BoxId.ToString()).Value == boxId.ToString());
 
             elem.Attribute(attribute.ToString()).Value = newValue;
 
             root.Save(file);
         }
 
-        public static string GetBoxAttribute(string file, int BoxId, ShieldBoxItem attribute)
+        public static string GetBoxAttribute(string file, long boxId, ShieldBoxItem attribute)
         {
             XElement root = XElement.Load(file);
 
             XElement elem = root
               .Elements(ShieldBoxItem.ShieldBox.ToString())
-              .Single(itemName => itemName.Attribute(ShieldBoxItem.BoxId.ToString()).Value == BoxId.ToString());
+              .Single(itemName => itemName.Attribute(ShieldBoxItem.BoxId.ToString()).Value == boxId.ToString());
 
             return elem.Attribute(attribute.ToString()).Value;
         } 

@@ -81,7 +81,7 @@ namespace Rack
             }
         }
 
-        private TargetPosition ConvertBoxIdToTargetPosition(int id)
+        private TargetPosition ConvertBoxIdToTargetPosition(long id)
         {
             switch (id)
             {
@@ -99,6 +99,25 @@ namespace Rack
                     return Motion.ShieldBox6;
                     default:
                         throw new Exception("Shield box Id out of range exception.");
+            }
+        }
+
+        private TargetPosition ConvertGoldIdToTargetPosition(long id)
+        {
+            switch (id)
+            {
+                case -1:
+                    return Motion.Gold1;
+                case -2:
+                    return Motion.Gold2;
+                case -3:
+                    return Motion.Gold3;
+                case -4:
+                    return Motion.Gold4;
+                case -5:
+                    return Motion.Gold5;
+                default:
+                    throw new Exception("Gold Id out of range exception.");
             }
         }
 

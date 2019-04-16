@@ -15,7 +15,7 @@ namespace Rack
         /// <summary>
         /// Match position of box, no matter what kind of box it is.
         /// </summary>
-        public readonly int Id;
+        public long Id { get; set; }
         public string PortName = "COM3";
         public ShieldBoxState State { get; set; } = ShieldBoxState.Close;
         public int PassRate { get; set; }

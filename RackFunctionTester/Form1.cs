@@ -61,6 +61,9 @@ namespace RackFunctionTester
             _rack.ConveyorOnline = false;
             _rack.StepperOnline = false;
             _rack.Start();
+            _rack.StartPhoneServer();
+            _rack.PhoneServerManualResetEvent.Set();
+            _rack.ShieldBoxSetupForSimulation();
         }
 
         private void button7_Click(object sender, EventArgs e)
@@ -71,11 +74,6 @@ namespace RackFunctionTester
         private void button8_Click(object sender, EventArgs e)
         {
             _rack.AddGoldPhone();
-        }
-
-        private void button9_Click(object sender, EventArgs e)
-        {
-            _rack.ShieldBoxSetupForSimulation();
         }
 
         private void button10_Click(object sender, EventArgs e)

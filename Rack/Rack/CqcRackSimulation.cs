@@ -64,7 +64,7 @@
                 AtBoxType = ShieldBoxType.RF,
                 CurrentTargetPosition = new TargetPosition() { TeachPos = TeachPos.Gold1 },
                 FailCount = 0,
-                Id = PhoneCount++,
+                Id = -1,
                 //NextTargetPosition = new TargetPosition() { TeachPos = TeachPos.None },
                 TestResult = TestResult.None,
                 Procedure = RackProcedure.Pick,
