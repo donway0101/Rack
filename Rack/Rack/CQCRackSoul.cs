@@ -25,6 +25,8 @@ namespace Rack
         /// Can exchange between retrys.
         /// Make sure retry and pick has place to go, otherwise no move.
         /// After motion finish, update position of phone in box.
+        /// Remove phone before unload or load movement, because if move fail,
+        ///  people deal with it.
         private void PhoneServer()
         {           
             while (true)
@@ -40,27 +42,78 @@ namespace Rack
 
                 try
                 {
-                    while (luckyPhones.Count > 0)
+                    if (luckyPhones.Count > 3)
                     {
-                        //After finish, remove phone from the list.
-                        //If there is three phones, most likely has two combo move.
-                        if (luckyPhones.Count >= 2)
-                        {
-                            var firstPhone = luckyPhones.First();
-                            var secondPhone = luckyPhones.First();
-                            //if (firstPhone.NextTargetPosition.TeachPos == secondPhone.CurrentTargetPosition.TeachPos)
-                            {
+                        throw new Exception("Error 4984639789151");
+                    }
 
-                            }
-                            //else
+                    if (luckyPhones.Count == 3)
+                    {
+                        //If there is three phones, it has two combo move.
+                        var firstPhone = luckyPhones.First();
+                        var secondPhone = luckyPhones.ElementAt(1);
+                        var thirdPhone = luckyPhones.ElementAt(2);
+                        if (firstPhone.NextTargetPosition.TeachPos == secondPhone.CurrentTargetPosition.TeachPos &&
+                            secondPhone.NextTargetPosition.TeachPos == thirdPhone.CurrentTargetPosition.TeachPos )
+                        {
+                            
+                        }
+                        else
+                        {
+                            throw new Exception("Error 16229461984");
+                        }
+
+                        luckyPhones.Remove(firstPhone);
+                    }
+                    else
+                    {
+                        if (luckyPhones.Count == 2)
+                        {
+                            //One combo movement.
+                            var firstPhone = luckyPhones.First();
+                            var secondPhone = luckyPhones.ElementAt(1);
+                            if (firstPhone.NextTargetPosition.TeachPos == secondPhone.CurrentTargetPosition.TeachPos)
                             {
-                                //Maybe it's 
+                                //Unload();
+                                if (firstPhone.ShieldBox!=null) //Inside a box.
+                                {
+                                    var box1 = firstPhone.ShieldBox;
+
+                                    firstPhone.ShieldBox = null;
+
+                                    box1.Phone = null;
+                                    box1.Available = true;
+                                    box1.Empty = true;
+                                }
+
+                                //UnloadAndLoad();
+                                luckyPhones.Remove(firstPhone);
+
+                                var box2 = secondPhone.ShieldBox;
+
+                                firstPhone.ShieldBox = box2;
+                                firstPhone.TargetPositionFootprint.Add(box2.Position);
+                                firstPhone.CurrentTargetPosition = box2.Position;
+
+                                secondPhone.ShieldBox = null;
+
+                                box2.Phone = firstPhone;
+                                box2.Available = false;
+                                box2.Empty = false;
+
+                                //Load();
+                                luckyPhones.Remove(secondPhone);
+                            }
+                            else
+                            {
+                                throw new Exception("Error 549860315484");
                             }
                         }
                         else
                         {
                             //Only one phone at a time.
                             var theOnlyPhone = luckyPhones.First();
+                            
                             switch (theOnlyPhone.Procedure)
                             {
                                 case RackProcedure.Bin:
@@ -125,6 +178,7 @@ namespace Rack
 
                                 case RackProcedure.Retry:
                                     #region Retry a phone.
+                                    //Some retry don't need robot to move the phone.
                                     if (theOnlyPhone.Type == PhoneType.Normal)
                                     {
                                         ShieldBox box = GetBoxForRetryPhone(theOnlyPhone);
@@ -212,7 +266,6 @@ namespace Rack
                             luckyPhones.Remove(theOnlyPhone);
                         }
                     }
-                   
                     //
                     PrintStateOfBoxes();
                 }
@@ -409,7 +462,7 @@ namespace Rack
                                     luckyPhones.Add(bOpPhoneCouple.ElementAt(rPhoneCouple.IndexOf(rPhone))); //Order matters.
                                     luckyPhones.Add(rPhone);
                                     luckyPhones.Add(pPhone);
-                                    return luckyPhones; //Find two unload and load movement.
+                                    return luckyPhones; //Find two combo movement.
                                 }
                             }
                         }
@@ -514,15 +567,15 @@ namespace Rack
                                 {
                                     // pPhone.Procedure is set before.
                                     pPhone.NextTargetPosition = bOpPhone.CurrentTargetPosition;
-                                    luckyPhones.Add(bOpPhone); //Order matters.
                                     luckyPhones.Add(pPhone);
+                                    luckyPhones.Add(bOpPhone); //Order matters.
                                     return luckyPhones; //Unload and load.                                  
                                 }
                             }
                         }
                         //No UnloadAndLoad Move;
-                        luckyPhones.Add(binOrPlacePhone.First());
                         luckyPhones.Add(pickPhone.First());
+                        luckyPhones.Add(binOrPlacePhone.First());
                         return luckyPhones; //Load and place or bin separately.
                     }
                     else
@@ -540,12 +593,30 @@ namespace Rack
                     {
                         if (phone.Type == PhoneType.Golden)
                         {
+                            try
+                            {
+                                GetBoxForGoldPhone();
+                                luckyPhones.Add(phone);
+                                return luckyPhones;
+                            }
+                            catch (Exception e)
+                            {
+                                //Console.WriteLine(e);
+                                break;
+                            }
+                        }
+                    }
+
+                    //If no gold phone, then a regular phone.
+                    foreach (var phone in pickPhone)
+                    {
+                        if (phone.Type != PhoneType.Golden)
+                        {
                             luckyPhones.Add(phone);
                             return luckyPhones;
                         }
                     }
 
-                    //If no gold phone, then a regular phone.
                     luckyPhones.Add(pickPhone.First());
                     return luckyPhones;
                 }
