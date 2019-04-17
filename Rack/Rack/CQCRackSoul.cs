@@ -49,21 +49,68 @@ namespace Rack
 
                     if (luckyPhones.Count == 3)
                     {
-                        //If there is three phones, it has two combo move.
+                        //If there is three phones, it has two combo move, 
+                        // and the last phone must either be place or bin.
                         var firstPhone = luckyPhones.First();
                         var secondPhone = luckyPhones.ElementAt(1);
                         var thirdPhone = luckyPhones.ElementAt(2);
                         if (firstPhone.NextTargetPosition.TeachPos == secondPhone.CurrentTargetPosition.TeachPos &&
                             secondPhone.NextTargetPosition.TeachPos == thirdPhone.CurrentTargetPosition.TeachPos )
                         {
-                            
+                            //Step 1: unload the first phone.
+                            //Unload();
+                            if (firstPhone.ShieldBox != null) //Inside a box.
+                            {
+                                var box1 = firstPhone.ShieldBox;
+
+                                firstPhone.ShieldBox = null;
+
+                                box1.Phone = null;
+                                box1.Available = true;
+                                box1.Empty = true;
+                            }
+
+                            //Step 2: unload the second phone and load the first phone.
+                            //UnloadAndLoad();
+                            luckyPhones.Remove(firstPhone);
+
+                            var box2 = secondPhone.ShieldBox;
+
+                            firstPhone.ShieldBox = box2;
+                            firstPhone.TargetPositionFootprint.Add(box2.Position);
+                            firstPhone.CurrentTargetPosition = box2.Position;
+
+                            box2.Phone = firstPhone;
+                            box2.Available = false;
+                            box2.Empty = false;
+
+                            secondPhone.ShieldBox = null;
+
+                            //Step 3: unload the third phone and load the second phone.
+                            //UnloadAndLoad();
+                            luckyPhones.Remove(secondPhone);
+
+                            var box3 = thirdPhone.ShieldBox;
+
+                            secondPhone.ShieldBox = box3;
+                            secondPhone.TargetPositionFootprint.Add(box3.Position);
+                            secondPhone.CurrentTargetPosition = box3.Position;
+
+                            box3.Phone = secondPhone;
+                            box3.Available = false;
+                            box3.Empty = false;
+
+                            thirdPhone.ShieldBox = null;
+
+                            //Step 3: load the third phone
+                            //Load();
+                            //Todo if phone goes into a box.
+                            luckyPhones.Remove(thirdPhone);
                         }
                         else
                         {
                             throw new Exception("Error 16229461984");
                         }
-
-                        luckyPhones.Remove(firstPhone);
                     }
                     else
                     {
@@ -183,6 +230,10 @@ namespace Rack
                                     {
                                         ShieldBox box = GetBoxForRetryPhone(theOnlyPhone);
 
+                                        //Todo if retry box is not empty, then put it into gold
+                                        // buffer, set box to null, set current position to gold position.
+                                        // if buffer is not empty, then throw an exception.
+
                                         //Unload from one box.
                                         theOnlyPhone.ShieldBox.Available = true;
                                         theOnlyPhone.ShieldBox.Empty = true;
@@ -216,7 +267,7 @@ namespace Rack
                                     if (theOnlyPhone.Type == PhoneType.Normal)
                                     {
                                         //If no box, then do nothing but wait.
-                                        ShieldBox box = GetBoxForNewPhone();
+                                        ShieldBox box = GetEmptyBox();
 
                                         if (box.Empty == false)
                                         {
@@ -337,7 +388,6 @@ namespace Rack
                 case RackTestMode.ABC:
                     //In use.
                     return ArrangeAbcMode();
-                    
                 case RackTestMode.ABA:
                     return null;
                 default:
@@ -348,23 +398,7 @@ namespace Rack
         /// <summary>
         /// 
         /// </summary>
-        /// Thoughts.......
-        /// Priority bin, place, retry, gold, pick
-        /// Rules:
-        /// like a bus, out first.
-        /// Find the movement circle.
-        /// If empty box is enough, load first, place later.
-        /// retry than pick
-        /// Gold go back to gold.
-        /// Todo match shieldbox test step and phone's step.
-        /// Has to avoid conflict, next target position can not be same.
-        /// ABA mode, for one phone, definition of box AB can be different.
-        /// Find a procedure circle, those phones's start and ending is both on conveyor.
-        /// Retry testing phone better goes into bin phone or place phone,
-        /// which can has unload and load movement.
-        /// Equal to empty box.
-        /// todo make sure give the right next target position.
-        /// If gold phone time come, let gold phone come into unchecked box first.
+
         private List<Phone> ArrangeAbcMode(int maxFailCount = 3)
         {
             List<Phone> luckyPhones = new List<Phone>();
@@ -432,7 +466,6 @@ namespace Rack
                 {
                     List<Phone> bOpPhoneCouple = new List<Phone>();
                     List<Phone> rPhoneCouple = new List<Phone>();
-                    List<Phone> pPhoneCouple = new List<Phone>();
                     foreach (var rPhone in retryPhone)
                     {
                         foreach (var bOpPhone in binOrPlacePhone)
@@ -440,8 +473,9 @@ namespace Rack
                             if (bOpPhone.AtBoxType == rPhone.AtBoxType)
                             {
                                 rPhone.NextTargetPosition = bOpPhone.CurrentTargetPosition;
-                                bOpPhoneCouple.Add(bOpPhone); //Order matters.
+                                
                                 rPhoneCouple.Add(rPhone);
+                                bOpPhoneCouple.Add(bOpPhone); //Order matters.
                             }
                         }
                     }
@@ -459,9 +493,10 @@ namespace Rack
                                     pPhone.NextTargetPosition = rPhone.CurrentTargetPosition;
                                     rPhone.NextTargetPosition = bOpPhoneCouple.ElementAt(rPhoneCouple.IndexOf(rPhone))
                                         .CurrentTargetPosition;
-                                    luckyPhones.Add(bOpPhoneCouple.ElementAt(rPhoneCouple.IndexOf(rPhone))); //Order matters.
-                                    luckyPhones.Add(rPhone);
+                                    
                                     luckyPhones.Add(pPhone);
+                                    luckyPhones.Add(rPhone);
+                                    luckyPhones.Add(bOpPhoneCouple.ElementAt(rPhoneCouple.IndexOf(rPhone))); //Order matters.
                                     return luckyPhones; //Find two combo movement.
                                 }
                             }
@@ -469,8 +504,9 @@ namespace Rack
 
                         // Can't build unload and load with pick.
                         //So just leave pick alone.
-                        luckyPhones.Add(bOpPhoneCouple.First());
+                        
                         luckyPhones.Add(rPhoneCouple.First());
+                        luckyPhones.Add(bOpPhoneCouple.First());
                         return luckyPhones; //Find two unload and load movement.
                     }
                     else //No unload and load for place phones.
@@ -482,16 +518,17 @@ namespace Rack
                                 if (pPhone.AtBoxType == rPhone.AtBoxType)
                                 {
                                     pPhone.NextTargetPosition = rPhone.CurrentTargetPosition;
-                                    luckyPhones.Add(rPhone);//Order matters.
+                                    
                                     luckyPhones.Add(pPhone);
+                                    luckyPhones.Add(rPhone);//Order matters.
                                     return luckyPhones;
                                 }
                             }
                         }
 
                         //No combo movement at all.
-                        luckyPhones.Add(bOpPhoneCouple.First());
                         luckyPhones.Add(rPhoneCouple.First());
+                        luckyPhones.Add(bOpPhoneCouple.First());
                         return luckyPhones;
                     }
                 }
@@ -507,14 +544,16 @@ namespace Rack
                                 if (bOpPhone.AtBoxType == rPhone.AtBoxType)
                                 {
                                     rPhone.NextTargetPosition = bOpPhone.CurrentTargetPosition;
-                                    luckyPhones.Add(bOpPhone); //Order matters.
+                                    
                                     luckyPhones.Add(rPhone);
+                                    luckyPhones.Add(bOpPhone); //Order matters.
                                     return luckyPhones;
                                 }
                             }
                         }
-                        luckyPhones.Add(binOrPlacePhone.First());
+                        
                         luckyPhones.Add(retryPhone.First());
+                        luckyPhones.Add(binOrPlacePhone.First());
                         return luckyPhones;
                     }
                     else
@@ -522,23 +561,28 @@ namespace Rack
                         if (pickPhone.Count > 0)
                         {
                             //Can pick and retry.
-                            //Todo return pick and retry phone, in main thread, if no room for pick then just retry.
-                            foreach (var pPhone in pickPhone)
+                            if (MoreThanTwoEmptyBoxes()) //In case no room for retry.
                             {
-                                foreach (var rPhone in retryPhone)
+                                foreach (var pPhone in pickPhone)
                                 {
-                                    if (pPhone.AtBoxType == rPhone.AtBoxType)
+                                    foreach (var rPhone in retryPhone)
                                     {
-                                        pPhone.NextTargetPosition = rPhone.CurrentTargetPosition;
-                                        luckyPhones.Add(rPhone); //Order matters.
-                                        luckyPhones.Add(pPhone);
-                                        return luckyPhones;                                 
+                                        if (pPhone.AtBoxType == rPhone.AtBoxType)
+                                        {
+                                            pPhone.NextTargetPosition = rPhone.CurrentTargetPosition;
+
+                                            luckyPhones.Add(pPhone);
+                                            luckyPhones.Add(rPhone); //Order matters.
+                                            return luckyPhones;
+                                        }
                                     }
                                 }
                             }
+
                             //Choose two ramdon phones.
+                            // Todo if all phone fail, need to take a phone to buffer?
+                            // where is the buffer?
                             luckyPhones.Add(retryPhone.First());
-                            luckyPhones.Add(pickPhone.First());
                             return luckyPhones;
                         }
                         else
@@ -567,6 +611,7 @@ namespace Rack
                                 {
                                     // pPhone.Procedure is set before.
                                     pPhone.NextTargetPosition = bOpPhone.CurrentTargetPosition;
+
                                     luckyPhones.Add(pPhone);
                                     luckyPhones.Add(bOpPhone); //Order matters.
                                     return luckyPhones; //Unload and load.                                  
@@ -623,7 +668,21 @@ namespace Rack
             }
         }
 
-        private ShieldBox GetBoxForNewPhone()
+        private bool MoreThanTwoEmptyBoxes()
+        {
+            int count = 0; 
+            foreach (var box in ShieldBoxs)
+            {
+                if (box.Enabled & box.Empty)
+                {
+                    count++;
+                }
+            }
+
+            return count > 1;
+        }
+
+        private ShieldBox GetEmptyBox()
         {
             //Try to find a empty box.
             foreach (var box in ShieldBoxs)
@@ -634,18 +693,12 @@ namespace Rack
                 }
             }
 
-            //If not found a empty box, try to find a available box.
-            foreach (var box in ShieldBoxs)
-            {
-                if (box.Enabled & box.Available)
-                {
-                    return box;
-                }
-            }
-
-            throw new ShieldBoxNotFoundException("GetAvailableBoxForNewPhone fail.");
+            throw new ShieldBoxNotFoundException("GetEmptyBox fail.");
         }
 
+        /// <summary>
+        /// Maybe it's not empty.
+        /// </summary>
         private ShieldBox GetBoxForGoldPhone()
         {
             //If not found a empty box, try to find a available box.
@@ -660,6 +713,11 @@ namespace Rack
             throw new ShieldBoxNotFoundException("GetBoxForGoldPhone fail.");
         }
 
+        /// <summary>
+        /// Maybe it's not empty.
+        /// </summary>
+        /// <param name="phone"></param>
+        /// <returns></returns>
         private ShieldBox GetBoxForRetryPhone(Phone phone)
         {
             lock (_availableBoxLocker)
