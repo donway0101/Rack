@@ -32,6 +32,8 @@ namespace Rack
         public bool GoldPhoneChecked { get; set; }
         public ShieldBoxType Type { get; set; } = ShieldBoxType.RF;
         public TargetPosition Position { get; set; }
+
+        //After test, shield box will send back result and put phone to serve list.
         public Phone Phone { get; set; }
 
         public ShieldBox(int id)

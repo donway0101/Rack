@@ -14,6 +14,7 @@ namespace Rack
             ShieldBox5 = new ShieldBox(5);
             ShieldBox6 = new ShieldBox(6);
 
+            //Todo the order of box decide priority of box which robot will choose.
             ShieldBoxs = new ShieldBox[6] { ShieldBox1, ShieldBox2, ShieldBox3, ShieldBox4, ShieldBox5, ShieldBox6 };
 
             foreach (var box in ShieldBoxs)

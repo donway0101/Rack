@@ -66,14 +66,10 @@ namespace RackFunctionTester
             _rack.PhoneServerManualResetEvent.Reset();
         }
 
-        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
-        }
-
+        private int _selectBoxId = 1;
         private void button11_Click(object sender, EventArgs e)
         {
-            ShieldBox box = _rack.ConvertIdToShieldBox(comboBox1.SelectedIndex + 1);
+            ShieldBox box = _rack.ConvertIdToShieldBox(_selectBoxId);
             box.Phone.TestResult = TestResult.Pass;
             //Todo, in reality, it's true after box is opened.
             box.Available = true;
@@ -82,11 +78,65 @@ namespace RackFunctionTester
 
         private void button12_Click(object sender, EventArgs e)
         {
-            ShieldBox box = _rack.ConvertIdToShieldBox(comboBox1.SelectedIndex + 1);
+            ShieldBox box = _rack.ConvertIdToShieldBox(_selectBoxId);
             box.Phone.TestResult = TestResult.Fail;
             box.Phone.FailCount++;
             box.Available = true;
             _rack.AddPhoneToBeServed(box.Phone);
+        }
+
+        private void radioButton1_CheckedChanged(object sender, EventArgs e)
+        {
+            RadioButton button = (RadioButton) sender;
+            if (button.Checked)
+            {
+                _selectBoxId = 1;
+            }
+        }
+
+        private void radioButton2_CheckedChanged(object sender, EventArgs e)
+        {
+            RadioButton button = (RadioButton)sender;
+            if (button.Checked)
+            {
+                _selectBoxId = 2;
+            }
+        }
+
+        private void radioButton3_CheckedChanged(object sender, EventArgs e)
+        {
+            RadioButton button = (RadioButton)sender;
+            if (button.Checked)
+            {
+                _selectBoxId = 3;
+            }
+        }
+
+        private void radioButton4_CheckedChanged(object sender, EventArgs e)
+        {
+            RadioButton button = (RadioButton)sender;
+            if (button.Checked)
+            {
+                _selectBoxId = 4;
+            }
+        }
+
+        private void radioButton5_CheckedChanged(object sender, EventArgs e)
+        {
+            RadioButton button = (RadioButton)sender;
+            if (button.Checked)
+            {
+                _selectBoxId = 5;
+            }
+        }
+
+        private void radioButton6_CheckedChanged(object sender, EventArgs e)
+        {
+            RadioButton button = (RadioButton)sender;
+            if (button.Checked)
+            {
+                _selectBoxId = 6;
+            }
         }
     }
 }

@@ -50,7 +50,7 @@ namespace Rack
         ///  if more than one type, create another list,
         ///     change next target position strategy.
         /// <seealso cref="SortPhones"/>
-        public ShieldBox[] ShieldBoxs;
+        public ShieldBox[] ShieldBoxs { get; set; }
 
         private Thread _phoneServerThread;
         private readonly object _phoneToBeServedLocker = new object();
@@ -67,6 +67,7 @@ namespace Rack
         /// <summary>
         /// Set, to serve, if exception, has to set again to continue.
         /// </summary>
+        /// Todo set it if any box state changes.
         public ManualResetEvent PhoneServerManualResetEvent = new ManualResetEvent(false);
 
         public RackTestMode TestMode { get; set; } = RackTestMode.ABC;        

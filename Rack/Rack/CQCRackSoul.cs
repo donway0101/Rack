@@ -55,7 +55,7 @@ namespace Rack
                         var secondPhone = luckyPhones.ElementAt(1);
                         var thirdPhone = luckyPhones.ElementAt(2);
                         if (firstPhone.NextTargetPosition.TeachPos == secondPhone.CurrentTargetPosition.TeachPos &&
-                            secondPhone.NextTargetPosition.TeachPos == thirdPhone.CurrentTargetPosition.TeachPos )
+                            secondPhone.NextTargetPosition.TeachPos == thirdPhone.CurrentTargetPosition.TeachPos)
                         {
                             //Step 1: unload the first phone.
                             //Unload();
@@ -116,39 +116,37 @@ namespace Rack
                     {
                         if (luckyPhones.Count == 2)
                         {
-                            //One combo movement.
                             var firstPhone = luckyPhones.First();
                             var secondPhone = luckyPhones.ElementAt(1);
-                            if (firstPhone.NextTargetPosition.TeachPos == secondPhone.CurrentTargetPosition.TeachPos)
+                            if (firstPhone.NextTargetPosition.TeachPos == 
+                                secondPhone.CurrentTargetPosition.TeachPos)
                             {
-                                //Unload();
-                                if (firstPhone.ShieldBox!=null) //Inside a box.
-                                {
-                                    var box1 = firstPhone.ShieldBox;
-
-                                    firstPhone.ShieldBox = null;
-
-                                    box1.Phone = null;
-                                    box1.Available = true;
-                                    box1.Empty = true;
+                                //Deal with first phone, pick or retry.
+                                switch (firstPhone.Procedure)
+                                {  
+                                    case RackProcedure.Retry:
+                                        break;
+                                    case RackProcedure.Pick:
+                                        ComboPickAPhone(firstPhone);
+                                        break;
+                                    default:
+                                        throw new Exception("Error 984616941611"); 
                                 }
-
-                                //UnloadAndLoad();
                                 luckyPhones.Remove(firstPhone);
 
-                                var box2 = secondPhone.ShieldBox;
-
-                                firstPhone.ShieldBox = box2;
-                                firstPhone.TargetPositionFootprint.Add(box2.Position);
-                                firstPhone.CurrentTargetPosition = box2.Position;
-
-                                secondPhone.ShieldBox = null;
-
-                                box2.Phone = firstPhone;
-                                box2.Available = false;
-                                box2.Empty = false;
-
-                                //Load();
+                                switch (secondPhone.Procedure)
+                                {
+                                    case RackProcedure.Bin:
+                                        ComboBinAPhone(firstPhone, secondPhone);
+                                        break;
+                                    case RackProcedure.Place:
+                                        ComboPlaceAPhone(firstPhone, secondPhone);
+                                        break;
+                                    case RackProcedure.Retry:
+                                        break;
+                                    default:
+                                        throw new Exception("Error 989491878165"); 
+                                }
                                 luckyPhones.Remove(secondPhone);
                             }
                             else
@@ -158,158 +156,21 @@ namespace Rack
                         }
                         else
                         {
-                            //Only one phone at a time.
                             var theOnlyPhone = luckyPhones.First();
-                            
                             switch (theOnlyPhone.Procedure)
                             {
                                 case RackProcedure.Bin:
-                                    #region Bin a phone.
-                                    if (theOnlyPhone.Type == PhoneType.Normal)
-                                    {
-                                        ShieldBox box = theOnlyPhone.ShieldBox;
-                                        //Unload
-                                        //Bin()
-                                        Print("Has bin a phone.");
-
-                                        box.Phone = null;
-                                        box.Available = true;
-                                        box.Empty = true;
-                                    }
-                                    else //A gold phone.
-                                    {
-                                        ShieldBox box = theOnlyPhone.ShieldBox;
-                                        //Unload from box.
-
-                                        TargetPosition toLoadPosition = ConvertGoldIdToTargetPosition(theOnlyPhone.Id);
-                                        //Load to gold postion.
-                                        Print("Has put back gold phone.");
-
-                                        box.Phone = null;
-                                        box.Available = true;
-                                        box.Empty = true;
-                                    }
-                                    break; 
-                                #endregion
-
-                                case RackProcedure.Place:
-                                    #region Place a phone.
-                                    if (theOnlyPhone.Type == PhoneType.Normal)
-                                    {
-                                        ShieldBox box = theOnlyPhone.ShieldBox;
-                                        //Unload
-
-                                        //Place()
-                                        Print("Has place a phone.");
-
-                                        box.Phone = null;
-                                        box.Available = true;
-                                        box.Empty = true;
-                                    }
-                                    else //A gold phone.
-                                    {
-                                        ShieldBox box = theOnlyPhone.ShieldBox;
-                                        //Unload from box.
-
-                                        TargetPosition toLoadPosition = ConvertGoldIdToTargetPosition(theOnlyPhone.Id);
-                                        //Load to gold postion.
-                                        Print("Has put back gold phone.");
-
-                                        box.Phone = null;
-                                        box.Available = true;
-                                        box.Empty = true;
-                                        box.GoldPhoneChecked = true;
-                                    }
-                                    break; 
-                                #endregion
-
-                                case RackProcedure.Retry:
-                                    #region Retry a phone.
-                                    //Some retry don't need robot to move the phone.
-                                    if (theOnlyPhone.Type == PhoneType.Normal)
-                                    {
-                                        ShieldBox box = GetBoxForRetryPhone(theOnlyPhone);
-
-                                        //Todo if retry box is not empty, then put it into gold
-                                        // buffer, set box to null, set current position to gold position.
-                                        // if buffer is not empty, then throw an exception.
-
-                                        //Unload from one box.
-                                        theOnlyPhone.ShieldBox.Available = true;
-                                        theOnlyPhone.ShieldBox.Empty = true;
-                                        theOnlyPhone.ShieldBox.Phone = null;
-
-                                        //Load to other box.
-                                        Print("Has retry a phone.");
-                                        theOnlyPhone.ShieldBox = box;
-                                        theOnlyPhone.TargetPositionFootprint.Add(box.Position);
-                                        theOnlyPhone.CurrentTargetPosition = box.Position;
-
-                                        box.Available = false;
-                                        box.Empty = false;
-                                        box.Phone = theOnlyPhone;
-                                    }
-                                    else //A gold phone.
-                                    {
-                                        //Todo Put the phone back to gold position, or retry the test.
-                                        //If retry, just need to reclose a box.
-                                        ShieldBox box = theOnlyPhone.ShieldBox;
-                                        
-                                        box.Available = true;
-                                        box.Empty = true;
-                                        box.Phone = null;
-                                    }
-                                    break; 
-                                #endregion
-
-                                case RackProcedure.Pick:
-                                    #region Pick a phone.
-                                    if (theOnlyPhone.Type == PhoneType.Normal)
-                                    {
-                                        //If no box, then do nothing but wait.
-                                        ShieldBox box = GetEmptyBox();
-
-                                        if (box.Empty == false)
-                                        {
-                                            //Should not be just new phone and found a box with phone.
-                                            throw new Exception("Error 654478451");
-                                        }
-
-                                        //Pick(RackGripper.One);
-                                        //Load(RackGripper.One, box.Position);
-                                        //Use a task to close box. If error, info user.
-                                        Print("Has load a new phone.");
-
-                                        //For the phone.
-                                        theOnlyPhone.ShieldBox = box; //Contain info of current position.
-                                        theOnlyPhone.TargetPositionFootprint.Add(box.Position); //For retry.
-                                        theOnlyPhone.CurrentTargetPosition = box.Position;
-
-                                        //For box.
-                                        box.Available = false;
-                                        box.Empty = false;
-                                        box.Phone = theOnlyPhone;
-                                        //After test, shield box will send back result and put phone to serve list.
-                                    }
-                                    else //A gold phone.
-                                    {
-                                        ShieldBox box = GetBoxForGoldPhone();
-
-                                        //Unload(RackGripper.One, theOnlyPhone.CurrentTargetPosition);
-                                        //Load(RackGripper.One, box.Position);
-                                        Print("Has load a gold phone.");
-
-                                        theOnlyPhone.ShieldBox = box;
-                                        theOnlyPhone.CurrentTargetPosition = box.Position;
-
-                                        box.Available = false;
-                                        box.Empty = false;
-                                        box.Phone = theOnlyPhone;
-                                    }
-                                    
+                                    BinAPhone(theOnlyPhone);
                                     break;
-                                #endregion
-
+                                case RackProcedure.Place:
+                                    PlaceAPhone(theOnlyPhone);
+                                    break;
+                                case RackProcedure.Retry:
+                                    RetryAPhone(theOnlyPhone);
+                                    break;
+                                case RackProcedure.Pick:
+                                    PickAPhone(theOnlyPhone);
+                                    break;
                                 default:
                                     throw new Exception("Error 6417987");
                             }
@@ -317,30 +178,235 @@ namespace Rack
                             luckyPhones.Remove(theOnlyPhone);
                         }
                     }
-                    //
+
+                    //Todo comment out.
                     PrintStateOfBoxes();
                 }
                 catch (ShieldBoxNotFoundException e)
                 {
-                    //Todo Make sure no gold phone come in after all box checked.
-                    if (luckyPhones.Count > 0)
-                    {
-                        RecyclePhones(luckyPhones);
-                    }
                     //Todo error code
                     OnInfoOccured(0, e.Message);
                     //PhoneServerManualResetEvent.Reset();
                 }
                 catch (Exception e)
                 {
-                    if (luckyPhones.Count>0)
+                    OnErrorOccured(0, e.Message);
+                    PhoneServerManualResetEvent.Reset();
+                }
+                finally
+                {
+                    if (luckyPhones.Count > 0)
                     {
                         RecyclePhones(luckyPhones);
                     }
-                    //Todo error code
-                    OnErrorOccured(0,e.Message);
-                    PhoneServerManualResetEvent.Reset();
-                }             
+                }
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="phone"></param>
+        /// Some retry don't need robot to move the phone.
+        /// Todo if retry box is not empty, then put it into gold
+        /// buffer, set box to null, set current position to gold position.
+        /// if buffer is not empty, then throw an exception.
+        private void RetryAPhone(Phone phone)
+        {
+            ShieldBox box = phone.ShieldBox;
+
+            if (phone.Type == PhoneType.Normal)
+            {
+                ShieldBox newBox = GetBoxForRetryPhone(phone);
+                Unlink(phone, box);
+                //Unload.
+                Print("Has unload a fail phone.");
+                //load new box.
+                Print("Has retry a phone in box." + newBox.Id);
+
+                Link(phone, newBox);
+            }
+            else //A gold phone.
+            {
+                //If retry, just need to reclose a box.
+                //Unload box
+                //Load gold
+                Print("No retry for a gold phone now. Just put it back.");
+
+                Unlink(phone, box);
+            }
+        }
+
+        private void ComboRetryAPhone(Phone phone)
+        {
+            ShieldBox box = phone.ShieldBox;
+
+            if (phone.Type == PhoneType.Normal)
+            {
+                ShieldBox newBox = GetBoxForRetryPhone(phone);
+                Unlink(phone, box);
+                //Unload.
+                Print("Has unload a fail phone.");
+                //load new box.
+                Print("Has retry a phone in box." + newBox.Id);
+
+                Link(phone, newBox);
+            }
+            else //A gold phone.
+            {
+                //If retry, just need to reclose a box.
+                //Unload box
+                //Load gold
+                Print("No retry for a gold phone now. Just put it back.");
+
+                Unlink(phone, box);
+            }
+        }
+
+        private void PickAPhone(Phone phone)
+        {
+            if (phone.Type == PhoneType.Normal)
+            {
+                //If a solo pick but no box, it should's happen.
+                ShieldBox box = GetEmptyBox();
+                //Pick();
+                Print("Has pick a new phone.");
+                //Load();
+                //Use a task to close box. If error, info user.
+                Print("Has load a new phone to box." + box.Id);
+                Link(phone, box);
+            }
+            else //A gold phone.
+            {
+                ShieldBox box = GetBoxForGoldPhone();
+                //Unload();
+                Print("Has unload a gold phone.");
+                //Load();
+                Print("Has load a gold phone to box." + box.Id);
+                Link(phone, box);
+            }
+        }
+
+        /// <summary>
+        /// Just pick up a phone.
+        /// </summary>
+        /// <param name="phone"></param>
+        private void ComboPickAPhone(Phone phone)
+        {
+            if (phone.Type == PhoneType.Normal)
+            {
+                //Pick();
+                Print("Has pick a new phone.");
+                //Link(phone, box);
+            }
+            else //A gold phone.
+            {
+                //Unload();
+                Print("Has unload a gold phone.");
+                //Link(phone, box);
+            }
+        }
+
+        private static void Link(Phone phone, ShieldBox box)
+        {
+            phone.ShieldBox = box; //Contain info of current position.
+            phone.TargetPositionFootprint.Add(box.Position); //For retry.
+            phone.CurrentTargetPosition = box.Position;
+            box.Available = false;
+            box.Empty = false;
+            box.Phone = phone;
+        }
+
+        private static void Unlink(Phone phone, ShieldBox box)
+        {
+            phone.ShieldBox = null; //Contain info of current position.
+            box.Available = true;
+            box.Empty = true;
+            box.Phone = null;
+        }
+
+        private void PlaceAPhone(Phone phone)
+        {
+            ShieldBox box = phone.ShieldBox;
+            Unlink(phone, box);
+            //Unload
+            Print("Has unload a phone from box." + box.Id);
+
+            if (phone.Type == PhoneType.Normal)
+            {               
+                //Place()
+                Print("Has place a phone.");
+            }
+            else //A gold phone.
+            {
+                TargetPosition toLoadPosition = ConvertGoldIdToTargetPosition(phone.Id);
+                //Load()
+                Print("Has put back gold phone.");
+                box.GoldPhoneChecked = true;
+            }
+        }
+
+        private void ComboPlaceAPhone(Phone phoneIn, Phone phoneOut)
+        {
+            ShieldBox box = phoneOut.ShieldBox;
+            //Unload and load
+            Unlink(phoneOut, box);
+            Link(phoneIn,box);
+            Print("Has unload and load for box." + box.Id);
+
+            if (phoneIn.Type == PhoneType.Normal)
+            {
+                //Place()
+                Print("Has place a phone.");
+            }
+            else //A gold phone.
+            {
+                TargetPosition toLoadPosition = ConvertGoldIdToTargetPosition(phoneIn.Id);
+                //Load()
+                Print("Has put back gold phone.");
+                box.GoldPhoneChecked = true;
+            }
+        }
+
+        private void BinAPhone(Phone phone)
+        {
+            ShieldBox box = phone.ShieldBox;
+            Unlink(phone, box);
+            if (phone.Type == PhoneType.Normal)
+            {
+                //Unload()
+                //Todo need to check if door is open.
+                //Bin()
+                Print("Has bin a phone.");
+            }
+            else //A gold phone.
+            {
+                //Unload
+                TargetPosition toLoadPosition = ConvertGoldIdToTargetPosition(phone.Id);
+                //Put back.
+                Print("Has put back gold phone.");
+            }
+        }
+
+        private void ComboBinAPhone(Phone phoneIn, Phone phoneOut)
+        {
+            ShieldBox box = phoneOut.ShieldBox;
+            //Unload and load
+            Unlink(phoneOut, box);
+            Link(phoneIn, box);
+            if (phoneIn.Type == PhoneType.Normal)
+            {
+                //Unload()
+                //Todo need to check if door is open.
+                //Bin()
+                Print("Has bin a phone.");
+            }
+            else //A gold phone.
+            {
+                //Unload
+                TargetPosition toLoadPosition = ConvertGoldIdToTargetPosition(phoneIn.Id);
+                //Put back.
+                Print("Has put back gold phone.");
             }
         }
 
@@ -394,10 +460,6 @@ namespace Rack
                     return null;
             }
         }
-
-        /// <summary>
-        /// 
-        /// </summary>
 
         private List<Phone> ArrangeAbcMode(int maxFailCount = 3)
         {
@@ -687,7 +749,7 @@ namespace Rack
             //Try to find a empty box.
             foreach (var box in ShieldBoxs)
             {
-                if (box.Enabled & box.Empty)
+                if (box.Enabled & box.Available & box.Empty)
                 {
                     return box;
                 }
@@ -714,7 +776,7 @@ namespace Rack
         }
 
         /// <summary>
-        /// Maybe it's not empty.
+        /// A new available box for current phone, but maybe it's not empty.
         /// </summary>
         /// <param name="phone"></param>
         /// <returns></returns>
