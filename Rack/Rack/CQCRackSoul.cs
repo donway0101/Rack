@@ -650,7 +650,18 @@ namespace Rack
                         else
                         {
                             //Just retry.
-                            //Todo Find available box, if two box is both retry, then exchange.
+                            foreach (var rPhone1 in retryPhone)
+                            {
+
+                                List<ShieldBox> boxesForPhone1 = GetBoxesForRetryPhone(rPhone1);
+                                foreach (var rPhone2 in retryPhone)
+                                {
+                                    List<ShieldBox> boxesForPhone2 = GetBoxesForRetryPhone(rPhone2);
+                                }
+
+                            }
+
+
                             luckyPhones.Add(retryPhone.First());
                             return luckyPhones;
                         }
@@ -808,6 +819,39 @@ namespace Rack
                     }
                 }
                 throw new ShieldBoxNotFoundException("GetBoxForRetryPhone fail.");
+            }
+        }
+
+        private List<ShieldBox> GetBoxesForRetryPhone(Phone phone)
+        {
+            lock (_availableBoxLocker)
+            {
+                List<ShieldBox> retryBoxs = new List<ShieldBox>();
+                foreach (var box in ShieldBoxs)
+                {
+                    var foundBox = true;
+                    if (box.Enabled & box.Available)
+                    {
+                        foreach (var footprint in phone.TargetPositionFootprint)
+                        {
+                            if (box.Position.TeachPos == footprint.TeachPos)
+                            {
+                                foundBox = false;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        foundBox = false;
+                    }
+
+                    if (foundBox)
+                    {
+                        retryBoxs.Add(box);
+                    }
+                }
+
+                return retryBoxs;
             }
         }
 
