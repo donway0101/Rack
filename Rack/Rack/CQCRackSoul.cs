@@ -978,14 +978,14 @@ namespace Rack
                     }
                 }
                 PhoneToBeServed.Add(phone);
-                phone.TestResultChanged -= Phone_TestResultChanged;
-                phone.TestResultChanged += Phone_TestResultChanged;
+                phone.TestComplete -= Phone_TestComplete;
+                phone.TestComplete += Phone_TestComplete;
             }
         }
 
-        private void Phone_TestResultChanged(object sender)
+        private void Phone_TestComplete(object sender)
         {
-            Phone phone = (Phone) sender;
+            Phone phone = (Phone)sender;
             AddPhoneToBeServed(phone);
         }
 

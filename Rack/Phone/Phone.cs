@@ -26,14 +26,10 @@ namespace Rack
         public TestResult TestResult
         {
             get => _testResult;
-
             set
             {
-                if (_testResult!=value)
-                {
-                    _testResult = value;
-                    OnTestResultChanged();
-                }
+                _testResult = value;
+                OnTestComplete();
             }
         }
         /// Todo link to shield box test result.
@@ -45,13 +41,13 @@ namespace Rack
         public RackGripper OnGripper { get; set; }
         public ShieldBox ShieldBox { get; set; }
 
-        public delegate void TestResultChangedEventHandler(object sender);
+        public delegate void TestCompleteEventHandler(object sender);
 
-        public event TestResultChangedEventHandler TestResultChanged;
+        public event TestCompleteEventHandler TestComplete;
 
-        protected void OnTestResultChanged()
+        protected void OnTestComplete()
         {
-            TestResultChanged?.Invoke(this);
+            TestComplete?.Invoke(this);
         }
 
     }

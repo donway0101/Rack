@@ -186,18 +186,24 @@ namespace Rack
                         //Todo set result
                         try
                         {
-                            ShieldBox.Phone.TestResult = TestResult.Fail;
-                            ShieldBox.Phone.FailCount++;
-
+                            if (subMessage[1]=="1")
+                            {
+                                ShieldBox.Phone.TestResult = TestResult.Fail;
+                                ShieldBox.Phone.FailCount++;
+                            }
+                            else
+                            {
+                                ShieldBox.Phone.TestResult = TestResult.Pass;
+                            }
+                            
                             SendMessage(TesterCommand.SetTestResult + ",OK;");
                         }
-                        catch (Exception e)
+                        catch (Exception)
                         {
-                            Console.WriteLine(e);
-                            throw;
+                            OnInfoOccured(4, "Tester send back a result while no phone in shield box.");
                         }
-                                               
                         break;
+
                     default:
                         OnInfoOccured(4,"Receive unknown message " + message);
                         break;
