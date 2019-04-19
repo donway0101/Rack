@@ -17,10 +17,11 @@ namespace Rack
         private string _receivedMessage;
         private readonly object _sendLocker = new object();
         private bool _acceptingConnection;
+        private readonly ManualResetEvent _socketManualResetEvent = new ManualResetEvent(false);
 
         public string Ip { get; set; }
         public int Id { get; set; }
-        public ShieldBox Box { get; set; }// = new ShieldBox(-1);
+        public ShieldBox ShieldBox { get; set; }
         public int RobotState { get; set; } 
 
         public delegate void MessageReceivedEventHandler(object sender, string message);
@@ -55,7 +56,8 @@ namespace Rack
 
         public void Start()
         {
-            AcceptClient();
+            Task.Run(() => { AcceptClient(); });
+           
             _stop = false;
             if (_messageReceiveThread.IsAlive == false)
             {
@@ -88,7 +90,10 @@ namespace Rack
                 _acceptSocket.Close();
             }
 
+            _socketManualResetEvent.Reset();
             _acceptSocket = _listeningSocket.Accept();
+            _socketManualResetEvent.Set();
+
             _acceptingConnection = false;
         }
 
@@ -97,6 +102,7 @@ namespace Rack
             string message = string.Empty;
             while (!_stop)
             {
+                _socketManualResetEvent.WaitOne();
                 try
                 {
                     byte[] buffer = new byte[1024];
@@ -146,8 +152,25 @@ namespace Rack
         {
             Task.Run(() =>
             {
-                //Todo message is not just about command, it has para.
-                Enum.TryParse(message, out TesterCommand command);
+                if (message.Contains(";") == false)
+                {
+                    OnInfoOccured(4, "Receive unknown message " + message);
+                    return;
+                }
+
+                int index = message.IndexOf(";", StringComparison.Ordinal);
+                if (index+1 != message.Length)
+                {
+                    OnInfoOccured(4, "Receive unknown message " + message);
+                    return;
+                }
+
+                message = message.Replace(";", string.Empty);
+
+                string[] subMessage = message.Split(',');
+
+                //Todo, is message is not continue, could lost some information.               
+                Enum.TryParse(subMessage[0], out TesterCommand command);
                 switch (command)
                 {
                     case TesterCommand.GetRobotState:
@@ -156,15 +179,15 @@ namespace Rack
                         break;
                     case TesterCommand.GetShieldedBoxState:
                         //Todo send state.
-                        int state = (int) Box.State;
+                        int state = (int) ShieldBox.State;
                         SendMessage(TesterCommand.GetShieldedBoxState + ","+ state + ";");
                         break;
                     case TesterCommand.SetTestResult:
                         //Todo set result
                         try
                         {
-                            Box.Phone.TestResult = TestResult.Fail;
-                            Box.Phone.FailCount++;
+                            ShieldBox.Phone.TestResult = TestResult.Fail;
+                            ShieldBox.Phone.FailCount++;
 
                             SendMessage(TesterCommand.SetTestResult + ",OK;");
                         }

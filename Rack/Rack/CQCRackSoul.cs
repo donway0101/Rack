@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Runtime.InteropServices;
+using System.Runtime.Remoting.Channels;
 using System.Security.Policy;
 using System.Text;
 using System.Threading;
@@ -969,8 +970,23 @@ namespace Rack
         {
             lock (_phoneToBeServedLocker)
             {
+                foreach (var pho in PhoneToBeServed)
+                {
+                    if (pho.Id == phone.Id)
+                    {
+                        return;
+                    }
+                }
                 PhoneToBeServed.Add(phone);
+                phone.TestResultChanged -= Phone_TestResultChanged;
+                phone.TestResultChanged += Phone_TestResultChanged;
             }
+        }
+
+        private void Phone_TestResultChanged(object sender)
+        {
+            Phone phone = (Phone) sender;
+            AddPhoneToBeServed(phone);
         }
 
         private void RemovePhoneToBeServed(Phone phone)

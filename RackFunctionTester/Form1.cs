@@ -54,6 +54,8 @@ namespace RackFunctionTester
             _rack.StartPhoneServer();
             _rack.PhoneServerManualResetEvent.Set();
             _rack.ShieldBoxSetupForSimulation();
+            _rack.TesterSetupForSimulation();
+
         }
 
         private void button8_Click(object sender, EventArgs e)

@@ -45,5 +45,10 @@
                 box.Position = ConvertBoxIdToTargetPosition(box.Id);
             }
         }
+
+        public void TesterSetupForSimulation()
+        {
+            TesterSetup();
+        }
     }
 }

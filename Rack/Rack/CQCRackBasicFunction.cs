@@ -70,8 +70,13 @@ namespace Rack
             if (ShieldBoxOnline)
             {
                 ShieldBoxSetup();
-            } 
-            
+            }
+
+            if (TesterOnline)
+            {
+                TesterSetup();
+            }
+
             SelfChecking();
 
             SetupComplete = true;

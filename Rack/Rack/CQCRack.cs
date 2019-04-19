@@ -17,6 +17,7 @@ namespace Rack
         private const double YIsNearHome = 10;
 
         public bool ShieldBoxOnline { get; set; } = false;
+        public bool TesterOnline { get; set; } = false;
         public bool TestRun { get; set; }
         public bool StepperOnline { get; set; } = true;
         public bool ConveyorOnline { get; set; } = true;
@@ -51,6 +52,15 @@ namespace Rack
         ///     change next target position strategy.
         /// <seealso cref="SortPhones"/>
         public ShieldBox[] ShieldBoxs { get; set; }
+
+        public Tester Tester1 { get; set; }
+        public Tester Tester2 { get; set; }
+        public Tester Tester3 { get; set; }
+        public Tester Tester4 { get; set; }
+        public Tester Tester5 { get; set; }
+        public Tester Tester6 { get; set; }
+
+        public Tester[] Testers { get; set; }
 
         private Thread _phoneServerThread;
         private readonly object _phoneToBeServedLocker = new object();
