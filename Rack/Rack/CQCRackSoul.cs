@@ -125,6 +125,7 @@ namespace Rack
                                 switch (firstPhone.Procedure)
                                 {  
                                     case RackProcedure.Retry:
+                                        ComboRetryAPhone(firstPhone);
                                         break;
                                     case RackProcedure.Pick:
                                         ComboPickAPhone(firstPhone);
@@ -143,6 +144,7 @@ namespace Rack
                                         ComboPlaceAPhone(firstPhone, secondPhone);
                                         break;
                                     case RackProcedure.Retry:
+                                        ComboRetryAPhone(firstPhone, secondPhone);
                                         break;
                                     default:
                                         throw new Exception("Error 989491878165"); 
@@ -237,20 +239,19 @@ namespace Rack
             }
         }
 
+        /// <summary>
+        /// Pick a fail phone out of a box.
+        /// </summary>
+        /// <param name="phone"></param>
         private void ComboRetryAPhone(Phone phone)
         {
             ShieldBox box = phone.ShieldBox;
 
             if (phone.Type == PhoneType.Normal)
             {
-                ShieldBox newBox = GetBoxForRetryPhone(phone);
                 Unlink(phone, box);
                 //Unload.
                 Print("Has unload a fail phone.");
-                //load new box.
-                Print("Has retry a phone in box." + newBox.Id);
-
-                Link(phone, newBox);
             }
             else //A gold phone.
             {
@@ -258,8 +259,31 @@ namespace Rack
                 //Unload box
                 //Load gold
                 Print("No retry for a gold phone now. Just put it back.");
-
                 Unlink(phone, box);
+            }
+        }
+
+        private void ComboRetryAPhone(Phone phoneIn, Phone phoneOut)
+        {
+            ShieldBox box2 = phoneOut.ShieldBox;
+            ShieldBox box1 = ConverterTeachPosToShieldBox(phoneOut.NextTargetPosition.TeachPos);
+            //Unload and load
+            Unlink(phoneOut, box2);
+            Link(phoneIn, box2);
+            Print("Has load a retry phone for box." + box2.Id);
+
+            if (phoneIn.Type == PhoneType.Normal)
+            {
+                //Load()
+                Link(phoneOut, box1);
+                Print("Has load a retry phone for box." + box1.Id);
+            }
+            else //A gold phone.
+            {
+                TargetPosition toLoadPosition = ConvertGoldIdToTargetPosition(phoneIn.Id);
+                //Load()
+                Print("Has put back gold phone.");
+                //box.GoldPhoneChecked = true;
             }
         }
 
@@ -650,17 +674,38 @@ namespace Rack
                         else
                         {
                             //Just retry.
-                            foreach (var rPhone1 in retryPhone)
+                            if (retryPhone.Count>1)
                             {
-
-                                List<ShieldBox> boxesForPhone1 = GetBoxesForRetryPhone(rPhone1);
-                                foreach (var rPhone2 in retryPhone)
+                                List<ShieldBox> boxesForPhone1 = new List<ShieldBox>();
+                                List<ShieldBox> boxesForPhone2 = new List<ShieldBox>();
+                                for (int i = 0; i < retryPhone.Count - 1; i++)
                                 {
-                                    List<ShieldBox> boxesForPhone2 = GetBoxesForRetryPhone(rPhone2);
+                                    boxesForPhone1 = GetBoxesForRetryPhone(retryPhone.ElementAt(i));
+                                    for (int j = i + 1; j < retryPhone.Count; j++)
+                                    {
+                                        boxesForPhone2 = GetBoxesForRetryPhone(retryPhone.ElementAt(j));
+                                        foreach (var box1 in boxesForPhone1)
+                                        {
+                                            foreach (var box2 in boxesForPhone2)
+                                            {
+                                                //Two phone can exchange box.
+                                                if (box1.Position.TeachPos == retryPhone.ElementAt(j).ShieldBox.Position.TeachPos &&
+                                                    box2.Position.TeachPos == retryPhone.ElementAt(i).ShieldBox.Position.TeachPos)
+                                                {
+                                                    retryPhone.ElementAt(i).NextTargetPosition =
+                                                        retryPhone.ElementAt(j).CurrentTargetPosition;
+                                                    retryPhone.ElementAt(j).NextTargetPosition =
+                                                        retryPhone.ElementAt(i).CurrentTargetPosition;
+
+                                                    luckyPhones.Add(retryPhone.ElementAt(i));
+                                                    luckyPhones.Add(retryPhone.ElementAt(j));
+                                                    return luckyPhones;
+                                                }
+                                            }
+                                        }
+                                    }
                                 }
-
                             }
-
 
                             luckyPhones.Add(retryPhone.First());
                             return luckyPhones;

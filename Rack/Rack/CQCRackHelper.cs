@@ -81,6 +81,27 @@ namespace Rack
             }
         }
 
+        public ShieldBox ConverterTeachPosToShieldBox(TeachPos teachPos)
+        {
+            switch (teachPos)
+            {
+                case TeachPos.ShieldBox1:
+                    return ShieldBox1;
+                case TeachPos.ShieldBox2:
+                    return ShieldBox2;
+                case TeachPos.ShieldBox3:
+                    return ShieldBox3;
+                case TeachPos.ShieldBox4:
+                    return ShieldBox4;
+                case TeachPos.ShieldBox5:
+                    return ShieldBox5;
+                case TeachPos.ShieldBox6:
+                    return ShieldBox6;
+                default:
+                    throw new Exception("Teach pos match no shield box.");
+            }
+        }
+
         private TargetPosition ConvertBoxIdToTargetPosition(long id)
         {
             switch (id)
