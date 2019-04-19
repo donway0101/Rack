@@ -57,54 +57,26 @@ namespace Rack
                         if (firstPhone.NextTargetPosition.TeachPos == secondPhone.CurrentTargetPosition.TeachPos &&
                             secondPhone.NextTargetPosition.TeachPos == thirdPhone.CurrentTargetPosition.TeachPos)
                         {
-                            //Step 1: unload the first phone.
-                            //Unload();
-                            if (firstPhone.ShieldBox != null) //Inside a box.
-                            {
-                                var box1 = firstPhone.ShieldBox;
-
-                                firstPhone.ShieldBox = null;
-
-                                box1.Phone = null;
-                                box1.Available = true;
-                                box1.Empty = true;
-                            }
-
-                            //Step 2: unload the second phone and load the first phone.
-                            //UnloadAndLoad();
+                            //Step 1: pick the first phone.
+                            ComboPickAPhone(firstPhone);
                             luckyPhones.Remove(firstPhone);
 
-                            var box2 = secondPhone.ShieldBox;
-
-                            firstPhone.ShieldBox = box2;
-                            firstPhone.TargetPositionFootprint.Add(box2.Position);
-                            firstPhone.CurrentTargetPosition = box2.Position;
-
-                            box2.Phone = firstPhone;
-                            box2.Available = false;
-                            box2.Empty = false;
-
-                            secondPhone.ShieldBox = null;
-
-                            //Step 3: unload the third phone and load the second phone.
-                            //UnloadAndLoad();
+                            //Step 2: unload the second phone and load the first phone.
+                            TurboComboRetryAPhone(firstPhone, secondPhone);
                             luckyPhones.Remove(secondPhone);
 
-                            var box3 = thirdPhone.ShieldBox;
-
-                            secondPhone.ShieldBox = box3;
-                            secondPhone.TargetPositionFootprint.Add(box3.Position);
-                            secondPhone.CurrentTargetPosition = box3.Position;
-
-                            box3.Phone = secondPhone;
-                            box3.Available = false;
-                            box3.Empty = false;
-
-                            thirdPhone.ShieldBox = null;
-
-                            //Step 3: load the third phone
-                            //Load();
-                            //Todo if phone goes into a box.
+                            //Step 3: unload the third phone and load the second phone.
+                            switch (thirdPhone.Procedure)
+                            {
+                                case RackProcedure.Bin:
+                                    TurboComboBinAPhone(secondPhone, thirdPhone);
+                                    break;
+                                case RackProcedure.Place:
+                                    TurboComboPlaceAPhone(secondPhone, thirdPhone);
+                                    break;
+                                default:
+                                    throw new Exception("Error 48862255792365");
+                            }
                             luckyPhones.Remove(thirdPhone);
                         }
                         else
@@ -287,6 +259,29 @@ namespace Rack
             }
         }
 
+        /// <summary>
+        /// A phone in hand in the end.
+        /// </summary>
+        /// <param name="phoneIn"></param>
+        /// <param name="phoneOut"></param>
+        private void TurboComboRetryAPhone(Phone phoneIn, Phone phoneOut)
+        {
+            ShieldBox box1 = phoneOut.ShieldBox;
+            //Unload and load
+            Unlink(phoneOut, box1);
+            Link(phoneIn, box1);
+
+            if (phoneIn.Type == PhoneType.Normal)
+            {
+            }
+            else //A gold phone.
+            {
+                TargetPosition toLoadPosition = ConvertGoldIdToTargetPosition(phoneIn.Id);
+                //Load()
+                //box.GoldPhoneChecked = true;
+            }
+        }
+
         private void PickAPhone(Phone phone)
         {
             if (phone.Type == PhoneType.Normal)
@@ -392,6 +387,24 @@ namespace Rack
             }
         }
 
+        private void TurboComboPlaceAPhone(Phone phoneIn, Phone phoneOut)
+        {
+            ShieldBox box = phoneOut.ShieldBox;
+            //Unload and load
+            Unlink(phoneOut, box);
+            Link(phoneIn, box);
+
+            if (phoneIn.Type == PhoneType.Normal)
+            {
+                //Place()
+            }
+            else //A gold phone.
+            {
+                TargetPosition toLoadPosition = ConvertGoldIdToTargetPosition(phoneIn.Id);
+                //Load()
+            }
+        }
+
         private void BinAPhone(Phone phone)
         {
             ShieldBox box = phone.ShieldBox;
@@ -418,6 +431,29 @@ namespace Rack
             //Unload and load
             Unlink(phoneOut, box);
             Link(phoneIn, box);
+            if (phoneIn.Type == PhoneType.Normal)
+            {
+                //Unload()
+                //Todo need to check if door is open.
+                //Bin()
+                Print("Has bin a phone.");
+            }
+            else //A gold phone.
+            {
+                //Unload
+                TargetPosition toLoadPosition = ConvertGoldIdToTargetPosition(phoneIn.Id);
+                //Put back.
+                Print("Has put back gold phone.");
+            }
+        }
+
+        private void TurboComboBinAPhone(Phone phoneIn, Phone phoneOut)
+        {
+            ShieldBox box = phoneOut.ShieldBox;
+            //Unload and load
+            Unlink(phoneOut, box);
+            Link(phoneIn, box);
+
             if (phoneIn.Type == PhoneType.Normal)
             {
                 //Unload()
