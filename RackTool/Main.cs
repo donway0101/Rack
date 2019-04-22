@@ -26,6 +26,7 @@ namespace RackTool
         private ArrayList _portName;
         private Power _power = Power.None;
         private bool _isStart = false;
+        private TabControlPage currentPage = TabControlPage.Setting;
         #endregion
 
         #region Struct
@@ -144,7 +145,7 @@ namespace RackTool
 
                     if (_uiUpdateThread == null)
                     {
-                        _uiUpdateThread = new Thread(PositionAndSpeedUpdate)
+                        _uiUpdateThread = new Thread(UiUpdate)
                         {
                             IsBackground = true
                         };
@@ -157,15 +158,23 @@ namespace RackTool
                 }
                 catch (Exception ex)
                 {
+                    ShowException(ex);
                     MessageBox.Show(ex.Message);
                 }
             });
 
             SetupForTeaching();
-
-            buttonHome.Enabled = true;
+            groupBoxMain.Enabled = true;
             buttonStart.Enabled = true;
         }
+
+        private void ShowException(Exception e)
+        {
+            richTextBoxMessage.Invoke((MethodInvoker)(
+                () => { richTextBoxMessage.Text = e.Message; }
+                ));
+        }
+
         private void button5_Click(object sender, EventArgs e)
         {
             try
@@ -178,11 +187,12 @@ namespace RackTool
                 MessageBox.Show(ex.Message);
             }
         }
+
         private async void buttonAutoRun_Click(object sender, EventArgs e)
         {
-            try
+            await Task.Run(() =>
             {
-                await Task.Run(() =>
+                try
                 {
                     while (checkBoxAutoRun.Checked == true)
                     {
@@ -200,17 +210,14 @@ namespace RackTool
                         //Thread.Sleep(200);
                         _rack.Place(RackGripper.Two);
                     }
-
-                    //MessageBox.Show(watch.ElapsedMilliseconds.ToString());
-                });
-
-            }
-            catch (Exception ex)
-            {
-
-                MessageBox.Show(ex.Message);
-            }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
+            });
         }
+
         private void Invoke(Control control, MethodInvoker action)
         {
             control.Invoke(action);
@@ -453,7 +460,6 @@ namespace RackTool
                 }
                 catch (Exception ex)
                 {
-
                     MessageBox.Show(ex.Message);
                 }
             });
@@ -691,29 +697,60 @@ namespace RackTool
                 MessageBox.Show(exception.Message);
             }
         }
-        private void PositionAndSpeedUpdate()
+        private void UiUpdate()
         {
             while (true)
             {
                 try
                 {
-                    labelPositionG1.Invoke((MethodInvoker)(() => { labelPositionG1.Text = _rack.Steppers.GetPosition(RackGripper.One).ToString("F2"); }));
-                    labelPositionG2.Invoke((MethodInvoker)(() => { labelPositionG2.Text = _rack.Steppers.GetPosition(RackGripper.Two).ToString("F2"); }));
-                    labelPositionX.Invoke((MethodInvoker)(() => { labelPositionX.Text = _rack.Motion.GetPositionX().ToString("F2"); }));
-                    labelPositionY.Invoke((MethodInvoker)(() => { labelPositionY.Text = _rack.Motion.GetPosition(_rack.Motion.MotorY).ToString("F2"); }));
-                    labelPositionZ.Invoke((MethodInvoker)(() => { labelPositionZ.Text = _rack.Motion.GetPosition(_rack.Motion.MotorZ).ToString("F2"); }));
-                    labelPositionR.Invoke((MethodInvoker)(() => { labelPositionR.Text = _rack.Motion.GetPosition(_rack.Motion.MotorR).ToString("F2"); }));
-                    trackBarSetSpeed1.Value = (int)(_rack.Motion.GetVelocity(_rack.Motion.MotorZ)/_rack.Motion.MotorZ.SpeedFactor);
-                    trackBarSetSpeed2.Value = trackBarSetSpeed1.Value;
+                    switch (currentPage)
+                    {
+                        case TabControlPage.Main:
+                            UpdateMainUi();
+                            break;
+                        case TabControlPage.Robot:
+                            UpdateRobotUi();
+                            break;
+                        case TabControlPage.Conveyor:
+                            break;
+                        case TabControlPage.Box:
+                            break;
+                        case TabControlPage.Tester:
+                            break;
+                        case TabControlPage.Log:
+                            break;
+                        case TabControlPage.Setting:
+                            break;
+                        default:
+                            throw new ArgumentOutOfRangeException();
+                    }
+
                     Thread.Sleep(500);
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine(e);
-                    break;
+                    Thread.Sleep(5000);
+                    throw;
                 }
             }
         }
+
+        private void UpdateMainUi()
+        {
+            trackBarSetSpeed1.Value = (int)(_rack.Motion.GetVelocity(_rack.Motion.MotorZ) / _rack.Motion.MotorZ.SpeedFactor);
+        }
+
+        private void UpdateRobotUi()
+        {
+            labelPositionG1.Invoke((MethodInvoker)(() => { labelPositionG1.Text = _rack.Steppers.GetPosition(RackGripper.One).ToString("F2"); }));
+            labelPositionG2.Invoke((MethodInvoker)(() => { labelPositionG2.Text = _rack.Steppers.GetPosition(RackGripper.Two).ToString("F2"); }));
+            labelPositionX.Invoke((MethodInvoker)(() => { labelPositionX.Text = _rack.Motion.GetPositionX().ToString("F2"); }));
+            labelPositionY.Invoke((MethodInvoker)(() => { labelPositionY.Text = _rack.Motion.GetPosition(_rack.Motion.MotorY).ToString("F2"); }));
+            labelPositionZ.Invoke((MethodInvoker)(() => { labelPositionZ.Text = _rack.Motion.GetPosition(_rack.Motion.MotorZ).ToString("F2"); }));
+            labelPositionR.Invoke((MethodInvoker)(() => { labelPositionR.Text = _rack.Motion.GetPosition(_rack.Motion.MotorR).ToString("F2"); }));
+            trackBarSetSpeed2.Value = (int)(_rack.Motion.GetVelocity(_rack.Motion.MotorZ) / _rack.Motion.MotorZ.SpeedFactor);
+        }
+
         #region Manual control
 
         private void buttonEnableAll_Click(object sender, EventArgs e)
@@ -2021,6 +2058,8 @@ namespace RackTool
         {
             try
             {
+                currentPage = (TabControlPage) tabControl1.SelectedIndex;
+
                 if (toolStripStatusLabelPower.Text == "None")
                 {
                     if (tabControl1.SelectedIndex != 6)

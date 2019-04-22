@@ -735,6 +735,7 @@
             // tabPage1
             // 
             this.tabPage1.Controls.Add(this.groupBoxMain);
+            this.tabPage1.Controls.Add(this.buttonStart);
             resources.ApplyResources(this.tabPage1, "tabPage1");
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -742,7 +743,6 @@
             // groupBoxMain
             // 
             this.groupBoxMain.Controls.Add(this.buttonStop);
-            this.groupBoxMain.Controls.Add(this.buttonStart);
             this.groupBoxMain.Controls.Add(this.buttonHome);
             this.groupBoxMain.Controls.Add(this.labelSpeed1);
             this.groupBoxMain.Controls.Add(this.label5);
@@ -1748,6 +1748,7 @@
             // 
             // statusStrip1
             // 
+            this.statusStrip1.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripStatusLabel1,
             this.toolStripStatusLabelName,

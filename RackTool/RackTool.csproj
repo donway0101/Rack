@@ -57,6 +57,9 @@
     <Compile Include="ConveyorOfMain.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Data.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Main.cs">
       <SubType>Form</SubType>
     </Compile>

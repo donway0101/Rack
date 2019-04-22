@@ -15,6 +15,7 @@ namespace Rack
         private readonly Api _ch = new Api();
         private const double YIsInBox = 200;
         private const double YIsNearHome = 10;
+        private bool _eventEnabled;
 
         public bool ShieldBoxOnline { get; set; } = false;
         public bool TesterOnline { get; set; } = false;

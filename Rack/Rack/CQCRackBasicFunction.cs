@@ -1,4 +1,5 @@
 ﻿using System;
+using ACS.SPiiPlusNET;
 
 namespace Rack
 {
@@ -23,6 +24,7 @@ namespace Rack
             {
                 if (_ch.IsConnected == false)
                 {
+                    EnableEvent();
                     _ch.OpenCommEthernet(_ip, 701);
                 }
                 if (EcatIo == null)
@@ -82,6 +84,20 @@ namespace Rack
             SetupComplete = true;
         }
 
+        private void EnableEvent()
+        {
+            if (_eventEnabled == false)
+            {
+                _ch.ETHERCATERROR += _ch_ETHERCATERROR;
+                _eventEnabled = true;
+            }
+        }
+
+        private void _ch_ETHERCATERROR(ulong param)
+        {
+            OnErrorOccured(444, "Acs ethercat error " + param);
+        }
+
         private void Conveyor_PickBufferPhoneComing(object sender, string description)
         {
             //AddNewPhone();
@@ -95,7 +111,6 @@ namespace Rack
         public void Stop()
         {
             Motion.DisableAll();
-            //_motion.KillAll();
         }
 
         public void HomeRobot(double homeSpeed = 5)
@@ -109,10 +124,6 @@ namespace Rack
             Motion.EnableAll();
             Steppers.Enable(RackGripper.One);
             Steppers.Enable(RackGripper.Two);
-
-            //Careful is robot is holding a phone.
-
-            //Box state should either be open or close.
 
             var currentPosition = GetRobotCurrentPose();
 
@@ -223,6 +234,11 @@ namespace Rack
                 }
             }
 
+            if (EcatIo.GetInput(Input.Gripper01) | EcatIo.GetInput(Input.Gripper02))
+            {
+                throw new Exception("Has phone on gripper, take it down first.");
+            }
+
             RobotHomeComplete = true;
         }
 
@@ -266,7 +282,6 @@ namespace Rack
             Motion.ToPointWaitTillEnd(Motion.MotorZ, Motion.PickPosition.ApproachHeight);
 
             Conveyor.PickBeltOkToRun = true;
-            //Check.
         }
 
         public void Place(RackGripper gripper)
