@@ -106,6 +106,10 @@ namespace Rack
             }
             Motion.SetSpeed(homeSpeed);
 
+            Motion.EnableAll();
+            Steppers.Enable(RackGripper.One);
+            Steppers.Enable(RackGripper.Two);
+
             //Careful is robot is holding a phone.
 
             //Box state should either be open or close.

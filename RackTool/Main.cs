@@ -76,7 +76,7 @@ namespace RackTool
             try
             {
                 NewLog.Instance.Error(code.ToString() + " " + description);
-
+                richTextBoxMessage.Text = code.ToString() + " " + description;
             }
             catch (Exception ex)
             {
@@ -598,6 +598,8 @@ namespace RackTool
         private void checkBoxPickConveyorMoveForward_CheckedChanged(object sender, EventArgs e)
         {
             _rack.Conveyor.ConveyorMovingForward = checkBoxPickConveyorMoveForward.Checked;
+            XmlReaderWriter.SetConveyorSetting(RackSetting.ConveyorMovingForward, _rack.Conveyor.ConveyorMovingForward.ToString());
+            //bool b = Convert.ToBoolean(XmlReaderWriter.GetConveyorSetting(RackSetting.ConveyorMovingForward));
         }
 
         private void button38_Click(object sender, EventArgs e)
@@ -2028,12 +2030,12 @@ namespace RackTool
                     }
                 }
 
-
-                if (_isStart == false && tabControl1.SelectedIndex != 6 && tabControl1.SelectedIndex != 0)
-                {
-                    tabControl1.SelectedIndex = 0;
-                    throw new Exception("Please click \"Start\",or you can not click anywhere except \"Setting\"");
-                }
+                //if (_isStart == false && tabControl1.SelectedIndex != 6 && tabControl1.SelectedIndex != 0)
+                //if (_isStart == false && tabControl1.SelectedIndex != 6 && tabControl1.SelectedIndex != 0)
+                //{
+                //    tabControl1.SelectedIndex = 0;
+                //    throw new Exception("Please click \"Start\",or you can not click anywhere except \"Setting\"");
+                //}
 
 
                 switch (tabControl1.SelectedIndex)
@@ -2068,7 +2070,10 @@ namespace RackTool
             try
             {
                 string FileName = string.Empty;
-                OpenFileDialog OpenFile = new OpenFileDialog();
+                OpenFileDialog OpenFile = new OpenFileDialog()
+                    { InitialDirectory = System.IO.Path.GetDirectoryName(
+                        System.Reflection.Assembly.GetExecutingAssembly().Location + @"\\Logs") };
+
                 DialogResult Result = OpenFile.ShowDialog();
                 if (Result == DialogResult.OK)
                     FileName = OpenFile.FileName;

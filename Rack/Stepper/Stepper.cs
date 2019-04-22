@@ -278,7 +278,7 @@ namespace Rack
 
             if (GetStatus(motor, StatusCode.Enabled) == false)
             {
-                throw new Exception("Motor can not be enabled");
+                throw new Exception(motor + " can not be enabled");
             }
         }
 

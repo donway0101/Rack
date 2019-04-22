@@ -283,6 +283,11 @@ namespace Rack
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="phone"></param>
+        /// Todo if place happened, then phone need to be pick has already be on hand.
         private void PickAPhone(Phone phone)
         {
             if (phone.Type == PhoneType.Normal)
@@ -355,6 +360,7 @@ namespace Rack
             if (phone.Type == PhoneType.Normal)
             {               
                 //Place()
+                //Todo If has a phone in pick place, need to pick it first.
                 Print("Has place a phone.");
             }
             else //A gold phone.

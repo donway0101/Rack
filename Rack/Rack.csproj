@@ -46,8 +46,9 @@
   <ItemGroup>
     <Compile Include="Conveyor\Conveyor.cs" />
     <Compile Include="Kit\XmlReaderWriter_Login.cs" />
-    <Compile Include="Kit\XmlReaderWriter_RackData.cs" />
+    <Compile Include="Kit\XmlReaderWriterTeachData.cs" />
     <Compile Include="Kit\XmlReaderWriter_ShieldBox.cs" />
+    <Compile Include="Kit\XmlReaderWriterSetting.cs" />
     <Compile Include="Kit\XmlReaderWriter_Stepper.cs" />
     <Compile Include="Phone\PhoneData.cs" />
     <Compile Include="Phone\Phone.cs" />

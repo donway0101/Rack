@@ -43,6 +43,7 @@
         public const string RackData = "RackData.xml";
         public const string BoxData = "BoxData.xml";
         public const string LoginData = "LoginData.xml";
+        public const string RackSetting = "RackSetting.xml";
     }
     public enum LoginType
     {
@@ -64,5 +65,11 @@
     {
         LoginName,
         LoginPassWord,
+    }
+
+    public enum RackSetting
+    {
+        ConveyorSetting,
+        ConveyorMovingForward,
     }
 }
