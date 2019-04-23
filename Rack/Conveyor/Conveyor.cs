@@ -7,7 +7,7 @@ namespace Rack
     public class Conveyor
     {
         private readonly EthercatIo _io;
-        private Thread _conveyorWorkingThread;
+        private Thread _conveyorWorkingThread, _conveyorMonitorThread;
         private bool _pickBufferHasPhone;
 
         public bool ConveyorMovingForward { get; set; } = true;
@@ -41,6 +41,19 @@ namespace Rack
         /// Stop conveyor, Open clamp for picking.
         /// </summary>
         public bool CommandReadyForPicking { get; set; }
+
+        //Todo set it in motion.
+        public bool HasBinAPhone { get; set; }
+
+        public bool HasPlaceAPhone { get; set; }
+
+        // Todo set it in motion.
+        public bool LastPlaceSuccessful { get; set; } = true;
+
+        public bool LastBinSuccessful { get; set; } = true;
+
+        private bool _placedPhoneDetected;
+        private bool _binedPhoneDetected;
 
         #region Events
 
@@ -217,16 +230,29 @@ namespace Rack
                 };
 
             if (_conveyorWorkingThread.IsAlive == false) _conveyorWorkingThread.Start();
+
+            if (_conveyorMonitorThread == null)
+                _conveyorMonitorThread = new Thread(Monitor)
+                {
+                    IsBackground = true
+                };
+
+            if (_conveyorMonitorThread.IsAlive == false) _conveyorMonitorThread.Start();
+        }
+
+        public bool NotSafeForPlacing()
+        {
+            return (CommandReadyForPicking || CommandInposForPicking);
         }
 
         private void DoWork()
         {
-            int pickBufferSensorCount = 0;
             ReadyForPicking = false;
             InposForPicking = false;
             var stopwatch = new Stopwatch();
             stopwatch.Start();
             while (true)
+            {
                 try
                 {
                     if (CommandReadyForPicking)
@@ -243,8 +269,8 @@ namespace Rack
                             Clamp(false);
 
                             CommandReadyForPicking = false;
-                            ReadyForPicking = true;
                             OnPhoneReadyForPicking("");
+                            ReadyForPicking = true;
                         }
                         else
                         {
@@ -254,17 +280,16 @@ namespace Rack
 
                     //Todo combine other condition.
                     //Todo When to run?
-                    if (PickBeltOkToRun & ReadyForPicking==false)
+                    if (PickBeltOkToRun & ReadyForPicking == false)
                     {
                         RunBeltPick(true);
                     }
 
-                    if (CommandInposForPicking & (InposForPicking == false) & _pickBufferHasPhone)
+                    if (CommandInposForPicking && (InposForPicking == false) && _pickBufferHasPhone)
                     {
-                        CommandInposForPicking = false;
                         ReadyForPicking = false;
                         RunBeltPick(true);
-                        if (_io.GetInput(Input.PickHasPhone) == false)
+                        if (PickPhoneSensor() == false)
                         {
                             WaitTill(
                                 ConveyorMovingForward
@@ -285,23 +310,71 @@ namespace Rack
                         UpBlockSeparate(true);
                         SideBlockSeparate(false);
                         UpBlockPick(false);
+
+                        CommandInposForPicking = false;
+                    }
+
+                    Delay(50);
+                }
+                catch (Exception ex)
+                {
+                    //Todo write document about error code.
+                    OnErrorOccured(0, ex.Message);
+                }
+            }
+        }
+
+        private void Monitor()
+        {
+            int pickBufferSensorCount = 0;
+            bool reportAComingPhone = false;
+            while (true)
+            {
+                try
+                {
+                    if (HasPlaceAPhone)
+                    {
+                        if (PickBufferPhoneSensor())
+                        {
+                            _placedPhoneDetected = true;
+                        }
+
+                        if (_placedPhoneDetected && PickBufferPhoneSensor() == false)
+                        {
+                            LastPlaceSuccessful = true;
+                            HasPlaceAPhone = false;
+                            _placedPhoneDetected = false;
+                        }
+                    }
+
+                    if (HasBinAPhone)
+                    {
+                        if (_io.GetInput(Input.ConveyorBinIn))
+                        {
+                            _binedPhoneDetected = true;
+                        }
+
+                        if (_binedPhoneDetected && _io.GetInput(Input.ConveyorBinIn) == false)
+                        {
+                            LastBinSuccessful = true;
+                            HasBinAPhone = false;
+                            _binedPhoneDetected = false;
+                        }
                     }
 
                     if (PickBufferPhoneSensor())
                     {
                         pickBufferSensorCount++;
-                        if (pickBufferSensorCount>10)
+                        if (pickBufferSensorCount > 10)
                         {
                             _pickBufferHasPhone = true;
                             pickBufferSensorCount = 0;
                         }
 
-                        if (_pickBufferHasPhone & RobotHasPickedAPhone)
+                        if (_pickBufferHasPhone && reportAComingPhone==false)
                         {
                             OnPickBufferPhoneComing("");
-                            //Todo, means the new info can call for serve,
-                            // it can join list of PhoneToBeServed.
-                            RobotHasPickedAPhone = false;
+                            reportAComingPhone = true;
                         }
                     }
                     else
@@ -310,18 +383,19 @@ namespace Rack
                         if (pickBufferSensorCount > 10)
                         {
                             _pickBufferHasPhone = false;
+                            reportAComingPhone = false;
                             pickBufferSensorCount = 0;
                         }
-                        
                     }
-
-                    Delay(10);
                 }
                 catch (Exception ex)
                 {
-                    //Todo write document about error code.
-                    OnErrorOccured(0,ex.Message);
+                    OnErrorOccured(444, ex.Message);
+                    Delay(5000);
                 }
+
+                Delay(100);
+            }
         }
 
         private bool PickBufferPhoneSensor()
@@ -332,12 +406,23 @@ namespace Rack
                return _io.GetInput(Input.PickBufferHasPhoneForward);
         }
 
+        public bool PickPhoneSensor()
+        {
+            return _io.GetInput(Input.PickHasPhone);
+        }
+
         public void Stop()
         {
             if (_conveyorWorkingThread != null)
             {
                 _conveyorWorkingThread.Abort();
                 _conveyorWorkingThread.Join();
+            }
+
+            if (_conveyorMonitorThread != null)
+            {
+                _conveyorMonitorThread.Abort();
+                _conveyorMonitorThread.Join();
             }
         }
     }
