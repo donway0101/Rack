@@ -176,7 +176,7 @@ namespace Rack
             SendCmd(ShieldBoxCommand.STATUS);
             Stopwatch stopwatch = new Stopwatch();
             stopwatch.Start();
-            while (_response != ShieldBoxResponse.BoxIsOpened & _response != ShieldBoxResponse.BoxIsClosed)
+            while (_response != ShieldBoxResponse.BoxIsOpened && _response != ShieldBoxResponse.BoxIsClosed)
             {
                 if (stopwatch.ElapsedMilliseconds > timeout)
                 {

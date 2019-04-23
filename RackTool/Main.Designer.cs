@@ -238,6 +238,7 @@
             this.toolStripStatusLabel4 = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripStatusLabelPower = new System.Windows.Forms.ToolStripStatusLabel();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
+            this.buttonStartConveyorManager = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarSetSpeed2)).BeginInit();
@@ -742,6 +743,7 @@
             // 
             // groupBoxMain
             // 
+            this.groupBoxMain.Controls.Add(this.buttonStartConveyorManager);
             this.groupBoxMain.Controls.Add(this.buttonStop);
             this.groupBoxMain.Controls.Add(this.buttonHome);
             this.groupBoxMain.Controls.Add(this.labelSpeed1);
@@ -1783,6 +1785,13 @@
             this.toolStripStatusLabelPower.Name = "toolStripStatusLabelPower";
             resources.ApplyResources(this.toolStripStatusLabelPower, "toolStripStatusLabelPower");
             // 
+            // buttonStartConveyorManager
+            // 
+            resources.ApplyResources(this.buttonStartConveyorManager, "buttonStartConveyorManager");
+            this.buttonStartConveyorManager.Name = "buttonStartConveyorManager";
+            this.buttonStartConveyorManager.UseVisualStyleBackColor = true;
+            this.buttonStartConveyorManager.Click += new System.EventHandler(this.buttonStartConveyorManager_Click);
+            // 
             // Main
             // 
             resources.ApplyResources(this, "$this");
@@ -2046,6 +2055,7 @@
         private System.Windows.Forms.TextBox textBoxIp;
         private System.Windows.Forms.ComboBox comboBoxShieldBox;
         private System.Windows.Forms.Button buttonBoxIpPortOk;
+        private System.Windows.Forms.Button buttonStartConveyorManager;
     }
 }
 

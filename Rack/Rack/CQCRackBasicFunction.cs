@@ -13,7 +13,6 @@ namespace Rack
         public CqcRack(string controllerIp)
         {
             _ip = controllerIp;
-            //Conveyor.ErrorOccured += Conveyor_ErrorOccured;
         }
 
         public void Start()
@@ -47,16 +46,6 @@ namespace Rack
                 }
                 Motion.LoadPositions();
                 SetMotorSpeed(DefaultRobotSpeed);
-            }
-
-            if (ConveyorOnline)
-            {
-                if (Conveyor == null)
-                {
-                    Conveyor = new Conveyor(EcatIo);
-                }
-                Conveyor.Start();
-                Conveyor.PickBufferPhoneComing += Conveyor_PickBufferPhoneComing;
             }
             
             if (StepperOnline)
@@ -98,11 +87,6 @@ namespace Rack
             OnErrorOccured(444, "Acs ethercat error " + param);
         }
 
-        private void Conveyor_PickBufferPhoneComing(object sender, string description)
-        {
-            //AddNewPhone();
-        }
-
         public void SelfChecking()
         {
             //Todo if gripper is not empty, then exception.
@@ -138,7 +122,7 @@ namespace Rack
                     {
                         if (Math.Abs(currentPosition.XPos - pos.XPos) < tolerance &
                             Math.Abs(currentPosition.YPos - pos.YPos) < tolerance &
-                            (currentPosition.ZPos > pos.ZPos - tolerance & currentPosition.ZPos < pos.ApproachHeight + tolerance))
+                            (currentPosition.ZPos > pos.ZPos - tolerance && currentPosition.ZPos < pos.ApproachHeight + tolerance))
                         {
                             currentHolder = pos;
                         }
@@ -192,7 +176,7 @@ namespace Rack
                     {
                         if (Math.Abs(currentPosition.XPos - pos.XPos) < tolerance &
                             Math.Abs(currentPosition.YPos - pos.YPos) < tolerance &
-                            (currentPosition.ZPos > pos.ZPos - tolerance & currentPosition.ZPos < pos.ApproachHeight + tolerance))
+                            (currentPosition.ZPos > pos.ZPos - tolerance && currentPosition.ZPos < pos.ApproachHeight + tolerance))
                         {
                             currentHolder = pos;
                             break;
@@ -244,7 +228,7 @@ namespace Rack
 
         public void Pick(RackGripper gripper)
         {
-            if ( Conveyor.ReadyForPicking & TestRun==false)
+            if ( Conveyor.ReadyForPicking && TestRun==false)
             {
                 Conveyor.ReadyForPicking = false;
             }
@@ -387,7 +371,7 @@ namespace Rack
 
         private TargetPosition AddOffset(RackGripper gripper, TargetPosition target)
         {
-            if (gripper == RackGripper.Two & target.TeachPos != TeachPos.Pick)
+            if (gripper == RackGripper.Two && target.TeachPos != TeachPos.Pick)
             {
                 target.XPos = target.XPos + Motion.G1ToG2Offset.XPos;
                 target.YPos = target.YPos - Motion.G1ToG2Offset.YPos;
@@ -395,6 +379,14 @@ namespace Rack
             }
 
             return target;
+        }
+
+        /// <summary>
+        /// If robot can't finish movement without exception.
+        /// </summary>
+        public void ResetFlags()
+        {
+            RobotWorkingOnConveyor = false;
         }
 
     }

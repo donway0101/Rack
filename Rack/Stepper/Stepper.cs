@@ -97,7 +97,7 @@ namespace Rack
             res = SendCommand(RackGripper.Two, "IFD");
             StepperTwoIsConnected = MotorAcknowledged(RackGripper.Two, res);
 
-            StepperIsConnected = StepperOneIsConnected & StepperTwoIsConnected;
+            StepperIsConnected = StepperOneIsConnected && StepperTwoIsConnected;
 
             if (StepperIsConnected == false)
             {
@@ -292,7 +292,7 @@ namespace Rack
         {
             bool idMatch = response.Substring(0, 1) == GetMotorId(motor);
             bool endMatch = response.Substring(1, 1) == "%" | response.Substring(1, 1) == "*";
-            return idMatch & endMatch;
+            return idMatch && endMatch;
         }
 
         /// <summary>

@@ -2211,9 +2211,13 @@ namespace RackTool
 
                 MessageBox.Show(ex.Message);
             }
-        } 
+        }
+
         #endregion
 
-        
+        private void buttonStartConveyorManager_Click(object sender, EventArgs e)
+        {
+            _rack.StartConveyorManager();
+        }
     }
 }

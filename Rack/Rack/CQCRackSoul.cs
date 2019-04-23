@@ -591,7 +591,7 @@ namespace Rack
             if (retryPhone.Count>0)
             {
                 //May build two unload and load movement.
-                if (binOrPlacePhone.Count > 0 & pickPhone.Count>0)
+                if (binOrPlacePhone.Count > 0 && pickPhone.Count>0)
                 {
                     List<Phone> bOpPhoneCouple = new List<Phone>();
                     List<Phone> rPhoneCouple = new List<Phone>();
@@ -834,7 +834,7 @@ namespace Rack
             int count = 0; 
             foreach (var box in ShieldBoxs)
             {
-                if (box.Enabled & box.Empty)
+                if (box.Enabled && box.Empty)
                 {
                     count++;
                 }
@@ -848,7 +848,7 @@ namespace Rack
             //Try to find a empty box.
             foreach (var box in ShieldBoxs)
             {
-                if (box.Enabled & box.Available & box.Empty)
+                if (box.Enabled && box.Available && box.Empty)
                 {
                     return box;
                 }
@@ -865,7 +865,7 @@ namespace Rack
             //If not found a empty box, try to find a available box.
             foreach (var box in ShieldBoxs)
             {
-                if (box.Enabled & box.Available & box.GoldPhoneChecked==false)
+                if (box.Enabled && box.Available && box.GoldPhoneChecked==false)
                 {
                     return box;
                 }
@@ -886,7 +886,7 @@ namespace Rack
                 foreach (var box in ShieldBoxs)
                 {
                     var foundBox = true;
-                    if (box.Enabled & box.Available)
+                    if (box.Enabled && box.Available)
                     {
                         foreach (var footprint in phone.TargetPositionFootprint)
                         {
@@ -918,7 +918,7 @@ namespace Rack
                 foreach (var box in ShieldBoxs)
                 {
                     var foundBox = true;
-                    if (box.Enabled & box.Available)
+                    if (box.Enabled && box.Available)
                     {
                         foreach (var footprint in phone.TargetPositionFootprint)
                         {

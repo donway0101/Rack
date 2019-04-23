@@ -8,7 +8,8 @@ namespace Rack
     {
         private readonly EthercatIo _io;
         private Thread _conveyorWorkingThread, _conveyorMonitorThread;
-        private bool _pickBufferHasPhone;
+                                                                                                                                                                                             
+        public bool PickBufferHasPhone { get; set; }
 
         public bool ConveyorMovingForward { get; set; } = true;
 
@@ -240,9 +241,14 @@ namespace Rack
             if (_conveyorMonitorThread.IsAlive == false) _conveyorMonitorThread.Start();
         }
 
-        public bool NotSafeForPlacing()
+        public bool OkForPlacing()
         {
-            return (CommandReadyForPicking || CommandInposForPicking);
+            return (CommandReadyForPicking==false && CommandInposForPicking == false);
+        }
+
+        public void ReadyForPlacing()
+        {
+
         }
 
         private void DoWork()
@@ -280,12 +286,12 @@ namespace Rack
 
                     //Todo combine other condition.
                     //Todo When to run?
-                    if (PickBeltOkToRun & ReadyForPicking == false)
+                    if (PickBeltOkToRun && ReadyForPicking == false)
                     {
                         RunBeltPick(true);
                     }
 
-                    if (CommandInposForPicking && (InposForPicking == false) && _pickBufferHasPhone)
+                    if (CommandInposForPicking && (InposForPicking == false) && PickBufferHasPhone)
                     {
                         ReadyForPicking = false;
                         RunBeltPick(true);
@@ -367,11 +373,11 @@ namespace Rack
                         pickBufferSensorCount++;
                         if (pickBufferSensorCount > 10)
                         {
-                            _pickBufferHasPhone = true;
+                            PickBufferHasPhone = true;
                             pickBufferSensorCount = 0;
                         }
 
-                        if (_pickBufferHasPhone && reportAComingPhone==false)
+                        if (PickBufferHasPhone && reportAComingPhone==false)
                         {
                             OnPickBufferPhoneComing("");
                             reportAComingPhone = true;
@@ -382,7 +388,7 @@ namespace Rack
                         pickBufferSensorCount++;
                         if (pickBufferSensorCount > 10)
                         {
-                            _pickBufferHasPhone = false;
+                            PickBufferHasPhone = false;
                             reportAComingPhone = false;
                             pickBufferSensorCount = 0;
                         }

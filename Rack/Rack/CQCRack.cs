@@ -63,8 +63,12 @@ namespace Rack
 
         public Tester[] Testers { get; set; }
 
+        public Phone LatestPhone { get; set; }
+
         private Thread _phoneServerThread;
         private readonly object _phoneToBeServedLocker = new object();
+
+        private Thread _conveyorManagerThread;
 
         /// <summary>
         /// Phones only which already has place to go can add to the list.

@@ -52,6 +52,7 @@
     <Compile Include="Kit\XmlReaderWriter_Stepper.cs" />
     <Compile Include="Phone\PhoneData.cs" />
     <Compile Include="Phone\Phone.cs" />
+    <Compile Include="Rack\CqcRackConveyorManager.cs" />
     <Compile Include="Rack\CqcRackTester.cs" />
     <Compile Include="Rack\CqcRackSimulation.cs" />
     <Compile Include="Rack\CqcRackException.cs" />
