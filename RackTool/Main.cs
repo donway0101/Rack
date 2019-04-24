@@ -618,13 +618,12 @@ namespace RackTool
 
         private void button39_Click(object sender, EventArgs e)
         {
-            _rack.Conveyor.CommandInposForPicking = true;
-
+            //_rack.Conveyor.CommandInposForPicking = true;
         }
 
         private void button40_Click(object sender, EventArgs e)
         {
-            _rack.Conveyor.CommandReadyForPicking = true;
+            //_rack.Conveyor.CommandReadyForPicking = true;
         }
 
         private void button41_Click(object sender, EventArgs e)

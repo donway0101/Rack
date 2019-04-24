@@ -25,7 +25,7 @@ namespace Rack
                     {
                         //if (Conveyor._pickBufferHasPhone)
                         {
-                            Conveyor.CommandInposForPicking = true;
+                            //Conveyor.CommandInposForPicking = true;
                         }
 
                         //When to run belt? As long as no picking or placing.
@@ -53,10 +53,6 @@ namespace Rack
 
                 Conveyor.Start();
 
-                Conveyor.PickBufferPhoneComing -= Conveyor_PickBufferPhoneComing;
-                Conveyor.PickBufferPhoneComing += Conveyor_PickBufferPhoneComing;
-                Conveyor.PhoneReadyForPicking -= ConveyorOnPhoneReadyForPicking;
-                Conveyor.PhoneReadyForPicking += ConveyorOnPhoneReadyForPicking;
                 Conveyor.ErrorOccured -= Conveyor_ErrorOccured;
                 Conveyor.ErrorOccured += Conveyor_ErrorOccured;
             }
@@ -78,16 +74,6 @@ namespace Rack
         private void Conveyor_ErrorOccured(object sender, int code, string description)
         {
             //throw new NotImplementedException();
-        }
-
-        private void ConveyorOnPhoneReadyForPicking(object sender, string description)
-        {
-            //throw new NotImplementedException();
-        }
-
-        private void Conveyor_PickBufferPhoneComing(object sender, string description)
-        {
-            //AddNewPhone();
         }
 
     }
