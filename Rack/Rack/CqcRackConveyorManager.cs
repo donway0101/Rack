@@ -23,7 +23,7 @@ namespace Rack
                 {
                     if (RobotWorkingOnConveyor == false && LatestPhone==null)
                     {
-                        if (Conveyor.PickBufferHasPhone)
+                        //if (Conveyor._pickBufferHasPhone)
                         {
                             Conveyor.CommandInposForPicking = true;
                         }
@@ -77,12 +77,12 @@ namespace Rack
 
         private void Conveyor_ErrorOccured(object sender, int code, string description)
         {
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
         }
 
         private void ConveyorOnPhoneReadyForPicking(object sender, string description)
         {
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
         }
 
         private void Conveyor_PickBufferPhoneComing(object sender, string description)

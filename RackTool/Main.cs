@@ -629,7 +629,7 @@ namespace RackTool
 
         private void button41_Click(object sender, EventArgs e)
         {
-            _rack.Conveyor.InposForPicking = false;
+            //_rack.Conveyor.InposForPicking = false;
         }
 
         private void trackBarSetSpeed2_ValueChanged(object sender, EventArgs e)

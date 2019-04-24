@@ -8,30 +8,10 @@ namespace Rack
     {
         private readonly EthercatIo _io;
         private Thread _conveyorWorkingThread, _conveyorMonitorThread;
-                                                                                                                                                                                             
-        public bool PickBufferHasPhone { get; set; }
+        private bool _pickBufferHasPhone;
+        private bool _phoneInPicking;
 
         public bool ConveyorMovingForward { get; set; } = true;
-
-        /// <summary>
-        /// Release clamp for picking.
-        /// </summary>
-        /// Todo After Picking, reset it by host.
-        public bool ReadyForPicking { get; set; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// Todo set by Rack after picking.
-        public bool RobotHasPickedAPhone { get; set; } = true;
-
-        public bool PickBeltOkToRun { get; set; }
-
-        /// <summary>
-        ///  Phone clamped under pick position.
-        /// </summary>
-        /// Todo After Picking, reset it by host.
-        public bool InposForPicking { get; set; }
 
         /// <summary>
         /// About to pick a phone.
@@ -241,59 +221,36 @@ namespace Rack
             if (_conveyorMonitorThread.IsAlive == false) _conveyorMonitorThread.Start();
         }
 
-        public bool OkForPlacing()
-        {
-            return (CommandReadyForPicking==false && CommandInposForPicking == false);
-        }
-
-        public void ReadyForPlacing()
-        {
-
-        }
-
         private void DoWork()
         {
-            ReadyForPicking = false;
-            InposForPicking = false;
             var stopwatch = new Stopwatch();
             stopwatch.Start();
             while (true)
             {
                 try
                 {
-                    if (CommandReadyForPicking)
+                    if (CommandReadyForPicking & _phoneInPicking)
                     {
-                        ReadyForPicking = false;
-                        PickBeltOkToRun = false;
-                        if (InposForPicking)
-                        {
-                            RunBeltPick(false);
-                            Delay(200);
-                            PushPickInpos(true);
-                            Delay(200);
-                            PushPickInpos(false);
-                            Clamp(false);
-
-                            CommandReadyForPicking = false;
-                            OnPhoneReadyForPicking("");
-                            ReadyForPicking = true;
-                        }
-                        else
-                        {
-                            CommandInposForPicking = true;
-                        }
+                        RunBeltPick(false);
+                        Delay(200);
+                        PushPickInpos(true);
+                        Delay(200);
+                        PushPickInpos(false);
+                        Clamp(false);
+                        
+                        OnPhoneReadyForPicking("");
+                        CommandReadyForPicking = false;
                     }
 
                     //Todo combine other condition.
                     //Todo When to run?
-                    if (PickBeltOkToRun && ReadyForPicking == false)
-                    {
-                        RunBeltPick(true);
-                    }
+                    //if (ReadyForPicking == false)
+                    //{
+                    //    //RunBeltPick(true);
+                    //}
 
-                    if (CommandInposForPicking && (InposForPicking == false) && PickBufferHasPhone)
+                    if (CommandInposForPicking && _pickBufferHasPhone)
                     {
-                        ReadyForPicking = false;
                         RunBeltPick(true);
                         if (PickPhoneSensor() == false)
                         {
@@ -311,13 +268,12 @@ namespace Rack
                         Delay(1000);
                         Clamp(true);
 
-                        InposForPicking = true;
-
                         UpBlockSeparate(true);
                         SideBlockSeparate(false);
                         UpBlockPick(false);
 
                         CommandInposForPicking = false;
+                        _phoneInPicking = true;
                     }
 
                     Delay(50);
@@ -373,11 +329,11 @@ namespace Rack
                         pickBufferSensorCount++;
                         if (pickBufferSensorCount > 10)
                         {
-                            PickBufferHasPhone = true;
+                            _pickBufferHasPhone = true;
                             pickBufferSensorCount = 0;
                         }
 
-                        if (PickBufferHasPhone && reportAComingPhone==false)
+                        if (_pickBufferHasPhone && reportAComingPhone==false)
                         {
                             OnPickBufferPhoneComing("");
                             reportAComingPhone = true;
@@ -388,7 +344,7 @@ namespace Rack
                         pickBufferSensorCount++;
                         if (pickBufferSensorCount > 10)
                         {
-                            PickBufferHasPhone = false;
+                            _pickBufferHasPhone = false;
                             reportAComingPhone = false;
                             pickBufferSensorCount = 0;
                         }

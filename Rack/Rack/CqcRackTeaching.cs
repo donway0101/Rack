@@ -128,8 +128,6 @@ namespace Rack
                 if (sw.ElapsedMilliseconds > timeout) throw new TimeoutException();
                 Thread.Sleep(10);
             }
-
-            Conveyor.ReadyForPicking = true;
         }
     }
 }

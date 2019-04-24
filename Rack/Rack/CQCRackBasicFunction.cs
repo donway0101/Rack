@@ -228,14 +228,15 @@ namespace Rack
 
         public void Pick(RackGripper gripper)
         {
-            if ( Conveyor.ReadyForPicking && TestRun==false)
-            {
-                Conveyor.ReadyForPicking = false;
-            }
-            else
-            {
-                throw new Exception("Phone is not ready.");
-            }
+            //Todo check another flag.
+            //if ( Conveyor.ReadyForPicking && TestRun==false)
+            //{
+            //    Conveyor.ReadyForPicking = false;
+            //}
+            //else
+            //{
+            //    throw new Exception("Phone is not ready.");
+            //}
 
             if ( gripper == RackGripper.One)
             {
@@ -264,8 +265,6 @@ namespace Rack
             //Close cylinder.
             CloseGripper(gripper);
             Motion.ToPointWaitTillEnd(Motion.MotorZ, Motion.PickPosition.ApproachHeight);
-
-            Conveyor.PickBeltOkToRun = true;
         }
 
         public void Place(RackGripper gripper)
