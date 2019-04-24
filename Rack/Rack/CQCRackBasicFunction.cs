@@ -380,13 +380,5 @@ namespace Rack
             return target;
         }
 
-        /// <summary>
-        /// If robot can't finish movement without exception.
-        /// </summary>
-        public void ResetFlags()
-        {
-            RobotWorkingOnConveyor = false;
-        }
-
     }
 }

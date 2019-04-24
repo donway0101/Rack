@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,28 +10,27 @@ using System.Threading;
 namespace Rack
 {
     public partial class CqcRack
-    {
+    {       
         /// <summary>
-        /// While robot is doing a placing or picking.
+        /// 
         /// </summary>
-        public bool RobotWorkingOnConveyor { get; set; }
-
+        /// //When to run belt? As long as no picking or placing.
+        /// //When to ready for picking? make it a subroutine? When pick, call it.
+        /// //Other time, no phone, prepare it.
         private void ConveyorManager()
         {
             while (true)
             {
+                _conveyorWorkingManualResetEvent.WaitOne();
+
                 try
                 {
-                    if (RobotWorkingOnConveyor == false && LatestPhone==null)
-                    {
-                        //if (Conveyor._pickBufferHasPhone)
-                        {
-                            //Conveyor.CommandInposForPicking = true;
-                        }
-
-                        //When to run belt? As long as no picking or placing.
-                        //When to ready for picking? make it a subroutine? When pick, call it.
-                        //Other time, no phone, prepare it.
+                    if (Conveyor.PickBufferHasPhone && LatestPhone==null)
+                    {                       
+                        ConveyorIsBusy = true;
+                        Conveyor.InposForPicking();
+                        AddNewPhone();
+                        ConveyorIsBusy = false;
                     }
                 }
                 catch (Exception e)
@@ -40,6 +40,26 @@ namespace Rack
                 }
                 Delay(100);
             }
+        }
+
+        public void RobotTakeControlOnConveyor(int timeout=30000)
+        {
+            _conveyorWorkingManualResetEvent.Reset();
+
+            var stopwatch = new Stopwatch();
+            stopwatch.Start();
+            while (ConveyorIsBusy != false)
+            {
+                if (stopwatch.ElapsedMilliseconds > timeout)
+                    throw new Exception("RobotTakeControlOnConveyor timeout");
+
+                Delay(10);
+            }
+        }
+
+        public void RobotReleaseControlOnConveyor()
+        {
+            _conveyorWorkingManualResetEvent.Set();
         }
 
         public void StartConveyorManager()
@@ -73,7 +93,7 @@ namespace Rack
 
         private void Conveyor_ErrorOccured(object sender, int code, string description)
         {
-            //throw new NotImplementedException();
+            OnErrorOccured(code, description);
         }
 
     }

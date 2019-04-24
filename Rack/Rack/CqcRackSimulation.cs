@@ -13,6 +13,8 @@
             };
 
             AddPhoneToBeServed(phone);
+
+            LatestPhone = phone;
         }       
 
         public void AddGoldPhone()

@@ -26,6 +26,10 @@ namespace Rack
         public bool EthercatOnline { get; set; } = true;
         public double DefaultRobotSpeed { get; set; } = 10;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// Todo read xml?
         public long PhoneCount { get; set; }
 
         public bool RobotHomeComplete { get; set; }
@@ -67,6 +71,9 @@ namespace Rack
 
         private Thread _phoneServerThread;
         private readonly object _phoneToBeServedLocker = new object();
+
+        public bool ConveyorIsBusy { get; set; }
+        private readonly ManualResetEvent _conveyorWorkingManualResetEvent = new ManualResetEvent(true);
 
         private Thread _conveyorManagerThread;
 

@@ -176,7 +176,8 @@ namespace Rack
                     IsBackground = true
                 };
 
-            if (_conveyorMonitorThread.IsAlive == false) _conveyorMonitorThread.Start();
+            if (_conveyorMonitorThread.IsAlive == false)
+                _conveyorMonitorThread.Start();
         }
 
         public void ReadyForPicking()
@@ -191,15 +192,8 @@ namespace Rack
 
         public void InposForPicking()
         {
+            UpBlockPick(true);
             RunBeltPick(true);
-            if (PickPhoneSensor() == false)
-            {
-                WaitTill(
-                    ConveyorMovingForward
-                        ? Input.PickBufferHasPhoneForward
-                        : Input.PickBufferHasPhoneBackward, true, 30000);
-                UpBlockPick(true);
-            }
 
             SideBlockSeparate(true);
             UpBlockSeparate(false);
