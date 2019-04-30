@@ -22,6 +22,18 @@ namespace Rack
         ABA,        
     }
 
+    public enum RackTestStep
+    {
+        Rf,
+        Wifi,
+        Bt,
+    }
+
+    public enum BoxCombination
+    {
+        Rf2Wifi,
+    }
+
     public enum TeachPos
     {
         None = 99,

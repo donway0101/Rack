@@ -6,6 +6,9 @@ namespace Rack
     {
         private void MoveToTargetPosition(RackGripper gripper, TargetPosition target)
         {
+            if(RobotInSimulateMode)
+                return;
+
             target = AddOffset(gripper, target);
 
             var currentPosition = GetRobotCurrentPose();
@@ -141,7 +144,7 @@ namespace Rack
 
         private void MotorYOutThenBreakMotorZDown(TargetPosition target)
         {
-            Motion.ToPointWaitTillEnd(Motion.MotorY, target.YPos);
+            MoveToPointTillEnd(Motion.MotorY, target.YPos);
             Steppers.CheckEnabled();
             Motion.BreakToPointWaitTillEnd(Motion.MotorZ, target.ZPos);
         }
@@ -193,9 +196,9 @@ namespace Rack
 
         private void MotorYOutThenMotorZDown(TargetPosition target)
         {
-            Motion.ToPointWaitTillEnd(Motion.MotorY, target.YPos);
+            MoveToPointTillEnd(Motion.MotorY, target.YPos);
             Steppers.CheckEnabled();
-            Motion.ToPointWaitTillEnd(Motion.MotorZ, target.ZPos);
+            MoveToPointTillEnd(Motion.MotorZ, target.ZPos);
         }
 
         private void MoveFromLeftToRightTop(RackGripper gripper, TargetPosition target, TargetPosition currentPosition)

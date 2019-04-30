@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using ACS.SPiiPlusNET;
 
 namespace Rack
@@ -15,6 +16,7 @@ namespace Rack
         private readonly string NewLine = Environment.NewLine;
         private readonly int OutputModuleAddrInc;
         private readonly int OutputModuleNum;
+        private readonly object _setOutputLock = new object();
 
         public EthercatIo(Api acsController, int baseAddressOffset,
             int inputModuleNum, int outputModuleNum, int inputModuleAddrInc = 4, int outputModuleAddrInc = 2)
@@ -29,7 +31,6 @@ namespace Rack
 
         public void Setup()
         {
-            //DeclareVariable();
             DeclareVariableInDBuffer();
         }
 
@@ -81,6 +82,8 @@ namespace Rack
                 Ch.CompileBuffer(DBuffer);
             }
 
+            MapEtherCAT();
+            Thread.Sleep(500);
             MapEtherCAT();
         }
 
@@ -161,28 +164,40 @@ namespace Rack
             return GetBit(OutputValue, outputPinNum);
         }
 
+        public bool GetOutput(Output output)
+        {
+            var outputValue = (int)output;
+            var moduleId = outputValue / 10;
+            var outputPinNum = outputValue % 10;
+
+            return GetOutput(moduleId, outputPinNum);
+        }
+
         public void SetOutput(int moduleId, int outputPinNum, bool value, int failRetry = 5)
         {
-            var variableName = GetOutputName(moduleId);
-            var OutputValue = Convert.ToInt32(Ch.ReadVariable(variableName));
-
-            if (value)
-                SetBit(ref OutputValue, outputPinNum);
-            else
-                ResetBit(ref OutputValue, outputPinNum);
-
-            Ch.WriteVariable(OutputValue, variableName, ProgramBuffer.ACSC_NONE);
-
-            int failCount = 0;
-            while (OutputValue != Convert.ToInt32(Ch.ReadVariable(variableName)))
+            lock (_setOutputLock)
             {
-                failCount++;
-                if (failCount>failRetry)
+                var variableName = GetOutputName(moduleId);
+                var outputValue = Convert.ToInt32(Ch.ReadVariable(variableName));
+
+                if (value)
+                    SetBit(ref outputValue, outputPinNum);
+                else
+                    ResetBit(ref outputValue, outputPinNum);
+
+                Ch.WriteVariable(outputValue, variableName, ProgramBuffer.ACSC_NONE);
+
+                int failCount = 0;
+                while (outputValue != Convert.ToInt32(Ch.ReadVariable(variableName)))
                 {
-                    throw new Exception("Write ACS variable " + variableName + " fail.");
+                    failCount++;
+                    if (failCount > failRetry)
+                    {
+                        throw new Exception("Write ACS variable " + variableName + " fail.");
+                    }
+                    Ch.WriteVariable(outputValue, variableName, ProgramBuffer.ACSC_NONE);
                 }
-                Ch.WriteVariable(OutputValue, variableName, ProgramBuffer.ACSC_NONE);
-            }           
+            }
         }
 
         public void SetOutput(Output output, bool value)
@@ -199,20 +214,6 @@ namespace Rack
             var moduleId = inputValue / 10;
             var inputPinNum = inputValue % 10;
 
-            return GetInput(moduleId, inputPinNum);
-        }
-
-        public void SetOutput(int output, bool value)
-        {
-            var moduleId = output / 10;
-            var outputPinNum = output % 10;
-            SetOutput(moduleId, outputPinNum, value);
-        }
-
-        public bool GetInput(int input)
-        {
-            var moduleId = input / 10;
-            var inputPinNum = input % 10;
             return GetInput(moduleId, inputPinNum);
         }
     }

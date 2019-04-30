@@ -23,7 +23,7 @@
 
     public static class ShieldBoxResponse
     {
-        private const string ResponseEnding = "\r\n";
+        public const string ResponseEnding = "\r\n";
         public const string OpenSuccessful = ResponseEnding + "OK" + ResponseEnding;
         public const string CloseSuccessful = ResponseEnding + "READY" + ResponseEnding;
         public const string LightOnSuccessful = "OK" + ResponseEnding;
@@ -37,7 +37,6 @@
         None,
         Pass,
         Fail,
-        Testing,
     }
 
 

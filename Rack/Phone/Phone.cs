@@ -14,9 +14,9 @@ namespace Rack
         public TargetPosition CurrentTargetPosition { get; set; } = new TargetPosition() { TeachPos = TeachPos.None };
         public TargetPosition NextTargetPosition { get; set; } = new TargetPosition() { TeachPos = TeachPos.None };
         public List<TargetPosition> TargetPositionFootprint { get; set; } = new List<TargetPosition>();
-        public PhonePriority Priority { get; set; } = PhonePriority.Low;
+        //public PhonePriority Priority { get; set; } = PhonePriority.Low;
         public RackProcedure Procedure { get; set; }
-        public long TestCycleTime { get; set; }
+        //public long TestCycleTime { get; set; }
 
         private TestResult _testResult = TestResult.None;
         /// <summary>
@@ -34,12 +34,11 @@ namespace Rack
         }
         /// Todo link to shield box test result.
         public int FailCount { get; set; }
-        //Todo initial phone with shield box type.
-        public ShieldBoxType AtBoxType { get; set; } = ShieldBoxType.RF;
+
         //Todo will use in a unload and load movement.
-        //Combine check with sensor.
         public RackGripper OnGripper { get; set; }
         public ShieldBox ShieldBox { get; set; }
+        public RackTestStep Step { get; set; } = RackTestStep.Rf;
 
         public delegate void TestCompleteEventHandler(object sender);
 

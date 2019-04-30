@@ -22,7 +22,7 @@
         SideBlockSeparateForward = 20,
         ClampPick = 13,
         BeltPick = 14,
-        BeltNg = 15,
+        BeltBin = 15,
         BeltConveyorOne = 16,
         UpBlockSeparateBackward = 17,
         UpBlockSeparateForward = 21

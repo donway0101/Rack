@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace Rack
 {
@@ -40,25 +41,25 @@ namespace Rack
 
         public void SetCylinder(Output output, Input input, bool sensorState = true, int timeout = 1000)
         {
-            _io.SetOutput(output, true);
             var stopwatch = new Stopwatch();
             stopwatch.Start();
             while (_io.GetInput(input) != sensorState)
             {
-                if (stopwatch.ElapsedMilliseconds > timeout) throw new Exception("Set" + output + " timeout");
-                Thread.Sleep(10);
+                if (stopwatch.ElapsedMilliseconds > timeout)
+                    throw new Exception("SetCylinder " + output + " timeout");
+                _io.SetOutput(output, true);
             }
         }
 
         public void ResetCylinder(Output output, Input input, bool sensorState = true, int timeout = 1000)
         {
-            _io.SetOutput(output, false);
             var stopwatch = new Stopwatch();
             stopwatch.Start();
             while (_io.GetInput(input) != sensorState)
             {
-                if (stopwatch.ElapsedMilliseconds > timeout) throw new Exception("Set" + output + " timeout");
-                Delay(10);
+                if (stopwatch.ElapsedMilliseconds > timeout)
+                    throw new Exception("ResetCylinder " + output + " timeout");
+                _io.SetOutput(output, false);
             }
         }
 
@@ -116,9 +117,34 @@ namespace Rack
             }
         }
 
-        public void RunBeltPick(bool state)
+        public void RunBeltPick()
         {
-            _io.SetOutput(Output.BeltPick, state);
+            _io.SetOutput(Output.BeltPick, true);
+        }
+
+        public void StopBeltPick()
+        {
+            _io.SetOutput(Output.BeltPick, false);
+        }
+
+        public void RunBeltBin()
+        {
+            _io.SetOutput(Output.BeltBin, true);
+        }
+
+        public void StopBeltBin()
+        {
+            _io.SetOutput(Output.BeltBin, false);
+        }
+
+        public void RunBeltConveyorOne()
+        {
+            _io.SetOutput(Output.BeltConveyorOne, true);
+        }
+
+        public void StopBeltConveyorOne()
+        {
+            _io.SetOutput(Output.BeltConveyorOne, false);
         }
 
         public void PushPickInpos(bool state)
@@ -155,6 +181,9 @@ namespace Rack
 
         public void ResetOutputs()
         {
+            StopBeltPick();
+            StopBeltBin();
+            StopBeltConveyorOne();
             Clamp(false);
             UpBlockSeparate(true);
             UpBlockPick(true);
@@ -168,6 +197,11 @@ namespace Rack
 
         public void Start()
         {
+            if (PickPhoneSensor())
+            {
+                throw new Exception("Clean phone up on the conveyor first.");
+            }
+
             ResetOutputs();
 
             if (_conveyorMonitorThread == null)
@@ -182,7 +216,8 @@ namespace Rack
 
         public void ReadyForPicking()
         {
-            RunBeltPick(false);
+            StopBeltPick();
+            UpBlockPick(false);
             Delay(200);
             PushPickInpos(true);
             Delay(200);
@@ -193,7 +228,9 @@ namespace Rack
         public void InposForPicking()
         {
             UpBlockPick(true);
-            RunBeltPick(true);
+
+            RunBeltPick();
+            Delay(1000);
 
             SideBlockSeparate(true);
             UpBlockSeparate(false);
@@ -228,6 +265,11 @@ namespace Rack
                         {
                             HasPlaceAPhone = false;
                             placedPhoneDetected = false;
+                            Task.Run(() =>
+                            {
+                                Delay(20000);
+                                StopBeltConveyorOne();
+                            });
                         }
                     }
 
@@ -242,6 +284,11 @@ namespace Rack
                         {
                             HasBinAPhone = false;
                             binedPhoneDetected = false;
+                            Task.Run(() =>
+                            {
+                                Delay(10000);
+                                StopBeltBin();
+                            });
                         }
                     }
 

@@ -9,17 +9,56 @@ namespace Rack
     {
         public void SaveTeachPosition(TeachPos selectedTeachPos)
         {
+            TargetPosition target = new TargetPosition()
+            {
+                XPos = Motion.GetPositionX(),
+                YPos = Motion.GetPosition(Motion.MotorY),
+                ZPos = Motion.GetPosition(Motion.MotorZ),
+                RPos = Motion.GetPosition(Motion.MotorR),
+                APos = Steppers.GetPosition(RackGripper.One)
+            };
+
             XmlReaderWriter.SetTeachAttribute(Files.RackData, selectedTeachPos, PosItem.XPos,
-                Motion.GetPositionX().ToString(CultureInfo.CurrentCulture));
+                target.XPos.ToString());
             XmlReaderWriter.SetTeachAttribute(Files.RackData, selectedTeachPos, PosItem.YPos,
-                Motion.GetPosition(Motion.MotorY).ToString(CultureInfo.CurrentCulture));
+                target.YPos.ToString());
             XmlReaderWriter.SetTeachAttribute(Files.RackData, selectedTeachPos, PosItem.ZPos,
-                Motion.GetPosition(Motion.MotorZ).ToString(CultureInfo.CurrentCulture));
+                target.ZPos.ToString());
             XmlReaderWriter.SetTeachAttribute(Files.RackData, selectedTeachPos, PosItem.RPos,
-                Motion.GetPosition(Motion.MotorR).ToString(CultureInfo.CurrentCulture));
+                target.RPos.ToString());
 
             XmlReaderWriter.SetTeachAttribute(Files.RackData, selectedTeachPos, PosItem.APos,
-                Steppers.GetPosition(RackGripper.One).ToString(CultureInfo.CurrentCulture));
+                target.APos.ToString());
+
+            if (XmlReaderWriter.GetTeachAttribute(Files.RackData, selectedTeachPos, PosItem.XPos) !=
+                target.XPos.ToString())
+            {
+                throw new Exception("SaveTeachPosition fail.");
+            }
+
+            if (XmlReaderWriter.GetTeachAttribute(Files.RackData, selectedTeachPos, PosItem.YPos) !=
+                target.YPos.ToString())
+            {
+                throw new Exception("SaveTeachPosition fail.");
+            }
+
+            if (XmlReaderWriter.GetTeachAttribute(Files.RackData, selectedTeachPos, PosItem.ZPos) !=
+                target.ZPos.ToString())
+            {
+                throw new Exception("SaveTeachPosition fail.");
+            }
+
+            if (XmlReaderWriter.GetTeachAttribute(Files.RackData, selectedTeachPos, PosItem.RPos) !=
+                target.RPos.ToString())
+            {
+                throw new Exception("SaveTeachPosition fail.");
+            }
+
+            if (XmlReaderWriter.GetTeachAttribute(Files.RackData, selectedTeachPos, PosItem.APos) !=
+                target.APos.ToString())
+            {
+                throw new Exception("SaveTeachPosition fail.");
+            }
         }
 
         public void SaveApproachHeight(TeachPos selectedTeachPos)

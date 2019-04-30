@@ -52,10 +52,25 @@ namespace Rack
             {
                 if (Steppers == null)
                 {
-                    Steppers = new Stepper("COM3");
+                    Steppers = new Stepper("COM8");
                 }
                 Steppers.Setup();
                 SetStepperSpeed(DefaultRobotSpeed);
+            }
+
+            if (ConveyorOnline)
+            {
+                if (Conveyor == null)
+                {
+                    Conveyor = new Conveyor(EcatIo);
+                }
+
+                Conveyor.Start();
+
+                Conveyor.ErrorOccured -= Conveyor_ErrorOccured;
+                Conveyor.ErrorOccured += Conveyor_ErrorOccured;
+
+                StartConveyorManager();
             }
 
             if (ShieldBoxOnline)
@@ -84,7 +99,7 @@ namespace Rack
 
         private void _ch_ETHERCATERROR(ulong param)
         {
-            OnErrorOccured(444, "Acs ethercat error " + param);
+            OnErrorOccured(444, "Acs ethercat error（check Estop or network wire." + param);
         }
 
         public void SelfChecking()
@@ -97,7 +112,7 @@ namespace Rack
             Motion.DisableAll();
         }
 
-        public void HomeRobot(double homeSpeed = 5)
+        public void HomeRobot(double homeSpeed = 5.0)
         {
             if (SetupComplete == false)
             {
@@ -117,7 +132,7 @@ namespace Rack
                 if (currentPosition.YPos > YIsInBox) //Y is dangerous
                 {
                     TargetPosition currentHolder = new TargetPosition() { TeachPos = TeachPos.Home };
-                    double tolerance = 50;
+                    double tolerance = 50.0;
                     foreach (var pos in Motion.Locations)
                     {
                         if (Math.Abs(currentPosition.XPos - pos.XPos) < tolerance &
@@ -130,27 +145,27 @@ namespace Rack
 
                     if (currentHolder.TeachPos != TeachPos.Home)
                     {
-                        Motion.ToPointWaitTillEnd(Motion.MotorZ, currentHolder.ApproachHeight);
-                        Motion.ToPointWaitTillEnd(Motion.MotorR, currentHolder.RPos);
-                        Motion.ToPointWaitTillEnd(Motion.MotorY, Motion.HomePosition.YPos);
-                        Motion.ToPointWaitTillEnd(Motion.MotorZ, Motion.HomePosition.ZPos);
-                        Motion.ToPointXWaitTillEnd(Motion.HomePosition.XPos);
-                        Motion.ToPointWaitTillEnd(Motion.MotorR, Motion.HomePosition.RPos);
+                        MoveToPointTillEnd(Motion.MotorZ, currentHolder.ApproachHeight);
+                        MoveToPointTillEnd(Motion.MotorR, currentHolder.RPos);
+                        MoveToPointTillEnd(Motion.MotorY, Motion.HomePosition.YPos);
+                        MoveToPointTillEnd(Motion.MotorZ, Motion.HomePosition.ZPos);
+                        MoveX1X2ToPointTillEnd(Motion.HomePosition.XPos);
+                        MoveToPointTillEnd(Motion.MotorR, Motion.HomePosition.RPos);
                         HomeGrippers();
                     }
                     else
                     {
-                        throw new Exception("Gripper is in unknown conveyor area, please home Y and manually then retry.");
+                        throw new Exception("Gripper is in unknown conveyor area, please move Y and manually then retry.");
                     }
                 }
                 else
                 {
                     if (currentPosition.YPos < YIsNearHome)
                     {
-                        Motion.ToPointWaitTillEnd(Motion.MotorZ, Motion.HomePosition.ZPos);
-                        Motion.ToPointWaitTillEnd(Motion.MotorY, Motion.HomePosition.YPos);
-                        Motion.ToPointXWaitTillEnd(Motion.HomePosition.XPos);
-                        Motion.ToPointWaitTillEnd(Motion.MotorR, Motion.HomePosition.RPos);
+                        MoveToPointTillEnd(Motion.MotorZ, Motion.HomePosition.ZPos);
+                        MoveToPointTillEnd(Motion.MotorY, Motion.HomePosition.YPos);
+                        MoveX1X2ToPointTillEnd(Motion.HomePosition.XPos);
+                        MoveToPointTillEnd(Motion.MotorR, Motion.HomePosition.RPos);
 
                         //Disable one of the motor.
                         HomeGrippers();
@@ -185,12 +200,12 @@ namespace Rack
 
                     if (currentHolder.TeachPos != TeachPos.Home)
                     {
-                        Motion.ToPointWaitTillEnd(Motion.MotorZ, currentHolder.ApproachHeight);
-                        Motion.ToPointWaitTillEnd(Motion.MotorR, currentHolder.RPos);
-                        Motion.ToPointWaitTillEnd(Motion.MotorY, Motion.HomePosition.YPos);
-                        Motion.ToPointWaitTillEnd(Motion.MotorZ, Motion.HomePosition.ZPos);
-                        Motion.ToPointXWaitTillEnd(Motion.HomePosition.XPos);
-                        Motion.ToPointWaitTillEnd(Motion.MotorR, Motion.HomePosition.RPos);
+                        MoveToPointTillEnd(Motion.MotorZ, currentHolder.ApproachHeight);
+                        MoveToPointTillEnd(Motion.MotorR, currentHolder.RPos);
+                        MoveToPointTillEnd(Motion.MotorY, Motion.HomePosition.YPos);
+                        MoveToPointTillEnd(Motion.MotorZ, Motion.HomePosition.ZPos);
+                        MoveX1X2ToPointTillEnd(Motion.HomePosition.XPos);
+                        MoveToPointTillEnd(Motion.MotorR, Motion.HomePosition.RPos);
                         HomeGrippers();
                     }
                     else
@@ -203,10 +218,10 @@ namespace Rack
                     if (currentPosition.YPos < YIsNearHome)
                     {
 
-                        Motion.ToPointWaitTillEnd(Motion.MotorY, Motion.HomePosition.YPos);
-                        Motion.ToPointWaitTillEnd(Motion.MotorZ, Motion.HomePosition.ZPos);
-                        Motion.ToPointXWaitTillEnd(Motion.HomePosition.XPos);
-                        Motion.ToPointWaitTillEnd(Motion.MotorR, Motion.HomePosition.RPos);
+                        MoveToPointTillEnd(Motion.MotorY, Motion.HomePosition.YPos);
+                        MoveToPointTillEnd(Motion.MotorZ, Motion.HomePosition.ZPos);
+                        MoveX1X2ToPointTillEnd(Motion.HomePosition.XPos);
+                        MoveToPointTillEnd(Motion.MotorR, Motion.HomePosition.RPos);
 
                         //Disable one of the motor.
                         HomeGrippers();
@@ -223,35 +238,33 @@ namespace Rack
                 throw new Exception("Has phone on gripper, take it down first.");
             }
 
+            OpenGripper(RackGripper.One);
+            OpenGripper(RackGripper.Two);
+
             RobotHomeComplete = true;
         }
 
-        public void Pick(RackGripper gripper)
+        public void Pick(RackGripper gripper = RackGripper.One, bool releaseConveyor = true)
         {
-            //Todo check another flag.
-            //if ( Conveyor.ReadyForPicking && TestRun==false)
-            //{
-            //    Conveyor.ReadyForPicking = false;
-            //}
-            //else
-            //{
-            //    throw new Exception("Phone is not ready.");
-            //}
-
-            if ( gripper == RackGripper.One)
+            if (LatestPhone != null)
             {
-                if ( !EcatIo.GetInput(Input.Gripper01Loose))
+                if (LatestPhone.OnGripper != RackGripper.None)
                 {
-                    throw new Exception("Gripper one is not opened.");
+                    return;
                 }
             }
             else
             {
-                if (!EcatIo.GetInput(Input.Gripper02Loose))
-                {
-                    throw new Exception("Gripper two is not opened.");
-                }
+                throw new Exception("Phone is not ready.");
             }
+
+            RobotTakeControlOnConveyor();
+
+            CheckSafety();
+
+            CheckGripperAvailable(gripper);
+
+            Conveyor.ReadyForPicking();
 
             TargetPosition target = Motion.PickPosition;
             if (gripper == RackGripper.Two)
@@ -259,45 +272,138 @@ namespace Rack
                 target.XPos = target.XPos + Motion.PickOffset.XPos;
             }
             
-            //If system is OK, gripper is free and opened, conveyor is ready
-            //If the other gripper is holding a phone, then conveyor can not reload.
             MoveToTargetPosition(gripper, target);
-            //Close cylinder.
             CloseGripper(gripper);
-            Motion.ToPointWaitTillEnd(Motion.MotorZ, Motion.PickPosition.ApproachHeight);
+            MoveToPointTillEnd(Motion.MotorZ, Motion.PickPosition.ApproachHeight);
+            MoveToPointTillEnd(Motion.MotorY, Motion.HomePosition.YPos);
+            LatestPhone.OnGripper = gripper;
+
+            if (releaseConveyor)
+            {
+                RobotReleaseControlOnConveyor();
+            }
+        }
+
+        private void MoveToPointTillEnd(Motor motor, double point, int timeout=120000)
+        {
+            if (RobotInSimulateMode)
+                return;
+            Motion.ToPointWaitTillEnd(motor, point, timeout);
+        }
+
+        private void MoveX1X2ToPointTillEnd(double point, int timeout = 120000)
+        {
+            if (RobotInSimulateMode)
+                return;
+            Motion.ToPointXWaitTillEnd(point, timeout);
+        }
+
+        private void OkToReloadOnConveyor()
+        {
+            LatestPhone = null;
         }
 
         public void Place(RackGripper gripper)
         {
-            //After place, conveyor can reload.
-            //TODO make sure pick position is empty, conveyor is not stucked and gripper is full.
+            RobotTakeControlOnConveyor();
+
+            Conveyor.StopBeltPick();
+
+            CheckSafety();
+
+            if (Conveyor.PickPhoneSensor())
+            {
+                if (LatestPhone != null)
+                {
+                    RackGripper theOtherGripper = gripper == RackGripper.One ? RackGripper.Two : RackGripper.One;
+                    Pick(theOtherGripper, false);
+                }
+                else
+                {
+                    throw new Exception("When place, has an unknown phone.");
+                }
+            }
+
+            if (Conveyor.PickPhoneSensor())
+            {
+                throw new Exception("When place, has an unknown phone in pick position.");
+            }
+
+            if (EcatIo.GetInput(Input.UpBlockPickForward) ||
+                EcatIo.GetInput(Input.UpBlockPickBackward) || EcatIo.GetInput(Input.ClampTightPick))
+            {
+                throw new Exception("When place, cylinder on conveyor is up.");
+            }
+
+            CheckPhoneLost(gripper);
+
             TargetPosition placePosition = Motion.PickPosition;
             placePosition.XPos = placePosition.XPos + 0.5;
-
             MoveToTargetPosition(gripper, placePosition);
-            //Open cylinder.
             OpenGripper(gripper);
-            Motion.ToPointWaitTillEnd(Motion.MotorZ, Motion.PickPosition.ApproachHeight);
-            //Check phone is on conveyor.
+            MoveToPointTillEnd(Motion.MotorZ, Motion.PickPosition.ApproachHeight);
+            MoveToPointTillEnd(Motion.MotorY, Motion.HomePosition.YPos);
+            Conveyor.HasPlaceAPhone = true;
+
+            RobotReleaseControlOnConveyor();
         }
 
+        /// <summary>
+        /// Phone is not on gripper after deliver.
+        /// </summary>
+        /// <param name="gripper"></param>
+        private void CheckPhoneLost(RackGripper gripper)
+        {
+            if (gripper == RackGripper.One)
+            {
+                if (!EcatIo.GetInput(Input.Gripper01))
+                {
+                    throw new Exception("Gripper one is empty when place.");
+                }
+            }
+            else
+            {
+                if (!EcatIo.GetInput(Input.Gripper02))
+                {
+                    throw new Exception("Gripper two is empty when place.");
+                }
+            }
+        }
+
+        //Todo if User disable box3, need to warn user to close it at the beginning.
+        // if it's binning, box can not open.
         public void Bin(RackGripper gripper)
         {
-            //TODO make sure pick position is empty, conveyor is not stucked and gripper is full.
-            MoveToTargetPosition(gripper, Motion.BinPosition);
-            //Open cylinder.
-            Motion.ToPointWaitTillEnd(Motion.MotorZ, Motion.BinPosition.ApproachHeight);
-            //Check phone is on conveyor.
+            ShieldBox3.RobotBining = true;
+            bool needReopen = false;
+            //Todo close box without change state.
+            if (ShieldBox3.IsClosed() == false)
+            {
+                ShieldBox3.CloseBox(5000, false);
+                needReopen = true;
+            }
+
+            //MoveToTargetPosition(gripper, Motion.BinPosition);
+            //OpenGripper(gripper);
+            //MoveToPointTillEnd(Motion.MotorZ, Motion.BinPosition.ApproachHeight);
+
+            Conveyor.RunBeltBin();
+
+            if (needReopen)
+            {
+                ShieldBox3.OpenBox();
+            }
+            ShieldBox3.RobotBining = false;
         }
 
-        public void Load(RackGripper gripper, TargetPosition holder)
+        public void Load(RackGripper gripper, TargetPosition position)
         {
             //Todo make sure box is open.
-            MoveToTargetPosition(gripper, holder);
+            MoveToTargetPosition(gripper, position);
             OpenGripper(gripper);
-            Motion.ToPointWaitTillEnd(Motion.MotorZ, holder.ApproachHeight);
+            MoveToPointTillEnd(Motion.MotorZ, position.ApproachHeight);
             //Box is OK to close.
-            Motion.ToPointWaitTillEnd(Motion.MotorY, Motion.PickPosition.YPos);
+            MoveToPointTillEnd(Motion.MotorY, Motion.HomePosition.YPos);
         }
 
         public void Load(RackGripper gripper, ShieldBox shieldBox)
@@ -311,12 +417,57 @@ namespace Rack
             //Todo make sure box is open.
             MoveToTargetPosition(gripper, holder);
             OpenGripper(gripper);
-            Motion.ToPointWaitTillEnd(Motion.MotorZ, holder.ApproachHeight);
+            MoveToPointTillEnd(Motion.MotorZ, holder.ApproachHeight);
             //Box is OK to close.
-            Motion.ToPointWaitTillEnd(Motion.MotorY, Motion.PickPosition.YPos);
+            MoveToPointTillEnd(Motion.MotorY, Motion.PickPosition.YPos);
         }        
 
-        public void Unload(RackGripper gripper, TargetPosition holder)
+        public void Unload(RackGripper gripper, TargetPosition position)
+        {
+            CheckGripperAvailable(gripper);
+
+            MoveToTargetPosition(gripper, position);
+            CloseGripper(gripper);
+            MoveToPointTillEnd(Motion.MotorZ, position.ApproachHeight);
+            //Box is OK to close.
+            MoveToPointTillEnd(Motion.MotorY, Motion.HomePosition.YPos);
+        }
+
+        public void Unload(RackGripper gripper, ShieldBox box)
+        {
+            TargetPosition pos = box.Position;
+            CheckGripperAvailable(gripper);
+            MoveToTargetPosition(gripper, pos);
+            CloseGripper(gripper);
+            MoveToPointTillEnd(Motion.MotorZ, pos.ApproachHeight);
+            MoveToPointTillEnd(Motion.MotorY, Motion.HomePosition.YPos);
+        }
+
+        public void Unload(RackGripper gripper, Phone phone)
+        {            
+            TargetPosition pos = phone.CurrentTargetPosition;
+            MoveToTargetPosition(gripper, pos);
+            CloseGripper(gripper);
+            MoveToPointTillEnd(Motion.MotorZ, pos.ApproachHeight);
+            MoveToPointTillEnd(Motion.MotorY, Motion.HomePosition.YPos);
+        }
+
+        private RackGripper GetAvailableGripper()
+        {
+            if (EcatIo.GetInput(Input.Gripper01Loose) && !EcatIo.GetInput(Input.Gripper01))
+            {
+                return RackGripper.One;
+            }
+
+            if (EcatIo.GetInput(Input.Gripper02Loose) && !EcatIo.GetInput(Input.Gripper02))
+            {
+                return RackGripper.One;
+            }
+
+            throw new Exception("GetAvailableGripper failed.");
+        }
+
+        private void CheckGripperAvailable(RackGripper gripper)
         {
             if (gripper == RackGripper.One)
             {
@@ -332,26 +483,52 @@ namespace Rack
                     throw new Exception("Gripper two is not opened.");
                 }
             }
-            //Todo make sure box is open.
-            MoveToTargetPosition(gripper, holder);
-            CloseGripper(gripper);
-            Motion.ToPointWaitTillEnd(Motion.MotorZ, holder.ApproachHeight);
-            //Box is OK to close.
-            Motion.ToPointWaitTillEnd(Motion.MotorY, Motion.PickPosition.YPos);
+
+            if (gripper == RackGripper.One)
+            {
+                if (EcatIo.GetInput(Input.Gripper01))
+                {
+                    throw new Exception("Gripper one is not empty.");
+                }
+            }
+            else
+            {
+                if (EcatIo.GetInput(Input.Gripper02))
+                {
+                    throw new Exception("Gripper two is not empty.");
+                }
+            }
+        }
+
+        private void CheckSafety()
+        {
+            if (SystemFault)
+            {
+                throw new Exception("System Fault, need to reset first.");
+            }
+
+            if (ConveyorFault)
+            {
+                throw new Exception("Conveyor Fault, need to reset first.");
+            }
+
+
         }
 
         public void UnloadAndLoad(TargetPosition target, RackGripper gripper)
         {
+            CheckGripperAvailable(gripper);
+
             //Todo make sure box is open.
             MoveToTargetPosition(gripper, target);
             CloseGripper(gripper);
-            Motion.ToPointWaitTillEnd(Motion.MotorZ, target.ApproachHeight); //Up.
+            MoveToPointTillEnd(Motion.MotorZ, target.ApproachHeight); //Up.
             //Todo add offset.
             SwitchGripper(target, ref gripper); //Switch gripper.
-            Motion.ToPointWaitTillEnd(Motion.MotorZ, target.ZPos); //Down.
+            MoveToPointTillEnd(Motion.MotorZ, target.ZPos); //Down.
             OpenGripper(gripper);
-            Motion.ToPointWaitTillEnd(Motion.MotorZ, target.ApproachHeight); //Up.
-            Motion.ToPointWaitTillEnd(Motion.MotorY, Motion.PickPosition.YPos); //Back.
+            MoveToPointTillEnd(Motion.MotorZ, target.ApproachHeight); //Up.
+            MoveToPointTillEnd(Motion.MotorY, Motion.PickPosition.YPos); //Back.
         }
 
         private void SwitchGripper(TargetPosition target, ref RackGripper gripper)
@@ -376,9 +553,16 @@ namespace Rack
                 target.YPos = target.YPos - Motion.G1ToG2Offset.YPos;
                 target.APos = target.APos - Motion.G1ToG2Offset.APos;
             }
-
             return target;
         }
 
+        public void Reset()
+        {
+            Motion.SetSpeedImm(DefaultRobotSpeed);
+            SystemFault = false;
+            RobotReleaseControlOnConveyor();
+            OkToReloadOnConveyor();
+            
+        }
     }
 }

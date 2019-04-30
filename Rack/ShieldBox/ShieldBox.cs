@@ -16,13 +16,17 @@ namespace Rack
         /// Match position of box, no matter what kind of box it is.
         /// </summary>
         public long Id { get; set; }
+        public bool RobotBining { get; set; } = false;
+
         public string PortName = "COM3";
         public ShieldBoxState State { get; set; } = ShieldBoxState.Close;
+        public bool ReadyForTesting { get; set; }
         public int PassRate { get; set; }
         public int TestCount { get; set; }
         public int PassCount { get; set; }
         public bool Enabled { get; set; } = false;
-        public bool Empty { get; set; }
+        //Todo need to remember it?
+        public bool Empty { get; set; } = true;
         /// <summary>
         /// Box is enabled and test is finished.
         /// </summary>
@@ -30,8 +34,8 @@ namespace Rack
         public bool Available { get; set; }
         //Todo need to retry gold? remember it's fail time?
         public bool GoldPhoneChecked { get; set; }
-        public ShieldBoxType Type { get; set; } = ShieldBoxType.RF;
-        public TargetPosition Position { get; set; }
+        public ShieldBoxType Type { get; set; } = ShieldBoxType.Rf;
+        public TargetPosition Position { get; set; } = new TargetPosition(){XPos = 400, ZPos = 700, YPos = 0};
 
         //After test, shield box will send back result and put phone to serve list.
         public Phone Phone { get; set; }
@@ -45,13 +49,21 @@ namespace Rack
             Parity serialParity = Parity.None, int serialDataBit = 8,
             StopBits serialStopBits = StopBits.One)
         {
-            Stop();
-            
-            _serial = new SerialPort(PortName, serialBaudRate, serialParity,
-                    serialDataBit, serialStopBits)
-                { ReadTimeout = 1000 };
-            _serial.Open();
-            _serial.DataReceived += _serial_DataReceived;
+            //Stop();
+
+            if (_serial==null)
+            {
+                _serial = new SerialPort(PortName, serialBaudRate, serialParity,
+                        serialDataBit, serialStopBits)
+                    { ReadTimeout = 1000 };
+            }
+
+            if (_serial.IsOpen==false)
+            {
+                _serial.Open();
+                _serial.DataReceived -= _serial_DataReceived;
+                _serial.DataReceived += _serial_DataReceived;
+            }          
         }
 
         private void _serial_DataReceived(object sender, SerialDataReceivedEventArgs e)
@@ -73,6 +85,8 @@ namespace Rack
         {
             lock (_sendLock)
             {
+                Delay(50);
+                _response = string.Empty;
                 string cmd = command + CmdEnding;
                 _serial.Write(cmd);
             }            
@@ -89,14 +103,26 @@ namespace Rack
         /// <param name="timeout">Takes less than 3 sec to open</param>
         public void OpenBox(int timeout = 5000)
         {
+            Stopwatch stopwatch = new Stopwatch();
+            stopwatch.Start();
+            while (RobotBining)
+            {
+                Delay(100);
+                if (stopwatch.ElapsedMilliseconds > 120000)
+                {
+                    throw new Exception("OpenBox " + Id + " failed due to RobotBining.");
+                }
+            }
+
             try
             {
                 SendCommand(ShieldBoxCommand.OPEN, ShieldBoxResponse.OpenSuccessful, timeout);
                 State = ShieldBoxState.Open;
+                ReadyForTesting = false;
             }
             catch (Exception e)
             {
-                throw new Exception("OpenBox " + Id + " timeout");
+                throw new BoxException("OpenBox " + Id + " timeout");
             }
         }
 
@@ -104,16 +130,20 @@ namespace Rack
         /// 
         /// </summary>
         /// <param name="timeout"> Takes less than 3 sec close</param>
-        public void CloseBox(int timeout = 5000)
+        public void CloseBox(int timeout = 5000, bool changeState = true)
         {
             try
             {
                 SendCommand(ShieldBoxCommand.CLOSE, ShieldBoxResponse.CloseSuccessful, timeout);
                 State = ShieldBoxState.Close;
+                if (changeState)
+                {
+                    ReadyForTesting = true;
+                }
             }
             catch (Exception e)
             {
-                throw new Exception("CloseBox " + Id + " timeout");
+                throw new BoxException("CloseBox " + Id + " timeout");
             }            
         }
 
@@ -125,7 +155,7 @@ namespace Rack
             }
             catch (Exception e)
             {
-                throw new Exception("GreenLight " + Id + " timeout");
+                throw new BoxException("GreenLight " + Id + " timeout");
             }
         }
 
@@ -137,7 +167,7 @@ namespace Rack
             }
             catch (Exception e)
             {
-                throw new Exception("RedLight " + Id + " timeout");
+                throw new BoxException("RedLight " + Id + " timeout");
             }
         }
 
@@ -149,29 +179,34 @@ namespace Rack
             }
             catch (Exception e)
             {
-                throw new Exception("YellowLight " + Id + " timeout");
+                throw new BoxException("YellowLight " + Id + " timeout");
             }
         }
 
         private void SendCommand(ShieldBoxCommand command, string response, int timeout = 5000)
         {
+            //bool retryCmd = false;
             SendCmd(command);
             Stopwatch stopwatch = new Stopwatch();
             stopwatch.Start();
-            while (_response != response)
+            while (_response != response && _response != ShieldBoxResponse.ResponseEnding + response)
             {
                 if (stopwatch.ElapsedMilliseconds > timeout)
                 {
-                    _response = String.Empty;
                     throw new TimeoutException();
                 }
+
+                //if (stopwatch.ElapsedMilliseconds > timeout*0.8 && retryCmd == false)
+                //{
+                //    SendCmd(command);
+                //    stopwatch.Restart();
+                //    retryCmd = true;
+                //}
                 Delay(100);
             }
-            //long sec = stopwatch.ElapsedMilliseconds; // For time consumption command testing
-            _response = String.Empty;
         }
 
-        public bool BoxIsClosed(int timeout = 1000)
+        public bool IsClosed(int timeout = 1000)
         {
             SendCmd(ShieldBoxCommand.STATUS);
             Stopwatch stopwatch = new Stopwatch();
@@ -180,20 +215,17 @@ namespace Rack
             {
                 if (stopwatch.ElapsedMilliseconds > timeout)
                 {
-                    _response = String.Empty;
-                    throw new TimeoutException();
+                    return false;
                 }
                 Delay(100);
             }
 
             if (_response != ShieldBoxResponse.BoxIsClosed)
             {
-                _response = String.Empty;
                 return false;
             }
             else
             {
-                _response = String.Empty;
                 return true;
             }           
         }

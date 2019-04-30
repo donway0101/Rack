@@ -12,13 +12,13 @@ using System.Security.Cryptography;
 using System.Diagnostics;
 using System.Data;
 using System.IO;
+using TesterSimulator;
 
 namespace RackTool
 {
     public partial class Main : Form
     {
         #region Define
-        private bool testLoop = true;
         private readonly CqcRack _rack = new CqcRack("192.168.8.18"); //"192.168.8.18"
         private TeachPos _selectedTargetPosition;
         private RackGripper _selectedGripper;
@@ -35,7 +35,8 @@ namespace RackTool
             InitializeComponent();
             //Todo set tab draw mode to ownerdraw
             tabControl1.DrawItem += new DrawItemEventHandler(tabControl1_DrawItem);
-            tabControl1.SelectedIndex = 6;
+
+            tabControl1.SelectedIndex = (int)TabControlPage.Main;
             comboBoxPower.SelectedIndex = 0;
 
             _rack.ErrorOccured += OnErrorOccured;
@@ -77,7 +78,14 @@ namespace RackTool
             try
             {
                 NewLog.Instance.Error(code.ToString() + " " + description);
-                richTextBoxMessage.Text = code.ToString() + " " + description;
+
+                trackBarSetSpeed2.Invoke((MethodInvoker) (() =>
+                {
+                    richTextBoxMessage.Text = code.ToString() + " " + description;
+                }));
+
+                //Todo uncomment
+                //_rack.SystemFault = true;
             }
             catch (Exception ex)
             {
@@ -127,13 +135,10 @@ namespace RackTool
         {
             _rack.SetRobotSpeedImm(Convert.ToDouble(trackBarSetSpeed1.Value));
         }
-        private void checkBox1_CheckedChanged(object sender, EventArgs e)
-        {
-            testLoop = checkBoxIsLoop.Enabled;
-            buttonTest.Enabled = true;
-        }
+
         private async void button_Start_Click(object sender, EventArgs e)
         {
+            bool startSuccessful = false;
             buttonStart.Enabled = false;
             await Task.Run(() =>
             {
@@ -141,7 +146,6 @@ namespace RackTool
                 {
                     _rack.Start();
                     _isStart = true;
-
 
                     if (_uiUpdateThread == null)
                     {
@@ -155,16 +159,22 @@ namespace RackTool
                     {
                         _uiUpdateThread.Start();
                     }
+
+                    startSuccessful = true;
                 }
                 catch (Exception ex)
                 {
                     ShowException(ex);
                     MessageBox.Show(ex.Message);
                 }
-            });
+            });            
 
-            SetupForTeaching();
-            groupBoxMain.Enabled = true;
+            if (startSuccessful)
+            {
+                SetupUiForTeaching();
+            }
+
+            groupBoxMain.Enabled = startSuccessful;
             buttonStart.Enabled = true;
         }
 
@@ -186,44 +196,14 @@ namespace RackTool
 
                 MessageBox.Show(ex.Message);
             }
-        }
-
-        private async void buttonAutoRun_Click(object sender, EventArgs e)
-        {
-            await Task.Run(() =>
-            {
-                try
-                {
-                    while (checkBoxAutoRun.Checked == true)
-                    {
-                        Stopwatch watch = new Stopwatch();
-                        _rack.SetRobotSpeed(500);
-                        //_rack.HomeRobot();
-                        _rack.ReadyThePhone();
-                        _rack.OpenGripper(RackGripper.One);
-                        _rack.OpenGripper(RackGripper.Two);
-                        watch.Start();
-                        _rack.Pick(RackGripper.One);
-                        //Thread.Sleep(200);
-                        TargetPosition target = _rack.ConverterTeachPosToTargetPosition(TeachPos.ShieldBox1);
-                        _rack.UnloadAndLoad(target, RackGripper.Two);
-                        //Thread.Sleep(200);
-                        _rack.Place(RackGripper.Two);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.Message);
-                }
-            });
-        }
+        }        
 
         private void Invoke(Control control, MethodInvoker action)
         {
             control.Invoke(action);
         }
 
-        private void SetupForTeaching()
+        private void SetupUiForTeaching()
         {
 
             comboBoxGripper.Items.Clear();
@@ -244,11 +224,10 @@ namespace RackTool
             buttonHome.Enabled = false;
             await Task.Run(() =>
             {
-
                 try
                 {
                     _rack.HomeRobot();
-                    MessageBox.Show("Home Succeed!");
+                    MessageBox.Show("Home Succeed.");
                 }
                 catch (Exception ex)
                 {
@@ -487,11 +466,9 @@ namespace RackTool
                 try
                 {
                     _rack.LoadForTeaching(_selectedGripper, _selectedTargetPosition);
-                    RefleshRobotUi();
                 }
                 catch (Exception ex)
                 {
-
                     MessageBox.Show(ex.Message);
                 }
             });
@@ -623,12 +600,12 @@ namespace RackTool
 
         private void button40_Click(object sender, EventArgs e)
         {
-            //_rack.Conveyor.CommandReadyForPicking = true;
+            _rack.Conveyor.ReadyForPicking();
         }
 
         private void button41_Click(object sender, EventArgs e)
         {
-            //_rack.Conveyor.InposForPicking = false;
+            _rack.LatestPhone = null;
         }
 
         private void trackBarSetSpeed2_ValueChanged(object sender, EventArgs e)
@@ -667,7 +644,7 @@ namespace RackTool
             catch (Exception ex)
             {
 
-                MessageBox.Show(ex.Message);
+                MessageBox.Show("RefleshRobotUi" + ex.Message);
             }
 
         }
@@ -728,26 +705,30 @@ namespace RackTool
                 }
                 catch (Exception e)
                 {
+                    OnErrorOccured(this, 444, "UiUpdate " + e.Message);
                     Thread.Sleep(5000);
-                    throw;
                 }
             }
         }
 
         private void UpdateMainUi()
         {
-            trackBarSetSpeed1.Value = (int)(_rack.Motion.GetVelocity(_rack.Motion.MotorZ) / _rack.Motion.MotorZ.SpeedFactor);
+            trackBarSetSpeed1.Invoke((MethodInvoker)(() => {
+                trackBarSetSpeed1.Value = (int)(_rack.Motion.GetVelocity(_rack.Motion.MotorZ) / _rack.Motion.MotorZ.SpeedFactor);
+            }));
         }
 
         private void UpdateRobotUi()
         {
-            labelPositionG1.Invoke((MethodInvoker)(() => { labelPositionG1.Text = _rack.Steppers.GetPosition(RackGripper.One).ToString("F2"); }));
-            labelPositionG2.Invoke((MethodInvoker)(() => { labelPositionG2.Text = _rack.Steppers.GetPosition(RackGripper.Two).ToString("F2"); }));
-            labelPositionX.Invoke((MethodInvoker)(() => { labelPositionX.Text = _rack.Motion.GetPositionX().ToString("F2"); }));
-            labelPositionY.Invoke((MethodInvoker)(() => { labelPositionY.Text = _rack.Motion.GetPosition(_rack.Motion.MotorY).ToString("F2"); }));
-            labelPositionZ.Invoke((MethodInvoker)(() => { labelPositionZ.Text = _rack.Motion.GetPosition(_rack.Motion.MotorZ).ToString("F2"); }));
-            labelPositionR.Invoke((MethodInvoker)(() => { labelPositionR.Text = _rack.Motion.GetPosition(_rack.Motion.MotorR).ToString("F2"); }));
-            trackBarSetSpeed2.Value = (int)(_rack.Motion.GetVelocity(_rack.Motion.MotorZ) / _rack.Motion.MotorZ.SpeedFactor);
+            labelPositionG1.Invoke((MethodInvoker)(() => { labelPositionG1.Text = _rack.Steppers.GetPosition(RackGripper.One).ToString("0.00"); }));
+            labelPositionG2.Invoke((MethodInvoker)(() => { labelPositionG2.Text = _rack.Steppers.GetPosition(RackGripper.Two).ToString("0.00"); }));
+            labelPositionX.Invoke((MethodInvoker)(() => { labelPositionX.Text = _rack.Motion.GetPositionX().ToString("0.00"); }));
+            labelPositionY.Invoke((MethodInvoker)(() => { labelPositionY.Text = _rack.Motion.GetPosition(_rack.Motion.MotorY).ToString("0.00"); }));
+            labelPositionZ.Invoke((MethodInvoker)(() => { labelPositionZ.Text = _rack.Motion.GetPosition(_rack.Motion.MotorZ).ToString("0.00"); }));
+            labelPositionR.Invoke((MethodInvoker)(() => { labelPositionR.Text = _rack.Motion.GetPosition(_rack.Motion.MotorR).ToString("0.00"); }));
+            trackBarSetSpeed2.Invoke((MethodInvoker)(() => {
+                trackBarSetSpeed2.Value = (int)(_rack.Motion.GetVelocity(_rack.Motion.MotorZ) / _rack.Motion.MotorZ.SpeedFactor);
+            }));
         }
 
         #region Manual control
@@ -1145,12 +1126,12 @@ namespace RackTool
             {
                 switch (listViewBox.SelectedItems[0].Text)
                 {
-                    case "Box1": XmlReaderWriter.SetBoxAttribute(Files.BoxData, 1, ShieldBoxItem.Type, ShieldBoxType.BT.ToString()); break;
-                    case "Box2": XmlReaderWriter.SetBoxAttribute(Files.BoxData, 2, ShieldBoxItem.Type, ShieldBoxType.BT.ToString()); break;
-                    case "Box3": XmlReaderWriter.SetBoxAttribute(Files.BoxData, 3, ShieldBoxItem.Type, ShieldBoxType.BT.ToString()); break;
-                    case "Box4": XmlReaderWriter.SetBoxAttribute(Files.BoxData, 4, ShieldBoxItem.Type, ShieldBoxType.BT.ToString()); break;
-                    case "Box5": XmlReaderWriter.SetBoxAttribute(Files.BoxData, 5, ShieldBoxItem.Type, ShieldBoxType.BT.ToString()); break;
-                    case "Box6": XmlReaderWriter.SetBoxAttribute(Files.BoxData, 6, ShieldBoxItem.Type, ShieldBoxType.BT.ToString()); break;
+                    case "Box1": XmlReaderWriter.SetBoxAttribute(Files.BoxData, 1, ShieldBoxItem.Type, ShieldBoxType.Bt.ToString()); break;
+                    case "Box2": XmlReaderWriter.SetBoxAttribute(Files.BoxData, 2, ShieldBoxItem.Type, ShieldBoxType.Bt.ToString()); break;
+                    case "Box3": XmlReaderWriter.SetBoxAttribute(Files.BoxData, 3, ShieldBoxItem.Type, ShieldBoxType.Bt.ToString()); break;
+                    case "Box4": XmlReaderWriter.SetBoxAttribute(Files.BoxData, 4, ShieldBoxItem.Type, ShieldBoxType.Bt.ToString()); break;
+                    case "Box5": XmlReaderWriter.SetBoxAttribute(Files.BoxData, 5, ShieldBoxItem.Type, ShieldBoxType.Bt.ToString()); break;
+                    case "Box6": XmlReaderWriter.SetBoxAttribute(Files.BoxData, 6, ShieldBoxItem.Type, ShieldBoxType.Bt.ToString()); break;
                     default:
                         break;
                 }
@@ -1171,12 +1152,12 @@ namespace RackTool
             {
                 switch (listViewBox.SelectedItems[0].Text)
                 {
-                    case "Box1": XmlReaderWriter.SetBoxAttribute(Files.BoxData, 1, ShieldBoxItem.Type, ShieldBoxType.WIFI.ToString()); break;
-                    case "Box2": XmlReaderWriter.SetBoxAttribute(Files.BoxData, 2, ShieldBoxItem.Type, ShieldBoxType.WIFI.ToString()); break;
-                    case "Box3": XmlReaderWriter.SetBoxAttribute(Files.BoxData, 3, ShieldBoxItem.Type, ShieldBoxType.WIFI.ToString()); break;
-                    case "Box4": XmlReaderWriter.SetBoxAttribute(Files.BoxData, 4, ShieldBoxItem.Type, ShieldBoxType.WIFI.ToString()); break;
-                    case "Box5": XmlReaderWriter.SetBoxAttribute(Files.BoxData, 5, ShieldBoxItem.Type, ShieldBoxType.WIFI.ToString()); break;
-                    case "Box6": XmlReaderWriter.SetBoxAttribute(Files.BoxData, 6, ShieldBoxItem.Type, ShieldBoxType.WIFI.ToString()); break;
+                    case "Box1": XmlReaderWriter.SetBoxAttribute(Files.BoxData, 1, ShieldBoxItem.Type, ShieldBoxType.Wifi.ToString()); break;
+                    case "Box2": XmlReaderWriter.SetBoxAttribute(Files.BoxData, 2, ShieldBoxItem.Type, ShieldBoxType.Wifi.ToString()); break;
+                    case "Box3": XmlReaderWriter.SetBoxAttribute(Files.BoxData, 3, ShieldBoxItem.Type, ShieldBoxType.Wifi.ToString()); break;
+                    case "Box4": XmlReaderWriter.SetBoxAttribute(Files.BoxData, 4, ShieldBoxItem.Type, ShieldBoxType.Wifi.ToString()); break;
+                    case "Box5": XmlReaderWriter.SetBoxAttribute(Files.BoxData, 5, ShieldBoxItem.Type, ShieldBoxType.Wifi.ToString()); break;
+                    case "Box6": XmlReaderWriter.SetBoxAttribute(Files.BoxData, 6, ShieldBoxItem.Type, ShieldBoxType.Wifi.ToString()); break;
                     default:
                         break;
                 }
@@ -1196,12 +1177,12 @@ namespace RackTool
             {
                 switch (listViewBox.SelectedItems[0].Text)
                 {
-                    case "Box1": XmlReaderWriter.SetBoxAttribute(Files.BoxData, 1, ShieldBoxItem.Type, ShieldBoxType.RF.ToString()); break;
-                    case "Box2": XmlReaderWriter.SetBoxAttribute(Files.BoxData, 2, ShieldBoxItem.Type, ShieldBoxType.RF.ToString()); break;
-                    case "Box3": XmlReaderWriter.SetBoxAttribute(Files.BoxData, 3, ShieldBoxItem.Type, ShieldBoxType.RF.ToString()); break;
-                    case "Box4": XmlReaderWriter.SetBoxAttribute(Files.BoxData, 4, ShieldBoxItem.Type, ShieldBoxType.RF.ToString()); break;
-                    case "Box5": XmlReaderWriter.SetBoxAttribute(Files.BoxData, 5, ShieldBoxItem.Type, ShieldBoxType.RF.ToString()); break;
-                    case "Box6": XmlReaderWriter.SetBoxAttribute(Files.BoxData, 6, ShieldBoxItem.Type, ShieldBoxType.RF.ToString()); break;
+                    case "Box1": XmlReaderWriter.SetBoxAttribute(Files.BoxData, 1, ShieldBoxItem.Type, ShieldBoxType.Rf.ToString()); break;
+                    case "Box2": XmlReaderWriter.SetBoxAttribute(Files.BoxData, 2, ShieldBoxItem.Type, ShieldBoxType.Rf.ToString()); break;
+                    case "Box3": XmlReaderWriter.SetBoxAttribute(Files.BoxData, 3, ShieldBoxItem.Type, ShieldBoxType.Rf.ToString()); break;
+                    case "Box4": XmlReaderWriter.SetBoxAttribute(Files.BoxData, 4, ShieldBoxItem.Type, ShieldBoxType.Rf.ToString()); break;
+                    case "Box5": XmlReaderWriter.SetBoxAttribute(Files.BoxData, 5, ShieldBoxItem.Type, ShieldBoxType.Rf.ToString()); break;
+                    case "Box6": XmlReaderWriter.SetBoxAttribute(Files.BoxData, 6, ShieldBoxItem.Type, ShieldBoxType.Rf.ToString()); break;
                     default:
                         break;
                 }
@@ -1704,6 +1685,7 @@ namespace RackTool
                     _rack.Conveyor.SetCylinder(Output.SideBlockSeparateBackward, Input.SideBlockSeparateBackward, false);
                 else
                     _rack.Conveyor.ResetCylinder(Output.SideBlockSeparateBackward, Input.SideBlockSeparateBackward);
+
                 RefleshConveyorUi();
             }
             catch (Exception ex)
@@ -2059,14 +2041,14 @@ namespace RackTool
             {
                 currentPage = (TabControlPage) tabControl1.SelectedIndex;
 
-                if (toolStripStatusLabelPower.Text == "None")
-                {
-                    if (tabControl1.SelectedIndex != 6)
-                    {
-                        tabControl1.SelectedIndex = 6;
-                        throw new Exception("Please Login in");
-                    }
-                }
+                //if (toolStripStatusLabelPower.Text == "None")
+                //{
+                //    if (tabControl1.SelectedIndex != 6)
+                //    {
+                //        tabControl1.SelectedIndex = 6;
+                //        throw new Exception("Please Login in");
+                //    }
+                //}
 
                 //if (_isStart == false && tabControl1.SelectedIndex != 6 && tabControl1.SelectedIndex != 0)
                 //if (_isStart == false && tabControl1.SelectedIndex != 6 && tabControl1.SelectedIndex != 0)
@@ -2153,24 +2135,16 @@ namespace RackTool
 
         #region Tester
 
-        private void buttonTest_Click(object sender, EventArgs e)
-        {
-            _rack.SetRobotSpeed(defaultTestSpeed);
+        private SocketClient _client1 = new SocketClient(1001);
+        private SocketClient _client2 = new SocketClient(1002);
+        private SocketClient _client3 = new SocketClient(1003);
+        private SocketClient _client4 = new SocketClient(1004);
+        private SocketClient _client5 = new SocketClient(1005);
+        private SocketClient _client6 = new SocketClient(1006);
+        private SocketClient _selectedSocketClient = null;
 
-            Task.Run(() =>
-            {
 
-                try
-                {
-                    _rack.Test();
-                }
-                catch (Exception ex)
-                {
 
-                    MessageBox.Show(ex.Message);
-                }
-            });
-        }
         private void buttonBoxSave_Click_1(object sender, EventArgs e)
         {
 
@@ -2217,6 +2191,164 @@ namespace RackTool
         private void buttonStartConveyorManager_Click(object sender, EventArgs e)
         {
             _rack.StartConveyorManager();
+        }
+
+        private void buttonReset_Click(object sender, EventArgs e)
+        {
+            richTextBoxMessage.Text = "System OK";
+            _rack.Reset();           
+        }
+
+        private void buttonBeltPick_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (buttonBeltPick.Text == "Run")
+                    _rack.EcatIo.SetOutput(Output.BeltPick, true);
+                else
+                    _rack.EcatIo.SetOutput(Output.BeltPick, false); 
+
+                RefleshConveyorUi();
+            }
+            catch (Exception ex)
+            {
+
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private void buttonBeltConveyorOne_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (buttonBeltConveyorOne.Text == "Run")
+                    _rack.EcatIo.SetOutput(Output.BeltConveyorOne, true);
+                else
+                    _rack.EcatIo.SetOutput(Output.BeltConveyorOne, false);
+
+                RefleshConveyorUi();
+            }
+            catch (Exception ex)
+            {
+
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private void buttonBeltBin_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (buttonBeltBin.Text == "Run")
+                    _rack.EcatIo.SetOutput(Output.BeltBin, true);
+                else
+                    _rack.EcatIo.SetOutput(Output.BeltBin, false);
+
+                RefleshConveyorUi();
+            }
+            catch (Exception ex)
+            {
+
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private void buttonStartTesterSimulator_Click(object sender, EventArgs e)
+        {
+            _selectedSocketClient = _client1;
+            _client1.Start();
+            _client2.Start();
+            _client3.Start();
+            _client4.Start();
+            _client5.Start();
+            _client6.Start();
+        }
+
+        private void radioButtonBox1_CheckedChanged(object sender, EventArgs e)
+        {
+            RadioButton radioButton = (RadioButton) sender;
+            if (radioButton.Checked)
+            {
+                _selectedSocketClient = _client1;
+            }            
+        }
+
+        private void radioButtonBox2_CheckedChanged(object sender, EventArgs e)
+        {
+            RadioButton radioButton = (RadioButton)sender;
+            if (radioButton.Checked)
+            {
+                _selectedSocketClient = _client2;
+            }
+        }
+
+        private void radioButtonBox3_CheckedChanged(object sender, EventArgs e)
+        {
+            RadioButton radioButton = (RadioButton)sender;
+            if (radioButton.Checked)
+            {
+                _selectedSocketClient = _client3;
+            }
+        }
+
+        private void radioButtonBox4_CheckedChanged(object sender, EventArgs e)
+        {
+            RadioButton radioButton = (RadioButton)sender;
+            if (radioButton.Checked)
+            {
+                _selectedSocketClient = _client4;
+            }
+        }
+
+        private void radioButtonBox5_CheckedChanged(object sender, EventArgs e)
+        {
+            RadioButton radioButton = (RadioButton)sender;
+            if (radioButton.Checked)
+            {
+                _selectedSocketClient = _client5;
+            }
+        }
+
+        private void radioButtonBox6_CheckedChanged(object sender, EventArgs e)
+        {
+            RadioButton radioButton = (RadioButton)sender;
+            if (radioButton.Checked)
+            {
+                _selectedSocketClient = _client6;
+            }
+        }
+
+        private void buttonTesterSendPass_Click(object sender, EventArgs e)
+        {
+            _selectedSocketClient.SetPass();
+        }
+
+        private void buttonTesterSendFail_Click(object sender, EventArgs e)
+        {
+            _selectedSocketClient.SetFail();
+        }
+
+        private void buttonStartPhoneServer_Click(object sender, EventArgs e)
+        {
+            _rack.StartPhoneServer();
+        }
+
+        private async void buttonCheckBox_Click(object sender, EventArgs e)
+        {
+            Button button = (Button) sender;
+            button.Enabled = false;
+            await Task.Run(() =>
+            {
+                try
+                {
+                    _rack.CheckBox();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
+            });
+            button.Enabled = true;
         }
     }
 }

@@ -106,7 +106,7 @@ namespace Rack
                 EcatPosActValAddr = MotorX1.EcatPosActValAddr + 18,
                 EncCtsPerR = 131072,
                 BallScrewLead = 16,
-                HomeOffset = 12.7,
+                HomeOffset = 256,
                 CriticalErrAcc = 100,
                 CriticalErrVel = 100,
                 CriticalErrIdle = 5,
@@ -143,7 +143,7 @@ namespace Rack
                 EcatPosActValAddr = 113,
                 EncCtsPerR = 10000,
                 BallScrewLead = 360.0 * 1.0 / 100.0,
-                HomeOffset = -1.9,
+                HomeOffset = 30-2.56,
                 CriticalErrAcc = 100,
                 CriticalErrVel = 100,
                 CriticalErrIdle = 5,
@@ -324,9 +324,9 @@ namespace Rack
             foreach (var mtr in Motors)
             {
                 _ch.SetVelocity(mtr.Id, velocity*mtr.SpeedFactor);
-                _ch.SetAcceleration(mtr.Id, velocity * 10);
-                _ch.SetDeceleration(mtr.Id, velocity * 10);
-                _ch.SetKillDeceleration(mtr.Id, velocity * 100);
+                _ch.SetAcceleration(mtr.Id, velocity * 10.0);
+                _ch.SetDeceleration(mtr.Id, velocity * 10.0);
+                _ch.SetKillDeceleration(mtr.Id, velocity * 100.0);
                 _ch.SetJerk(mtr.Id, velocity * mtr.JerkFactor);
             }
         }
@@ -377,11 +377,18 @@ namespace Rack
 
         public void EnableAll(int timeout = 2000)
         {
-            foreach (var mtr in Motors)
+            try
             {
-                _ch.Enable(mtr.Id);
-                //Wait till enabled
-                _ch.WaitMotorEnabled(mtr.Id, 1, timeout);
+                foreach (var mtr in Motors)
+                {
+                    _ch.Enable(mtr.Id);
+                    //Wait till enabled
+                    _ch.WaitMotorEnabled(mtr.Id, 1, timeout);
+                }
+            }
+            catch (Exception e)
+            {
+                throw new Exception("One of the ethercat motor can't be enabled: " + e.Message);
             }
         }
 
@@ -440,7 +447,7 @@ namespace Rack
         /// <param name="motor"></param>
         /// <param name="point"></param>
         /// <param name="timeout"></param>
-        public void ToPointWaitTillEnd(Motor motor, double point, int timeout=60000)
+        public void ToPointWaitTillEnd(Motor motor, double point, int timeout=120000)
         {
             point *= motor.Direction;
             _ch.ToPoint(MotionFlags.ACSC_AMF_MAXIMUM, motor.Id, point);

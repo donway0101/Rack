@@ -4,33 +4,28 @@ using ACS.SPiiPlusNET;
 
 namespace Rack
 {
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <remarks>If estop button is on, then ethercat bus error occur, notify user, use reboot method</remarks>
-    /// Power up, Ethercat error occur, wire problem? 
     public partial class CqcRack
     {
+        #region Private
         private readonly string _ip;
         private readonly Api _ch = new Api();
         private const double YIsInBox = 200;
         private const double YIsNearHome = 10;
-        private bool _eventEnabled;
+        private bool _eventEnabled; 
+        #endregion
 
-        public bool ShieldBoxOnline { get; set; } = false;
-        public bool TesterOnline { get; set; } = false;
+        #region Robot
+
+        public bool RobotInSimulateMode { get; set; } = true;
+        public bool ShieldBoxOnline { get; set; } = true;
+        public bool TesterOnline { get; set; } = true;
         public bool TestRun { get; set; }
         public bool StepperOnline { get; set; } = true;
         public bool ConveyorOnline { get; set; } = true;
         public bool MotorsOnline { get; set; } = true;
         public bool EthercatOnline { get; set; } = true;
-        public double DefaultRobotSpeed { get; set; } = 10;
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// Todo read xml?
-        public long PhoneCount { get; set; }
+        public double DefaultRobotSpeed { get; set; } = 10;        
 
         public bool RobotHomeComplete { get; set; }
         public bool SetupComplete { get; set; }
@@ -38,26 +33,27 @@ namespace Rack
         public EthercatMotion Motion;
         public Stepper Steppers;
         public EthercatIo EcatIo;
-        public Conveyor Conveyor;
-       
+
+        public bool SystemFault { get; set; }
+        public bool ConveyorFault { get; set; }
+        #endregion
+
+        #region ShieldBox
         public ShieldBox ShieldBox1 { get; set; }
         public ShieldBox ShieldBox2 { get; set; }
         public ShieldBox ShieldBox3 { get; set; }
         public ShieldBox ShieldBox4 { get; set; }
         public ShieldBox ShieldBox5 { get; set; }
-        public ShieldBox ShieldBox6 { get; set; }        
+        public ShieldBox ShieldBox6 { get; set; }
 
         private readonly object _shieldBoxsLocker = new object();
 
-        /// <summary>
-        /// Boxes which is available.
-        /// </summary>
-        /// Todo: current there is only one type of shiled box.
-        ///  if more than one type, create another list,
-        ///     change next target position strategy.
-        /// <seealso cref="SortPhones"/>
         public ShieldBox[] ShieldBoxs { get; set; }
 
+        private bool _shieldBoxInstanced = false;
+        #endregion
+
+        #region Tester
         public Tester Tester1 { get; set; }
         public Tester Tester2 { get; set; }
         public Tester Tester3 { get; set; }
@@ -67,20 +63,42 @@ namespace Rack
 
         public Tester[] Testers { get; set; }
 
-        public Phone LatestPhone { get; set; }
-
-        private Thread _phoneServerThread;
-        private readonly object _phoneToBeServedLocker = new object();
-
+        private bool _testerInstanced = false;
+        #endregion
+      
+        #region Conveyor
+        public Conveyor Conveyor { get; set; }
         public bool ConveyorIsBusy { get; set; }
         private readonly ManualResetEvent _conveyorWorkingManualResetEvent = new ManualResetEvent(true);
 
         private Thread _conveyorManagerThread;
+        #endregion
+
+        #region PhoneServer
+        // Todo read xml?
+        public long PhoneCount { get; set; }
+
+        /// <summary>
+        /// Can be on conveyor or on gripper.
+        /// </summary>
+        public Phone LatestPhone { get; set; }
+
+        private Thread _phoneServerThread;
+
+        private readonly object _phoneToBeServedLocker = new object();
 
         /// <summary>
         /// Phones only which already has place to go can add to the list.
         /// </summary>
         public List<Phone> PhoneToBeServed = new List<Phone>();
+
+        private readonly object _rfPhoneLocker = new object();
+
+        public List<Phone> RfPhones = new List<Phone>();
+
+        private readonly object _wifiPhoneLocker = new object();
+
+        public List<Phone> WifiPhones = new List<Phone>();
 
         private readonly object _availableBoxLocker = new object();
 
@@ -92,7 +110,12 @@ namespace Rack
         /// Todo set it if any box state changes.
         public ManualResetEvent PhoneServerManualResetEvent = new ManualResetEvent(false);
 
-        public RackTestMode TestMode { get; set; } = RackTestMode.ABC;        
+        public RackTestMode WifiTestMode { get; set; } = RackTestMode.AB;
+
+        public RackTestMode RfTestMode { get; set; } = RackTestMode.ABC;
+
+        public RackTestMode BtTestMode { get; set; } = RackTestMode.AB;
+        #endregion
 
         #region Events
         public delegate void ErrorOccuredEventHandler(object sender, int code, string description);
@@ -121,7 +144,6 @@ namespace Rack
         {
             InfoOccured?.Invoke(this, code, description);
         }
-
         #endregion
 
     }

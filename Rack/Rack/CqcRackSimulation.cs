@@ -1,31 +1,37 @@
 ﻿namespace Rack
 {
+    /// <summary>
+    /// 4 kinds of gold phone max.
+    /// </summary>
     public partial class CqcRack
     {
-        //Todo 
         public void AddNewPhone()
         {
             Phone phone = new Phone()
             {
-                AtBoxType = ShieldBoxType.RF,
+                Step = RackTestStep.Rf,
                 FailCount = 0,
                 Id = PhoneCount++,
+                CurrentTargetPosition = Motion.PickPosition,
             };
+
+            phone.TestComplete -= Phone_TestComplete;
+            phone.TestComplete += Phone_TestComplete;
 
             AddPhoneToBeServed(phone);
 
             LatestPhone = phone;
         }       
 
-        public void AddGoldPhone()
-        {
-            AddPhoneToBeServed(new Phone()
-            {
-                AtBoxType = ShieldBoxType.RF,
-                Id = -1,
-                Type = PhoneType.Golden,
-            });
-        }
+        //public void AddGoldPhone()
+        //{
+        //    AddPhoneToBeServed(new Phone()
+        //    {
+        //        AtBoxType = ShieldBoxType.Rf,
+        //        Id = -1,
+        //        Type = PhoneType.Golden,
+        //    });
+        //}
 
         public void ShieldBoxSetupForSimulation()
         {
@@ -50,7 +56,7 @@
 
         public void TesterSetupForSimulation()
         {
-            TesterSetup();
+            //TesterSetup();
         }
     }
 }

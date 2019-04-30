@@ -25,7 +25,7 @@ namespace Rack
                 new XAttribute(ShieldBoxItem.BoxId.ToString(), 1),
                 new XAttribute(ShieldBoxItem.COM.ToString(), "COM1"),
                 new XAttribute(ShieldBoxItem.State.ToString(), "Enable"),
-                new XAttribute(ShieldBoxItem.Type.ToString(), ShieldBoxType.BT.ToString()),
+                new XAttribute(ShieldBoxItem.Type.ToString(), ShieldBoxType.Bt.ToString()),
                 new XAttribute(ShieldBoxItem.Label.ToString(), LabelType.A),
                 new XAttribute(ShieldBoxItem.Ip.ToString(), "None"),
                 new XAttribute(ShieldBoxItem.Port.ToString(), "None")
@@ -36,7 +36,7 @@ namespace Rack
                 new XAttribute(ShieldBoxItem.BoxId.ToString(), 2),
                 new XAttribute(ShieldBoxItem.COM.ToString(), "COM1"),
                 new XAttribute(ShieldBoxItem.State.ToString(), "Enable"),
-                new XAttribute(ShieldBoxItem.Type.ToString(), ShieldBoxType.BT.ToString()),
+                new XAttribute(ShieldBoxItem.Type.ToString(), ShieldBoxType.Bt.ToString()),
                 new XAttribute(ShieldBoxItem.Label.ToString(), LabelType.A),
                 new XAttribute(ShieldBoxItem.Ip.ToString(), "None"),
                 new XAttribute(ShieldBoxItem.Port.ToString(), "None")
@@ -46,7 +46,7 @@ namespace Rack
                 new XAttribute(ShieldBoxItem.BoxId.ToString(), 3),
                 new XAttribute(ShieldBoxItem.COM.ToString(), "COM1"),
                 new XAttribute(ShieldBoxItem.State.ToString(), "Enable"),
-                new XAttribute(ShieldBoxItem.Type.ToString(), ShieldBoxType.BT.ToString()),
+                new XAttribute(ShieldBoxItem.Type.ToString(), ShieldBoxType.Bt.ToString()),
                 new XAttribute(ShieldBoxItem.Label.ToString(), LabelType.A),
                 new XAttribute(ShieldBoxItem.Ip.ToString(), "None"),
                 new XAttribute(ShieldBoxItem.Port.ToString(), "None")
@@ -57,7 +57,7 @@ namespace Rack
                 new XAttribute(ShieldBoxItem.BoxId.ToString(), 4),
                 new XAttribute(ShieldBoxItem.COM.ToString(), "COM1"),
                 new XAttribute(ShieldBoxItem.State.ToString(), "Enable"),
-                new XAttribute(ShieldBoxItem.Type.ToString(), ShieldBoxType.BT.ToString()),
+                new XAttribute(ShieldBoxItem.Type.ToString(), ShieldBoxType.Bt.ToString()),
                 new XAttribute(ShieldBoxItem.Label.ToString(), LabelType.A),
                 new XAttribute(ShieldBoxItem.Ip.ToString(), "None"),
                 new XAttribute(ShieldBoxItem.Port.ToString(), "None")
@@ -67,7 +67,7 @@ namespace Rack
                 new XAttribute(ShieldBoxItem.BoxId.ToString(), 5),
                 new XAttribute(ShieldBoxItem.COM.ToString(), "COM1"),
                 new XAttribute(ShieldBoxItem.State.ToString(), "Enable"),
-                new XAttribute(ShieldBoxItem.Type.ToString(), ShieldBoxType.BT.ToString()),
+                new XAttribute(ShieldBoxItem.Type.ToString(), ShieldBoxType.Bt.ToString()),
                 new XAttribute(ShieldBoxItem.Label.ToString(), LabelType.A),
                 new XAttribute(ShieldBoxItem.Ip.ToString(), "None"),
                 new XAttribute(ShieldBoxItem.Port.ToString(), "None")
@@ -77,7 +77,7 @@ namespace Rack
                 new XAttribute(ShieldBoxItem.BoxId.ToString(), 6),
                 new XAttribute(ShieldBoxItem.COM.ToString(), "COM1"),
                 new XAttribute(ShieldBoxItem.State.ToString(), "Enable"),
-                new XAttribute(ShieldBoxItem.Type.ToString(), ShieldBoxType.BT.ToString()),
+                new XAttribute(ShieldBoxItem.Type.ToString(), ShieldBoxType.Bt.ToString()),
                 new XAttribute(ShieldBoxItem.Label.ToString(), LabelType.A),
                 new XAttribute(ShieldBoxItem.Ip.ToString(), "None"),
                 new XAttribute(ShieldBoxItem.Port.ToString(), "None")

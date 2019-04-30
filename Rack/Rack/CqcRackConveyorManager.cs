@@ -15,8 +15,6 @@ namespace Rack
         /// 
         /// </summary>
         /// //When to run belt? As long as no picking or placing.
-        /// //When to ready for picking? make it a subroutine? When pick, call it.
-        /// //Other time, no phone, prepare it.
         private void ConveyorManager()
         {
             while (true)
@@ -25,21 +23,74 @@ namespace Rack
 
                 try
                 {
-                    if (Conveyor.PickBufferHasPhone && LatestPhone==null)
-                    {                       
-                        ConveyorIsBusy = true;
-                        Conveyor.InposForPicking();
-                        AddNewPhone();
-                        ConveyorIsBusy = false;
+                    ConveyorIsBusy = true;
+
+                    if (LatestPhone==null)
+                    {
+                        if (Conveyor.PickBufferHasPhone)
+                        {
+                            if (OkToLetInNewPhone())
+                            {
+                                Conveyor.InposForPicking();
+                                AddNewPhone();
+                            }
+                        }
                     }
+
+                    if (LatestPhone == null || Conveyor.PickBufferHasPhone==false || Conveyor.HasPlaceAPhone)
+                    {
+                        Conveyor.RunBeltPick();
+                    }
+
+                    if (LatestPhone != null && Conveyor.PickBufferHasPhone && Conveyor.HasPlaceAPhone == false)
+                    {
+                        Conveyor.StopBeltPick();
+                    }
+
+                    ConveyorIsBusy = false;
+
                 }
                 catch (Exception e)
                 {
                     OnErrorOccured(444, e.Message);
                     Delay(5000);
                 }
+
                 Delay(100);
             }
+        }
+
+        private bool OkToLetInNewPhone()
+        {
+            int failPhoneNum = 0;
+            foreach (var box in ShieldBoxs)
+            {
+                if (box.Enabled)
+                {
+                    if (box.Phone != null)
+                    {
+                        if (box.Phone.TestResult == TestResult.Fail)
+                        {
+                            failPhoneNum++;
+                        }
+                    }
+                }
+            }
+
+            if (failPhoneNum>1)
+            {
+                return false;
+            }
+
+            foreach (var box in ShieldBoxs)
+            {
+                if (box.Enabled && box.Empty && box.Type == ShieldBoxType.Rf)
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         public void RobotTakeControlOnConveyor(int timeout=30000)
@@ -64,19 +115,6 @@ namespace Rack
 
         public void StartConveyorManager()
         {
-            if (ConveyorOnline)
-            {
-                if (Conveyor == null)
-                {
-                    Conveyor = new Conveyor(EcatIo);
-                }
-
-                Conveyor.Start();
-
-                Conveyor.ErrorOccured -= Conveyor_ErrorOccured;
-                Conveyor.ErrorOccured += Conveyor_ErrorOccured;
-            }
-
             if (_conveyorManagerThread == null)
             {
                 _conveyorManagerThread = new Thread(ConveyorManager)
@@ -89,6 +127,8 @@ namespace Rack
             {
                 _conveyorManagerThread.Start();
             }
+
+            _conveyorWorkingManualResetEvent.Set();
         }
 
         private void Conveyor_ErrorOccured(object sender, int code, string description)

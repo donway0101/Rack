@@ -48,13 +48,13 @@ namespace RackFunctionTester
 
         private void button6_Click(object sender, EventArgs e)
         {
-            _rack.ConveyorOnline = false;
-            _rack.StepperOnline = false;
-            _rack.Start();
-            _rack.StartPhoneServer();
-            _rack.PhoneServerManualResetEvent.Set();
-            _rack.ShieldBoxSetupForSimulation();
-            _rack.TesterSetupForSimulation();
+            //_rack.ConveyorOnline = false;
+            //_rack.StepperOnline = false;
+            //_rack.Start();
+            //_rack.StartPhoneServer();
+            //_rack.PhoneServerManualResetEvent.Set();
+            //_rack.ShieldBoxSetupForSimulation();
+            //_rack.TesterSetupForSimulation();
 
         }
 
@@ -71,20 +71,19 @@ namespace RackFunctionTester
         private int _selectBoxId = 1;
         private void button11_Click(object sender, EventArgs e)
         {
-            ShieldBox box = _rack.ConvertIdToShieldBox(_selectBoxId);
-            box.Phone.TestResult = TestResult.Pass;
-            //Todo, in reality, it's true after box is opened.
-            box.Available = true;
-            _rack.AddPhoneToBeServed(box.Phone);
+            //ShieldBox box = _rack.ConvertIdToShieldBox(_selectBoxId);
+            //box.Phone.TestResult = TestResult.Pass;
+            //box.Available = true;
+            //_rack.AddPhoneToBeServed(box.Phone);
         }
 
         private void button12_Click(object sender, EventArgs e)
         {
-            ShieldBox box = _rack.ConvertIdToShieldBox(_selectBoxId);
-            box.Phone.TestResult = TestResult.Fail;
-            box.Phone.FailCount++;
-            box.Available = true;
-            _rack.AddPhoneToBeServed(box.Phone);
+            //ShieldBox box = _rack.ConvertIdToShieldBox(_selectBoxId);
+            //box.Phone.TestResult = TestResult.Fail;
+            //box.Phone.FailCount++;
+            //box.Available = true;
+            //_rack.AddPhoneToBeServed(box.Phone);
         }
 
         private void radioButton1_CheckedChanged(object sender, EventArgs e)

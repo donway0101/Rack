@@ -105,6 +105,10 @@
       <Project>{ba6788fd-7479-47d6-b29f-118161d22071}</Project>
       <Name>Rack</Name>
     </ProjectReference>
+    <ProjectReference Include="..\TesterSimulator\TesterSimulator.csproj">
+      <Project>{C1F64E26-D484-4A2D-8B3A-ED3FE92F7CB6}</Project>
+      <Name>TesterSimulator</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Connected Services\" />

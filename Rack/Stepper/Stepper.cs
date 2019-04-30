@@ -27,14 +27,9 @@ namespace Rack
         private static readonly object PortWriteLocker = new object();
 
         /// <summary>
-        /// Information sent from the driver.
-        /// </summary>
-        private string Response;
-
-        /// <summary>
         /// RS232 communication is slow, and it may not send all message in a time.
         /// </summary>
-        private string PartialResponse;
+        private string Response;
 
         /// <summary>
         /// Every single time Host send a command, it should check for driver response.
@@ -78,14 +73,21 @@ namespace Rack
         /// </summary>
         public void Setup()
         {
-            Close();
-            Thread.Sleep(500);
-            SerialPort = new SerialPort(PortName, 9600, Parity.None, 8, StopBits.One);
-            SerialPort.Open();
-            SerialPort.DataReceived += SerialPort_DataReceived;
-            Thread.Sleep(300);
+            try
+            {
+                Close();
+                Thread.Sleep(500);
+                SerialPort = new SerialPort(PortName, 9600, Parity.None, 8, StopBits.One);
+                SerialPort.Open();
+                SerialPort.DataReceived += SerialPort_DataReceived;
+                Thread.Sleep(300);
 
-            Connect();
+                Connect();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Stepper motor setup error: " + ex.Message);
+            }
         }
 
 
@@ -144,37 +146,13 @@ namespace Rack
         /// <param name="e"></param>
         private void SerialPort_DataReceived(object sender, SerialDataReceivedEventArgs e)
         {
-            PartialResponse += SerialPort.ReadExisting();
+            Response += SerialPort.ReadExisting();
 
             //A whole response from driver should end with carriage return.
-            if (PartialResponse.Contains("\r"))
+            if (Response.Contains("\r"))
             {
-                Console.WriteLine(PartialResponse);
-                Response = PartialResponse;
-                PartialResponse = string.Empty;
+                //Console.WriteLine(PartialResponse);
                 DriverResponsed = true;
-            }
-        }
-
-        /// <summary>
-        /// Send command to motor through serial port.
-        /// </summary>
-        /// <param name="cmd"></param>
-        public void SendCommand(string cmd)
-        {
-            lock (PortWriteLocker)
-            {            
-                try
-                {
-                    cmd += "\r"; //Add a carriage return.
-                    byte[] buffer = Encoding.ASCII.GetBytes(cmd);
-                    SerialPort.Write(buffer, 0, buffer.Length);
-                    DriverResponsed = false;
-                }
-                catch (Exception)
-                {
-                    throw;
-                }
             }
         }
 
@@ -192,9 +170,9 @@ namespace Rack
                 {                 
                     throw new Exception("Driver response timeout.");
                 }
-
-                Thread.Sleep(5);
+                Thread.Sleep(10);
             }
+
             return Response.Replace("\r", "");
         }
 
@@ -222,27 +200,28 @@ namespace Rack
         /// Send command to motor through serial port, and wait for response.
         /// </summary>
         /// <param name="cmd"></param>
-        /// <seealso cref="SendCommand"/>
         public string SendCommand(RackGripper motor,string cmd)
         {
             lock (PortWriteLocker)
             {
-                int failCount = 0;
+                int failCount = 0;               
                 string command = GetMotorId(motor) + cmd + "\r"; //Add a carriage return.
                 byte[] buffer = Encoding.ASCII.GetBytes(command);
+
                 while (true)
                 {
                     try
                     {                     
+                        Thread.Sleep(100);
                         DriverResponsed = false;
+                        Response = string.Empty;
                         SerialPort.Write(buffer, 0, buffer.Length);
                         return GetResponse();
                     }
                     catch (Exception)
                     {
                         failCount++;
-                        Thread.Sleep(50);
-                        PartialResponse = string.Empty;
+                        Thread.Sleep(200);
                         if (failCount>5)
                         {
                             throw new Exception(command + " get no response.");
@@ -675,11 +654,30 @@ namespace Rack
         public double GetPosition(RackGripper motor)
         {
             // Response of "IP" is always hexadecimal
-            string res = SendCommand(motor, "IP");
-            string posString = res.Substring(4, res.Length - 4);
+            string res;
+            string posString;
+            int pos = 0;
+            int failCount = 0;
 
-            int pos = Convert.ToInt32(posString);
-
+            while (true)
+            {
+                try
+                {
+                    res = SendCommand(motor, "IP");
+                    posString = res.Substring(4, res.Length - 4);
+                    pos = Convert.ToInt32(posString);
+                    break;
+                }
+                catch (Exception e)
+                {
+                    failCount++;
+                    if (failCount>3)
+                    {
+                        throw new Exception("GetPosition of " + motor + " failed." + e.Message);
+                    }
+                }
+            }
+               
             return pos / _countPerDegree;
         }
 

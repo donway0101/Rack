@@ -33,9 +33,9 @@
     }
     public enum ShieldBoxType
     {
-        RF,
-        WIFI,
-        BT,
+        Rf,
+        Wifi,
+        Bt,
     }
 
     public struct Files

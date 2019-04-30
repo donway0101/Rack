@@ -95,10 +95,11 @@
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.groupBoxMain = new System.Windows.Forms.GroupBox();
+            this.buttonCheckBox = new System.Windows.Forms.Button();
+            this.buttonStartPhoneServer = new System.Windows.Forms.Button();
+            this.buttonReset = new System.Windows.Forms.Button();
             this.labelSpeed1 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
-            this.checkBoxAutoRun = new System.Windows.Forms.CheckBox();
-            this.buttonAutoRun = new System.Windows.Forms.Button();
             this.trackBarSetSpeed1 = new System.Windows.Forms.TrackBar();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
@@ -123,7 +124,6 @@
             this.groupBoxConveyorOpreate = new System.Windows.Forms.GroupBox();
             this.checkBoxPickConveyorMoveForward = new System.Windows.Forms.CheckBox();
             this.buttonConveyorStart = new System.Windows.Forms.Button();
-            this.buttonForInpos = new System.Windows.Forms.Button();
             this.buttonForPicked = new System.Windows.Forms.Button();
             this.buttonForReady = new System.Windows.Forms.Button();
             this.groupBox6 = new System.Windows.Forms.GroupBox();
@@ -138,6 +138,8 @@
             this.labelGold3 = new System.Windows.Forms.Label();
             this.labelGold1 = new System.Windows.Forms.Label();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
+            this.buttonBeltConveyorOne = new System.Windows.Forms.Button();
+            this.buttonBeltPick = new System.Windows.Forms.Button();
             this.buttonUpBlockSeparateBackward = new System.Windows.Forms.Button();
             this.buttonUpBlockSeparateForward = new System.Windows.Forms.Button();
             this.buttonUpBlockPickForward = new System.Windows.Forms.Button();
@@ -152,6 +154,7 @@
             this.labelConveyorOneIn = new System.Windows.Forms.Label();
             this.labelPickBufferHasPhoneBackward = new System.Windows.Forms.Label();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.buttonBeltBin = new System.Windows.Forms.Button();
             this.labelConveyorBinIn = new System.Windows.Forms.Label();
             this.labelConveyorBinInTwo = new System.Windows.Forms.Label();
             this.tabPage3 = new System.Windows.Forms.TabPage();
@@ -185,13 +188,20 @@
             this.cToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.imageList1 = new System.Windows.Forms.ImageList(this.components);
             this.tabPage5 = new System.Windows.Forms.TabPage();
+            this.buttonTesterSendFail = new System.Windows.Forms.Button();
+            this.buttonTesterSendPass = new System.Windows.Forms.Button();
+            this.buttonStartTesterSimulator = new System.Windows.Forms.Button();
+            this.groupBoxSelectBox = new System.Windows.Forms.GroupBox();
+            this.radioButtonBox6 = new System.Windows.Forms.RadioButton();
+            this.radioButtonBox5 = new System.Windows.Forms.RadioButton();
+            this.radioButtonBox4 = new System.Windows.Forms.RadioButton();
+            this.radioButtonBox3 = new System.Windows.Forms.RadioButton();
+            this.radioButtonBox2 = new System.Windows.Forms.RadioButton();
+            this.radioButtonBox1 = new System.Windows.Forms.RadioButton();
             this.groupBox9 = new System.Windows.Forms.GroupBox();
             this.buttonCreateFile = new System.Windows.Forms.Button();
             this.buttonCreateXml = new System.Windows.Forms.Button();
             this.buttonBoxSave = new System.Windows.Forms.Button();
-            this.groupBox8 = new System.Windows.Forms.GroupBox();
-            this.buttonTest = new System.Windows.Forms.Button();
-            this.checkBoxIsLoop = new System.Windows.Forms.CheckBox();
             this.tabPage6 = new System.Windows.Forms.TabPage();
             this.buttonLogLoad = new System.Windows.Forms.Button();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
@@ -238,7 +248,6 @@
             this.toolStripStatusLabel4 = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripStatusLabelPower = new System.Windows.Forms.ToolStripStatusLabel();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
-            this.buttonStartConveyorManager = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarSetSpeed2)).BeginInit();
@@ -256,8 +265,8 @@
             this.tabPage3.SuspendLayout();
             this.contextMenuStrip1.SuspendLayout();
             this.tabPage5.SuspendLayout();
+            this.groupBoxSelectBox.SuspendLayout();
             this.groupBox9.SuspendLayout();
-            this.groupBox8.SuspendLayout();
             this.tabPage6.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.tabPage7.SuspendLayout();
@@ -558,9 +567,10 @@
             // trackBarSetSpeed2
             // 
             resources.ApplyResources(this.trackBarSetSpeed2, "trackBarSetSpeed2");
+            this.trackBarSetSpeed2.LargeChange = 1;
             this.trackBarSetSpeed2.Maximum = 1000;
             this.trackBarSetSpeed2.Name = "trackBarSetSpeed2";
-            this.trackBarSetSpeed2.Value = 10;
+            this.trackBarSetSpeed2.Value = 1;
             this.trackBarSetSpeed2.Scroll += new System.EventHandler(this.trackBarSetSpeed2_Scroll);
             this.trackBarSetSpeed2.ValueChanged += new System.EventHandler(this.trackBarSetSpeed2_ValueChanged);
             // 
@@ -743,17 +753,38 @@
             // 
             // groupBoxMain
             // 
-            this.groupBoxMain.Controls.Add(this.buttonStartConveyorManager);
+            this.groupBoxMain.Controls.Add(this.buttonCheckBox);
+            this.groupBoxMain.Controls.Add(this.buttonStartPhoneServer);
+            this.groupBoxMain.Controls.Add(this.buttonReset);
             this.groupBoxMain.Controls.Add(this.buttonStop);
             this.groupBoxMain.Controls.Add(this.buttonHome);
             this.groupBoxMain.Controls.Add(this.labelSpeed1);
             this.groupBoxMain.Controls.Add(this.label5);
-            this.groupBoxMain.Controls.Add(this.checkBoxAutoRun);
-            this.groupBoxMain.Controls.Add(this.buttonAutoRun);
             this.groupBoxMain.Controls.Add(this.trackBarSetSpeed1);
             resources.ApplyResources(this.groupBoxMain, "groupBoxMain");
             this.groupBoxMain.Name = "groupBoxMain";
             this.groupBoxMain.TabStop = false;
+            // 
+            // buttonCheckBox
+            // 
+            resources.ApplyResources(this.buttonCheckBox, "buttonCheckBox");
+            this.buttonCheckBox.Name = "buttonCheckBox";
+            this.buttonCheckBox.UseVisualStyleBackColor = true;
+            this.buttonCheckBox.Click += new System.EventHandler(this.buttonCheckBox_Click);
+            // 
+            // buttonStartPhoneServer
+            // 
+            resources.ApplyResources(this.buttonStartPhoneServer, "buttonStartPhoneServer");
+            this.buttonStartPhoneServer.Name = "buttonStartPhoneServer";
+            this.buttonStartPhoneServer.UseVisualStyleBackColor = true;
+            this.buttonStartPhoneServer.Click += new System.EventHandler(this.buttonStartPhoneServer_Click);
+            // 
+            // buttonReset
+            // 
+            resources.ApplyResources(this.buttonReset, "buttonReset");
+            this.buttonReset.Name = "buttonReset";
+            this.buttonReset.UseVisualStyleBackColor = true;
+            this.buttonReset.Click += new System.EventHandler(this.buttonReset_Click);
             // 
             // labelSpeed1
             // 
@@ -764,21 +795,6 @@
             // 
             resources.ApplyResources(this.label5, "label5");
             this.label5.Name = "label5";
-            // 
-            // checkBoxAutoRun
-            // 
-            resources.ApplyResources(this.checkBoxAutoRun, "checkBoxAutoRun");
-            this.checkBoxAutoRun.Checked = true;
-            this.checkBoxAutoRun.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBoxAutoRun.Name = "checkBoxAutoRun";
-            this.checkBoxAutoRun.UseVisualStyleBackColor = true;
-            // 
-            // buttonAutoRun
-            // 
-            resources.ApplyResources(this.buttonAutoRun, "buttonAutoRun");
-            this.buttonAutoRun.Name = "buttonAutoRun";
-            this.buttonAutoRun.UseVisualStyleBackColor = true;
-            this.buttonAutoRun.Click += new System.EventHandler(this.buttonAutoRun_Click);
             // 
             // trackBarSetSpeed1
             // 
@@ -947,7 +963,6 @@
             // 
             this.groupBoxConveyorOpreate.Controls.Add(this.checkBoxPickConveyorMoveForward);
             this.groupBoxConveyorOpreate.Controls.Add(this.buttonConveyorStart);
-            this.groupBoxConveyorOpreate.Controls.Add(this.buttonForInpos);
             this.groupBoxConveyorOpreate.Controls.Add(this.buttonForPicked);
             this.groupBoxConveyorOpreate.Controls.Add(this.buttonForReady);
             resources.ApplyResources(this.groupBoxConveyorOpreate, "groupBoxConveyorOpreate");
@@ -969,13 +984,6 @@
             this.buttonConveyorStart.Name = "buttonConveyorStart";
             this.buttonConveyorStart.UseVisualStyleBackColor = true;
             this.buttonConveyorStart.Click += new System.EventHandler(this.button38_Click);
-            // 
-            // buttonForInpos
-            // 
-            resources.ApplyResources(this.buttonForInpos, "buttonForInpos");
-            this.buttonForInpos.Name = "buttonForInpos";
-            this.buttonForInpos.UseVisualStyleBackColor = true;
-            this.buttonForInpos.Click += new System.EventHandler(this.button39_Click);
             // 
             // buttonForPicked
             // 
@@ -1069,6 +1077,8 @@
             // 
             // groupBox5
             // 
+            this.groupBox5.Controls.Add(this.buttonBeltConveyorOne);
+            this.groupBox5.Controls.Add(this.buttonBeltPick);
             this.groupBox5.Controls.Add(this.buttonUpBlockSeparateBackward);
             this.groupBox5.Controls.Add(this.buttonUpBlockSeparateForward);
             this.groupBox5.Controls.Add(this.buttonUpBlockPickForward);
@@ -1085,6 +1095,20 @@
             resources.ApplyResources(this.groupBox5, "groupBox5");
             this.groupBox5.Name = "groupBox5";
             this.groupBox5.TabStop = false;
+            // 
+            // buttonBeltConveyorOne
+            // 
+            resources.ApplyResources(this.buttonBeltConveyorOne, "buttonBeltConveyorOne");
+            this.buttonBeltConveyorOne.Name = "buttonBeltConveyorOne";
+            this.buttonBeltConveyorOne.UseVisualStyleBackColor = true;
+            this.buttonBeltConveyorOne.Click += new System.EventHandler(this.buttonBeltConveyorOne_Click);
+            // 
+            // buttonBeltPick
+            // 
+            resources.ApplyResources(this.buttonBeltPick, "buttonBeltPick");
+            this.buttonBeltPick.Name = "buttonBeltPick";
+            this.buttonBeltPick.UseVisualStyleBackColor = true;
+            this.buttonBeltPick.Click += new System.EventHandler(this.buttonBeltPick_Click);
             // 
             // buttonUpBlockSeparateBackward
             // 
@@ -1175,11 +1199,19 @@
             // 
             // groupBox4
             // 
+            this.groupBox4.Controls.Add(this.buttonBeltBin);
             this.groupBox4.Controls.Add(this.labelConveyorBinIn);
             this.groupBox4.Controls.Add(this.labelConveyorBinInTwo);
             resources.ApplyResources(this.groupBox4, "groupBox4");
             this.groupBox4.Name = "groupBox4";
             this.groupBox4.TabStop = false;
+            // 
+            // buttonBeltBin
+            // 
+            resources.ApplyResources(this.buttonBeltBin, "buttonBeltBin");
+            this.buttonBeltBin.Name = "buttonBeltBin";
+            this.buttonBeltBin.UseVisualStyleBackColor = true;
+            this.buttonBeltBin.Click += new System.EventHandler(this.buttonBeltBin_Click);
             // 
             // labelConveyorBinIn
             // 
@@ -1413,11 +1445,91 @@
             // 
             // tabPage5
             // 
+            this.tabPage5.Controls.Add(this.buttonTesterSendFail);
+            this.tabPage5.Controls.Add(this.buttonTesterSendPass);
+            this.tabPage5.Controls.Add(this.buttonStartTesterSimulator);
+            this.tabPage5.Controls.Add(this.groupBoxSelectBox);
             this.tabPage5.Controls.Add(this.groupBox9);
-            this.tabPage5.Controls.Add(this.groupBox8);
             resources.ApplyResources(this.tabPage5, "tabPage5");
             this.tabPage5.Name = "tabPage5";
             this.tabPage5.UseVisualStyleBackColor = true;
+            // 
+            // buttonTesterSendFail
+            // 
+            resources.ApplyResources(this.buttonTesterSendFail, "buttonTesterSendFail");
+            this.buttonTesterSendFail.Name = "buttonTesterSendFail";
+            this.buttonTesterSendFail.UseVisualStyleBackColor = true;
+            this.buttonTesterSendFail.Click += new System.EventHandler(this.buttonTesterSendFail_Click);
+            // 
+            // buttonTesterSendPass
+            // 
+            resources.ApplyResources(this.buttonTesterSendPass, "buttonTesterSendPass");
+            this.buttonTesterSendPass.Name = "buttonTesterSendPass";
+            this.buttonTesterSendPass.UseVisualStyleBackColor = true;
+            this.buttonTesterSendPass.Click += new System.EventHandler(this.buttonTesterSendPass_Click);
+            // 
+            // buttonStartTesterSimulator
+            // 
+            resources.ApplyResources(this.buttonStartTesterSimulator, "buttonStartTesterSimulator");
+            this.buttonStartTesterSimulator.Name = "buttonStartTesterSimulator";
+            this.buttonStartTesterSimulator.UseVisualStyleBackColor = true;
+            this.buttonStartTesterSimulator.Click += new System.EventHandler(this.buttonStartTesterSimulator_Click);
+            // 
+            // groupBoxSelectBox
+            // 
+            this.groupBoxSelectBox.Controls.Add(this.radioButtonBox6);
+            this.groupBoxSelectBox.Controls.Add(this.radioButtonBox5);
+            this.groupBoxSelectBox.Controls.Add(this.radioButtonBox4);
+            this.groupBoxSelectBox.Controls.Add(this.radioButtonBox3);
+            this.groupBoxSelectBox.Controls.Add(this.radioButtonBox2);
+            this.groupBoxSelectBox.Controls.Add(this.radioButtonBox1);
+            resources.ApplyResources(this.groupBoxSelectBox, "groupBoxSelectBox");
+            this.groupBoxSelectBox.Name = "groupBoxSelectBox";
+            this.groupBoxSelectBox.TabStop = false;
+            // 
+            // radioButtonBox6
+            // 
+            resources.ApplyResources(this.radioButtonBox6, "radioButtonBox6");
+            this.radioButtonBox6.Name = "radioButtonBox6";
+            this.radioButtonBox6.UseVisualStyleBackColor = true;
+            this.radioButtonBox6.CheckedChanged += new System.EventHandler(this.radioButtonBox6_CheckedChanged);
+            // 
+            // radioButtonBox5
+            // 
+            resources.ApplyResources(this.radioButtonBox5, "radioButtonBox5");
+            this.radioButtonBox5.Name = "radioButtonBox5";
+            this.radioButtonBox5.UseVisualStyleBackColor = true;
+            this.radioButtonBox5.CheckedChanged += new System.EventHandler(this.radioButtonBox5_CheckedChanged);
+            // 
+            // radioButtonBox4
+            // 
+            resources.ApplyResources(this.radioButtonBox4, "radioButtonBox4");
+            this.radioButtonBox4.Name = "radioButtonBox4";
+            this.radioButtonBox4.UseVisualStyleBackColor = true;
+            this.radioButtonBox4.CheckedChanged += new System.EventHandler(this.radioButtonBox4_CheckedChanged);
+            // 
+            // radioButtonBox3
+            // 
+            resources.ApplyResources(this.radioButtonBox3, "radioButtonBox3");
+            this.radioButtonBox3.Name = "radioButtonBox3";
+            this.radioButtonBox3.UseVisualStyleBackColor = true;
+            this.radioButtonBox3.CheckedChanged += new System.EventHandler(this.radioButtonBox3_CheckedChanged);
+            // 
+            // radioButtonBox2
+            // 
+            resources.ApplyResources(this.radioButtonBox2, "radioButtonBox2");
+            this.radioButtonBox2.Name = "radioButtonBox2";
+            this.radioButtonBox2.UseVisualStyleBackColor = true;
+            this.radioButtonBox2.CheckedChanged += new System.EventHandler(this.radioButtonBox2_CheckedChanged);
+            // 
+            // radioButtonBox1
+            // 
+            resources.ApplyResources(this.radioButtonBox1, "radioButtonBox1");
+            this.radioButtonBox1.Checked = true;
+            this.radioButtonBox1.Name = "radioButtonBox1";
+            this.radioButtonBox1.TabStop = true;
+            this.radioButtonBox1.UseVisualStyleBackColor = true;
+            this.radioButtonBox1.CheckedChanged += new System.EventHandler(this.radioButtonBox1_CheckedChanged);
             // 
             // groupBox9
             // 
@@ -1448,29 +1560,6 @@
             this.buttonBoxSave.Name = "buttonBoxSave";
             this.buttonBoxSave.UseVisualStyleBackColor = true;
             this.buttonBoxSave.Click += new System.EventHandler(this.buttonBoxSave_Click_1);
-            // 
-            // groupBox8
-            // 
-            this.groupBox8.Controls.Add(this.buttonTest);
-            this.groupBox8.Controls.Add(this.checkBoxIsLoop);
-            resources.ApplyResources(this.groupBox8, "groupBox8");
-            this.groupBox8.Name = "groupBox8";
-            this.groupBox8.TabStop = false;
-            // 
-            // buttonTest
-            // 
-            resources.ApplyResources(this.buttonTest, "buttonTest");
-            this.buttonTest.Name = "buttonTest";
-            this.buttonTest.UseVisualStyleBackColor = true;
-            this.buttonTest.Click += new System.EventHandler(this.buttonTest_Click);
-            // 
-            // checkBoxIsLoop
-            // 
-            resources.ApplyResources(this.checkBoxIsLoop, "checkBoxIsLoop");
-            this.checkBoxIsLoop.Checked = true;
-            this.checkBoxIsLoop.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBoxIsLoop.Name = "checkBoxIsLoop";
-            this.checkBoxIsLoop.UseVisualStyleBackColor = true;
             // 
             // tabPage6
             // 
@@ -1785,13 +1874,6 @@
             this.toolStripStatusLabelPower.Name = "toolStripStatusLabelPower";
             resources.ApplyResources(this.toolStripStatusLabelPower, "toolStripStatusLabelPower");
             // 
-            // buttonStartConveyorManager
-            // 
-            resources.ApplyResources(this.buttonStartConveyorManager, "buttonStartConveyorManager");
-            this.buttonStartConveyorManager.Name = "buttonStartConveyorManager";
-            this.buttonStartConveyorManager.UseVisualStyleBackColor = true;
-            this.buttonStartConveyorManager.Click += new System.EventHandler(this.buttonStartConveyorManager_Click);
-            // 
             // Main
             // 
             resources.ApplyResources(this, "$this");
@@ -1826,9 +1908,9 @@
             this.tabPage3.ResumeLayout(false);
             this.contextMenuStrip1.ResumeLayout(false);
             this.tabPage5.ResumeLayout(false);
+            this.groupBoxSelectBox.ResumeLayout(false);
+            this.groupBoxSelectBox.PerformLayout();
             this.groupBox9.ResumeLayout(false);
-            this.groupBox8.ResumeLayout(false);
-            this.groupBox8.PerformLayout();
             this.tabPage6.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.tabPage7.ResumeLayout(false);
@@ -1899,7 +1981,6 @@
         private System.Windows.Forms.Button buttonSavePosition;
         private System.Windows.Forms.Button buttonConveyorStart;
         private System.Windows.Forms.CheckBox checkBoxPickConveyorMoveForward;
-        private System.Windows.Forms.Button buttonForInpos;
         private System.Windows.Forms.Button buttonForReady;
         private System.Windows.Forms.Button buttonForPicked;
         private System.Windows.Forms.Label label10;
@@ -1997,9 +2078,7 @@
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel3;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel4;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabelPower;
-        private System.Windows.Forms.Button buttonAutoRun;
         private System.Windows.Forms.DataGridView dataGridView1;
-        private System.Windows.Forms.CheckBox checkBoxAutoRun;
         private System.Windows.Forms.Button buttonLogLoad;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column1;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column2;
@@ -2036,10 +2115,7 @@
         private System.Windows.Forms.Button buttonX1MoveTo;
         private System.Windows.Forms.Label label22;
         private System.Windows.Forms.Button buttonEnableAll;
-        private System.Windows.Forms.CheckBox checkBoxIsLoop;
-        private System.Windows.Forms.Button buttonTest;
         private System.Windows.Forms.GroupBox groupBox9;
-        private System.Windows.Forms.GroupBox groupBox8;
         private System.Windows.Forms.Timer timer1;
         private System.Windows.Forms.Button buttonCreateXml;
         private System.Windows.Forms.Button buttonBoxSave;
@@ -2055,7 +2131,22 @@
         private System.Windows.Forms.TextBox textBoxIp;
         private System.Windows.Forms.ComboBox comboBoxShieldBox;
         private System.Windows.Forms.Button buttonBoxIpPortOk;
-        private System.Windows.Forms.Button buttonStartConveyorManager;
+        private System.Windows.Forms.Button buttonReset;
+        private System.Windows.Forms.Button buttonBeltConveyorOne;
+        private System.Windows.Forms.Button buttonBeltPick;
+        private System.Windows.Forms.Button buttonBeltBin;
+        private System.Windows.Forms.GroupBox groupBoxSelectBox;
+        private System.Windows.Forms.RadioButton radioButtonBox6;
+        private System.Windows.Forms.RadioButton radioButtonBox5;
+        private System.Windows.Forms.RadioButton radioButtonBox4;
+        private System.Windows.Forms.RadioButton radioButtonBox3;
+        private System.Windows.Forms.RadioButton radioButtonBox2;
+        private System.Windows.Forms.RadioButton radioButtonBox1;
+        private System.Windows.Forms.Button buttonStartTesterSimulator;
+        private System.Windows.Forms.Button buttonTesterSendFail;
+        private System.Windows.Forms.Button buttonTesterSendPass;
+        private System.Windows.Forms.Button buttonStartPhoneServer;
+        private System.Windows.Forms.Button buttonCheckBox;
     }
 }
 

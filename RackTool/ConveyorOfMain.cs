@@ -39,6 +39,11 @@ namespace RackTool
                 buttonSideBlockSeparateForward.Text = _rack.EcatIo.GetInput(Input.SideBlockSeparateForward) ? "Stretch" : "Retract";
                 buttonSideBlockPick.Text = _rack.EcatIo.GetInput(Input.SideBlockPick) ? "Stretch" : "Retract";
                 buttonSideBlockSeparateBackward.Text = _rack.EcatIo.GetInput(Input.SideBlockSeparateBackward) ? "Stretch" : "Retract";
+
+                buttonBeltPick.Text = _rack.EcatIo.GetOutput(Output.BeltPick) ? "Stop" : "Run";
+                buttonBeltBin.Text = _rack.EcatIo.GetOutput(Output.BeltBin) ? "Stop" : "Run";
+                buttonBeltConveyorOne.Text = _rack.EcatIo.GetOutput(Output.BeltConveyorOne) ? "Stop" : "Run";
+
                 #endregion
             }
             catch (Exception)

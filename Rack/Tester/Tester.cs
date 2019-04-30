@@ -33,13 +33,13 @@ namespace Rack
             MessageReceived?.Invoke(this, message);
         }
 
-        public delegate void InfoOccuredEventHandler(object sender, int code, string description);
+        public delegate void ErrorOccuredEventHandler(object sender, int code, string description);
 
-        public event InfoOccuredEventHandler InfoOccured;
+        public event ErrorOccuredEventHandler ErrorOccured;
 
-        protected void OnInfoOccured(int code, string description)
+        protected void OnErrorOccured(int code, string description)
         {
-            InfoOccured?.Invoke(this, code, description);
+            ErrorOccured?.Invoke(this, code, description);
         }
 
         public Tester(string ip, int portNum)
@@ -116,7 +116,7 @@ namespace Rack
                 }
                 catch (Exception e)
                 {
-                    OnInfoOccured(4, "Client may disconnect" + e.Message);
+                    OnErrorOccured(4, "Client may disconnect" + e.Message);
                     AcceptClient();
                 }
             }
@@ -135,7 +135,7 @@ namespace Rack
                     }
                     catch (Exception e)
                     {
-                        OnInfoOccured(4, "Client may disconnect" + e.Message);
+                        OnErrorOccured(4, "Client may disconnect" + e.Message);
                         AcceptClient();
                     }
                 }
@@ -154,14 +154,14 @@ namespace Rack
             {
                 if (message.Contains(";") == false)
                 {
-                    OnInfoOccured(4, "Receive unknown message " + message);
+                    OnErrorOccured(4, "Receive unknown message " + message);
                     return;
                 }
 
                 int index = message.IndexOf(";", StringComparison.Ordinal);
                 if (index+1 != message.Length)
                 {
-                    OnInfoOccured(4, "Receive unknown message " + message);
+                    OnErrorOccured(4, "Receive unknown message " + message);
                     return;
                 }
 
@@ -178,34 +178,48 @@ namespace Rack
                         SendMessage(TesterCommand.GetRobotState + "," + RobotState + ";");
                         break;
                     case TesterCommand.GetShieldedBoxState:
-                        //Todo send state.
-                        int state = (int) ShieldBox.State;
+
+                        int state = 0;
+                        if (ShieldBox.ReadyForTesting)
+                        {
+                            state = (int)ShieldBoxState.Close;
+                        }
+                        else
+                        {
+                            state = (int)ShieldBoxState.Open;
+                        }
+
                         SendMessage(TesterCommand.GetShieldedBoxState + ","+ state + ";");
                         break;
                     case TesterCommand.SetTestResult:
-                        //Todo set result
                         try
                         {
-                            if (subMessage[1]=="1")
+                            if (subMessage[1] == "1")
                             {
+                                ShieldBox.OpenBox();
                                 ShieldBox.Phone.TestResult = TestResult.Fail;
                                 ShieldBox.Phone.FailCount++;
                             }
                             else
                             {
+                                ShieldBox.OpenBox();
                                 ShieldBox.Phone.TestResult = TestResult.Pass;
                             }
-                            
+
                             SendMessage(TesterCommand.SetTestResult + ",OK;");
+                        }
+                        catch (BoxException)
+                        {
+                            OnErrorOccured(444, "Open box failed.");
                         }
                         catch (Exception)
                         {
-                            OnInfoOccured(4, "Tester send back a result while no phone in shield box.");
+                            OnErrorOccured(4, "Tester send back a result while no phone in shield box.");
                         }
                         break;
 
                     default:
-                        OnInfoOccured(4,"Receive unknown message " + message);
+                        OnErrorOccured(4,"Receive unknown message " + message);
                         break;
                 }
 

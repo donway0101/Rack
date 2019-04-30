@@ -40,4 +40,21 @@ namespace Rack
         {
         }
     }
+
+    public class BoxException : Exception
+    {
+        public BoxException()
+        {
+        }
+
+        public BoxException(string message)
+            : base(message)
+        {
+        }
+
+        public BoxException(string message, Exception inner)
+            : base(message, inner)
+        {
+        }
+    }
 }
