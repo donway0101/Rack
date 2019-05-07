@@ -47,69 +47,38 @@ namespace Rack
                 try
                 {
                     #region Work on Rf phones.
-
                     if (luckyPhones.First().Step == RackTestStep.Rf)
                     {
-                        if (luckyPhones.Count > 3)
+                        if (luckyPhones.Count >= 3)
                         {
-                            throw new Exception("Error 4984639789151");
-                        }
-
-                        if (luckyPhones.Count == 3)
-                        {
-                            //If there is three phones, it has two combo move, 
-                            // and the last phone must either be place or bin.
-                            var firstPhone = luckyPhones.First();
-                            var secondPhone = luckyPhones.ElementAt(1);
-                            var thirdPhone = luckyPhones.ElementAt(2);
-                            if (firstPhone.NextTargetPosition.TeachPos == secondPhone.CurrentTargetPosition.TeachPos &&
-                                secondPhone.NextTargetPosition.TeachPos == thirdPhone.CurrentTargetPosition.TeachPos)
-                            {
-                                //Step 1: pick the first phone.
-                                ComboPickAPhone(firstPhone);
-                                luckyPhones.Remove(firstPhone);
-
-                                //Step 2: unload the second phone and load the first phone.
-                                TurboComboRetryAPhone(firstPhone, secondPhone);
-                                luckyPhones.Remove(secondPhone);
-
-                                //Step 3: unload the third phone and load the second phone.
-                                switch (thirdPhone.Procedure)
-                                {
-                                    case RackProcedure.Bin:
-                                        TurboComboBinAPhone(secondPhone, thirdPhone);
-                                        break;
-                                    case RackProcedure.Place:
-                                        TurboComboPlaceAPhone(secondPhone, thirdPhone);
-                                        break;
-                                    default:
-                                        throw new Exception("Error 48862255792365");
-                                }
-                                luckyPhones.Remove(thirdPhone);
-                            }
-                            else
-                            {
-                                throw new Exception("Error 16229461984");
-                            }
+                            throw new Exception("Error 16229461984");
                         }
                         else
                         {
+                            #region Two phones in a time.
                             if (luckyPhones.Count == 2)
                             {
                                 var firstPhone = luckyPhones.First();
                                 var secondPhone = luckyPhones.ElementAt(1);
+                                RackGripper gripper;
                                 if (firstPhone.NextTargetPosition.TeachPos ==
                                     secondPhone.CurrentTargetPosition.TeachPos)
                                 {
-                                    //Deal with first phone, pick or retry.
                                     switch (firstPhone.Procedure)
                                     {
-                                        case RackProcedure.Retry:
-                                            ComboRetryAPhone(firstPhone);
-                                            break;
                                         case RackProcedure.Pick:
-                                            ComboPickAPhone(firstPhone);
+                                            gripper = GetAvailableGripper();
+                                            Pick(gripper);
+                                            ShieldBox box = ConverterTeachPosToShieldBox(
+                                                firstPhone.NextTargetPosition.TeachPos);
+                                            Pick(gripper);
+                                            OkToReloadOnConveyor();
                                             break;
+
+                                        case RackProcedure.Retry:
+                                            ComboUnload(firstPhone);
+                                            break;
+
                                         default:
                                             throw new Exception("Error 984616941611");
                                     }
@@ -118,51 +87,67 @@ namespace Rack
                                     switch (secondPhone.Procedure)
                                     {
                                         case RackProcedure.Bin:
-                                            ComboBinAPhone(firstPhone, secondPhone);
+                                            ComboUnloadAndLoad(firstPhone, secondPhone, out gripper);
+                                            Bin(gripper);
                                             break;
-                                        case RackProcedure.Place:
-                                            ComboPlaceAPhone(firstPhone, secondPhone);
-                                            break;
+                                           
                                         case RackProcedure.Retry:
-                                            ComboRetryAPhone(firstPhone, secondPhone);
+                                            ComboUnloadAndLoad(firstPhone, secondPhone, out gripper);
+
+                                            ShieldBox box = ConverterTeachPosToShieldBox(
+                                                   secondPhone.NextTargetPosition.TeachPos);
+                                            Load(gripper, box);
+                                            Link(secondPhone, box);
+                                            CloseBoxAsync(box);
                                             break;
+
                                         default:
                                             throw new Exception("Error 989491878165");
                                     }
                                     luckyPhones.Remove(secondPhone);
                                 }
-                                else
+                                else //Arrange error.
                                 {
                                     throw new Exception("Error 549860315484");
                                 }
                             }
+                            #endregion
+
+                            #region Only one Rf phone.
                             else
                             {
-                                var theOnlyPhone = luckyPhones.First();
-                                switch (theOnlyPhone.Procedure)
+                                var phone = luckyPhones.First();
+                                switch (phone.Procedure)
                                 {
                                     case RackProcedure.Bin:
-                                        BinAPhone(theOnlyPhone);
+                                        RackGripper gripper;
+                                        ComboUnload(phone, out gripper);
+                                        Bin(gripper);
                                         break;
+
                                     case RackProcedure.Place:
-                                        ServePassRfPhone(theOnlyPhone);
+                                        phone.Step = RackTestStep.Wifi;
+                                        //Set result will trigger add phone to server.
+                                        phone.TestResult = TestResult.None;
+                                        phone.FailCount = 0;
                                         break;
+
                                     case RackProcedure.Retry:
-                                        RetryAPhone(theOnlyPhone);
+                                        MoveFromCurrentBoxToNext(phone);
                                         break;
+
                                     case RackProcedure.Pick:
-                                        ServeNewRfPhone(theOnlyPhone);
+                                        ServeNewRfPhone(phone);
                                         break;
                                     default:
-                                        throw new Exception("Error 6417987");
+                                        throw new Exception("Error 6417989416269");
                                 }
 
-                                luckyPhones.Remove(theOnlyPhone);
+                                luckyPhones.Remove(phone);
                             }
+                            #endregion
                         }
-
                     }
-
                     #endregion
 
                     else
@@ -175,7 +160,7 @@ namespace Rack
                                 throw new Exception("Error 4984639789151");
                             }
 
-                            #region Three phones in a time.
+                            #region Three wifi phones in a time.
                             if (luckyPhones.Count == 3)
                             {
                                 //If there is three phones, it has two combo move, 
@@ -183,57 +168,71 @@ namespace Rack
                                 var firstPhone = luckyPhones.First();
                                 var secondPhone = luckyPhones.ElementAt(1);
                                 var thirdPhone = luckyPhones.ElementAt(2);
+                                RackGripper gripper;
                                 if (firstPhone.NextTargetPosition.TeachPos == secondPhone.CurrentTargetPosition.TeachPos &&
                                     secondPhone.NextTargetPosition.TeachPos == thirdPhone.CurrentTargetPosition.TeachPos)
                                 {
-                                    //Step 1: pick the first phone.
-                                    ComboPickAPhone(firstPhone);
-                                    luckyPhones.Remove(firstPhone);
+                                    if (firstPhone.Procedure!= RackProcedure.Pick)
+                                    {
+                                        throw new Exception("Error 445668138754");
+                                    }
+                                    if (secondPhone.Procedure != RackProcedure.Retry)
+                                    {
+                                        throw new Exception("Error 456789123584641");
+                                    }
+                                    if (thirdPhone.Procedure != RackProcedure.Place && 
+                                        thirdPhone.Procedure != RackProcedure.Bin)
+                                    {
+                                        throw new Exception("Error 456984616761654");
+                                    }
 
-                                    //Step 2: unload the second phone and load the first phone.
-                                    TurboComboRetryAPhone(firstPhone, secondPhone);
+                                    ComboUnload(firstPhone);
+                                    luckyPhones.Remove(firstPhone);
+                                    
+                                    ComboUnloadAndLoad(firstPhone, secondPhone, out gripper);
                                     luckyPhones.Remove(secondPhone);
 
-                                    //Step 3: unload the third phone and load the second phone.
                                     switch (thirdPhone.Procedure)
                                     {
                                         case RackProcedure.Bin:
-                                            TurboComboBinAPhone(secondPhone, thirdPhone);
+                                            Bin(gripper);
                                             break;
                                         case RackProcedure.Place:
-                                            TurboComboPlaceAPhone(secondPhone, thirdPhone);
+                                            Place(gripper);
                                             break;
                                         default:
-                                            throw new Exception("Error 48862255792365");
+                                            break;
                                     }
                                     luckyPhones.Remove(thirdPhone);
                                 }
-                                else
+                                else //Arrange error.
                                 {
                                     throw new Exception("Error 16229461984");
                                 }
                             }
-
                             #endregion
+
                             else
                             {
-                                #region Two phones in a time.
+                                #region Two wifi phones in a time.
                                 if (luckyPhones.Count == 2)
                                 {
                                     var firstPhone = luckyPhones.First();
                                     var secondPhone = luckyPhones.ElementAt(1);
+                                    RackGripper gripper;
                                     if (firstPhone.NextTargetPosition.TeachPos ==
                                         secondPhone.CurrentTargetPosition.TeachPos)
                                     {
-                                        //Deal with first phone, pick or retry.
                                         switch (firstPhone.Procedure)
                                         {
-                                            case RackProcedure.Retry:
-                                                ComboRetryAPhone(firstPhone);
-                                                break;
                                             case RackProcedure.Pick:
-                                                ComboPickAPhone(firstPhone);
+                                                ComboUnload(firstPhone);
                                                 break;
+
+                                            case RackProcedure.Retry:
+                                                ComboUnload(firstPhone);
+                                                break;      
+                                                
                                             default:
                                                 throw new Exception("Error 984616941611");
                                         }
@@ -242,14 +241,25 @@ namespace Rack
                                         switch (secondPhone.Procedure)
                                         {
                                             case RackProcedure.Bin:
-                                                ComboBinAPhone(firstPhone, secondPhone);
+                                                ComboUnloadAndLoad(firstPhone, secondPhone, out gripper);
+                                                Bin(gripper);
                                                 break;
+
                                             case RackProcedure.Place:
-                                                ComboPlaceAPhone(firstPhone, secondPhone);
+                                                ComboUnloadAndLoad(firstPhone, secondPhone, out gripper);
+                                                Place(gripper);
                                                 break;
+
                                             case RackProcedure.Retry:
-                                                ComboRetryAPhone(firstPhone, secondPhone);
+                                                ComboUnloadAndLoad(firstPhone, secondPhone, out gripper);
+
+                                                ShieldBox box = ConverterTeachPosToShieldBox(
+                                                    secondPhone.NextTargetPosition.TeachPos);
+                                                Load(gripper, box);
+                                                Link(secondPhone, box);
+                                                CloseBoxAsync(box);
                                                 break;
+
                                             default:
                                                 throw new Exception("Error 989491878165");
                                         }
@@ -262,30 +272,35 @@ namespace Rack
                                 } 
                                 #endregion
 
-                                #region Only one phone in a time.
+                                #region Only one wifi phone in a time.
                                 else
                                 {
-                                    var theOnlyPhone = luckyPhones.First();
-                                    switch (theOnlyPhone.Procedure)
+                                    var phone = luckyPhones.First();
+                                    switch (phone.Procedure)
                                     {
                                         case RackProcedure.Bin:
-                                            ServeBinWifiPhone(theOnlyPhone);
+                                            BinOrPlace(phone);
                                             break;
+
                                         case RackProcedure.Place:
-                                            ServePassWifiPhone(theOnlyPhone);
+                                            BinOrPlace(phone);
                                             break;
+
                                         case RackProcedure.Retry:
-                                            ServeRetryWifiPhone(theOnlyPhone);
+                                            //Arrange algorithm already find a box for retry phone.
+                                            MoveFromCurrentBoxToNext(phone);
                                             break;
+
                                         case RackProcedure.Pick:
-                                            ServeNewWifiPhone(theOnlyPhone);
+                                            //Wifi pick phone comes from Rf pass phone.
+                                            MoveFromCurrentBoxToNext(phone);
                                             break;
+
                                         default:
                                             throw new Exception("Error 846164946151679"); ;
                                     }
 
-                                    luckyPhones.Remove(theOnlyPhone); 
-                                    
+                                    luckyPhones.Remove(phone);                                    
                                 }
                                 #endregion
                             }
@@ -347,22 +362,26 @@ namespace Rack
         private List<Phone> ArrangePhones()
         {
             ClassifyPhones();
+            List<Phone> phones = new List<Phone>();
 
             //Load to Rf first, Rf pass is new phone to wifi.
             if (RfPhones.Count > 0)
             {
-                List<Phone> phones = ArrangeRfPhones();
+                phones = ArrangeRfPhones();
                 if (phones.Count > 0)
                     return phones;
             }
 
-            return ArrangeWifiPhones();
+            if (WifiPhones.Count>0)
+            {
+                return ArrangeWifiPhones();
+            }
+            else
+            {
+                return phones;
+            }           
         }
 
-        /// <summary>
-        /// Phones which Step is in Wifi.
-        /// </summary>
-        /// <returns></returns>
         private List<Phone> ArrangeWifiPhones()
         {
             #region Define.
@@ -416,15 +435,12 @@ namespace Rack
             #region Has retry, maybe place, maybe pick.
             if (wifiRetryPhone.Count > 0)
             {
-                #region Have place retry and pick.
+                #region Has place, has retry, has pick.
                 if (wifiBinOrPlacePhone.Count > 0 && wifiPickPhone.Count > 0)
                 {
-                    #region Try combining retry with place.
-                    bool retryAndPlaceCombo = false;
+                    #region Try combining retry with place(See also Has retry and place).
                     List<ShieldBox> boxesForRetryPhone = new List<ShieldBox>();
                     ShieldBox boxOfBinOrPlace;
-
-                    wifiLuckyPhones.Add(wifiPickPhone.First());
                     for (int i = 0; i < wifiBinOrPlacePhone.Count; i++)
                     {
                         boxOfBinOrPlace = wifiBinOrPlacePhone.ElementAt(i).ShieldBox;
@@ -432,51 +448,49 @@ namespace Rack
                         {
                             try
                             {
-                                boxesForRetryPhone = GetBoxesForWifiRetryPhone(wifiRetryPhone.ElementAt(j));
-                                foreach (var box in boxesForRetryPhone)
-                                {
-                                    if (box.Position.TeachPos == boxOfBinOrPlace.Position.TeachPos)
-                                    {
-                                        wifiRetryPhone.ElementAt(j).NextTargetPosition =
-                                            boxOfBinOrPlace.Position;
-
-                                        wifiLuckyPhones.Add(wifiRetryPhone.ElementAt(j));
-                                        wifiLuckyPhones.Add(wifiBinOrPlacePhone.ElementAt(i));
-                                        retryAndPlaceCombo = true;
-                                    }
-                                }
+                                boxesForRetryPhone = GetBoxesForRetryPhone(
+                                    wifiRetryPhone.ElementAt(j), WifiTestMode, ShieldBoxType.Wifi);
                             }
-                            catch (Exception ex)
+                            catch (Exception)
                             {
-                                OnInfoOccured(222, ex.Message);
+                                continue;
+                            }
+
+                            foreach (var box in boxesForRetryPhone)
+                            {
+                                if (box.Position.TeachPos == boxOfBinOrPlace.Position.TeachPos)
+                                {
+                                    var pPhone = wifiPickPhone.First();
+                                    pPhone.NextTargetPosition = wifiRetryPhone.ElementAt(j).CurrentTargetPosition;
+                                    wifiRetryPhone.ElementAt(j).NextTargetPosition =
+                                        boxOfBinOrPlace.Position;
+
+                                    wifiLuckyPhones.Add(pPhone);
+                                    wifiLuckyPhones.Add(wifiRetryPhone.ElementAt(j));
+                                    wifiLuckyPhones.Add(wifiBinOrPlacePhone.ElementAt(i));
+                                    return wifiLuckyPhones;
+                                }
                             }
                         }
                     }
 
-                    if (retryAndPlaceCombo)
-                    {
-                        return wifiLuckyPhones;
-                    }
-                    else
-                    {
-                        wifiLuckyPhones.Clear();
-                        //If they can't be combo, then place first.
-                        wifiLuckyPhones.Add(wifiBinOrPlacePhone.First());
-                        return wifiLuckyPhones;
-                    }
+                    //If retry and place can't be combo, then place first.
+                    wifiLuckyPhones.Clear();
+                    wifiLuckyPhones.Add(wifiBinOrPlacePhone.First());
+                    return wifiLuckyPhones;
                     #endregion
                 }
                 #endregion
 
-                #region Has retry, but not both place and pick.
+                #region Has retry, maybe place, maybe pick.
                 else
                 {
-                    #region Has retry and place.                    
+                    #region Has retry, has place, maybe pick.                    
                     if (wifiBinOrPlacePhone.Count > 0)
                     {
+                        #region Try combining retry with place(See also Have place retry and pick).
                         List<ShieldBox> boxesForRetryPhone = new List<ShieldBox>();
                         ShieldBox boxOfBinOrPlace;
-
                         for (int i = 0; i < wifiBinOrPlacePhone.Count; i++)
                         {
                             boxOfBinOrPlace = wifiBinOrPlacePhone.ElementAt(i).ShieldBox;
@@ -484,174 +498,142 @@ namespace Rack
                             {
                                 try
                                 {
-                                    boxesForRetryPhone = GetBoxesForWifiRetryPhone(wifiRetryPhone.ElementAt(j));
-                                    foreach (var box in boxesForRetryPhone)
-                                    {
-                                        if (box.Position.TeachPos == boxOfBinOrPlace.Position.TeachPos)
-                                        {
-                                            wifiRetryPhone.ElementAt(j).NextTargetPosition =
-                                                boxOfBinOrPlace.Position;
-
-                                            wifiLuckyPhones.Add(wifiRetryPhone.ElementAt(j));
-                                            wifiLuckyPhones.Add(wifiBinOrPlacePhone.ElementAt(i));
-                                            return wifiLuckyPhones;
-                                        }
-                                    }
-                                }
-                                catch (Exception ex)
-                                {
-                                    OnInfoOccured(222, ex.Message);
-                                }
-                            }
-                        }
-
-                        //If they can't be combo, then place first.
-                        wifiLuckyPhones.Add(wifiBinOrPlacePhone.First());
-                        return wifiLuckyPhones;
-                    }
-                    #endregion
-
-                    #region Have retry but no place.
-                    else
-                    {
-                        #region Has retry and pick, no place.
-                        if (wifiPickPhone.Count > 0)
-                        {
-                            #region More than one retry phones, no pick then.
-                            if (wifiRetryPhone.Count > 1)
-                            {
-                                List<ShieldBox> boxesForPhone1 = new List<ShieldBox>();
-                                List<ShieldBox> boxesForPhone2 = new List<ShieldBox>();
-
-                                for (int i = 0; i < wifiRetryPhone.Count - 1; i++)
-                                {
-                                    try
-                                    {
-                                        boxesForPhone1 = GetBoxesForWifiRetryPhone(wifiRetryPhone.ElementAt(i));
-                                        for (int j = i + 1; j < wifiRetryPhone.Count; j++)
-                                        {
-                                            boxesForPhone2 = GetBoxesForWifiRetryPhone(wifiRetryPhone.ElementAt(j));
-                                            foreach (var box1 in boxesForPhone1)
-                                            {
-                                                foreach (var box2 in boxesForPhone2)
-                                                {
-                                                    //Two phone can exchange box.
-                                                    if (box1.Position.TeachPos == wifiRetryPhone.ElementAt(j)
-                                                            .ShieldBox
-                                                            .Position.TeachPos &&
-                                                        box2.Position.TeachPos == wifiRetryPhone.ElementAt(i)
-                                                            .ShieldBox
-                                                            .Position.TeachPos)
-                                                    {
-                                                        wifiRetryPhone.ElementAt(i).NextTargetPosition =
-                                                            wifiRetryPhone.ElementAt(j).CurrentTargetPosition;
-                                                        wifiRetryPhone.ElementAt(j).NextTargetPosition =
-                                                            wifiRetryPhone.ElementAt(i).CurrentTargetPosition;
-
-                                                        wifiLuckyPhones.Add(wifiRetryPhone.ElementAt(i));
-                                                        wifiLuckyPhones.Add(wifiRetryPhone.ElementAt(j));
-                                                        return wifiLuckyPhones;
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                    catch (Exception ex)
-                                    {
-                                        OnInfoOccured(222, ex.Message);
-                                    }
-                                }
-
-                                //Return empty list.
-                                return wifiLuckyPhones;
-                            }
-                            #endregion
-
-                            #region Just one retry and has pick.
-                            else
-                            {
-                                #region Try to combine pick with retry.
-                                try
-                                {
-                                    var pPhone = wifiPickPhone.First();
-                                    var rPhone = wifiRetryPhone.First();
-                                    List<ShieldBox> box = GetBoxesForWifiRetryPhone(rPhone);
-                                    rPhone.NextTargetPosition = box.First().Position;
-                                    pPhone.NextTargetPosition = rPhone.CurrentTargetPosition;
-                                    wifiLuckyPhones.Add(pPhone);
-                                    wifiLuckyPhones.Add(rPhone);
-                                    return wifiLuckyPhones;
-                                }
-                                catch (Exception ex)
-                                {
-                                    OnInfoOccured(222, ex.Message);
-                                    return wifiLuckyPhones;
-                                }
-                                #endregion
-                            } 
-                            #endregion
-                        }
-                        #endregion
-
-                        #region Has retry, no place, no pick.
-                        else
-                        {
-                            #region More than one retry phones.
-                            if (wifiRetryPhone.Count > 1)
-                            {
-                                List<ShieldBox> boxesForPhone1 = new List<ShieldBox>();
-                                List<ShieldBox> boxesForPhone2 = new List<ShieldBox>();
-
-                                try
-                                {
-                                    for (int i = 0; i < wifiRetryPhone.Count - 1; i++)
-                                    {
-                                        boxesForPhone1 = GetBoxesForWifiRetryPhone(wifiRetryPhone.ElementAt(i));
-                                        for (int j = i + 1; j < wifiRetryPhone.Count; j++)
-                                        {
-                                            boxesForPhone2 = GetBoxesForWifiRetryPhone(wifiRetryPhone.ElementAt(j));
-                                            foreach (var box1 in boxesForPhone1)
-                                            {
-                                                foreach (var box2 in boxesForPhone2)
-                                                {
-                                                    //Two phone can exchange box.
-                                                    if (box1.Position.TeachPos == wifiRetryPhone.ElementAt(j)
-                                                            .ShieldBox
-                                                            .Position.TeachPos &&
-                                                        box2.Position.TeachPos == wifiRetryPhone.ElementAt(i)
-                                                            .ShieldBox
-                                                            .Position.TeachPos)
-                                                    {
-                                                        wifiRetryPhone.ElementAt(i).NextTargetPosition =
-                                                            wifiRetryPhone.ElementAt(j).CurrentTargetPosition;
-                                                        wifiRetryPhone.ElementAt(j).NextTargetPosition =
-                                                            wifiRetryPhone.ElementAt(i).CurrentTargetPosition;
-
-                                                        wifiLuckyPhones.Add(wifiRetryPhone.ElementAt(i));
-                                                        wifiLuckyPhones.Add(wifiRetryPhone.ElementAt(j));
-                                                        return wifiLuckyPhones;
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
+                                    boxesForRetryPhone = GetBoxesForRetryPhone(
+                                        wifiRetryPhone.ElementAt(j), WifiTestMode, ShieldBoxType.Wifi);
                                 }
                                 catch (Exception)
                                 {
-                                    return wifiLuckyPhones;
+                                    continue;
                                 }
 
-                                //Return empty list.
-                                return wifiLuckyPhones;
+                                foreach (var box in boxesForRetryPhone)
+                                {
+                                    if (box.Position.TeachPos == boxOfBinOrPlace.Position.TeachPos)
+                                    {
+                                        wifiRetryPhone.ElementAt(j).NextTargetPosition =
+                                            boxOfBinOrPlace.Position;
+                                        wifiLuckyPhones.Add(wifiRetryPhone.ElementAt(j));
+                                        wifiLuckyPhones.Add(wifiBinOrPlacePhone.ElementAt(i));
+                                        return wifiLuckyPhones;
+                                    }
+                                }
+                            }
+                        }
+
+                        //If retry and place can't be combo, then place first.
+                        wifiLuckyPhones.Clear();
+                        wifiLuckyPhones.Add(wifiBinOrPlacePhone.First());
+                        return wifiLuckyPhones;
+                        #endregion
+                    }
+                    #endregion
+
+                    #region Has retry, maybe pick, no place.
+                    else
+                    {
+                        #region More than one retry phones, maybe pick, no place.
+                        if (wifiRetryPhone.Count > 1)
+                        {
+                            List<ShieldBox> boxesForPhone1 = new List<ShieldBox>();
+                            List<ShieldBox> boxesForPhone2 = new List<ShieldBox>();
+
+                            for (int i = 0; i < wifiRetryPhone.Count - 1; i++)
+                            {
+                                #region Try finding box for a phone.
+                                try
+                                {
+                                    boxesForPhone1 = GetBoxesForRetryPhone(
+                                        wifiRetryPhone.ElementAt(i), WifiTestMode, ShieldBoxType.Wifi);
+                                }
+                                catch (Exception)
+                                {
+                                    continue;
+                                }
+                                #endregion
+
+                                for (int j = i + 1; j < wifiRetryPhone.Count; j++)
+                                {
+                                    #region Try finding box for another phone.
+                                    try
+                                    {
+                                        boxesForPhone2 = GetBoxesForRetryPhone(
+                                            wifiRetryPhone.ElementAt(j), WifiTestMode, ShieldBoxType.Wifi);
+                                    }
+                                    catch (Exception)
+                                    {
+                                        continue;
+                                    }
+                                    #endregion
+
+                                    #region See if they match.
+                                    foreach (var box1 in boxesForPhone1)
+                                    {
+                                        foreach (var box2 in boxesForPhone2)
+                                        {
+                                            //Two phone can exchange box.
+                                            if (box1.Position.TeachPos == wifiRetryPhone.ElementAt(j)
+                                                    .ShieldBox
+                                                    .Position.TeachPos &&
+                                                box2.Position.TeachPos == wifiRetryPhone.ElementAt(i)
+                                                    .ShieldBox
+                                                    .Position.TeachPos)
+                                            {
+                                                wifiRetryPhone.ElementAt(i).NextTargetPosition =
+                                                    wifiRetryPhone.ElementAt(j).CurrentTargetPosition;
+                                                wifiRetryPhone.ElementAt(j).NextTargetPosition =
+                                                    wifiRetryPhone.ElementAt(i).CurrentTargetPosition;
+
+                                                wifiLuckyPhones.Add(wifiRetryPhone.ElementAt(i));
+                                                wifiLuckyPhones.Add(wifiRetryPhone.ElementAt(j));
+                                                return wifiLuckyPhones;
+                                            }
+                                        }
+                                    }
+                                    #endregion
+                                }
+                            }
+
+                            #region No combo retry, just find box for a single retry.
+                            foreach (var rPhone in wifiRetryPhone)
+                            {
+                                try
+                                {
+                                    List<ShieldBox> box = GetBoxesForRetryPhone(
+                                        rPhone, WifiTestMode, ShieldBoxType.Wifi, true);
+                                    rPhone.NextTargetPosition = box.First().Position;
+                                    wifiLuckyPhones.Add(rPhone);
+                                    return wifiLuckyPhones;
+                                }
+                                catch (Exception)
+                                {
+                                    continue;
+                                }
                             }
                             #endregion
 
-                            #region Only one retry phone
-                            var phone = wifiRetryPhone.First();
+                            //Return empty list.
+                            return wifiLuckyPhones;
+                        }
+                        #endregion
+
+                        #region Only one retry phone, maybe pick, no place.
+                        else
+                        {
                             try
                             {
-                                List<ShieldBox> box = GetBoxesForWifiRetryPhone(phone);
+                                var phone = wifiRetryPhone.First();
+
+                                List<ShieldBox> box = GetBoxesForRetryPhone(
+                                    phone, WifiTestMode, ShieldBoxType.Wifi, true);
                                 phone.NextTargetPosition = box.First().Position;
+
+                                if (wifiPickPhone.Count > 0)
+                                {
+                                    var pPhone = wifiPickPhone.First();
+                                    pPhone.NextTargetPosition = phone.CurrentTargetPosition;
+                                    wifiLuckyPhones.Add(pPhone);
+                                }
+
                                 wifiLuckyPhones.Add(phone);
                                 return wifiLuckyPhones;
                             }
@@ -659,7 +641,6 @@ namespace Rack
                             {
                                 return wifiLuckyPhones;
                             }
-                            #endregion
                         }
                         #endregion
                     }
@@ -703,7 +684,8 @@ namespace Rack
                 {
                     try
                     {
-                        ShieldBox box = GetEmptyBoxForWifiPhone();
+                        //If just one pick phone shows, it can only go into empty box.
+                        ShieldBox box = GetEmptyBox(ShieldBoxType.Wifi);
                         var phone = wifiPickPhone.First();
                         phone.NextTargetPosition = box.Position;
                         wifiLuckyPhones.Add(phone);
@@ -719,22 +701,21 @@ namespace Rack
             #endregion
         }
 
-        /// <summary>
-        /// Phones which Step is in Wifi.
-        /// </summary>
-        /// <returns></returns>
         private List<Phone> ArrangeRfPhones()
         {
+            #region Define
             int maxFailCount = 1;
-            if (RfTestMode == RackTestMode.ABC )
+            if (RfTestMode == RackTestMode.ABC)
             {
                 maxFailCount = 3;
             }
 
             List<Phone> rfLuckyPhones = new List<Phone>();
-            List<Phone> rfBinOrPlacePhone = new List<Phone>();
+            List<Phone> rfPlacePhone = new List<Phone>();
+            List<Phone> rfBinPhone = new List<Phone>();
             List<Phone> rfRetryPhone = new List<Phone>();
-            List<Phone> rfPickPhone = new List<Phone>();
+            List<Phone> rfPickPhone = new List<Phone>(); 
+            #endregion
 
             #region Classify phones by test result.
             foreach (var phone in RfPhones)
@@ -743,7 +724,7 @@ namespace Rack
                 {
                     phone.NextTargetPosition = Motion.BinPosition;
                     phone.Procedure = RackProcedure.Bin;
-                    rfBinOrPlacePhone.Add(phone);
+                    rfBinPhone.Add(phone);
                 }
                 else
                 {
@@ -751,7 +732,7 @@ namespace Rack
                     {
                         phone.NextTargetPosition = Motion.PickPosition;
                         phone.Procedure = RackProcedure.Place;
-                        rfBinOrPlacePhone.Add(phone);
+                        rfPlacePhone.Add(phone);
                     }
                     else
                     {
@@ -778,268 +759,224 @@ namespace Rack
             }
             #endregion
 
-            #region Has retry, maybe place, maybe pick.
+            #region Has place, maybe pick, maybe retry.
+            if (rfPlacePhone.Count > 0)
+            {
+                rfLuckyPhones.Add(rfPlacePhone.First());
+                return rfLuckyPhones;
+            }
+            #endregion
+
+            #region Has retry, maybe bin, maybe pick.
             if (rfRetryPhone.Count > 0)
             {
-                #region Have place retry and pick.
-                if (rfBinOrPlacePhone.Count > 0 && rfPickPhone.Count > 0)
+                #region Have bin retry and pick.
+                if (rfBinPhone.Count > 0 && rfPickPhone.Count > 0)
                 {
-                    List<Phone> bOpPhoneCouple = new List<Phone>();
-                    List<Phone> rPhoneCouple = new List<Phone>();
-
-                    #region Try to find retry and place combo.
-                    foreach (var rPhone in rfRetryPhone)
+                    #region Try combining retry with place.
+                    List<ShieldBox> boxesForRetryPhone = new List<ShieldBox>();
+                    ShieldBox boxOfBin;
+                    for (int i = 0; i < rfBinPhone.Count; i++)
                     {
-                        foreach (var bOpPhone in rfBinOrPlacePhone)
+                        boxOfBin = rfBinPhone.ElementAt(i).ShieldBox;
+                        for (int j = 0; j < rfRetryPhone.Count; j++)
                         {
-                            //Todo find box for them.
-                            rPhone.NextTargetPosition = bOpPhone.CurrentTargetPosition;
-
-                            rPhoneCouple.Add(rPhone);
-                            bOpPhoneCouple.Add(bOpPhone); //Order matters.
-                        }
-                    }
-                    #endregion
-
-                    #region Found retry and place combo.
-                    if (rPhoneCouple.Count > 0)
-                    {
-                        //Try to find the second unload and load.
-                        foreach (var rPhone in rPhoneCouple)
-                        {
-                            foreach (var pPhone in rfPickPhone)
+                            try
                             {
-                                
-                                    pPhone.NextTargetPosition = rPhone.CurrentTargetPosition;
-                                    rPhone.NextTargetPosition = bOpPhoneCouple
-                                        .ElementAt(rPhoneCouple.IndexOf(rPhone))
-                                        .CurrentTargetPosition;
-
-                                    rfLuckyPhones.Add(pPhone);
-                                    rfLuckyPhones.Add(rPhone);
-                                    rfLuckyPhones.Add(
-                                        bOpPhoneCouple.ElementAt(
-                                            rPhoneCouple.IndexOf(rPhone))); //Order matters.
-                                    return rfLuckyPhones; //Find two combo movement.
-                                
+                                boxesForRetryPhone = GetBoxesForRetryPhone(
+                                    rfRetryPhone.ElementAt(j), RfTestMode, ShieldBoxType.Rf);
                             }
-                        }
-
-                        // Can't build unload and load with pick.
-                        //So just leave pick alone.
-                        rfLuckyPhones.Add(rPhoneCouple.First());
-                        rfLuckyPhones.Add(bOpPhoneCouple.First());
-                        return rfLuckyPhones; //Find two unload and load movement.
-                    }
-                    #endregion
-
-                    #region Not find retry and place combo.
-                    else
-                    {
-                        foreach (var rPhone in rfRetryPhone)
-                        {
-                            foreach (var pPhone in rfPickPhone)
+                            catch (Exception)
                             {
-                               
-                                    pPhone.NextTargetPosition = rPhone.CurrentTargetPosition;
+                                continue;
+                            }
+
+                            foreach (var box in boxesForRetryPhone)
+                            {
+                                if (box.Position.TeachPos == boxOfBin.Position.TeachPos)
+                                {
+                                    var pPhone = rfPickPhone.First();
+                                    pPhone.NextTargetPosition = rfRetryPhone.ElementAt(j).CurrentTargetPosition;
+                                    rfRetryPhone.ElementAt(j).NextTargetPosition =
+                                        boxOfBin.Position;
 
                                     rfLuckyPhones.Add(pPhone);
-                                    rfLuckyPhones.Add(rPhone); //Order matters.
+                                    rfLuckyPhones.Add(rfRetryPhone.ElementAt(j));
+                                    rfLuckyPhones.Add(rfBinPhone.ElementAt(i));
                                     return rfLuckyPhones;
-                                
+                                }
                             }
                         }
-
-                        return rfLuckyPhones;
                     }
+
+                    //If retry and bin can't be combo, then bin first.
+                    rfLuckyPhones.Clear();
+                    rfLuckyPhones.Add(rfBinPhone.First());
+                    return rfLuckyPhones;
                     #endregion
                 }
                 #endregion
 
-                #region Has retry, but not both place and pick.
+                #region Has retry, maybe bin, maybe pick.
                 else
                 {
-                    #region Has retry and place.                    
-                    if (rfBinOrPlacePhone.Count > 0)
+                    #region Has retry, has bin, maybe pick.                    
+                    if (rfBinPhone.Count > 0)
                     {
-                        //foreach (var rPhone in rfRetryPhone)
-                        //{
-                        //    foreach (var bOpPhone in rfBinOrPlacePhone)
-                        //    {
-                        //        rPhone.NextTargetPosition = bOpPhone.CurrentTargetPosition;
-
-                        //        rfLuckyPhones.Add(rPhone);
-                        //        rfLuckyPhones.Add(bOpPhone); //Order matters.
-                        //        return rfLuckyPhones;
-                        //    }
-                        //}
-
-                        //Todo, right now, just two rf boxes.
-                        var bOpPhone = rfBinOrPlacePhone.First();
-                        //SetNextTargetPosition(bOpPhone);
-
-                        var rPhone = rfRetryPhone.First();
-                        List<ShieldBox> box = GetBoxesForWifiRetryPhone(rPhone);
-                        rPhone.NextTargetPosition = box.First().Position;
-                        if (rPhone.NextTargetPosition.TeachPos == rfBinOrPlacePhone.First().ShieldBox.Position.TeachPos)
+                        #region Try combining retry with bin.
+                        List<ShieldBox> boxesForRetryPhone = new List<ShieldBox>();
+                        ShieldBox boxOfBin;
+                        for (int i = 0; i < rfBinPhone.Count; i++)
                         {
-                            rPhone.NextTargetPosition = bOpPhone.CurrentTargetPosition;
-                            rfLuckyPhones.Add(rPhone);
-                        }
-
-                        rfLuckyPhones.Add(bOpPhone);
-                        return rfLuckyPhones;
-                    }
-                    #endregion
-
-                    #region Have retry but no place.
-                    else
-                    {
-                        #region Has retry and pick, no place.
-                        if (rfPickPhone.Count > 0)
-                        {
-                            #region More than one retry phones. Better not pick new phone in.
-                            if (rfRetryPhone.Count > 1)
+                            boxOfBin = rfBinPhone.ElementAt(i).ShieldBox;
+                            for (int j = 0; j < rfRetryPhone.Count; j++)
                             {
-                                List<ShieldBox> boxesForPhone1 = new List<ShieldBox>();
-                                List<ShieldBox> boxesForPhone2 = new List<ShieldBox>();
-
-                                for (int i = 0; i < rfRetryPhone.Count - 1; i++)
-                                {
-                                    boxesForPhone1 = GetBoxesForWifiRetryPhone(rfRetryPhone.ElementAt(i));
-                                    for (int j = i + 1; j < rfRetryPhone.Count; j++)
-                                    {
-                                        boxesForPhone2 = GetBoxesForWifiRetryPhone(rfRetryPhone.ElementAt(j));
-                                        foreach (var box1 in boxesForPhone1)
-                                        {
-                                            foreach (var box2 in boxesForPhone2)
-                                            {
-                                                //Two phone can exchange box.
-                                                if (box1.Position.TeachPos == rfRetryPhone.ElementAt(j)
-                                                        .ShieldBox
-                                                        .Position.TeachPos &&
-                                                    box2.Position.TeachPos == rfRetryPhone.ElementAt(i)
-                                                        .ShieldBox
-                                                        .Position.TeachPos)
-                                                {
-                                                    rfRetryPhone.ElementAt(i).NextTargetPosition =
-                                                        rfRetryPhone.ElementAt(j).CurrentTargetPosition;
-                                                    rfRetryPhone.ElementAt(j).NextTargetPosition =
-                                                        rfRetryPhone.ElementAt(i).CurrentTargetPosition;
-
-                                                    rfLuckyPhones.Add(rfRetryPhone.ElementAt(i));
-                                                    rfLuckyPhones.Add(rfRetryPhone.ElementAt(j));
-                                                    return rfLuckyPhones;
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-
-                                //Return empty list.
-                                return rfLuckyPhones;
-                            }
-                            #endregion
-
-                            #region Just one retry and has pick.
-                            else
-                            {
-                                #region Try to combine pick with retry.
-                                foreach (var rPhone in rfRetryPhone)
-                                {
-                                    try
-                                    {
-                                        List<ShieldBox> box = GetBoxesForWifiRetryPhone(rPhone);
-                                        rPhone.NextTargetPosition = box.First().Position;
-                                        //Todo try to combine pick with retry, pick gold or regular.                                      
-                                        rfLuckyPhones.Add(rPhone);
-                                        //rfLuckyPhones.Add(pPhone); 
-                                        return rfLuckyPhones;
-                                    }
-                                    catch (Exception)
-                                    {
-                                        //Return empty.
-                                        return rfLuckyPhones;
-                                    }
-                                }
-
-                                //Todo, use gold position as phone buffer?
-                                return rfLuckyPhones;
-                                #endregion
-                            }
-                            #endregion
-                        }
-                        #endregion
-
-                        #region Has retry, no place, no pick.
-                        else
-                        {
-                            #region More than one retry phones.
-                            if (rfRetryPhone.Count > 1)
-                            {
-                                List<ShieldBox> boxesForPhone1 = new List<ShieldBox>();
-                                List<ShieldBox> boxesForPhone2 = new List<ShieldBox>();
-
+                                #region Try finding box for retry.
                                 try
                                 {
-                                    for (int i = 0; i < rfRetryPhone.Count - 1; i++)
-                                    {
-                                        boxesForPhone1 = GetBoxesForWifiRetryPhone(rfRetryPhone.ElementAt(i));
-                                        for (int j = i + 1; j < rfRetryPhone.Count; j++)
-                                        {
-                                            boxesForPhone2 = GetBoxesForWifiRetryPhone(rfRetryPhone.ElementAt(j));
-                                            foreach (var box1 in boxesForPhone1)
-                                            {
-                                                foreach (var box2 in boxesForPhone2)
-                                                {
-                                                    //Two phone can exchange box.
-                                                    if (box1.Position.TeachPos == rfRetryPhone.ElementAt(j)
-                                                            .ShieldBox
-                                                            .Position.TeachPos &&
-                                                        box2.Position.TeachPos == rfRetryPhone.ElementAt(i)
-                                                            .ShieldBox
-                                                            .Position.TeachPos)
-                                                    {
-                                                        rfRetryPhone.ElementAt(i).NextTargetPosition =
-                                                            rfRetryPhone.ElementAt(j).CurrentTargetPosition;
-                                                        rfRetryPhone.ElementAt(j).NextTargetPosition =
-                                                            rfRetryPhone.ElementAt(i).CurrentTargetPosition;
-
-                                                        rfLuckyPhones.Add(rfRetryPhone.ElementAt(i));
-                                                        rfLuckyPhones.Add(rfRetryPhone.ElementAt(j));
-                                                        return rfLuckyPhones;
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
+                                    boxesForRetryPhone = GetBoxesForRetryPhone(
+                                        rfRetryPhone.ElementAt(j), RfTestMode, ShieldBoxType.Rf);
                                 }
                                 catch (Exception)
                                 {
+                                    continue;
+                                } 
+                                #endregion
+
+                                foreach (var box in boxesForRetryPhone)
+                                {
+                                    if (box.Position.TeachPos == boxOfBin.Position.TeachPos)
+                                    {
+                                        rfRetryPhone.ElementAt(j).NextTargetPosition =
+                                            boxOfBin.Position;
+                                        rfLuckyPhones.Add(rfRetryPhone.ElementAt(j));
+                                        rfLuckyPhones.Add(rfBinPhone.ElementAt(i));
+                                        return rfLuckyPhones;
+                                    }
+                                }
+                            }
+                        }
+
+                        //If retry and bin can't be combo, then bin first.
+                        rfLuckyPhones.Clear();
+                        rfLuckyPhones.Add(rfBinPhone.First());
+                        return rfLuckyPhones;
+                        #endregion
+                    }
+                    #endregion
+
+                    #region Have retry but no bin.
+                    else
+                    {
+                        #region More than one retry phones.
+                        if (rfRetryPhone.Count > 1)
+                        {
+                            List<ShieldBox> boxesForPhone1 = new List<ShieldBox>();
+                            List<ShieldBox> boxesForPhone2 = new List<ShieldBox>();
+
+                            for (int i = 0; i < rfRetryPhone.Count - 1; i++)
+                            {
+                                #region Try finding box for a retry phone.
+                                try
+                                {
+                                    boxesForPhone1 = GetBoxesForRetryPhone(
+                                        rfRetryPhone.ElementAt(i), RfTestMode, ShieldBoxType.Rf);
+                                }
+                                catch (Exception)
+                                {
+                                    continue;
+                                } 
+                                #endregion
+
+                                for (int j = i + 1; j < rfRetryPhone.Count; j++)
+                                {
+                                    #region Try finding box for another retry phone.
+                                    try
+                                    {
+                                        boxesForPhone2 = GetBoxesForRetryPhone(
+                                            rfRetryPhone.ElementAt(j), RfTestMode, ShieldBoxType.Rf);
+                                    }
+                                    catch (Exception)
+                                    {
+                                        continue;
+                                    }
+                                    #endregion
+
+                                    #region See if they match.
+                                    foreach (var box1 in boxesForPhone1)
+                                    {
+                                        foreach (var box2 in boxesForPhone2)
+                                        {
+                                            if (box1.Position.TeachPos == rfRetryPhone.ElementAt(j)
+                                                    .ShieldBox
+                                                    .Position.TeachPos &&
+                                                box2.Position.TeachPos == rfRetryPhone.ElementAt(i)
+                                                    .ShieldBox
+                                                    .Position.TeachPos)
+                                            {
+                                                rfRetryPhone.ElementAt(i).NextTargetPosition =
+                                                    rfRetryPhone.ElementAt(j).CurrentTargetPosition;
+                                                rfRetryPhone.ElementAt(j).NextTargetPosition =
+                                                    rfRetryPhone.ElementAt(i).CurrentTargetPosition;
+
+                                                rfLuckyPhones.Add(rfRetryPhone.ElementAt(i));
+                                                rfLuckyPhones.Add(rfRetryPhone.ElementAt(j));
+                                                return rfLuckyPhones;
+                                            }
+                                        }
+                                    } 
+                                    #endregion
+                                }
+                            }
+
+                            #region No combo for retry phone, go solo.
+                            foreach (var rPhone in rfRetryPhone)
+                            {
+                                try
+                                {
+                                    List<ShieldBox> box = GetBoxesForRetryPhone(
+                                        rPhone, RfTestMode, ShieldBoxType.Rf, true);
+                                    rPhone.NextTargetPosition = box.First().Position;
+                                    rfLuckyPhones.Add(rPhone);
                                     return rfLuckyPhones;
                                 }
-
-                                //Return empty list.
-                                return rfLuckyPhones;
+                                catch (Exception)
+                                {
+                                    continue;
+                                }
                             }
                             #endregion
 
-                            #region Only one retry phone
-                            var phone = rfRetryPhone.First();
+                            //Return empty list.
+                            return rfLuckyPhones;
+                        }
+                        #endregion
+
+                        #region Just one retry, maybe pick, no bin.
+                        else
+                        {                            
                             try
                             {
-                                List<ShieldBox> box = GetBoxesForWifiRetryPhone(phone);
-                                phone.NextTargetPosition = box.First().Position;
-                                rfLuckyPhones.Add(phone);
+                                var rPhone = rfRetryPhone.First();
+                                List<ShieldBox> box = GetBoxesForRetryPhone(
+                                    rPhone, RfTestMode, ShieldBoxType.Rf, true);
+                                rPhone.NextTargetPosition = box.First().Position;
+
+                                if (rfPickPhone.Count > 0)
+                                {
+                                    Phone pPhone = rfPickPhone.First();
+                                    pPhone.NextTargetPosition = rPhone.CurrentTargetPosition;
+                                    rfLuckyPhones.Add(pPhone);
+                                }
+                                rfLuckyPhones.Add(rPhone);
                                 return rfLuckyPhones;
                             }
                             catch (Exception)
                             {
                                 return rfLuckyPhones;
                             }
-                            #endregion
-                        }
-                        #endregion
+                        } 
+                        #endregion                       
                     }
                     #endregion
                 }
@@ -1047,29 +984,28 @@ namespace Rack
             }
             #endregion
 
-            #region No retry, maybe place, maybe pick.
+            #region No retry, maybe bin, maybe pick.
             else
             {
-                #region No retry, has place, maybe pick.
-                if (rfBinOrPlacePhone.Count > 0)
+                #region No retry, has bin, maybe pick.
+                if (rfBinPhone.Count > 0)
                 {
-                    #region No retry, Have place and pick.
+                    #region No retry, Have bin and pick.
                     if (rfPickPhone.Count > 0)
                     {
                         var pPhone = rfPickPhone.First();
-                        var bOpPhone = rfBinOrPlacePhone.First();
-                        pPhone.NextTargetPosition = bOpPhone.CurrentTargetPosition;
+                        var bPhone = rfBinPhone.First();
+                        pPhone.NextTargetPosition = bPhone.CurrentTargetPosition;
                         rfLuckyPhones.Add(pPhone);
-                        rfLuckyPhones.Add(bOpPhone);
+                        rfLuckyPhones.Add(bPhone);
                         return rfLuckyPhones;
                     }
                     #endregion
 
-                    #region No retry, no pick, has place.
+                    #region No retry, no pick, has bin.
                     else
                     {
-                        var phone = rfBinOrPlacePhone.First();
-                        //A Rf pass phone will go into Wifi box, so Next position not decided. 
+                        var phone = rfBinPhone.First();
                         rfLuckyPhones.Add(phone);
                         return rfLuckyPhones;
                     }
@@ -1078,13 +1014,13 @@ namespace Rack
 
                 #endregion
 
-                #region No retry, no place, has pick.
+                #region No retry, no bin, has pick.
                 else
                 {
                     #region Pick Regular phone.
                     try
                     {
-                        ShieldBox box = GetEmptyBoxForRfPhone();
+                        ShieldBox box = GetEmptyBox(ShieldBoxType.Rf);
                         var phone = rfPickPhone.First();
                         phone.NextTargetPosition = box.Position;
                         rfLuckyPhones.Add(phone);
@@ -1101,125 +1037,61 @@ namespace Rack
             #endregion
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="phone"></param>
-        /// Some retry don't need robot to move the phone.
-        /// Todo if retry box is not empty, then put it into gold
-        /// buffer, set box to null, set current position to gold position.
-        /// if buffer is not empty, then throw an exception.
-        private void RetryAPhone(Phone phone)
+        private void ComboUnloadAndLoad(Phone phoneIn, Phone phoneOut, out RackGripper gripper)
         {
-            ShieldBox box = phone.ShieldBox;
-
-            if (phone.Type == PhoneType.Normal)
-            {
-                ShieldBox newBox = GetBoxForRetryPhone(phone);
-                Unlink(phone, box);
-                //Unload.
-                Print("Has unload a fail phone.");
-                //load new box.
-                Print("Has retry a phone in box." + newBox.Id);
-
-                //Link(phone, newBox);
-            }
-            else //A gold phone.
-            {
-                //If retry, just need to reclose a box.
-                //Unload box
-                //Load gold
-                Print("No retry for a gold phone now. Just put it back.");
-
-                Unlink(phone, box);
-            }
-        }
-
-        private void ServeRetryWifiPhone(Phone phone)
-        {
-            MovePhoneToOtherBox(phone);
-        }
-
-        private void MovePhoneToOtherBox(Phone phone)
-        {
-            ShieldBox box = ConverterTeachPosToShieldBox(phone.NextTargetPosition.TeachPos);
-            RackGripper gripper = GetAvailableGripper();
-            Unload(gripper, phone);
-            Unlink(phone);
-            Load(gripper, phone.NextTargetPosition);
-            Link(phone, box);
+            ShieldBox box = phoneOut.ShieldBox;
+            gripper = GetAvailableGripper();
+            UnloadAndLoad(box, gripper);
+            Unlink(phoneOut);
+            Link(phoneIn, box);
             CloseBoxAsync(box);
         }
 
+        private void ComboUnload(Phone phone)
+        {
+            RackGripper gripper = GetAvailableGripper();
+            Unload(gripper, phone);
+            Unlink(phone);
+        }
+
+        private void ComboUnload(Phone phone, out RackGripper gripper)
+        {
+            gripper = GetAvailableGripper();
+            Unload(gripper, phone);
+            Unlink(phone);
+        }
+
         /// <summary>
-        /// Pick a fail phone out of a box.
+        /// For one phone situation.
         /// </summary>
         /// <param name="phone"></param>
-        private void ComboRetryAPhone(Phone phone)
+        private void BinOrPlace(Phone phone)
         {
-            ShieldBox box = phone.ShieldBox;
-
-            if (phone.Type == PhoneType.Normal)
+            RackGripper gripper = GetAvailableGripper();
+            Unload(gripper, phone);
+            Unlink(phone);
+            switch (phone.Procedure)
             {
-                Unlink(phone, box);
-                //Unload.
-                Print("Has unload a fail phone.");
-            }
-            else //A gold phone.
-            {
-                //If retry, just need to reclose a box.
-                //Unload box
-                //Load gold
-                Print("No retry for a gold phone now. Just put it back.");
-                Unlink(phone, box);
-            }
+                case RackProcedure.Bin:
+                    Bin(gripper);
+                    break;
+                case RackProcedure.Place:
+                    Place(gripper);
+                    break;
+                default:
+                    break;
+            }           
         }
 
-        private void ComboRetryAPhone(Phone phoneIn, Phone phoneOut)
+        private void MoveFromCurrentBoxToNext(Phone phone)
         {
-            ShieldBox box2 = phoneOut.ShieldBox;
-            ShieldBox box1 = ConverterTeachPosToShieldBox(phoneOut.NextTargetPosition.TeachPos);
-            //Unload and load
-            Unlink(phoneOut, box2);
-            //Link(phoneIn, box2);
-            Print("Has load a retry phone for box." + box2.Id);
-
-            if (phoneIn.Type == PhoneType.Normal)
-            {
-                //Load()
-                //Link(phoneOut, box1);
-                Print("Has load a retry phone for box." + box1.Id);
-            }
-            else //A gold phone.
-            {
-                TargetPosition toLoadPosition = ConvertGoldIdToTargetPosition(phoneIn.Id);
-                //Load()
-                Print("Has put back gold phone.");
-                //box.GoldPhoneChecked = true;
-            }
-        }
-
-        /// <summary>
-        /// A phone in hand in the end.
-        /// </summary>
-        /// <param name="phoneIn"></param>
-        /// <param name="phoneOut"></param>
-        private void TurboComboRetryAPhone(Phone phoneIn, Phone phoneOut)
-        {
-            ShieldBox box1 = phoneOut.ShieldBox;
-            //Unload and load
-            Unlink(phoneOut, box1);
-            //Link(phoneIn, box1);
-
-            if (phoneIn.Type == PhoneType.Normal)
-            {
-            }
-            else //A gold phone.
-            {
-                TargetPosition toLoadPosition = ConvertGoldIdToTargetPosition(phoneIn.Id);
-                //Load()
-                //box.GoldPhoneChecked = true;
-            }
+            RackGripper gripper = GetAvailableGripper();
+            ShieldBox nextBox = ConverterTeachPosToShieldBox(phone.NextTargetPosition.TeachPos);            
+            Unload(gripper, phone);
+            Unlink(phone);
+            Load(gripper, nextBox);
+            Link(phone, nextBox);
+            CloseBoxAsync(nextBox);
         }
 
         /// <summary>
@@ -1237,55 +1109,13 @@ namespace Rack
                 Pick(gripper);
                 Link(phone, box);
                 OkToReloadOnConveyor();
-                Load(gripper, phone.NextTargetPosition);
+                Load(gripper, box);
                 CloseBoxAsync(box);
             }
-            catch (Exception e)
+            catch (Exception)
             {
-                OnErrorOccured(555, "ServeNewRfPhone failed: " + e.Message);
                 Unlink(phone, box);
                 throw;
-            }
-        }
-
-        private void ServeNewWifiPhone(Phone phone)
-        {
-            MovePhoneToOtherBox(phone);
-        }
-
-        private void ServePassRfPhone(Phone phone)
-        {
-            phone.Step = RackTestStep.Wifi;
-            //Set result will trigger add phone to server.
-            phone.TestResult = TestResult.None;
-            phone.FailCount = 0;
-        }
-
-        private void ServePassWifiPhone(Phone phone)
-        {
-            RackGripper gripper = GetAvailableGripper();
-            Unload(gripper, phone);
-            Unlink(phone);
-            Place(gripper);
-        }
-
-        /// <summary>
-        /// Just pick up a phone.
-        /// </summary>
-        /// <param name="phone"></param>
-        private void ComboPickAPhone(Phone phone)
-        {
-            if (phone.Type == PhoneType.Normal)
-            {
-                //Pick();
-                Print("Has pick a new phone.");
-                //Link(phone, box);
-            }
-            else //A gold phone.
-            {
-                //Unload();
-                Print("Has unload a gold phone.");
-                //Link(phone, box);
             }
         }
 
@@ -1307,6 +1137,10 @@ namespace Rack
             box.Phone = null;
         }
 
+        /// <summary>
+        /// Unlink phone with its box.
+        /// </summary>
+        /// <param name="phone"></param>
         private void Unlink(Phone phone)
         {
             ShieldBox box = phone.ShieldBox;
@@ -1314,117 +1148,6 @@ namespace Rack
             box.Available = true;
             box.Empty = true;
             box.Phone = null;
-        }
-
-
-
-        private void ComboPlaceAPhone(Phone phoneIn, Phone phoneOut)
-        {
-            ShieldBox box = phoneOut.ShieldBox;
-            //Unload and load
-            Unlink(phoneOut, box);
-            //Link(phoneIn,box);
-            Print("Has unload and load for box." + box.Id);
-
-            if (phoneIn.Type == PhoneType.Normal)
-            {
-                //Place()
-                Print("Has place a phone.");
-            }
-            else //A gold phone.
-            {
-                TargetPosition toLoadPosition = ConvertGoldIdToTargetPosition(phoneIn.Id);
-                //Load()
-                Print("Has put back gold phone.");
-                box.GoldPhoneChecked = true;
-            }
-        }
-
-        private void TurboComboPlaceAPhone(Phone phoneIn, Phone phoneOut)
-        {
-            ShieldBox box = phoneOut.ShieldBox;
-            //Unload and load
-            Unlink(phoneOut, box);
-            //Link(phoneIn, box);
-
-            if (phoneIn.Type == PhoneType.Normal)
-            {
-                //Place()
-            }
-            else //A gold phone.
-            {
-                TargetPosition toLoadPosition = ConvertGoldIdToTargetPosition(phoneIn.Id);
-                //Load()
-            }
-        }
-
-        private void BinAPhone(Phone phone)
-        {
-            ShieldBox box = phone.ShieldBox;
-            Unlink(phone, box);
-
-            //Unload()
-            //Todo need to check if door is open.
-            //Bin()
-            Print("Has bin a phone.");
-        }
-
-        private void ServeBinWifiPhone(Phone phone)
-        {
-            RackGripper gripper = GetAvailableGripper();
-            Unload(gripper, phone);
-            Unlink(phone);
-            Bin(gripper);
-        }
-
-        private void ComboBinAPhone(Phone phoneIn, Phone phoneOut)
-        {
-            ShieldBox box = phoneOut.ShieldBox;
-            //Unload and load
-            Unlink(phoneOut, box);
-            //Link(phoneIn, box);
-            if (phoneIn.Type == PhoneType.Normal)
-            {
-                //Unload()
-                //Todo need to check if door is open.
-                //Bin()
-                Print("Has bin a phone.");
-            }
-            else //A gold phone.
-            {
-                //Unload
-                TargetPosition toLoadPosition = ConvertGoldIdToTargetPosition(phoneIn.Id);
-                //Put back.
-                Print("Has put back gold phone.");
-            }
-        }
-
-        private void TurboComboBinAPhone(Phone phoneIn, Phone phoneOut)
-        {
-            ShieldBox box = phoneOut.ShieldBox;
-            //Unload and load
-            Unlink(phoneOut, box);
-            //Link(phoneIn, box);
-
-            if (phoneIn.Type == PhoneType.Normal)
-            {
-                //Unload()
-                //Todo need to check if door is open.
-                //Bin()
-                Print("Has bin a phone.");
-            }
-            else //A gold phone.
-            {
-                //Unload
-                TargetPosition toLoadPosition = ConvertGoldIdToTargetPosition(phoneIn.Id);
-                //Put back.
-                Print("Has put back gold phone.");
-            }
-        }
-
-        private void Print(string info)
-        {
-            Console.WriteLine(info);
         }
 
         private void PrintStateOfBoxes()
@@ -1441,6 +1164,86 @@ namespace Rack
             }
             Console.WriteLine();
         }
+       
+        private ShieldBox GetEmptyBox(ShieldBoxType type)
+        {
+            foreach (var box in ShieldBoxs)
+            {
+                if (box.Enabled && box.Empty && box.Type == type)
+                {
+                    return box;
+                }
+            }
+
+            throw new ShieldBoxNotFoundException("GetEmptyBox " + type + " fail.");
+        }      
+        
+        /// <summary>
+        /// Base on test mode.
+        /// </summary>
+        /// <param name="phone"></param>
+        /// <param name="testMode"></param>
+        /// <param name="type"></param>
+        /// <param name="needEmpty"></param>
+        /// <returns></returns>
+        private List<ShieldBox> GetBoxesForRetryPhone(
+            Phone phone, RackTestMode testMode, ShieldBoxType type, bool needEmpty=false)
+        {
+            switch (testMode)
+            {
+                case RackTestMode.AB:
+                    #region AB mode
+                    List<ShieldBox> retryBoxs = new List<ShieldBox>();
+                    lock (_availableBoxLocker)
+                    {
+                        foreach (var box in ShieldBoxs)
+                        {
+                            var foundBox = true;
+                            if (box.Enabled && box.Available && box.Type == type)
+                            {
+                                foreach (var footprint in phone.TargetPositionFootprint)
+                                {
+                                    if (box.Position.TeachPos == footprint.TeachPos)
+                                    {
+                                        foundBox = false;
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                foundBox = false;
+                            }
+
+                            if (needEmpty && box.Empty==false)
+                            {
+                                foundBox = false;
+                            }
+
+                            if (foundBox)
+                            {
+                                retryBoxs.Add(box);
+                            }
+                        }
+                    }
+
+                    if (retryBoxs.Count == 0)
+                    {
+                        throw new ShieldBoxNotFoundException("GetBoxesForWifiRetryPhone failed.");
+                    }
+
+                    return retryBoxs; 
+                    #endregion
+
+                case RackTestMode.AAB:
+                    throw new Exception("Error 49841634791.");
+                case RackTestMode.ABC:
+                    throw new Exception("Error 49841634791.");
+                case RackTestMode.ABA:
+                    throw new Exception("Error 49841634791.");
+                default:
+                    throw new Exception("Error 49841634791.");
+            }
+        }
 
         private bool HasNoPhoneToBeServed()
         {
@@ -1450,195 +1253,6 @@ namespace Rack
             }
         }
 
-        private bool MoreThanTwoEmptyBoxes()
-        {
-            int count = 0; 
-            foreach (var box in ShieldBoxs)
-            {
-                if (box.Enabled && box.Empty)
-                {
-                    count++;
-                }
-            }
-
-            return count > 1;
-        }
-
-        /// <summary>
-        /// Maybe it's not empty.
-        /// </summary>
-        private ShieldBox GetBoxForGoldPhone()
-        {
-            //If not found a empty box, try to find a available box.
-            foreach (var box in ShieldBoxs)
-            {
-                if (box.Enabled && box.Available && box.GoldPhoneChecked==false)
-                {
-                    return box;
-                }
-            }
-
-            throw new ShieldBoxNotFoundException("GetBoxForGoldPhone fail.");
-        }
-
-        private ShieldBox GetBoxForWifiGoldPhone()
-        {
-            foreach (var box in ShieldBoxs)
-            {
-                if (box.Enabled && box.Available && box.GoldPhoneChecked == false && box.Type == ShieldBoxType.Wifi)
-                {
-                    return box;
-                }
-            }
-
-            throw new ShieldBoxNotFoundException("GetBoxForWifiGoldPhone fail.");
-        }
-
-        private ShieldBox GetEmptyBoxForWifiPhone()
-        {
-            foreach (var box in ShieldBoxs)
-            {
-                if (box.Enabled && box.Empty && box.Type == ShieldBoxType.Wifi)
-                {
-                    return box;
-                }
-            }
-
-            throw new ShieldBoxNotFoundException("GetEmptyBoxForNewWifiPhone fail.");
-        }
-
-        private ShieldBox GetEmptyBoxForRfPhone()
-        {
-            foreach (var box in ShieldBoxs)
-            {
-                if (box.Enabled && box.Empty && box.Type == ShieldBoxType.Rf)
-                {
-                    return box;
-                }
-            }
-
-            throw new ShieldBoxNotFoundException("GetEmptyBoxForNewWifiPhone fail.");
-        }
-
-        /// <summary>
-        /// A new available box for current phone, but maybe it's not empty.
-        /// </summary>
-        /// <param name="phone"></param>
-        /// <returns></returns>
-        private ShieldBox GetBoxForRetryPhone(Phone phone)
-        {
-            lock (_availableBoxLocker)
-            {
-                foreach (var box in ShieldBoxs)
-                {
-                    var foundBox = true;
-                    if (box.Enabled && box.Available)
-                    {
-                        foreach (var footprint in phone.TargetPositionFootprint)
-                        {
-                            if (box.Position.TeachPos == footprint.TeachPos)
-                            {
-                                foundBox = false;
-                            }
-                        }
-                    }
-                    else
-                    {
-                        foundBox = false;
-                    }
-
-                    if (foundBox)
-                    {
-                        return box;
-                    }
-                }
-                throw new ShieldBoxNotFoundException("GetBoxForRetryPhone fail.");
-            }
-        }
-
-        private List<ShieldBox> GetBoxesForRetryPhone(Phone phone)
-        {
-            lock (_availableBoxLocker)
-            {
-                List<ShieldBox> retryBoxs = new List<ShieldBox>();
-                foreach (var box in ShieldBoxs)
-                {
-                    var foundBox = true;
-                    if (box.Enabled && box.Available)
-                    {
-                        foreach (var footprint in phone.TargetPositionFootprint)
-                        {
-                            if (box.Position.TeachPos == footprint.TeachPos)
-                            {
-                                foundBox = false;
-                            }
-                        }
-                    }
-                    else
-                    {
-                        foundBox = false;
-                    }
-
-                    if (foundBox)
-                    {
-                        retryBoxs.Add(box);
-                    }
-                }
-
-                return retryBoxs;
-            }
-        }
-
-        private List<ShieldBox> GetBoxesForWifiRetryPhone(Phone phone)
-        {
-            if (WifiTestMode == RackTestMode.AB)
-            {
-                List<ShieldBox> retryBoxs = new List<ShieldBox>();
-                lock (_availableBoxLocker)
-                {
-                    foreach (var box in ShieldBoxs)
-                    {
-                        var foundBox = true;
-                        if (box.Enabled && box.Available & box.Type == ShieldBoxType.Wifi)
-                        {
-                            foreach (var footprint in phone.TargetPositionFootprint)
-                            {
-                                if (box.Position.TeachPos == footprint.TeachPos)
-                                {
-                                    foundBox = false;
-                                }
-                            }
-                        }
-                        else
-                        {
-                            foundBox = false;
-                        }
-
-                        if (foundBox)
-                        {
-                            retryBoxs.Add(box);
-                        }
-                    }
-                }
-
-                if (retryBoxs.Count == 0)
-                {
-                    throw new Exception("GetBoxesForWifiRetryPhone failed.");
-                }
-
-                return retryBoxs;
-            }
-            else
-            {
-                throw new Exception("Error 49841634791.");
-            }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="phones"></param>
-        /// <seealso cref="RemovePhoneToBeServed"/>
         private void RecyclePhones(IEnumerable<Phone> phones)
         {
             lock (_phoneToBeServedLocker)
@@ -1647,11 +1261,6 @@ namespace Rack
             }
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="phones"></param>
-        /// <seealso cref="RecyclePhones"/>
         private void RemovePhoneToBeServed(IEnumerable<Phone> phones)
         {
             lock (_phoneToBeServedLocker)
@@ -1694,37 +1303,6 @@ namespace Rack
                 PhoneToBeServed.Remove(phone);
             }
         }
-
-        public void StartPhoneServer()
-        {
-            if (_phoneServerThread == null)
-            {
-                _phoneServerThread = new Thread(PhoneServer)
-                {
-                    IsBackground = true
-                };
-            }
-
-            if (_phoneServerThread.IsAlive == false)
-            {
-                _phoneServerThread.Start();
-            }
-
-            PhoneServerManualResetEvent.Set();
-        }
-
-        private void Delay(int millisec)
-        {
-            Thread.Sleep(millisec);
-        }
-
-        public void StopPhoneServer()
-        {
-            if (_phoneServerThread != null)
-            {
-                _phoneServerThread.Abort();
-                _phoneServerThread.Join();
-            }
-        }
+        
     }
 }

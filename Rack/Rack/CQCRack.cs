@@ -51,6 +51,11 @@ namespace Rack
         public ShieldBox[] ShieldBoxs { get; set; }
 
         private bool _shieldBoxInstanced = false;
+
+        /// <summary>
+        /// Box3 can be danger for bining.
+        /// </summary>
+        public bool NoShieldBox3 { get; set; } = true;
         #endregion
 
         #region Tester

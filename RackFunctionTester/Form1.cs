@@ -60,7 +60,7 @@ namespace RackFunctionTester
 
         private void button8_Click(object sender, EventArgs e)
         {
-            _rack.AddGoldPhone();
+            //_rack.AddGoldPhone();
         }
 
         private void button10_Click(object sender, EventArgs e)

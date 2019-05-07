@@ -19,6 +19,9 @@ namespace Rack
         /// </summary>
         public bool HasBinAPhone { get; set; }
 
+        /// <summary>
+        /// Auto set false after a place finished.
+        /// </summary>
         public bool HasPlaceAPhone { get; set; }
 
         #region Events

@@ -83,11 +83,9 @@ namespace Rack
             }
 
             MapEtherCAT();
-            Thread.Sleep(500);
-            MapEtherCAT();
         }
 
-        private void MapEtherCAT()
+        public void MapEtherCAT()
         {
             for (var i = 0; i < InputModuleNum; i++)
                 Ch.MapEtherCATInput(MotionFlags.ACSC_NONE, GetInputModuleAddress(i), GetInputName(i));

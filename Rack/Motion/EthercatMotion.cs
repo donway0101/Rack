@@ -205,6 +205,11 @@ namespace Rack
             };
         }
 
+        public void SaveToAcsFlash()
+        {
+
+        }
+
         private TargetPosition LoadPosition(TeachPos pos, TeachPos id)
         {
             TargetPosition target = new TargetPosition
@@ -258,7 +263,7 @@ namespace Rack
                (int)motor.Id, (int)motor.Id, -1, -1);
         }
 
-        private void MapEtherCat()
+        public void MapEtherCat()
         {
             foreach (var motor in Motors)
             {

@@ -101,7 +101,7 @@ namespace Rack
         /// 
         /// </summary>
         /// <param name="timeout">Takes less than 3 sec to open</param>
-        public void OpenBox(int timeout = 5000)
+        public void OpenBox(int timeout = 5000, bool setAvailable = true)
         {
             Stopwatch stopwatch = new Stopwatch();
             stopwatch.Start();
@@ -119,6 +119,10 @@ namespace Rack
                 SendCommand(ShieldBoxCommand.OPEN, ShieldBoxResponse.OpenSuccessful, timeout);
                 State = ShieldBoxState.Open;
                 ReadyForTesting = false;
+                if (setAvailable)
+                {
+                    Available = true;
+                }
             }
             catch (Exception e)
             {

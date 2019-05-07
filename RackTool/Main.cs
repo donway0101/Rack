@@ -433,9 +433,9 @@ namespace RackTool
                     DialogResult Result = MessageBox.Show("Now run the \"Unload And Load\", Please make sure the Unload Gripper not clamping the phone");
                     if (Result == DialogResult.No)
                         return;
-                    TargetPosition target = _rack.ConverterTeachPosToTargetPosition(_selectedTargetPosition);
+                    ShieldBox box = _rack.ConverterTeachPosToShieldBox(_selectedTargetPosition);
                     //Todo check Box closed.
-                    _rack.UnloadAndLoad(target, _selectedGripper);
+                    _rack.UnloadAndLoad(box, _selectedGripper);
                 }
                 catch (Exception ex)
                 {
@@ -493,11 +493,11 @@ namespace RackTool
             await Task.Run((Action)(() =>
             {
                 //Todo complete condition.
-                TargetPosition target = _rack.ConverterTeachPosToTargetPosition(_selectedTargetPosition);
+                ShieldBox box = _rack.ConverterTeachPosToShieldBox(_selectedTargetPosition);
 
                 try
                 {
-                    _rack.Load(_selectedGripper, target);
+                    _rack.Load(_selectedGripper, box);
                 }
                 catch (Exception ex)
                 {
@@ -2330,7 +2330,7 @@ namespace RackTool
 
         private void buttonStartPhoneServer_Click(object sender, EventArgs e)
         {
-            _rack.StartPhoneServer();
+            _rack.StartPhoneServer();           
         }
 
         private async void buttonCheckBox_Click(object sender, EventArgs e)
@@ -2349,6 +2349,11 @@ namespace RackTool
                 }
             });
             button.Enabled = true;
+        }
+
+        private void buttonPausePhoneServer_Click(object sender, EventArgs e)
+        {
+            _rack.PausePhoneServer();
         }
     }
 }

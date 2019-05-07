@@ -248,6 +248,7 @@
             this.toolStripStatusLabel4 = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripStatusLabelPower = new System.Windows.Forms.ToolStripStatusLabel();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
+            this.buttonPausePhoneServer = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarSetSpeed2)).BeginInit();
@@ -753,6 +754,7 @@
             // 
             // groupBoxMain
             // 
+            this.groupBoxMain.Controls.Add(this.buttonPausePhoneServer);
             this.groupBoxMain.Controls.Add(this.buttonCheckBox);
             this.groupBoxMain.Controls.Add(this.buttonStartPhoneServer);
             this.groupBoxMain.Controls.Add(this.buttonReset);
@@ -1874,6 +1876,13 @@
             this.toolStripStatusLabelPower.Name = "toolStripStatusLabelPower";
             resources.ApplyResources(this.toolStripStatusLabelPower, "toolStripStatusLabelPower");
             // 
+            // buttonPausePhoneServer
+            // 
+            resources.ApplyResources(this.buttonPausePhoneServer, "buttonPausePhoneServer");
+            this.buttonPausePhoneServer.Name = "buttonPausePhoneServer";
+            this.buttonPausePhoneServer.UseVisualStyleBackColor = true;
+            this.buttonPausePhoneServer.Click += new System.EventHandler(this.buttonPausePhoneServer_Click);
+            // 
             // Main
             // 
             resources.ApplyResources(this, "$this");
@@ -2147,6 +2156,7 @@
         private System.Windows.Forms.Button buttonTesterSendPass;
         private System.Windows.Forms.Button buttonStartPhoneServer;
         private System.Windows.Forms.Button buttonCheckBox;
+        private System.Windows.Forms.Button buttonPausePhoneServer;
     }
 }
 

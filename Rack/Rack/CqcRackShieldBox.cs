@@ -125,8 +125,7 @@ namespace Rack
                 catch (Exception e)
                 {
                     OnErrorOccured(444, e.Message);
-                }
-                
+                }               
             });
         }
 
