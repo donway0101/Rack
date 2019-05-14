@@ -24,6 +24,14 @@ namespace Rack
         /// </summary>
         public bool HasPlaceAPhone { get; set; }
 
+        public bool NgFullWarning { get; set; }
+
+        public int NgCount { get; set; }
+
+        public int MaxNg { get; set; } = 5;
+
+        public bool RobotBinning { get; set; }
+
         #region Events
 
         public delegate void ErrorOccuredEventHandler(object sender, int code, string description);
@@ -287,11 +295,28 @@ namespace Rack
                         {
                             HasBinAPhone = false;
                             binedPhoneDetected = false;
+                            NgCount++;
                             Task.Run(() =>
                             {
                                 Delay(10000);
                                 StopBeltBin();
                             });
+                        }
+                    }
+
+                    if (NgCount>=MaxNg)
+                    {
+                        NgFullWarning = true;
+                        if (RobotBinning == false)
+                        {
+                            RunBeltBin();
+                        }
+                    }
+                    else
+                    {
+                        if (NgCount==0)
+                        {
+                            NgFullWarning = false;
                         }
                     }
 
@@ -313,6 +338,8 @@ namespace Rack
                             pickBufferSensorCount = 0;
                         }
                     }
+
+
                 }
                 catch (Exception ex)
                 {

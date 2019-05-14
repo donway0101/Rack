@@ -63,6 +63,12 @@ namespace Rack
 
         public void SaveApproachHeight(TeachPos selectedTeachPos)
         {
+            double zPos = Convert.ToDouble(XmlReaderWriter.GetTeachAttribute(Files.RackData, selectedTeachPos, PosItem.ZPos));
+            if (Motion.GetPosition(Motion.MotorZ) < zPos + 30)
+            {
+                throw new Exception("Approach is less than ZPos + 30.");
+            }
+
             XmlReaderWriter.SetTeachAttribute(Files.RackData, selectedTeachPos, PosItem.ApproachHeight,
                 Motion.GetPosition(Motion.MotorZ).ToString(CultureInfo.CurrentCulture));
         }
@@ -123,6 +129,8 @@ namespace Rack
 
         public void ReadyThePhone(int timeout = 3000)
         {
+            //RobotTakeControlOnConveyor();
+
             Conveyor.Clamp(false);
             Conveyor.UpBlockSeparate(false);
             Conveyor.UpBlockPick(false);

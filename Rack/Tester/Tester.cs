@@ -18,11 +18,24 @@ namespace Rack
         private readonly object _sendLocker = new object();
         private bool _acceptingConnection;
         private readonly ManualResetEvent _socketManualResetEvent = new ManualResetEvent(false);
+        private bool _connected;
 
         public string Ip { get; set; }
         public int Id { get; set; }
         public ShieldBox ShieldBox { get; set; }
-        public int RobotState { get; set; } 
+        public int RobotState { get; set; } = 2; //Ready.
+
+        public bool Connected
+        {
+            get { return _connected; }
+            set {
+                _connected = value;
+                if (ShieldBox!=null)
+                {
+                    ShieldBox.TesterComputerConnected = value;
+                }
+            }
+        }
 
         public delegate void MessageReceivedEventHandler(object sender, string message);
 
@@ -42,8 +55,18 @@ namespace Rack
             ErrorOccured?.Invoke(this, code, description);
         }
 
-        public Tester(string ip, int portNum)
+        public delegate void InfoOccuredEventHandler(object sender, int code, string description);
+
+        public event InfoOccuredEventHandler InfoOccured;
+
+        protected void OnInfoOccured(int code, string description)
         {
+            InfoOccured?.Invoke(this, code, description);
+        }
+
+        public Tester(int id, string ip, int portNum)
+        {
+            Id = id;
             _portNum = portNum;
             _messageReceiveThread = new Thread(ReceiveMessage){IsBackground = true};
 
@@ -61,7 +84,6 @@ namespace Rack
             _stop = false;
             if (_messageReceiveThread.IsAlive == false)
             {
-                //Todo need to new a thread?
                 _messageReceiveThread.Start();
             }
         }
@@ -92,6 +114,7 @@ namespace Rack
 
             _socketManualResetEvent.Reset();
             _acceptSocket = _listeningSocket.Accept();
+            Connected = true;
             _socketManualResetEvent.Set();
 
             _acceptingConnection = false;
@@ -116,7 +139,8 @@ namespace Rack
                 }
                 catch (Exception e)
                 {
-                    OnErrorOccured(4, "Client may disconnect" + e.Message);
+                    OnErrorOccured(40005, "Client may disconnect" + e.Message);
+                    Connected = false;
                     AcceptClient();
                 }
             }
@@ -135,7 +159,7 @@ namespace Rack
                     }
                     catch (Exception e)
                     {
-                        OnErrorOccured(4, "Client may disconnect" + e.Message);
+                        OnErrorOccured(40004, "Send message to Tester "+ Id + " fail." + e.Message);
                         AcceptClient();
                     }
                 }
@@ -154,14 +178,14 @@ namespace Rack
             {
                 if (message.Contains(";") == false)
                 {
-                    OnErrorOccured(4, "Receive unknown message " + message);
+                    OnErrorOccured(40003, "Receive unknown message " + message);
                     return;
                 }
 
                 int index = message.IndexOf(";", StringComparison.Ordinal);
                 if (index+1 != message.Length)
                 {
-                    OnErrorOccured(4, "Receive unknown message " + message);
+                    OnErrorOccured(40003, "Receive unknown message " + message);
                     return;
                 }
 
@@ -174,11 +198,12 @@ namespace Rack
                 switch (command)
                 {
                     case TesterCommand.GetRobotState:
-                        //Todo update state
+                        OnInfoOccured(20001, "Tester " + Id + " requesting Robot state.");
                         SendMessage(TesterCommand.GetRobotState + "," + RobotState + ";");
+                        OnInfoOccured(20001, "Rack response Robot state to Tester " + Id +".");
                         break;
                     case TesterCommand.GetShieldedBoxState:
-
+                        OnInfoOccured(20002,"Tester " + Id + " requesting shieldedBox State.");
                         int state = 0;
                         if (ShieldBox.ReadyForTesting)
                         {
@@ -188,12 +213,27 @@ namespace Rack
                         {
                             state = (int)ShieldBoxState.Open;
                         }
-
                         SendMessage(TesterCommand.GetShieldedBoxState + ","+ state + ";");
+                        if (state == (int)ShieldBoxState.Close)
+                        {
+                            if (ShieldBox.Phone!=null)
+                            {
+                                ShieldBox.Phone.TestCycleTimeStopWatch.Restart();
+                            }
+                        }
+                        OnInfoOccured(20002, "Rack response shieldedBox state to Tester " + Id + ".");
                         break;
                     case TesterCommand.SetTestResult:
+                        OnInfoOccured(20003, "Tester " + Id + " send test result: " + subMessage[1] + ".");
+                        if (ShieldBox.Phone != null)
+                        {
+                            ShieldBox.Phone.TestCycleTimeStopWatch.Stop();
+                        }
                         try
                         {
+                            SendMessage(TesterCommand.SetTestResult + ",OK;");
+                            OnInfoOccured(20003, "Rack response send test result to Tester " + Id + ".");
+
                             if (subMessage[1] == "1")
                             {
                                 ShieldBox.OpenBox();
@@ -204,22 +244,26 @@ namespace Rack
                             {
                                 ShieldBox.OpenBox();
                                 ShieldBox.Phone.TestResult = TestResult.Pass;
-                            }
-
-                            SendMessage(TesterCommand.SetTestResult + ",OK;");
+                            }                            
                         }
                         catch (BoxException)
                         {
-                            OnErrorOccured(444, "Open box failed.");
+                            OnErrorOccured(40001, "Open box failed.");
                         }
                         catch (Exception)
                         {
-                            OnErrorOccured(4, "Tester send back a result while no phone in shield box.");
+                            OnErrorOccured(40002, "Tester send back a result while no phone in shield box.");
                         }
                         break;
 
+                    case TesterCommand.GetSerialNumber:
+                        OnInfoOccured(20028, "Tester " + Id + " requesting Serial Number.");
+                        SendMessage(TesterCommand.GetSerialNumber + "," + ShieldBox.Phone.SerialNumber + ";");
+                        OnInfoOccured(20028, "Rack response Get Serial Number to Tester " + Id + ".");
+                        break;
+
                     default:
-                        OnErrorOccured(4,"Receive unknown message " + message);
+                        OnErrorOccured(40003,"Receive unknown message " + message);
                         break;
                 }
 

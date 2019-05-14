@@ -52,6 +52,8 @@
     <Compile Include="Kit\XmlReaderWriter_Stepper.cs" />
     <Compile Include="Phone\PhoneData.cs" />
     <Compile Include="Phone\Phone.cs" />
+    <Compile Include="Rack\CqcRackError.cs" />
+    <Compile Include="Tester\TesterClient.cs" />
     <Compile Include="Rack\CqcRackConveyorManager.cs" />
     <Compile Include="Rack\CqcRackTester.cs" />
     <Compile Include="Rack\CqcRackSimulation.cs" />
@@ -75,15 +77,13 @@
     <Compile Include="Motion\Motor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Rack\CqcRackGripper.cs" />
+    <Compile Include="Scanner\Scanner.cs" />
     <Compile Include="ShieldBox\ShieldBox.cs" />
     <Compile Include="ShieldBox\ShieldBoxData.cs" />
     <Compile Include="Stepper\StepperData.cs" />
     <Compile Include="Stepper\Stepper.cs" />
     <Compile Include="Tester\TesterData.cs" />
     <Compile Include="Tester\Tester.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

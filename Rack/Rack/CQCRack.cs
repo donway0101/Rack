@@ -9,17 +9,18 @@ namespace Rack
         #region Private
         private readonly string _ip;
         private readonly Api _ch = new Api();
-        private const double YIsInBox = 200;
-        private const double YIsNearHome = 10;
+        private const double YIsInBox = 200.0;
+        private const double YIsNearHome = 10.0;
         private bool _eventEnabled; 
         #endregion
 
         #region Robot
 
-        public bool RobotInSimulateMode { get; set; } = true;
+        public bool RobotInSimulateMode { get; set; } = false;
         public bool ShieldBoxOnline { get; set; } = true;
         public bool TesterOnline { get; set; } = true;
-        public bool TestRun { get; set; }
+        public bool ScannerOnline { get; set; } = true;
+        public bool TestRun { get; set; } = true;
         public bool StepperOnline { get; set; } = true;
         public bool ConveyorOnline { get; set; } = true;
         public bool MotorsOnline { get; set; } = true;
@@ -72,8 +73,11 @@ namespace Rack
         #endregion
       
         #region Conveyor
+        public Scanner Scanner { get; set; }
+
         public Conveyor Conveyor { get; set; }
         public bool ConveyorIsBusy { get; set; }
+
         private readonly ManualResetEvent _conveyorWorkingManualResetEvent = new ManualResetEvent(true);
 
         private Thread _conveyorManagerThread;
@@ -112,7 +116,6 @@ namespace Rack
         /// <summary>
         /// Set, to serve, if exception, has to set again to continue.
         /// </summary>
-        /// Todo set it if any box state changes.
         public ManualResetEvent PhoneServerManualResetEvent = new ManualResetEvent(false);
 
         public RackTestMode WifiTestMode { get; set; } = RackTestMode.AB;

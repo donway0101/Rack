@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -50,8 +51,6 @@ namespace Rack
                         throw new Exception("Box " + box.Id + " is enabled but can't communicate: " + e.Message);
                     }
                 }
-                //Todo different type of shield box.
-                //XmlReaderWriter.GetBoxAttribute(Files.BoxData, 1, ShieldBoxItem.Type);
             }
         }
  
@@ -67,6 +66,30 @@ namespace Rack
                     }
                 }
             }
+        }
+
+        public void CloseAllBoxAsync()
+        {
+            List<Task<bool>> closeBoxTask = new List<Task<bool>>();
+            foreach (var box in ShieldBoxs)
+            {
+                if (box.Enabled)
+                {
+                    if (box.IsClosed() == false)
+                    {
+                        //box.CloseBox();
+                        closeBoxTask.Add(box.CloseBoxAsync());
+                    }
+                }
+            }
+
+            //foreach (var task in closeBoxTask)
+            //{
+            //    if (wait task == false)
+            //    {
+            //        throw new Exception("Close box fail.");
+            //    }
+            //}
         }
 
         public void CloseAllBox()
@@ -107,11 +130,13 @@ namespace Rack
 
         public void CheckBox()
         {
+            OnInfoOccured(20011, "Test shield box.");
             InvalidAllBox();
             CloseAllBox();
             Thread.Sleep(1000);
             OpenAllBox();
             ValidAllBox();
+            OnInfoOccured(20012, "Test shield box succeed.");
         }
 
         public Task CloseBoxAsync(ShieldBox box)
@@ -120,11 +145,12 @@ namespace Rack
             {
                 try
                 {
+                    OnInfoOccured(20027, "Try closing door of box:" + box.Id + ".");
                     box.CloseBox();
                 }
                 catch (Exception e)
-                {
-                    OnErrorOccured(444, e.Message);
+                {                    
+                    OnErrorOccured(40008, "Can't close box due to:" + e.Message);
                 }               
             });
         }

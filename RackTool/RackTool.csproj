@@ -54,12 +54,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ConveyorOfMain.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Data.cs">
-      <SubType>Form</SubType>
-    </Compile>
     <Compile Include="Main.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -104,10 +98,6 @@
     <ProjectReference Include="..\Rack\Rack.csproj">
       <Project>{ba6788fd-7479-47d6-b29f-118161d22071}</Project>
       <Name>Rack</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\TesterSimulator\TesterSimulator.csproj">
-      <Project>{C1F64E26-D484-4A2D-8B3A-ED3FE92F7CB6}</Project>
-      <Name>TesterSimulator</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

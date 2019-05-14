@@ -14,7 +14,7 @@ namespace Rack
         /// <summary>
         /// 
         /// </summary>
-        /// //When to run belt? As long as no picking or placing.
+        /// <see cref="Conveyor.Monitor"/>
         private void ConveyorManager()
         {
             while (true)
@@ -31,6 +31,13 @@ namespace Rack
                         {
                             if (OkToLetInNewPhone())
                             {
+                                if (ScannerOnline)
+                                {
+                                    if (Scanner.ScanSuccessful == false)
+                                    {
+                                        throw new Exception("Scan fail, please remove phone manually.");
+                                    }
+                                }                               
                                 Conveyor.InposForPicking();
                                 AddNewPhone();
                             }
@@ -52,7 +59,7 @@ namespace Rack
                 }
                 catch (Exception e)
                 {
-                    OnErrorOccured(444, e.Message);
+                    OnErrorOccured(40007, e.Message);
                     Delay(5000);
                 }
 

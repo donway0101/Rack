@@ -1,14 +1,6 @@
 ﻿using System;
-using System.CodeDom;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
-using System.Runtime.InteropServices;
-using System.Runtime.Remoting.Channels;
-using System.Security.Policy;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Rack
 {
@@ -20,7 +12,6 @@ namespace Rack
         /// Within the list, two close phones, If a phone's next target position match
         ///  a phone's current target postion, then unload and load could happen.
         /// Pick first and then bin or place.
-        /// Todo what if all box fails and no break out?
         /// if next target is unsure, then has to find a box for it.
         ///   TargetPosition(){TeachPos = TeachPos.None};
         /// Can exchange between retrys.
@@ -42,6 +33,12 @@ namespace Rack
                 if (luckyPhones.Count==0)
                     continue;
 
+                foreach (var phone in luckyPhones)
+                {
+                    OnInfoOccured(20013, "Found phone Id:" + phone.Id + 
+                        " Step:" + phone.Step + " Procedure: " + phone.Procedure + " to serve.");
+                }
+                
                 RemovePhoneToBeServed(luckyPhones);
 
                 try
@@ -64,13 +61,12 @@ namespace Rack
                                 if (firstPhone.NextTargetPosition.TeachPos ==
                                     secondPhone.CurrentTargetPosition.TeachPos)
                                 {
+                                    luckyPhones.Remove(firstPhone);
+                                    InfoPhoneAboutToBeServed(firstPhone);
                                     switch (firstPhone.Procedure)
                                     {
                                         case RackProcedure.Pick:
                                             gripper = GetAvailableGripper();
-                                            Pick(gripper);
-                                            ShieldBox box = ConverterTeachPosToShieldBox(
-                                                firstPhone.NextTargetPosition.TeachPos);
                                             Pick(gripper);
                                             OkToReloadOnConveyor();
                                             break;
@@ -82,8 +78,9 @@ namespace Rack
                                         default:
                                             throw new Exception("Error 984616941611");
                                     }
-                                    luckyPhones.Remove(firstPhone);
 
+                                    luckyPhones.Remove(secondPhone);
+                                    InfoPhoneAboutToBeServed(secondPhone);
                                     switch (secondPhone.Procedure)
                                     {
                                         case RackProcedure.Bin:
@@ -103,8 +100,7 @@ namespace Rack
 
                                         default:
                                             throw new Exception("Error 989491878165");
-                                    }
-                                    luckyPhones.Remove(secondPhone);
+                                    }                                    
                                 }
                                 else //Arrange error.
                                 {
@@ -117,6 +113,8 @@ namespace Rack
                             else
                             {
                                 var phone = luckyPhones.First();
+                                luckyPhones.Remove(phone);
+                                InfoPhoneAboutToBeServed(phone);
                                 switch (phone.Procedure)
                                 {
                                     case RackProcedure.Bin:
@@ -126,6 +124,7 @@ namespace Rack
                                         break;
 
                                     case RackProcedure.Place:
+                                        OnInfoOccured(20020, "Turning a Rf into Wifi.");
                                         phone.Step = RackTestStep.Wifi;
                                         //Set result will trigger add phone to server.
                                         phone.TestResult = TestResult.None;
@@ -141,9 +140,7 @@ namespace Rack
                                         break;
                                     default:
                                         throw new Exception("Error 6417989416269");
-                                }
-
-                                luckyPhones.Remove(phone);
+                                }                                
                             }
                             #endregion
                         }
@@ -186,12 +183,16 @@ namespace Rack
                                         throw new Exception("Error 456984616761654");
                                     }
 
-                                    ComboUnload(firstPhone);
                                     luckyPhones.Remove(firstPhone);
-                                    
-                                    ComboUnloadAndLoad(firstPhone, secondPhone, out gripper);
-                                    luckyPhones.Remove(secondPhone);
+                                    InfoPhoneAboutToBeServed(firstPhone);
+                                    ComboUnload(firstPhone);
 
+                                    luckyPhones.Remove(secondPhone);
+                                    InfoPhoneAboutToBeServed(secondPhone);
+                                    ComboUnloadAndLoad(firstPhone, secondPhone, out gripper);
+
+                                    luckyPhones.Remove(thirdPhone);
+                                    InfoPhoneAboutToBeServed(thirdPhone);
                                     switch (thirdPhone.Procedure)
                                     {
                                         case RackProcedure.Bin:
@@ -203,7 +204,6 @@ namespace Rack
                                         default:
                                             break;
                                     }
-                                    luckyPhones.Remove(thirdPhone);
                                 }
                                 else //Arrange error.
                                 {
@@ -223,6 +223,8 @@ namespace Rack
                                     if (firstPhone.NextTargetPosition.TeachPos ==
                                         secondPhone.CurrentTargetPosition.TeachPos)
                                     {
+                                        luckyPhones.Remove(firstPhone);
+                                        InfoPhoneAboutToBeServed(firstPhone);
                                         switch (firstPhone.Procedure)
                                         {
                                             case RackProcedure.Pick:
@@ -236,8 +238,9 @@ namespace Rack
                                             default:
                                                 throw new Exception("Error 984616941611");
                                         }
-                                        luckyPhones.Remove(firstPhone);
 
+                                        luckyPhones.Remove(secondPhone);
+                                        InfoPhoneAboutToBeServed(secondPhone);
                                         switch (secondPhone.Procedure)
                                         {
                                             case RackProcedure.Bin:
@@ -263,7 +266,6 @@ namespace Rack
                                             default:
                                                 throw new Exception("Error 989491878165");
                                         }
-                                        luckyPhones.Remove(secondPhone);
                                     }
                                     else
                                     {
@@ -276,6 +278,8 @@ namespace Rack
                                 else
                                 {
                                     var phone = luckyPhones.First();
+                                    luckyPhones.Remove(phone);
+                                    InfoPhoneAboutToBeServed(phone);
                                     switch (phone.Procedure)
                                     {
                                         case RackProcedure.Bin:
@@ -299,8 +303,6 @@ namespace Rack
                                         default:
                                             throw new Exception("Error 846164946151679"); ;
                                     }
-
-                                    luckyPhones.Remove(phone);                                    
                                 }
                                 #endregion
                             }
@@ -308,31 +310,33 @@ namespace Rack
                         #endregion
                     }
                                      
-                    //Todo comment out.
-                    PrintStateOfBoxes();
+                    //PrintStateOfBoxes();
                 }
 
                 #region Exception
-                catch (ShieldBoxNotFoundException e)
-                {
-                    //Todo error code
-                    OnInfoOccured(0, e.Message);
-                    //PhoneServerManualResetEvent.Reset();
-                }
                 catch (Exception e)
                 {
-                    OnErrorOccured(44444444, e.Message);
+                    OnErrorOccured(40016, "Can't serve phone due to:" + e.Message);
                     PhoneServerManualResetEvent.Reset();
                 }
                 finally
                 {
                     if (luckyPhones.Count > 0)
                     {
+                        foreach (var phone in luckyPhones)
+                        {
+                            OnInfoOccured(20015, "Recycle phone of Id:" + phone.Id + " Step:" + phone.Step + ".");
+                        }
                         RecyclePhones(luckyPhones);
                     }
                 } 
                 #endregion
             }
+        }
+
+        private void InfoPhoneAboutToBeServed(Phone phone)
+        {
+            OnInfoOccured(20014, "Serving phone Id:" + phone.Id + " Step:" + phone.Step + ".");
         }
 
         private void ClassifyPhones()
@@ -1084,9 +1088,11 @@ namespace Rack
         }
 
         private void MoveFromCurrentBoxToNext(Phone phone)
-        {
+        {            
             RackGripper gripper = GetAvailableGripper();
-            ShieldBox nextBox = ConverterTeachPosToShieldBox(phone.NextTargetPosition.TeachPos);            
+            ShieldBox nextBox = ConverterTeachPosToShieldBox(phone.NextTargetPosition.TeachPos);
+            OnInfoOccured(20021, "Try moving phone:" + phone.Id + 
+                " from box:" + phone.ShieldBox.Id +  " to box:" + nextBox.Id + " with " + gripper + ".");
             Unload(gripper, phone);
             Unlink(phone);
             Load(gripper, nextBox);
@@ -1119,8 +1125,9 @@ namespace Rack
             }
         }
 
-        private static void Link(Phone phone, ShieldBox box)
+        private void Link(Phone phone, ShieldBox box)
         {
+            OnInfoOccured(20024, "Link phone:" + phone.Id + " with box:" + box.Id + ".");
             phone.ShieldBox = box; //Contain info of current position.
             phone.TargetPositionFootprint.Add(box.Position); //For retry.
             phone.CurrentTargetPosition = box.Position;
@@ -1141,10 +1148,12 @@ namespace Rack
         /// Unlink phone with its box.
         /// </summary>
         /// <param name="phone"></param>
-        private void Unlink(Phone phone)
-        {
+        public void Unlink(Phone phone)
+        {            
             ShieldBox box = phone.ShieldBox;
+            OnInfoOccured(20022, "Unlink phone:" + phone.Id + " with box:" + box.Id);
             phone.ShieldBox = null;
+            phone.TestCycleTimeStopWatch.Reset();
             box.Available = true;
             box.Empty = true;
             box.Phone = null;
@@ -1155,7 +1164,7 @@ namespace Rack
             foreach (var box in ShieldBoxs)
             {
                 Console.Write("Box{0} Available:{1} Empty:{2} Checked:{3}", 
-                    box.Id, box.Available, box.Empty, box.GoldPhoneChecked);
+                    box.Id, box.Available, box.Empty, box.Available);
                 if (box.Phone != null)
                 {
                     Console.Write(" Phone:{0} Step:{1} Box:{2}", box.Phone.Id, box.Phone.Step, box.Phone.ShieldBox.Id);
@@ -1189,11 +1198,12 @@ namespace Rack
         private List<ShieldBox> GetBoxesForRetryPhone(
             Phone phone, RackTestMode testMode, ShieldBoxType type, bool needEmpty=false)
         {
+            List<ShieldBox> retryBoxs;
             switch (testMode)
             {
                 case RackTestMode.AB:
                     #region AB mode
-                    List<ShieldBox> retryBoxs = new List<ShieldBox>();
+                    retryBoxs = new List<ShieldBox>();
                     lock (_availableBoxLocker)
                     {
                         foreach (var box in ShieldBoxs)
@@ -1235,9 +1245,96 @@ namespace Rack
                     #endregion
 
                 case RackTestMode.AAB:
-                    throw new Exception("Error 49841634791.");
+                    #region AAB mode
+                    retryBoxs = new List<ShieldBox>();
+                    lock (_availableBoxLocker)
+                    {
+                        if (phone.FailCount == 1)
+                        {
+                            retryBoxs.Add(phone.ShieldBox);
+                        }
+                        else
+                        {
+                            foreach (var box in ShieldBoxs)
+                            {
+                                var foundBox = true;
+                                if (box.Enabled && box.Available && box.Type == type)
+                                {
+                                    foreach (var footprint in phone.TargetPositionFootprint)
+                                    {
+                                        if (box.Position.TeachPos == footprint.TeachPos)
+                                        {
+                                            foundBox = false;
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    foundBox = false;
+                                }
+
+                                if (needEmpty && box.Empty == false)
+                                {
+                                    foundBox = false;
+                                }
+
+                                if (foundBox)
+                                {
+                                    retryBoxs.Add(box);
+                                }
+                            }
+                        }
+                    }
+
+                    if (retryBoxs.Count == 0)
+                    {
+                        throw new ShieldBoxNotFoundException("GetBoxesForWifiRetryPhone failed.");
+                    }
+
+                    return retryBoxs;
+                #endregion
                 case RackTestMode.ABC:
-                    throw new Exception("Error 49841634791.");
+                    #region ABC mode
+                    retryBoxs = new List<ShieldBox>();
+                    lock (_availableBoxLocker)
+                    {
+                        foreach (var box in ShieldBoxs)
+                        {
+                            var foundBox = true;
+                            if (box.Enabled && box.Available && box.Type == type)
+                            {
+                                foreach (var footprint in phone.TargetPositionFootprint)
+                                {
+                                    if (box.Position.TeachPos == footprint.TeachPos)
+                                    {
+                                        foundBox = false;
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                foundBox = false;
+                            }
+
+                            if (needEmpty && box.Empty == false)
+                            {
+                                foundBox = false;
+                            }
+
+                            if (foundBox)
+                            {
+                                retryBoxs.Add(box);
+                            }
+                        }
+                    }
+
+                    if (retryBoxs.Count == 0)
+                    {
+                        throw new ShieldBoxNotFoundException("GetBoxesForWifiRetryPhone failed.");
+                    }
+
+                    return retryBoxs;
+                #endregion
                 case RackTestMode.ABA:
                     throw new Exception("Error 49841634791.");
                 default:
@@ -1296,7 +1393,7 @@ namespace Rack
             AddPhoneToBeServed(phone);
         }
 
-        private void RemovePhoneToBeServed(Phone phone)
+        public void RemovePhoneToBeServed(Phone phone)
         {
             lock (_phoneToBeServedLocker)
             {

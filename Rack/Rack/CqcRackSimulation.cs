@@ -12,8 +12,13 @@
                 Step = RackTestStep.Rf,
                 FailCount = 0,
                 Id = PhoneCount++,
-                CurrentTargetPosition = Motion.PickPosition,
+                CurrentTargetPosition = Motion.PickPosition,               
             };
+
+            if (ScannerOnline)
+            {
+                phone.SerialNumber = Scanner.SerialNumber;
+            }
 
             phone.TestComplete -= Phone_TestComplete;
             phone.TestComplete += Phone_TestComplete;

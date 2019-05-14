@@ -8,5 +8,6 @@ namespace Rack
         GetRobotState,
         GetShieldedBoxState,
         SetTestResult,
+        GetSerialNumber,
     }
 }

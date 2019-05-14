@@ -10,8 +10,16 @@ namespace Rack
         {
             if (StepperOnline)
             {
-                Steppers.HomeMotor(RackGripper.One, -6);
-                Steppers.HomeMotor(RackGripper.Two, -2);
+                try
+                {
+                    Steppers.HomeMotor(RackGripper.One, -6.0);
+                    Steppers.HomeMotor(RackGripper.Two, -2.0);
+                }
+                catch (Exception ex)
+                {
+
+                    throw new Exception("Error when homming stepper motors: " + ex.Message);
+                }
             }
         }
 
@@ -41,7 +49,6 @@ namespace Rack
             }
         }
 
-        //Todo add offset to gripper one and gripper two.
         private void ToPointWaitTillEndGripper(TargetPosition target, RackGripper gripper)
         {
             if (gripper == RackGripper.One)

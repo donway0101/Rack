@@ -9,17 +9,15 @@ using System.IO.Ports;
 using System.Collections;
 using System.Text;
 using System.Security.Cryptography;
-using System.Diagnostics;
-using System.Data;
 using System.IO;
-using TesterSimulator;
+using System.Collections.Generic;
 
 namespace RackTool
 {
     public partial class Main : Form
     {
         #region Define
-        private readonly CqcRack _rack = new CqcRack("192.168.8.18"); //"192.168.8.18"
+        private readonly CqcRack _rack = new CqcRack("199.199.0.18");
         private TeachPos _selectedTargetPosition;
         private RackGripper _selectedGripper;
         private Thread _uiUpdateThread;
@@ -27,16 +25,38 @@ namespace RackTool
         private Power _power = Power.None;
         private bool _isStart = false;
         private TabControlPage currentPage = TabControlPage.Setting;
+
+        private List<CqcRackError> _errorsList = new List<CqcRackError>();
+        private List<CqcRackError> _warningsList = new List<CqcRackError>();
+
+        private string _errorText = string.Empty;
+        private string _warningText = string.Empty;
+
+        private bool _systemFault = true;
+        private bool _systemWarning = true;
+
+        private bool _keepMonitoringSystem = true;
+        private bool _scrollRichTextBox = true;
+
+        private SocketClient _client1 = new SocketClient(1001);
+        private SocketClient _client2 = new SocketClient(1002);
+        private SocketClient _client3 = new SocketClient(1003);
+        private SocketClient _client4 = new SocketClient(1004);
+        private SocketClient _client5 = new SocketClient(1005);
+        private SocketClient _client6 = new SocketClient(1006);
+        private SocketClient _selectedSocketClient = null;
+
         #endregion
 
         #region Struct
         public Main()
         {
             InitializeComponent();
-            //Todo set tab draw mode to ownerdraw
-            tabControl1.DrawItem += new DrawItemEventHandler(tabControl1_DrawItem);
 
-            tabControl1.SelectedIndex = (int)TabControlPage.Main;
+            //Set tab draw mode to ownerdraw
+            tabControlUi.DrawItem += new DrawItemEventHandler(tabControl1_DrawItem);
+
+            tabControlUi.SelectedIndex = (int)TabControlPage.Main;
             comboBoxPower.SelectedIndex = 0;
 
             _rack.ErrorOccured += OnErrorOccured;
@@ -50,8 +70,8 @@ namespace RackTool
         {
             try
             {
-
-                NewLog.Instance.Info(code.ToString(), description);
+                NewLog.Instance.Info(code.ToString() + " " + description);
+                AddMessageToTextBox(code, description);
             }
             catch (Exception ex)
             {
@@ -64,7 +84,8 @@ namespace RackTool
         {
             try
             {
-                NewLog.Instance.Warn(code.ToString(), description);
+                NewLog.Instance.Warn(code.ToString() + " " + description);
+                AddMessageToTextBox(code, description);
             }
             catch (Exception ex)
             {
@@ -78,14 +99,7 @@ namespace RackTool
             try
             {
                 NewLog.Instance.Error(code.ToString() + " " + description);
-
-                trackBarSetSpeed2.Invoke((MethodInvoker) (() =>
-                {
-                    richTextBoxMessage.Text = code.ToString() + " " + description;
-                }));
-
-                //Todo uncomment
-                //_rack.SystemFault = true;
+                AddMessageToTextBox(code, description);
             }
             catch (Exception ex)
             {
@@ -94,23 +108,37 @@ namespace RackTool
             }
         }
 
+        private void AddMessageToTextBox(int code, string description)
+        {
+            richTextBoxMessage.BeginInvoke((MethodInvoker)(() =>
+            {
+                string newMsg = DateTime.Now.ToString("HH:mm:ss ") + code.ToString() + " " + description + Environment.NewLine;
+                richTextBoxMessage.AppendText(newMsg);
+                if (_scrollRichTextBox)
+                {
+                    richTextBoxMessage.SelectionStart = richTextBoxMessage.Text.Length;
+                    richTextBoxMessage.ScrollToCaret();
+                }
+            }));
+        }
+
         private void tabControl1_DrawItem(Object sender, System.Windows.Forms.DrawItemEventArgs e)
         {
             Graphics g = e.Graphics;
             Brush _textBrush;
 
             // Get the item from the collection.
-            TabPage _tabPage = tabControl1.TabPages[e.Index];
+            TabPage _tabPage = tabControlUi.TabPages[e.Index];
 
             // Get the real bounds for the tab rectangle.
-            Rectangle _tabBounds = tabControl1.GetTabRect(e.Index);
+            Rectangle _tabBounds = tabControlUi.GetTabRect(e.Index);
 
             if (e.State == DrawItemState.Selected)
             {
 
                 // Draw a different background color, and don't paint a focus rectangle.
-                _textBrush = new SolidBrush(Color.Red);
-                g.FillRectangle(Brushes.Gray, e.Bounds);
+                _textBrush = new SolidBrush(Color.DarkRed);
+                g.FillRectangle(Brushes.LightGray, e.Bounds);
             }
             else
             {
@@ -119,7 +147,7 @@ namespace RackTool
             }
 
             // Use our own font.
-            Font _tabFont = new Font("Arial", 10.0f, FontStyle.Bold, GraphicsUnit.Pixel);
+            Font _tabFont = new Font("Arial", 14.0f, FontStyle.Bold, GraphicsUnit.Pixel);
 
             // Draw string. Center the text.
             StringFormat _stringFlags = new StringFormat();
@@ -144,6 +172,7 @@ namespace RackTool
             {
                 try
                 {
+                    OnInfoOccured(this, 20006, "System is starting.");
                     _rack.Start();
                     _isStart = true;
 
@@ -164,14 +193,23 @@ namespace RackTool
                 }
                 catch (Exception ex)
                 {
-                    ShowException(ex);
+                    OnErrorOccured(this, 40013, "System start fail due to:" + ex.Message);
                     MessageBox.Show(ex.Message);
                 }
-            });            
+            });
 
             if (startSuccessful)
             {
                 SetupUiForTeaching();
+                OnInfoOccured(this, 20005, "System start OK.");
+            }
+
+            if (_rack.ShieldBox3 != null)
+            {
+                if (_rack.ShieldBox3.Enabled == false)
+                {
+                    MessageBox.Show("如果3号位有屏蔽箱，请确保屏蔽箱门已经关闭，以免在机器手放NG料时产生干涉。");
+                }
             }
 
             groupBoxMain.Enabled = startSuccessful;
@@ -180,7 +218,7 @@ namespace RackTool
 
         private void ShowException(Exception e)
         {
-            richTextBoxMessage.Invoke((MethodInvoker)(
+            richTextBoxMessage.BeginInvoke((MethodInvoker)(
                 () => { richTextBoxMessage.Text = e.Message; }
                 ));
         }
@@ -196,11 +234,6 @@ namespace RackTool
 
                 MessageBox.Show(ex.Message);
             }
-        }        
-
-        private void Invoke(Control control, MethodInvoker action)
-        {
-            control.Invoke(action);
         }
 
         private void SetupUiForTeaching()
@@ -226,15 +259,51 @@ namespace RackTool
             {
                 try
                 {
+                    OnInfoOccured(this, 20007, "Homing robot.");
                     _rack.HomeRobot();
+                    OnInfoOccured(this, 20008, "Home robot complete.");
                     MessageBox.Show("Home Succeed.");
                 }
                 catch (Exception ex)
                 {
+                    OnInfoOccured(this, 40014, "Home robot failed due to:" + ex.Message);
                     MessageBox.Show(ex.Message);
                 }
             });
             buttonHome.Enabled = true;
+        }
+        private void buttonStartPhoneServer_Click(object sender, EventArgs e)
+        {
+            _rack.StartPhoneServer();
+        }
+
+        private async void buttonCheckBox_Click(object sender, EventArgs e)
+        {
+            Button button = (Button)sender;
+            button.Enabled = false;
+            await Task.Run(() =>
+            {
+                try
+                {
+                    _rack.CheckBox();
+                }
+                catch (Exception ex)
+                {
+                    OnErrorOccured(this, 40015, "Test shield box failed.");
+                    MessageBox.Show(ex.Message);
+                }
+            });
+            button.Enabled = true;
+        }
+
+        private void buttonPausePhoneServer_Click(object sender, EventArgs e)
+        {
+            _rack.PausePhoneServer();
+        }
+
+        private void buttonTest_Click(object sender, EventArgs e)
+        {
+
         }
         #endregion
 
@@ -398,7 +467,7 @@ namespace RackTool
                 }
             }
             catch (Exception ex)
-            { 
+            {
                 MessageBox.Show(ex.Message);
             }
         }
@@ -411,7 +480,6 @@ namespace RackTool
             {
                 try
                 {
-                    //Todo check Box closed.
                     _rack.Bin(_selectedGripper);
                 }
                 catch (Exception ex)
@@ -434,7 +502,6 @@ namespace RackTool
                     if (Result == DialogResult.No)
                         return;
                     ShieldBox box = _rack.ConverterTeachPosToShieldBox(_selectedTargetPosition);
-                    //Todo check Box closed.
                     _rack.UnloadAndLoad(box, _selectedGripper);
                 }
                 catch (Exception ex)
@@ -442,19 +509,6 @@ namespace RackTool
                     MessageBox.Show(ex.Message);
                 }
             });
-        }
-
-        private void buttonReadyForPick_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                _rack.ReadyThePhone();
-            }
-            catch (Exception ex)
-            {
-
-                MessageBox.Show(ex.Message);
-            }
         }
 
         private async void buttonLoadForTeach_Click(object sender, EventArgs e)
@@ -492,9 +546,7 @@ namespace RackTool
 
             await Task.Run((Action)(() =>
             {
-                //Todo complete condition.
                 ShieldBox box = _rack.ConverterTeachPosToShieldBox(_selectedTargetPosition);
-
                 try
                 {
                     _rack.Load(_selectedGripper, box);
@@ -560,9 +612,7 @@ namespace RackTool
 
             await Task.Run((Action)(() =>
             {
-                //Todo complete condition.
                 TargetPosition target = _rack.ConverterTeachPosToTargetPosition(_selectedTargetPosition);
-
                 try
                 {
                     _rack.Unload(_selectedGripper, target);
@@ -572,10 +622,6 @@ namespace RackTool
                     MessageBox.Show(ex.Message);
                 }
             }));
-        }
-        private void button26_Click(object sender, EventArgs e)
-        {
-            _rack.ReadyThePhone();
         }
 
         private void checkBoxPickConveyorMoveForward_CheckedChanged(object sender, EventArgs e)
@@ -611,7 +657,7 @@ namespace RackTool
         private void trackBarSetSpeed2_ValueChanged(object sender, EventArgs e)
         {
             labelSpeed2.Text = trackBarSetSpeed2.Value.ToString();
-            
+
         }
 
         private void trackBarSetSpeed1_ValueChanged(object sender, EventArgs e)
@@ -660,75 +706,16 @@ namespace RackTool
             }
         }
 
-
         private void buttonSaveApproach_Click(object sender, EventArgs e)
         {
             try
             {
-                //Todo is approach is lower than teach, then exception.
                 _rack.SaveApproachHeight(_selectedTargetPosition);
             }
             catch (Exception exception)
             {
                 MessageBox.Show(exception.Message);
             }
-        }
-        private void UiUpdate()
-        {
-            while (true)
-            {
-                try
-                {
-                    switch (currentPage)
-                    {
-                        case TabControlPage.Main:
-                            UpdateMainUi();
-                            break;
-                        case TabControlPage.Robot:
-                            UpdateRobotUi();
-                            break;
-                        case TabControlPage.Conveyor:
-                            break;
-                        case TabControlPage.Box:
-                            break;
-                        case TabControlPage.Tester:
-                            break;
-                        case TabControlPage.Log:
-                            break;
-                        case TabControlPage.Setting:
-                            break;
-                        default:
-                            throw new ArgumentOutOfRangeException();
-                    }
-
-                    Thread.Sleep(500);
-                }
-                catch (Exception e)
-                {
-                    OnErrorOccured(this, 444, "UiUpdate " + e.Message);
-                    Thread.Sleep(5000);
-                }
-            }
-        }
-
-        private void UpdateMainUi()
-        {
-            trackBarSetSpeed1.Invoke((MethodInvoker)(() => {
-                trackBarSetSpeed1.Value = (int)(_rack.Motion.GetVelocity(_rack.Motion.MotorZ) / _rack.Motion.MotorZ.SpeedFactor);
-            }));
-        }
-
-        private void UpdateRobotUi()
-        {
-            labelPositionG1.Invoke((MethodInvoker)(() => { labelPositionG1.Text = _rack.Steppers.GetPosition(RackGripper.One).ToString("0.00"); }));
-            labelPositionG2.Invoke((MethodInvoker)(() => { labelPositionG2.Text = _rack.Steppers.GetPosition(RackGripper.Two).ToString("0.00"); }));
-            labelPositionX.Invoke((MethodInvoker)(() => { labelPositionX.Text = _rack.Motion.GetPositionX().ToString("0.00"); }));
-            labelPositionY.Invoke((MethodInvoker)(() => { labelPositionY.Text = _rack.Motion.GetPosition(_rack.Motion.MotorY).ToString("0.00"); }));
-            labelPositionZ.Invoke((MethodInvoker)(() => { labelPositionZ.Text = _rack.Motion.GetPosition(_rack.Motion.MotorZ).ToString("0.00"); }));
-            labelPositionR.Invoke((MethodInvoker)(() => { labelPositionR.Text = _rack.Motion.GetPosition(_rack.Motion.MotorR).ToString("0.00"); }));
-            trackBarSetSpeed2.Invoke((MethodInvoker)(() => {
-                trackBarSetSpeed2.Value = (int)(_rack.Motion.GetVelocity(_rack.Motion.MotorZ) / _rack.Motion.MotorZ.SpeedFactor);
-            }));
         }
 
         #region Manual control
@@ -1114,7 +1101,164 @@ namespace RackTool
         #endregion 
         #endregion
 
-        #region ShieldBoxOperate
+        #region UI update
+        private void UiUpdate()
+        {
+            while (true)
+            {
+                try
+                {
+                    switch (currentPage)
+                    {
+                        case TabControlPage.Main:
+                            UpdateMainUi();
+                            break;
+                        case TabControlPage.Robot:
+                            UpdateRobotUi();
+                            break;
+                        case TabControlPage.Conveyor:
+                            RefleshConveyorUi();
+                            break;
+                        case TabControlPage.Box:
+                            break;
+                        case TabControlPage.Tester:
+                            UpdateTesterUi();
+                            break;
+                        case TabControlPage.Log:
+                            break;
+                        case TabControlPage.Setting:
+                            break;
+                        default:
+                            throw new ArgumentOutOfRangeException();
+                    }
+
+                    SystemMonitor();
+
+                    Thread.Sleep(500);
+                }
+                catch (Exception e)
+                {
+                    OnErrorOccured(this, 40010, "Ui Update error: " + e.Message);
+                    Thread.Sleep(5000);
+                }
+            }
+        }
+
+        private void SystemMonitor()
+        {
+            //if (_keepMonitoringSystem == false)
+            //{
+            //    return;
+            //}
+
+            _errorsList.Clear();
+
+            foreach (var box in _rack.ShieldBoxs)
+            {
+                if (box.Enabled)
+                {
+                    if (box.Phone != null)
+                    {
+                        if (box.Phone.TestCycleTimeStopWatch.ElapsedMilliseconds >
+                            box.Phone.MaxTestCycleTimeSec * 1000)
+                        {
+                            _errorsList.Add(new CqcRackError()
+                            { Code = 40011, Description = "Phone test timeout in box:" + box.Id });
+                        }
+                    }
+                    if (box.TesterComputerConnected == false)
+                    {
+                        _errorsList.Add(new CqcRackError()
+                        { Code = 40012, Description = "Tester computer of box:" + box.Id + " not connect." });
+                    }
+                }
+            }
+
+            _systemFault = false;
+            if (_errorsList.Count > 0)
+            {
+                _systemFault = true;
+                _errorText = string.Empty;
+                foreach (var error in _errorsList)
+                {
+                    _errorText += error.Code + " " + error.Description + Environment.NewLine;
+                }
+            }
+            _rack.SystemFault = _systemFault;
+
+            if (_systemFault == false)
+            {
+                _warningsList.Clear();
+
+                if (_rack.Conveyor.NgFullWarning)
+                {
+                    _warningsList.Add(new CqcRackError()
+                    { Code = 30001, Description = "Ng conveyor full." });
+                }
+
+                _systemWarning = false;
+                if (_warningsList.Count > 0)
+                {
+                    _systemWarning = true;
+                    _warningText = string.Empty;
+                    foreach (var warning in _warningsList)
+                    {
+                        _warningText += warning.Code + " " + warning.Description + Environment.NewLine;
+                    }
+                }
+            }
+
+            richTextBoxError.BeginInvoke((MethodInvoker)(() =>
+            {
+                if (_systemFault)
+                {
+                    richTextBoxError.Text = _errorText;
+                    richTextBoxError.BackColor = Color.Red;
+                    richTextBoxError.ForeColor = Color.White;
+                }
+                else
+                {
+                    if (_systemWarning)
+                    {
+                        richTextBoxError.Text = _warningText;
+                        richTextBoxError.BackColor = Color.Yellow;
+                        richTextBoxError.ForeColor = Color.Black;
+                    }
+                    else
+                    {
+                        richTextBoxError.Text = "系统正常。";
+                        richTextBoxError.BackColor = Color.White;
+                        richTextBoxError.ForeColor = Color.Black;
+                    }
+                }
+
+            }));
+        }
+
+        private void UpdateMainUi()
+        {
+            trackBarSetSpeed1.BeginInvoke((MethodInvoker)(() =>
+            {
+                trackBarSetSpeed1.Value = (int)(_rack.Motion.GetVelocity(_rack.Motion.MotorZ) / _rack.Motion.MotorZ.SpeedFactor);
+            }));
+        }
+
+        private void UpdateRobotUi()
+        {
+            labelPositionG1.BeginInvoke((MethodInvoker)(() => { labelPositionG1.Text = _rack.Steppers.GetPosition(RackGripper.One).ToString("0.00"); }));
+            labelPositionG2.BeginInvoke((MethodInvoker)(() => { labelPositionG2.Text = _rack.Steppers.GetPosition(RackGripper.Two).ToString("0.00"); }));
+            labelPositionX.BeginInvoke((MethodInvoker)(() => { labelPositionX.Text = _rack.Motion.GetPositionX().ToString("0.00"); }));
+            labelPositionY.BeginInvoke((MethodInvoker)(() => { labelPositionY.Text = _rack.Motion.GetPosition(_rack.Motion.MotorY).ToString("0.00"); }));
+            labelPositionZ.BeginInvoke((MethodInvoker)(() => { labelPositionZ.Text = _rack.Motion.GetPosition(_rack.Motion.MotorZ).ToString("0.00"); }));
+            labelPositionR.BeginInvoke((MethodInvoker)(() => { labelPositionR.Text = _rack.Motion.GetPosition(_rack.Motion.MotorR).ToString("0.00"); }));
+            trackBarSetSpeed2.BeginInvoke((MethodInvoker)(() =>
+            {
+                trackBarSetSpeed2.Value = (int)(_rack.Motion.GetVelocity(_rack.Motion.MotorZ) / _rack.Motion.MotorZ.SpeedFactor);
+            }));
+        }
+        #endregion
+
+        #region ShieldBox
 
         #region Right-click menu Event
         private void bTToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1350,16 +1494,23 @@ namespace RackTool
             if (listViewBox.SelectedItems.Count != 0)
             {
                 listViewBox.SelectedItems[0].ImageIndex = 0;
-                switch (listViewBox.SelectedItems[0].Text)
+                try
                 {
-                    case "Box1": _rack.ShieldBox1.OpenBox(); break;
-                    case "Box2": _rack.ShieldBox2.OpenBox(); break;
-                    case "Box3": _rack.ShieldBox3.OpenBox(); break;
-                    case "Box4": _rack.ShieldBox4.OpenBox(); break;
-                    case "Box5": _rack.ShieldBox5.OpenBox(); break;
-                    case "Box6": _rack.ShieldBox6.OpenBox(); break;
-                    default:
-                        break;
+                    switch (listViewBox.SelectedItems[0].Text)
+                    {
+                        case "Box1": _rack.ShieldBox1.OpenBox(); break;
+                        case "Box2": _rack.ShieldBox2.OpenBox(); break;
+                        case "Box3": _rack.ShieldBox3.OpenBox(); break;
+                        case "Box4": _rack.ShieldBox4.OpenBox(); break;
+                        case "Box5": _rack.ShieldBox5.OpenBox(); break;
+                        case "Box6": _rack.ShieldBox6.OpenBox(); break;
+                        default:
+                            break;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
                 }
             }
             else
@@ -1373,16 +1524,24 @@ namespace RackTool
             if (listViewBox.SelectedItems.Count != 0)
             {
                 listViewBox.SelectedItems[0].ImageIndex = 0;
-                switch (listViewBox.SelectedItems[0].Text)
+                try
                 {
-                    case "Box1": _rack.ShieldBox1.CloseBox(); break;
-                    case "Box2": _rack.ShieldBox2.CloseBox(); break;
-                    case "Box3": _rack.ShieldBox3.CloseBox(); break;
-                    case "Box4": _rack.ShieldBox4.CloseBox(); break;
-                    case "Box5": _rack.ShieldBox5.CloseBox(); break;
-                    case "Box6": _rack.ShieldBox6.CloseBox(); break;
-                    default:
-                        break;
+                    switch (listViewBox.SelectedItems[0].Text)
+                    {
+                        case "Box1": _rack.ShieldBox1.CloseBox(); break;
+                        case "Box2": _rack.ShieldBox2.CloseBox(); break;
+                        case "Box3": _rack.ShieldBox3.CloseBox(); break;
+                        case "Box4": _rack.ShieldBox4.CloseBox(); break;
+                        case "Box5": _rack.ShieldBox5.CloseBox(); break;
+                        case "Box6": _rack.ShieldBox6.CloseBox(); break;
+                        default:
+                            break;
+                    }
+                }
+                catch (Exception ex)
+                {
+
+                    MessageBox.Show(ex.Message);
                 }
             }
             else
@@ -1603,7 +1762,7 @@ namespace RackTool
         #endregion
         #endregion
 
-        #region ConveyorCylinderOperate
+        #region Conveyor
         private void buttonUpBlockSeparateForward_Click(object sender, EventArgs e)
         {
             try
@@ -1612,7 +1771,6 @@ namespace RackTool
                     _rack.Conveyor.SetCylinder(Output.UpBlockSeparateForward, Input.UpBlockSeparateForward, false);
                 else
                     _rack.Conveyor.ResetCylinder(Output.UpBlockSeparateForward, Input.UpBlockSeparateForward);
-                RefleshConveyorUi();
             }
             catch (Exception ex)
             {
@@ -1651,7 +1809,6 @@ namespace RackTool
                     _rack.Conveyor.PushPickInpos(true);
                 else
                     _rack.Conveyor.PushPickInpos(false);
-                RefleshConveyorUi();
             }
             catch (Exception ex)
             {
@@ -1668,7 +1825,6 @@ namespace RackTool
                     _rack.Conveyor.SetCylinder(Output.SideBlockSeparateForward, Input.SideBlockSeparateForward, false);
                 else
                     _rack.Conveyor.ResetCylinder(Output.SideBlockSeparateForward, Input.SideBlockSeparateForward);
-                RefleshConveyorUi();
             }
             catch (Exception ex)
             {
@@ -1685,8 +1841,6 @@ namespace RackTool
                     _rack.Conveyor.SetCylinder(Output.SideBlockSeparateBackward, Input.SideBlockSeparateBackward, false);
                 else
                     _rack.Conveyor.ResetCylinder(Output.SideBlockSeparateBackward, Input.SideBlockSeparateBackward);
-
-                RefleshConveyorUi();
             }
             catch (Exception ex)
             {
@@ -1703,8 +1857,6 @@ namespace RackTool
                     _rack.Conveyor.SetCylinder(Output.UpBlockPickBackward, Input.UpBlockPickBackward, false);
                 else
                     _rack.Conveyor.ResetCylinder(Output.UpBlockPickBackward, Input.UpBlockPickBackward);
-
-                RefleshConveyorUi();
             }
             catch (Exception ex)
             {
@@ -1721,7 +1873,6 @@ namespace RackTool
                     _rack.Conveyor.SetCylinder(Output.UpBlockPickForward, Input.UpBlockPickForward, false);
                 else
                     _rack.Conveyor.ResetCylinder(Output.UpBlockPickForward, Input.UpBlockPickForward);
-                RefleshConveyorUi();
             }
             catch (Exception ex)
             {
@@ -1738,7 +1889,6 @@ namespace RackTool
                     _rack.Conveyor.SetCylinder(Output.UpBlockSeparateBackward, Input.UpBlockSeparateBackward, false);
                 else
                     _rack.Conveyor.ResetCylinder(Output.UpBlockSeparateBackward, Input.UpBlockSeparateBackward);
-                RefleshConveyorUi();
             }
             catch (Exception ex)
             {
@@ -1746,11 +1896,154 @@ namespace RackTool
                 MessageBox.Show(ex.Message);
             }
         }
+        private void buttonStartConveyorManager_Click(object sender, EventArgs e)
+        {
+            _rack.StartConveyorManager();
+        }
+
+        private void buttonReset_Click(object sender, EventArgs e)
+        {
+            richTextBoxMessage.Text = "System OK";
+            _rack.Reset();
+        }
+
+        private void buttonBeltPick_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (buttonBeltPick.Text == "Run")
+                    _rack.EcatIo.SetOutput(Output.BeltPick, true);
+                else
+                    _rack.EcatIo.SetOutput(Output.BeltPick, false);
+            }
+            catch (Exception ex)
+            {
+
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private void buttonBeltConveyorOne_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (buttonBeltConveyorOne.Text == "Run")
+                    _rack.EcatIo.SetOutput(Output.BeltConveyorOne, true);
+                else
+                    _rack.EcatIo.SetOutput(Output.BeltConveyorOne, false);
+            }
+            catch (Exception ex)
+            {
+
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private void buttonBeltBin_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (buttonBeltBin.Text == "Run")
+                    _rack.EcatIo.SetOutput(Output.BeltBin, true);
+                else
+                    _rack.EcatIo.SetOutput(Output.BeltBin, false);
+            }
+            catch (Exception ex)
+            {
+
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private void RefleshConveyorUi()
+        {
+            try
+            {
+                #region LabelReflesh
+                SetIndicator(labelConveyorBinInTwo, Input.ConveyorBinInTwo);
+                SetIndicator(labelConveyorBinIn, Input.ConveyorBinIn);
+                SetIndicator(labelConveyorOneIn, Input.ConveyorOneIn);
+                SetIndicator(labelConveyorOneOut, Input.ConveyorOneOut);
+                SetIndicator(labelPickBufferHasPhoneForward, Input.PickBufferHasPhoneForward);
+                SetIndicator(labelPickHasPhone, Input.PickHasPhone);
+                SetIndicator(labelPickBufferHasPhoneBackward, Input.PickBufferHasPhoneBackward);
+
+                SetIndicator(labelGold1, Input.Gold1);
+                SetIndicator(labelGold2, Input.Gold2);
+                SetIndicator(labelGold3, Input.Gold3);
+                SetIndicator(labelGold4, Input.Gold4);
+                SetIndicator(labelGold5, Input.Gold5);
+                #endregion
+
+                #region ButtonReflesh
+                SetButtonText(buttonUpBlockSeparateForward, Input.UpBlockSeparateForward, "Down", "Up");
+                SetButtonText(buttonUpBlockSeparateForward, Input.UpBlockSeparateForward, "Down", "Up");
+                SetButtonText(buttonUpBlockPickBackward, Input.UpBlockPickBackward, "Down", "Up");
+                SetButtonText(buttonUpBlockPickForward, Input.UpBlockPickForward, "Down", "Up");
+                SetButtonText(buttonUpBlockSeparateBackward, Input.UpBlockSeparateBackward, "Down", "Up");
+
+                SetButtonText(buttonOpenOrClose, Input.ClampTightPick, "Open", "Close");
+                SetButtonText(buttonSideBlockSeparateForward, Input.SideBlockSeparateForward, "Stretch", "Retract");
+                SetButtonText(buttonSideBlockPick, Input.SideBlockPick, "Stretch", "Retract");
+                SetButtonText(buttonSideBlockSeparateBackward, Input.SideBlockSeparateBackward, "Stretch", "Retract");
+
+                SetButtonText(buttonBeltPick, Output.BeltPick, "Stop", "Run");
+                SetButtonText(buttonBeltBin, Output.BeltBin, "Stop", "Run");
+                SetButtonText(buttonBeltConveyorOne, Output.BeltConveyorOne, "Stop", "Run");
+
+                #endregion
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+        private void SetIndicator(Label label, Input input)
+        {
+            label.BeginInvoke((MethodInvoker)(() =>
+            {
+                label.ForeColor = _rack.EcatIo.GetInput(input) ? Color.DarkGreen : Color.LightGray;
+            }));
+        }
+
+        private void SetIndicator(Label label, bool state)
+        {
+            label.BeginInvoke((MethodInvoker)(() =>
+            {
+                label.ForeColor = state ? Color.DarkGreen : Color.LightGray;
+            }));
+        }
+
+        private void SetText(Label label, object obj)
+        {
+            label.BeginInvoke((MethodInvoker)(() =>
+            {
+                label.Text = obj.ToString();
+            }));
+        }
+
+        private void SetButtonText(Button button, Input input, string trueText, string falseText)
+        {
+            button.BeginInvoke((MethodInvoker)(() =>
+            {
+                button.Text = _rack.EcatIo.GetInput(input) ? trueText : falseText;
+            }));
+        }
+
+        private void SetButtonText(Button button, Output output, string trueText, string falseText)
+        {
+            button.BeginInvoke((MethodInvoker)(() =>
+            {
+                button.Text = _rack.EcatIo.GetOutput(output) ? trueText : falseText;
+            }));
+        }
         #endregion
 
         #region Setting
         #region Login
-        
+
         #region Encrypt And Decryption
         private String Encrypt(string information)
         {
@@ -1900,7 +2193,7 @@ namespace RackTool
                 }
                 toolStripStatusLabelName.Text = LoginName;
                 toolStripStatusLabelPower.Text = _power.ToString();
-                tabControl1.SelectedIndex = 0;
+                tabControlUi.SelectedIndex = 0;
                 MessageBox.Show("Login Succeed!");
 
             }
@@ -2032,6 +2325,12 @@ namespace RackTool
                 comboBoxStepper.Items.Add(item);
             }
         }
+
+        private void checkBoxMotionSimulate_CheckedChanged(object sender, EventArgs e)
+        {
+            CheckBox checkBox = (CheckBox)sender;
+            _rack.RobotInSimulateMode = checkBox.Checked;
+        }
         #endregion
 
         #region Tabcontrol page change event
@@ -2039,7 +2338,7 @@ namespace RackTool
         {
             try
             {
-                currentPage = (TabControlPage) tabControl1.SelectedIndex;
+                currentPage = (TabControlPage)tabControlUi.SelectedIndex;
 
                 //if (toolStripStatusLabelPower.Text == "None")
                 //{
@@ -2058,11 +2357,11 @@ namespace RackTool
                 //}
 
 
-                switch (tabControl1.SelectedIndex)
+                switch (tabControlUi.SelectedIndex)
                 {
                     case 0: break;
-                    case 1: RefleshRobotUi(); break;
-                    case 2: RefleshConveyorUi(); break;
+                    case 1: break;
+                    case 2: break;
                     case 3:
                         string[] PortName = SerialPort.GetPortNames();
                         _portName = new ArrayList(PortName);
@@ -2082,6 +2381,17 @@ namespace RackTool
             }
         }
 
+        public enum TabControlPage
+        {
+            Main,
+            Robot,
+            Conveyor,
+            Box,
+            Tester,
+            Log,
+            Setting,
+        }
+
         #endregion
 
         #region Log
@@ -2091,8 +2401,10 @@ namespace RackTool
             {
                 string FileName = string.Empty;
                 OpenFileDialog OpenFile = new OpenFileDialog()
-                    { InitialDirectory = System.IO.Path.GetDirectoryName(
-                        System.Reflection.Assembly.GetExecutingAssembly().Location + @"\\Logs") };
+                {
+                    InitialDirectory = System.IO.Path.GetDirectoryName(
+                        System.AppDomain.CurrentDomain.BaseDirectory + @"\Logs\")
+                };
 
                 DialogResult Result = OpenFile.ShowDialog();
                 if (Result == DialogResult.OK)
@@ -2100,16 +2412,22 @@ namespace RackTool
                 else
                     return;
                 dataGridView1.Rows.Clear();
-                StreamReader Reader = new StreamReader(FileName, Encoding.Default); ;
+                StreamReader Reader = new StreamReader(FileName, Encoding.Default);
                 while (!Reader.EndOfStream)
                 {
 
                     string[] Items = Reader.ReadLine().Split(' ');
-                    if (Items.Length != 5)
+                    //if (Items.Length != 5)
+                    //{
+                    //    //Reader.Close();
+                    //    //Reader.Dispose();
+                    //    continue;
+                    //}
+
+                    string description = string.Empty;
+                    for (int i = 4; i < Items.Length; i++)
                     {
-                        Reader.Close();
-                        Reader.Dispose();
-                        continue;
+                        description += Items[i] + " ";
                     }
 
                     DataGridViewRow dataGridViewRow = new DataGridViewRow();
@@ -2117,10 +2435,10 @@ namespace RackTool
                     {
                         dataGridViewRow.Cells.Add(Item.CellTemplate.Clone() as DataGridViewCell);
                     }
-                    dataGridViewRow.Cells[0].Value = Items[0] + Items[1];
+                    dataGridViewRow.Cells[0].Value = Items[0] + " " + Items[1];
                     dataGridViewRow.Cells[1].Value = Items[2];
                     dataGridViewRow.Cells[2].Value = Items[3];
-                    dataGridViewRow.Cells[3].Value = Items[4]; ;
+                    dataGridViewRow.Cells[3].Value = description;
                     dataGridView1.Rows.Add(dataGridViewRow);
                 }
             }
@@ -2134,17 +2452,6 @@ namespace RackTool
         #endregion
 
         #region Tester
-
-        private SocketClient _client1 = new SocketClient(1001);
-        private SocketClient _client2 = new SocketClient(1002);
-        private SocketClient _client3 = new SocketClient(1003);
-        private SocketClient _client4 = new SocketClient(1004);
-        private SocketClient _client5 = new SocketClient(1005);
-        private SocketClient _client6 = new SocketClient(1006);
-        private SocketClient _selectedSocketClient = null;
-
-
-
         private void buttonBoxSave_Click_1(object sender, EventArgs e)
         {
 
@@ -2186,73 +2493,6 @@ namespace RackTool
             }
         }
 
-        #endregion
-
-        private void buttonStartConveyorManager_Click(object sender, EventArgs e)
-        {
-            _rack.StartConveyorManager();
-        }
-
-        private void buttonReset_Click(object sender, EventArgs e)
-        {
-            richTextBoxMessage.Text = "System OK";
-            _rack.Reset();           
-        }
-
-        private void buttonBeltPick_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                if (buttonBeltPick.Text == "Run")
-                    _rack.EcatIo.SetOutput(Output.BeltPick, true);
-                else
-                    _rack.EcatIo.SetOutput(Output.BeltPick, false); 
-
-                RefleshConveyorUi();
-            }
-            catch (Exception ex)
-            {
-
-                MessageBox.Show(ex.Message);
-            }
-        }
-
-        private void buttonBeltConveyorOne_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                if (buttonBeltConveyorOne.Text == "Run")
-                    _rack.EcatIo.SetOutput(Output.BeltConveyorOne, true);
-                else
-                    _rack.EcatIo.SetOutput(Output.BeltConveyorOne, false);
-
-                RefleshConveyorUi();
-            }
-            catch (Exception ex)
-            {
-
-                MessageBox.Show(ex.Message);
-            }
-        }
-
-        private void buttonBeltBin_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                if (buttonBeltBin.Text == "Run")
-                    _rack.EcatIo.SetOutput(Output.BeltBin, true);
-                else
-                    _rack.EcatIo.SetOutput(Output.BeltBin, false);
-
-                RefleshConveyorUi();
-            }
-            catch (Exception ex)
-            {
-
-                MessageBox.Show(ex.Message);
-            }
-        }
-
         private void buttonStartTesterSimulator_Click(object sender, EventArgs e)
         {
             _selectedSocketClient = _client1;
@@ -2266,11 +2506,11 @@ namespace RackTool
 
         private void radioButtonBox1_CheckedChanged(object sender, EventArgs e)
         {
-            RadioButton radioButton = (RadioButton) sender;
+            RadioButton radioButton = (RadioButton)sender;
             if (radioButton.Checked)
             {
                 _selectedSocketClient = _client1;
-            }            
+            }
         }
 
         private void radioButtonBox2_CheckedChanged(object sender, EventArgs e)
@@ -2328,32 +2568,114 @@ namespace RackTool
             _selectedSocketClient.SetFail();
         }
 
-        private void buttonStartPhoneServer_Click(object sender, EventArgs e)
+        private void UpdateTesterUi()
         {
-            _rack.StartPhoneServer();           
-        }
-
-        private async void buttonCheckBox_Click(object sender, EventArgs e)
-        {
-            Button button = (Button) sender;
-            button.Enabled = false;
-            await Task.Run(() =>
+            if (_rack.ShieldBox1 != null)
             {
-                try
+                if (_rack.ShieldBox1.Enabled)
                 {
-                    _rack.CheckBox();
+                    SetIndicator(labelTester05Connected, _rack.Tester5.Connected);
+                    if (_rack.ShieldBox5.Phone != null)
+                    {
+                        SetText(labelTester05PhoneId, _rack.ShieldBox5.Phone.Id);
+                        SetText(labelTester05PhoneSerialNumber, _rack.ShieldBox5.Phone.SerialNumber);
+                        SetText(labelTester05PhoneStep, _rack.ShieldBox5.Phone.Step);
+                        SetText(labelTester05PhoneTestResult, _rack.ShieldBox5.Phone.TestResult);
+                        SetText(labelTester05PhoneFailCount, _rack.ShieldBox5.Phone.FailCount);
+                        SetText(labelTester05PhoneTestTime,
+                            _rack.ShieldBox5.Phone.TestCycleTimeStopWatch.ElapsedMilliseconds / 1000);
+                    }
                 }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.Message);
-                }
-            });
-            button.Enabled = true;
+            }           
         }
 
-        private void buttonPausePhoneServer_Click(object sender, EventArgs e)
+        #endregion
+
+        private void Main_FormClosing(object sender, FormClosingEventArgs e)
         {
-            _rack.PausePhoneServer();
+            DialogResult dialogResult = MessageBox.Show("是否退出程序？", "退出", MessageBoxButtons.YesNo);
+            if (dialogResult == DialogResult.No)
+            {
+                return;
+            }
+
+            NewLog.Instance.Info("20004 User close program.");
+
+            if (_uiUpdateThread != null)
+            {
+                _uiUpdateThread.Abort();
+                //_uiUpdateThread.Join();
+            }
+        }
+
+        private void richTextBoxMessage_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            if (richTextBoxMessage.Height > this.Height / 2)
+            {
+                richTextBoxMessage.Height = tabControlUi.Location.Y - 10;
+                richTextBoxError.Height = tabControlUi.Location.Y - 10;
+                tabControlUi.Visible = true;
+                _scrollRichTextBox = true;
+            }
+            else
+            {
+                richTextBoxMessage.Height = this.Height - 100;
+                richTextBoxError.Height = this.Height - 100;
+                tabControlUi.Visible = false;
+                _scrollRichTextBox = false;
+            }
+        }
+
+        private void richTextBoxError_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            if (richTextBoxError.Height > this.Height / 2)
+            {
+                richTextBoxError.Height = tabControlUi.Location.Y - 10;
+                richTextBoxMessage.Height = tabControlUi.Location.Y - 10;
+                tabControlUi.Visible = true;
+                _keepMonitoringSystem = true;
+            }
+            else
+            {
+                richTextBoxError.Height = this.Height - 100;
+                richTextBoxMessage.Height = this.Height - 100;
+                tabControlUi.Visible = false;
+                _keepMonitoringSystem = false;
+            }
+        }
+
+        private void buttonEmptyNg_Click(object sender, EventArgs e)
+        {
+            if (_rack.Conveyor != null)
+            {
+                _rack.Conveyor.NgCount = 0;
+            }
+        }
+
+        private void buttonEmptyBox05_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                _rack.RemovePhoneToBeServed(_rack.ShieldBox5.Phone);
+                _rack.Unlink(_rack.ShieldBox5.Phone);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("清空箱子失败：" + ex.Message);
+            }
+        }
+
+        private void buttonSetSerialNumber_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                _rack.Scanner.SerialNumber = textBox1.Text;
+                _rack.Scanner.ScanSuccessful = true;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Set serial number fail：" + ex.Message);
+            }
         }
     }
 }

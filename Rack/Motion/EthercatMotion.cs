@@ -132,12 +132,10 @@ namespace Rack
                 SoftLimitPositive = 4,
                 SpeedFactor = 0.8,
                 JerkFactor = 20,
-                Direction = -1
+                Direction = -1.0
             };
             //For Sanyo, axisAddrOffset = 18
 
-
-            //Todo , is two gripper is 60,    MotorR.EncCtsPerR  error?
             MotorR = new Motor(Axis.ACSC_AXIS_4)
             {
                 EcatPosActValAddr = 113,
@@ -152,8 +150,6 @@ namespace Rack
                 SpeedFactor = 0.18,
                 JerkFactor = 3.6
             };
-            //Warning: double calculation, need to add .0 to each number.
-
             #endregion
 
             Motors = new Motor[5] { MotorZ, MotorX1, MotorX2, MotorY, MotorR };
@@ -162,14 +158,12 @@ namespace Rack
             DisableAll();
             foreach (var mtr in Motors)
             {
-                //Todo need disable motors?
                 SetFPosition(mtr);
                 SetSafety(mtr);
             }
             EnableAll();
 
-            MotorSetupComplete = true;
-            //Todo script inside acs to stop all motor is any error occur.          
+            MotorSetupComplete = true;          
         }
 
         public void LoadPositions()
@@ -357,7 +351,7 @@ namespace Rack
         public void SetJerk(Motor motor, double jerk) { }
         public double GetPosition(Motor motor)
         {
-            return _ch.GetFPosition(motor.Id)*motor.Direction;
+            return _ch.GetFPosition(motor.Id) * motor.Direction;
         }
 
         public double GetPositionX()
@@ -455,7 +449,19 @@ namespace Rack
         public void ToPointWaitTillEnd(Motor motor, double point, int timeout=120000)
         {
             point *= motor.Direction;
-            _ch.ToPoint(MotionFlags.ACSC_AMF_MAXIMUM, motor.Id, point);
+            //if (Math.Abs(point)<0.001)
+            //{
+            //    point = 0.0;
+            //}
+            try
+            {
+                _ch.ToPoint(MotionFlags.ACSC_AMF_MAXIMUM, motor.Id, point);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("_ch.ToPoint failed due to:" + ex.Message);
+            }
+            
             _ch.WaitMotionEnd(motor.Id, timeout);
         }
 

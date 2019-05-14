@@ -92,20 +92,21 @@
             this.buttonNagetiveX2 = new System.Windows.Forms.Button();
             this.buttonPositiveX1 = new System.Windows.Forms.Button();
             this.buttonNagetiveX1 = new System.Windows.Forms.Button();
-            this.tabControl1 = new System.Windows.Forms.TabControl();
+            this.tabControlUi = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.groupBoxMain = new System.Windows.Forms.GroupBox();
+            this.buttonEmptyNg = new System.Windows.Forms.Button();
+            this.buttonTest = new System.Windows.Forms.Button();
+            this.buttonPausePhoneServer = new System.Windows.Forms.Button();
+            this.trackBarSetSpeed1 = new System.Windows.Forms.TrackBar();
             this.buttonCheckBox = new System.Windows.Forms.Button();
+            this.labelSpeed1 = new System.Windows.Forms.Label();
             this.buttonStartPhoneServer = new System.Windows.Forms.Button();
             this.buttonReset = new System.Windows.Forms.Button();
-            this.labelSpeed1 = new System.Windows.Forms.Label();
-            this.label5 = new System.Windows.Forms.Label();
-            this.trackBarSetSpeed1 = new System.Windows.Forms.TrackBar();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.buttonEnableAll = new System.Windows.Forms.Button();
             this.buttonLoadForTeach = new System.Windows.Forms.Button();
-            this.buttonReadyForPick = new System.Windows.Forms.Button();
             this.buttonCalOffset = new System.Windows.Forms.Button();
             this.buttonBin = new System.Windows.Forms.Button();
             this.buttonUnloadAndLoad = new System.Windows.Forms.Button();
@@ -188,6 +189,28 @@
             this.cToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.imageList1 = new System.Windows.Forms.ImageList(this.components);
             this.tabPage5 = new System.Windows.Forms.TabPage();
+            this.panelTesters = new System.Windows.Forms.Panel();
+            this.groupBoxTester06 = new System.Windows.Forms.GroupBox();
+            this.groupBoxTester05 = new System.Windows.Forms.GroupBox();
+            this.buttonEmptyBox05 = new System.Windows.Forms.Button();
+            this.labelTester05PhoneFailCount = new System.Windows.Forms.Label();
+            this.labelTester05PhoneTestTime = new System.Windows.Forms.Label();
+            this.labelTester05PhoneTestResult = new System.Windows.Forms.Label();
+            this.labelTester05PhoneStep = new System.Windows.Forms.Label();
+            this.labelTester05PhoneSerialNumber = new System.Windows.Forms.Label();
+            this.labelTester05PhoneId = new System.Windows.Forms.Label();
+            this.label38 = new System.Windows.Forms.Label();
+            this.label5 = new System.Windows.Forms.Label();
+            this.label37 = new System.Windows.Forms.Label();
+            this.labelTester05Connected = new System.Windows.Forms.Label();
+            this.label36 = new System.Windows.Forms.Label();
+            this.label32 = new System.Windows.Forms.Label();
+            this.label35 = new System.Windows.Forms.Label();
+            this.label34 = new System.Windows.Forms.Label();
+            this.groupBoxTester04 = new System.Windows.Forms.GroupBox();
+            this.groupBoxTester03 = new System.Windows.Forms.GroupBox();
+            this.groupBoxTester02 = new System.Windows.Forms.GroupBox();
+            this.groupBoxTester01 = new System.Windows.Forms.GroupBox();
             this.buttonTesterSendFail = new System.Windows.Forms.Button();
             this.buttonTesterSendPass = new System.Windows.Forms.Button();
             this.buttonStartTesterSimulator = new System.Windows.Forms.Button();
@@ -210,17 +233,10 @@
             this.Column4 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Column3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.tabPage7 = new System.Windows.Forms.TabPage();
-            this.groupBox10 = new System.Windows.Forms.GroupBox();
-            this.label33 = new System.Windows.Forms.Label();
-            this.label31 = new System.Windows.Forms.Label();
-            this.buttonStepperOK = new System.Windows.Forms.Button();
-            this.label29 = new System.Windows.Forms.Label();
-            this.comboBoxStepper = new System.Windows.Forms.ComboBox();
-            this.label30 = new System.Windows.Forms.Label();
-            this.textBoxPort = new System.Windows.Forms.TextBox();
-            this.textBoxIp = new System.Windows.Forms.TextBox();
-            this.comboBoxShieldBox = new System.Windows.Forms.ComboBox();
-            this.buttonBoxIpPortOk = new System.Windows.Forms.Button();
+            this.tabControlSetting = new System.Windows.Forms.TabControl();
+            this.tabPageConfig = new System.Windows.Forms.TabPage();
+            this.checkBoxMotionSimulate = new System.Windows.Forms.CheckBox();
+            this.tabPageUser = new System.Windows.Forms.TabPage();
             this.groupBoxChangePassword = new System.Windows.Forms.GroupBox();
             this.label16 = new System.Windows.Forms.Label();
             this.textBoxNewPassword = new System.Windows.Forms.TextBox();
@@ -240,6 +256,18 @@
             this.textBoxLoginName = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
             this.textBoxPassWord = new System.Windows.Forms.TextBox();
+            this.tabPageCom = new System.Windows.Forms.TabPage();
+            this.groupBox10 = new System.Windows.Forms.GroupBox();
+            this.label33 = new System.Windows.Forms.Label();
+            this.label31 = new System.Windows.Forms.Label();
+            this.buttonStepperOK = new System.Windows.Forms.Button();
+            this.label29 = new System.Windows.Forms.Label();
+            this.comboBoxStepper = new System.Windows.Forms.ComboBox();
+            this.label30 = new System.Windows.Forms.Label();
+            this.textBoxPort = new System.Windows.Forms.TextBox();
+            this.textBoxIp = new System.Windows.Forms.TextBox();
+            this.comboBoxShieldBox = new System.Windows.Forms.ComboBox();
+            this.buttonBoxIpPortOk = new System.Windows.Forms.Button();
             this.richTextBoxMessage = new System.Windows.Forms.RichTextBox();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
@@ -248,11 +276,13 @@
             this.toolStripStatusLabel4 = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripStatusLabelPower = new System.Windows.Forms.ToolStripStatusLabel();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
-            this.buttonPausePhoneServer = new System.Windows.Forms.Button();
+            this.richTextBoxError = new System.Windows.Forms.RichTextBox();
+            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.buttonSetSerialNumber = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarSetSpeed2)).BeginInit();
-            this.tabControl1.SuspendLayout();
+            this.tabControlUi.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.groupBoxMain.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarSetSpeed1)).BeginInit();
@@ -266,14 +296,20 @@
             this.tabPage3.SuspendLayout();
             this.contextMenuStrip1.SuspendLayout();
             this.tabPage5.SuspendLayout();
+            this.panelTesters.SuspendLayout();
+            this.groupBoxTester05.SuspendLayout();
             this.groupBoxSelectBox.SuspendLayout();
             this.groupBox9.SuspendLayout();
             this.tabPage6.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.tabPage7.SuspendLayout();
-            this.groupBox10.SuspendLayout();
+            this.tabControlSetting.SuspendLayout();
+            this.tabPageConfig.SuspendLayout();
+            this.tabPageUser.SuspendLayout();
             this.groupBoxChangePassword.SuspendLayout();
             this.groupBox7.SuspendLayout();
+            this.tabPageCom.SuspendLayout();
+            this.groupBox10.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -293,7 +329,7 @@
             // 
             // buttonStop
             // 
-            this.buttonStop.BackColor = System.Drawing.Color.Red;
+            this.buttonStop.BackColor = System.Drawing.SystemColors.Control;
             resources.ApplyResources(this.buttonStop, "buttonStop");
             this.buttonStop.Name = "buttonStop";
             this.buttonStop.UseVisualStyleBackColor = false;
@@ -728,21 +764,22 @@
             this.buttonNagetiveX1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.button8_MouseDown);
             this.buttonNagetiveX1.MouseUp += new System.Windows.Forms.MouseEventHandler(this.button8_MouseUp);
             // 
-            // tabControl1
+            // tabControlUi
             // 
-            resources.ApplyResources(this.tabControl1, "tabControl1");
-            this.tabControl1.Controls.Add(this.tabPage1);
-            this.tabControl1.Controls.Add(this.tabPage2);
-            this.tabControl1.Controls.Add(this.tabPage4);
-            this.tabControl1.Controls.Add(this.tabPage3);
-            this.tabControl1.Controls.Add(this.tabPage5);
-            this.tabControl1.Controls.Add(this.tabPage6);
-            this.tabControl1.Controls.Add(this.tabPage7);
-            this.tabControl1.Multiline = true;
-            this.tabControl1.Name = "tabControl1";
-            this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.SizeMode = System.Windows.Forms.TabSizeMode.Fixed;
-            this.tabControl1.SelectedIndexChanged += new System.EventHandler(this.tabControl1_SelectedIndexChanged);
+            resources.ApplyResources(this.tabControlUi, "tabControlUi");
+            this.tabControlUi.Controls.Add(this.tabPage1);
+            this.tabControlUi.Controls.Add(this.tabPage2);
+            this.tabControlUi.Controls.Add(this.tabPage4);
+            this.tabControlUi.Controls.Add(this.tabPage3);
+            this.tabControlUi.Controls.Add(this.tabPage5);
+            this.tabControlUi.Controls.Add(this.tabPage6);
+            this.tabControlUi.Controls.Add(this.tabPage7);
+            this.tabControlUi.DrawMode = System.Windows.Forms.TabDrawMode.OwnerDrawFixed;
+            this.tabControlUi.Multiline = true;
+            this.tabControlUi.Name = "tabControlUi";
+            this.tabControlUi.SelectedIndex = 0;
+            this.tabControlUi.SizeMode = System.Windows.Forms.TabSizeMode.Fixed;
+            this.tabControlUi.SelectedIndexChanged += new System.EventHandler(this.tabControl1_SelectedIndexChanged);
             // 
             // tabPage1
             // 
@@ -754,18 +791,51 @@
             // 
             // groupBoxMain
             // 
+            this.groupBoxMain.Controls.Add(this.buttonSetSerialNumber);
+            this.groupBoxMain.Controls.Add(this.textBox1);
+            this.groupBoxMain.Controls.Add(this.buttonEmptyNg);
+            this.groupBoxMain.Controls.Add(this.buttonTest);
             this.groupBoxMain.Controls.Add(this.buttonPausePhoneServer);
+            this.groupBoxMain.Controls.Add(this.trackBarSetSpeed1);
             this.groupBoxMain.Controls.Add(this.buttonCheckBox);
+            this.groupBoxMain.Controls.Add(this.labelSpeed1);
             this.groupBoxMain.Controls.Add(this.buttonStartPhoneServer);
             this.groupBoxMain.Controls.Add(this.buttonReset);
             this.groupBoxMain.Controls.Add(this.buttonStop);
             this.groupBoxMain.Controls.Add(this.buttonHome);
-            this.groupBoxMain.Controls.Add(this.labelSpeed1);
-            this.groupBoxMain.Controls.Add(this.label5);
-            this.groupBoxMain.Controls.Add(this.trackBarSetSpeed1);
             resources.ApplyResources(this.groupBoxMain, "groupBoxMain");
             this.groupBoxMain.Name = "groupBoxMain";
             this.groupBoxMain.TabStop = false;
+            // 
+            // buttonEmptyNg
+            // 
+            resources.ApplyResources(this.buttonEmptyNg, "buttonEmptyNg");
+            this.buttonEmptyNg.Name = "buttonEmptyNg";
+            this.buttonEmptyNg.UseVisualStyleBackColor = true;
+            this.buttonEmptyNg.Click += new System.EventHandler(this.buttonEmptyNg_Click);
+            // 
+            // buttonTest
+            // 
+            resources.ApplyResources(this.buttonTest, "buttonTest");
+            this.buttonTest.Name = "buttonTest";
+            this.buttonTest.UseVisualStyleBackColor = true;
+            this.buttonTest.Click += new System.EventHandler(this.buttonTest_Click);
+            // 
+            // buttonPausePhoneServer
+            // 
+            resources.ApplyResources(this.buttonPausePhoneServer, "buttonPausePhoneServer");
+            this.buttonPausePhoneServer.Name = "buttonPausePhoneServer";
+            this.buttonPausePhoneServer.UseVisualStyleBackColor = true;
+            this.buttonPausePhoneServer.Click += new System.EventHandler(this.buttonPausePhoneServer_Click);
+            // 
+            // trackBarSetSpeed1
+            // 
+            resources.ApplyResources(this.trackBarSetSpeed1, "trackBarSetSpeed1");
+            this.trackBarSetSpeed1.Maximum = 1000;
+            this.trackBarSetSpeed1.Name = "trackBarSetSpeed1";
+            this.trackBarSetSpeed1.Value = 20;
+            this.trackBarSetSpeed1.Scroll += new System.EventHandler(this.trackBarSetSpeed1_Scroll);
+            this.trackBarSetSpeed1.ValueChanged += new System.EventHandler(this.trackBarSetSpeed1_ValueChanged);
             // 
             // buttonCheckBox
             // 
@@ -773,6 +843,11 @@
             this.buttonCheckBox.Name = "buttonCheckBox";
             this.buttonCheckBox.UseVisualStyleBackColor = true;
             this.buttonCheckBox.Click += new System.EventHandler(this.buttonCheckBox_Click);
+            // 
+            // labelSpeed1
+            // 
+            resources.ApplyResources(this.labelSpeed1, "labelSpeed1");
+            this.labelSpeed1.Name = "labelSpeed1";
             // 
             // buttonStartPhoneServer
             // 
@@ -788,25 +863,6 @@
             this.buttonReset.UseVisualStyleBackColor = true;
             this.buttonReset.Click += new System.EventHandler(this.buttonReset_Click);
             // 
-            // labelSpeed1
-            // 
-            resources.ApplyResources(this.labelSpeed1, "labelSpeed1");
-            this.labelSpeed1.Name = "labelSpeed1";
-            // 
-            // label5
-            // 
-            resources.ApplyResources(this.label5, "label5");
-            this.label5.Name = "label5";
-            // 
-            // trackBarSetSpeed1
-            // 
-            resources.ApplyResources(this.trackBarSetSpeed1, "trackBarSetSpeed1");
-            this.trackBarSetSpeed1.Maximum = 1000;
-            this.trackBarSetSpeed1.Name = "trackBarSetSpeed1";
-            this.trackBarSetSpeed1.Value = 20;
-            this.trackBarSetSpeed1.Scroll += new System.EventHandler(this.trackBarSetSpeed1_Scroll);
-            this.trackBarSetSpeed1.ValueChanged += new System.EventHandler(this.trackBarSetSpeed1_ValueChanged);
-            // 
             // tabPage2
             // 
             this.tabPage2.Controls.Add(this.groupBox3);
@@ -819,7 +875,6 @@
             // 
             this.groupBox3.Controls.Add(this.buttonEnableAll);
             this.groupBox3.Controls.Add(this.buttonLoadForTeach);
-            this.groupBox3.Controls.Add(this.buttonReadyForPick);
             this.groupBox3.Controls.Add(this.buttonCalOffset);
             this.groupBox3.Controls.Add(this.buttonBin);
             this.groupBox3.Controls.Add(this.buttonUnloadAndLoad);
@@ -851,13 +906,6 @@
             this.buttonLoadForTeach.Name = "buttonLoadForTeach";
             this.buttonLoadForTeach.UseVisualStyleBackColor = true;
             this.buttonLoadForTeach.Click += new System.EventHandler(this.buttonLoadForTeach_Click);
-            // 
-            // buttonReadyForPick
-            // 
-            resources.ApplyResources(this.buttonReadyForPick, "buttonReadyForPick");
-            this.buttonReadyForPick.Name = "buttonReadyForPick";
-            this.buttonReadyForPick.UseVisualStyleBackColor = true;
-            this.buttonReadyForPick.Click += new System.EventHandler(this.buttonReadyForPick_Click);
             // 
             // buttonCalOffset
             // 
@@ -1447,6 +1495,7 @@
             // 
             // tabPage5
             // 
+            this.tabPage5.Controls.Add(this.panelTesters);
             this.tabPage5.Controls.Add(this.buttonTesterSendFail);
             this.tabPage5.Controls.Add(this.buttonTesterSendPass);
             this.tabPage5.Controls.Add(this.buttonStartTesterSimulator);
@@ -1455,6 +1504,146 @@
             resources.ApplyResources(this.tabPage5, "tabPage5");
             this.tabPage5.Name = "tabPage5";
             this.tabPage5.UseVisualStyleBackColor = true;
+            // 
+            // panelTesters
+            // 
+            this.panelTesters.Controls.Add(this.groupBoxTester06);
+            this.panelTesters.Controls.Add(this.groupBoxTester05);
+            this.panelTesters.Controls.Add(this.groupBoxTester04);
+            this.panelTesters.Controls.Add(this.groupBoxTester03);
+            this.panelTesters.Controls.Add(this.groupBoxTester02);
+            this.panelTesters.Controls.Add(this.groupBoxTester01);
+            resources.ApplyResources(this.panelTesters, "panelTesters");
+            this.panelTesters.Name = "panelTesters";
+            // 
+            // groupBoxTester06
+            // 
+            resources.ApplyResources(this.groupBoxTester06, "groupBoxTester06");
+            this.groupBoxTester06.Name = "groupBoxTester06";
+            this.groupBoxTester06.TabStop = false;
+            // 
+            // groupBoxTester05
+            // 
+            this.groupBoxTester05.Controls.Add(this.buttonEmptyBox05);
+            this.groupBoxTester05.Controls.Add(this.labelTester05PhoneFailCount);
+            this.groupBoxTester05.Controls.Add(this.labelTester05PhoneTestTime);
+            this.groupBoxTester05.Controls.Add(this.labelTester05PhoneTestResult);
+            this.groupBoxTester05.Controls.Add(this.labelTester05PhoneStep);
+            this.groupBoxTester05.Controls.Add(this.labelTester05PhoneSerialNumber);
+            this.groupBoxTester05.Controls.Add(this.labelTester05PhoneId);
+            this.groupBoxTester05.Controls.Add(this.label38);
+            this.groupBoxTester05.Controls.Add(this.label5);
+            this.groupBoxTester05.Controls.Add(this.label37);
+            this.groupBoxTester05.Controls.Add(this.labelTester05Connected);
+            this.groupBoxTester05.Controls.Add(this.label36);
+            this.groupBoxTester05.Controls.Add(this.label32);
+            this.groupBoxTester05.Controls.Add(this.label35);
+            this.groupBoxTester05.Controls.Add(this.label34);
+            resources.ApplyResources(this.groupBoxTester05, "groupBoxTester05");
+            this.groupBoxTester05.Name = "groupBoxTester05";
+            this.groupBoxTester05.TabStop = false;
+            // 
+            // buttonEmptyBox05
+            // 
+            resources.ApplyResources(this.buttonEmptyBox05, "buttonEmptyBox05");
+            this.buttonEmptyBox05.Name = "buttonEmptyBox05";
+            this.buttonEmptyBox05.UseVisualStyleBackColor = true;
+            this.buttonEmptyBox05.Click += new System.EventHandler(this.buttonEmptyBox05_Click);
+            // 
+            // labelTester05PhoneFailCount
+            // 
+            resources.ApplyResources(this.labelTester05PhoneFailCount, "labelTester05PhoneFailCount");
+            this.labelTester05PhoneFailCount.Name = "labelTester05PhoneFailCount";
+            // 
+            // labelTester05PhoneTestTime
+            // 
+            resources.ApplyResources(this.labelTester05PhoneTestTime, "labelTester05PhoneTestTime");
+            this.labelTester05PhoneTestTime.Name = "labelTester05PhoneTestTime";
+            // 
+            // labelTester05PhoneTestResult
+            // 
+            resources.ApplyResources(this.labelTester05PhoneTestResult, "labelTester05PhoneTestResult");
+            this.labelTester05PhoneTestResult.Name = "labelTester05PhoneTestResult";
+            // 
+            // labelTester05PhoneStep
+            // 
+            resources.ApplyResources(this.labelTester05PhoneStep, "labelTester05PhoneStep");
+            this.labelTester05PhoneStep.Name = "labelTester05PhoneStep";
+            // 
+            // labelTester05PhoneSerialNumber
+            // 
+            resources.ApplyResources(this.labelTester05PhoneSerialNumber, "labelTester05PhoneSerialNumber");
+            this.labelTester05PhoneSerialNumber.Name = "labelTester05PhoneSerialNumber";
+            // 
+            // labelTester05PhoneId
+            // 
+            resources.ApplyResources(this.labelTester05PhoneId, "labelTester05PhoneId");
+            this.labelTester05PhoneId.Name = "labelTester05PhoneId";
+            // 
+            // label38
+            // 
+            resources.ApplyResources(this.label38, "label38");
+            this.label38.Name = "label38";
+            // 
+            // label5
+            // 
+            resources.ApplyResources(this.label5, "label5");
+            this.label5.Name = "label5";
+            // 
+            // label37
+            // 
+            resources.ApplyResources(this.label37, "label37");
+            this.label37.Name = "label37";
+            // 
+            // labelTester05Connected
+            // 
+            resources.ApplyResources(this.labelTester05Connected, "labelTester05Connected");
+            this.labelTester05Connected.ForeColor = System.Drawing.Color.LightGray;
+            this.labelTester05Connected.Name = "labelTester05Connected";
+            // 
+            // label36
+            // 
+            resources.ApplyResources(this.label36, "label36");
+            this.label36.Name = "label36";
+            // 
+            // label32
+            // 
+            resources.ApplyResources(this.label32, "label32");
+            this.label32.Name = "label32";
+            // 
+            // label35
+            // 
+            resources.ApplyResources(this.label35, "label35");
+            this.label35.Name = "label35";
+            // 
+            // label34
+            // 
+            resources.ApplyResources(this.label34, "label34");
+            this.label34.Name = "label34";
+            // 
+            // groupBoxTester04
+            // 
+            resources.ApplyResources(this.groupBoxTester04, "groupBoxTester04");
+            this.groupBoxTester04.Name = "groupBoxTester04";
+            this.groupBoxTester04.TabStop = false;
+            // 
+            // groupBoxTester03
+            // 
+            resources.ApplyResources(this.groupBoxTester03, "groupBoxTester03");
+            this.groupBoxTester03.Name = "groupBoxTester03";
+            this.groupBoxTester03.TabStop = false;
+            // 
+            // groupBoxTester02
+            // 
+            resources.ApplyResources(this.groupBoxTester02, "groupBoxTester02");
+            this.groupBoxTester02.Name = "groupBoxTester02";
+            this.groupBoxTester02.TabStop = false;
+            // 
+            // groupBoxTester01
+            // 
+            resources.ApplyResources(this.groupBoxTester01, "groupBoxTester01");
+            this.groupBoxTester01.Name = "groupBoxTester01";
+            this.groupBoxTester01.TabStop = false;
             // 
             // buttonTesterSendFail
             // 
@@ -1580,6 +1769,7 @@
             // 
             // dataGridView1
             // 
+            this.dataGridView1.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridView1.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.Column1,
@@ -1617,92 +1807,41 @@
             // 
             // tabPage7
             // 
-            this.tabPage7.Controls.Add(this.groupBox10);
-            this.tabPage7.Controls.Add(this.groupBoxChangePassword);
-            this.tabPage7.Controls.Add(this.groupBox7);
+            this.tabPage7.Controls.Add(this.tabControlSetting);
             resources.ApplyResources(this.tabPage7, "tabPage7");
             this.tabPage7.Name = "tabPage7";
             this.tabPage7.UseVisualStyleBackColor = true;
             // 
-            // groupBox10
+            // tabControlSetting
             // 
-            this.groupBox10.Controls.Add(this.label33);
-            this.groupBox10.Controls.Add(this.label31);
-            this.groupBox10.Controls.Add(this.buttonStepperOK);
-            this.groupBox10.Controls.Add(this.label29);
-            this.groupBox10.Controls.Add(this.comboBoxStepper);
-            this.groupBox10.Controls.Add(this.label30);
-            this.groupBox10.Controls.Add(this.textBoxPort);
-            this.groupBox10.Controls.Add(this.textBoxIp);
-            this.groupBox10.Controls.Add(this.comboBoxShieldBox);
-            this.groupBox10.Controls.Add(this.buttonBoxIpPortOk);
-            resources.ApplyResources(this.groupBox10, "groupBox10");
-            this.groupBox10.Name = "groupBox10";
-            this.groupBox10.TabStop = false;
+            this.tabControlSetting.Controls.Add(this.tabPageConfig);
+            this.tabControlSetting.Controls.Add(this.tabPageUser);
+            this.tabControlSetting.Controls.Add(this.tabPageCom);
+            resources.ApplyResources(this.tabControlSetting, "tabControlSetting");
+            this.tabControlSetting.Name = "tabControlSetting";
+            this.tabControlSetting.SelectedIndex = 0;
             // 
-            // label33
+            // tabPageConfig
             // 
-            resources.ApplyResources(this.label33, "label33");
-            this.label33.Name = "label33";
+            this.tabPageConfig.Controls.Add(this.checkBoxMotionSimulate);
+            resources.ApplyResources(this.tabPageConfig, "tabPageConfig");
+            this.tabPageConfig.Name = "tabPageConfig";
+            this.tabPageConfig.UseVisualStyleBackColor = true;
             // 
-            // label31
+            // checkBoxMotionSimulate
             // 
-            resources.ApplyResources(this.label31, "label31");
-            this.label31.Name = "label31";
+            resources.ApplyResources(this.checkBoxMotionSimulate, "checkBoxMotionSimulate");
+            this.checkBoxMotionSimulate.Name = "checkBoxMotionSimulate";
+            this.checkBoxMotionSimulate.UseVisualStyleBackColor = true;
+            this.checkBoxMotionSimulate.CheckedChanged += new System.EventHandler(this.checkBoxMotionSimulate_CheckedChanged);
             // 
-            // buttonStepperOK
+            // tabPageUser
             // 
-            resources.ApplyResources(this.buttonStepperOK, "buttonStepperOK");
-            this.buttonStepperOK.Name = "buttonStepperOK";
-            this.buttonStepperOK.UseVisualStyleBackColor = true;
-            this.buttonStepperOK.Click += new System.EventHandler(this.buttonStepperOK_Click);
-            // 
-            // label29
-            // 
-            resources.ApplyResources(this.label29, "label29");
-            this.label29.Name = "label29";
-            // 
-            // comboBoxStepper
-            // 
-            this.comboBoxStepper.FormattingEnabled = true;
-            resources.ApplyResources(this.comboBoxStepper, "comboBoxStepper");
-            this.comboBoxStepper.Name = "comboBoxStepper";
-            this.comboBoxStepper.Click += new System.EventHandler(this.comboBoxStepper_Click);
-            // 
-            // label30
-            // 
-            resources.ApplyResources(this.label30, "label30");
-            this.label30.Name = "label30";
-            // 
-            // textBoxPort
-            // 
-            resources.ApplyResources(this.textBoxPort, "textBoxPort");
-            this.textBoxPort.Name = "textBoxPort";
-            // 
-            // textBoxIp
-            // 
-            resources.ApplyResources(this.textBoxIp, "textBoxIp");
-            this.textBoxIp.Name = "textBoxIp";
-            // 
-            // comboBoxShieldBox
-            // 
-            this.comboBoxShieldBox.FormattingEnabled = true;
-            this.comboBoxShieldBox.Items.AddRange(new object[] {
-            resources.GetString("comboBoxShieldBox.Items"),
-            resources.GetString("comboBoxShieldBox.Items1"),
-            resources.GetString("comboBoxShieldBox.Items2"),
-            resources.GetString("comboBoxShieldBox.Items3"),
-            resources.GetString("comboBoxShieldBox.Items4"),
-            resources.GetString("comboBoxShieldBox.Items5")});
-            resources.ApplyResources(this.comboBoxShieldBox, "comboBoxShieldBox");
-            this.comboBoxShieldBox.Name = "comboBoxShieldBox";
-            // 
-            // buttonBoxIpPortOk
-            // 
-            resources.ApplyResources(this.buttonBoxIpPortOk, "buttonBoxIpPortOk");
-            this.buttonBoxIpPortOk.Name = "buttonBoxIpPortOk";
-            this.buttonBoxIpPortOk.UseVisualStyleBackColor = true;
-            this.buttonBoxIpPortOk.Click += new System.EventHandler(this.buttonBoxIpPortOk_Click);
+            this.tabPageUser.Controls.Add(this.groupBoxChangePassword);
+            this.tabPageUser.Controls.Add(this.groupBox7);
+            resources.ApplyResources(this.tabPageUser, "tabPageUser");
+            this.tabPageUser.Name = "tabPageUser";
+            this.tabPageUser.UseVisualStyleBackColor = true;
             // 
             // groupBoxChangePassword
             // 
@@ -1834,10 +1973,98 @@
             resources.ApplyResources(this.textBoxPassWord, "textBoxPassWord");
             this.textBoxPassWord.Name = "textBoxPassWord";
             // 
+            // tabPageCom
+            // 
+            this.tabPageCom.Controls.Add(this.groupBox10);
+            resources.ApplyResources(this.tabPageCom, "tabPageCom");
+            this.tabPageCom.Name = "tabPageCom";
+            this.tabPageCom.UseVisualStyleBackColor = true;
+            // 
+            // groupBox10
+            // 
+            this.groupBox10.Controls.Add(this.label33);
+            this.groupBox10.Controls.Add(this.label31);
+            this.groupBox10.Controls.Add(this.buttonStepperOK);
+            this.groupBox10.Controls.Add(this.label29);
+            this.groupBox10.Controls.Add(this.comboBoxStepper);
+            this.groupBox10.Controls.Add(this.label30);
+            this.groupBox10.Controls.Add(this.textBoxPort);
+            this.groupBox10.Controls.Add(this.textBoxIp);
+            this.groupBox10.Controls.Add(this.comboBoxShieldBox);
+            this.groupBox10.Controls.Add(this.buttonBoxIpPortOk);
+            resources.ApplyResources(this.groupBox10, "groupBox10");
+            this.groupBox10.Name = "groupBox10";
+            this.groupBox10.TabStop = false;
+            // 
+            // label33
+            // 
+            resources.ApplyResources(this.label33, "label33");
+            this.label33.Name = "label33";
+            // 
+            // label31
+            // 
+            resources.ApplyResources(this.label31, "label31");
+            this.label31.Name = "label31";
+            // 
+            // buttonStepperOK
+            // 
+            resources.ApplyResources(this.buttonStepperOK, "buttonStepperOK");
+            this.buttonStepperOK.Name = "buttonStepperOK";
+            this.buttonStepperOK.UseVisualStyleBackColor = true;
+            this.buttonStepperOK.Click += new System.EventHandler(this.buttonStepperOK_Click);
+            // 
+            // label29
+            // 
+            resources.ApplyResources(this.label29, "label29");
+            this.label29.Name = "label29";
+            // 
+            // comboBoxStepper
+            // 
+            this.comboBoxStepper.FormattingEnabled = true;
+            resources.ApplyResources(this.comboBoxStepper, "comboBoxStepper");
+            this.comboBoxStepper.Name = "comboBoxStepper";
+            this.comboBoxStepper.Click += new System.EventHandler(this.comboBoxStepper_Click);
+            // 
+            // label30
+            // 
+            resources.ApplyResources(this.label30, "label30");
+            this.label30.Name = "label30";
+            // 
+            // textBoxPort
+            // 
+            resources.ApplyResources(this.textBoxPort, "textBoxPort");
+            this.textBoxPort.Name = "textBoxPort";
+            // 
+            // textBoxIp
+            // 
+            resources.ApplyResources(this.textBoxIp, "textBoxIp");
+            this.textBoxIp.Name = "textBoxIp";
+            // 
+            // comboBoxShieldBox
+            // 
+            this.comboBoxShieldBox.FormattingEnabled = true;
+            this.comboBoxShieldBox.Items.AddRange(new object[] {
+            resources.GetString("comboBoxShieldBox.Items"),
+            resources.GetString("comboBoxShieldBox.Items1"),
+            resources.GetString("comboBoxShieldBox.Items2"),
+            resources.GetString("comboBoxShieldBox.Items3"),
+            resources.GetString("comboBoxShieldBox.Items4"),
+            resources.GetString("comboBoxShieldBox.Items5")});
+            resources.ApplyResources(this.comboBoxShieldBox, "comboBoxShieldBox");
+            this.comboBoxShieldBox.Name = "comboBoxShieldBox";
+            // 
+            // buttonBoxIpPortOk
+            // 
+            resources.ApplyResources(this.buttonBoxIpPortOk, "buttonBoxIpPortOk");
+            this.buttonBoxIpPortOk.Name = "buttonBoxIpPortOk";
+            this.buttonBoxIpPortOk.UseVisualStyleBackColor = true;
+            this.buttonBoxIpPortOk.Click += new System.EventHandler(this.buttonBoxIpPortOk_Click);
+            // 
             // richTextBoxMessage
             // 
             resources.ApplyResources(this.richTextBoxMessage, "richTextBoxMessage");
             this.richTextBoxMessage.Name = "richTextBoxMessage";
+            this.richTextBoxMessage.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.richTextBoxMessage_MouseDoubleClick);
             // 
             // statusStrip1
             // 
@@ -1876,28 +2103,41 @@
             this.toolStripStatusLabelPower.Name = "toolStripStatusLabelPower";
             resources.ApplyResources(this.toolStripStatusLabelPower, "toolStripStatusLabelPower");
             // 
-            // buttonPausePhoneServer
+            // richTextBoxError
             // 
-            resources.ApplyResources(this.buttonPausePhoneServer, "buttonPausePhoneServer");
-            this.buttonPausePhoneServer.Name = "buttonPausePhoneServer";
-            this.buttonPausePhoneServer.UseVisualStyleBackColor = true;
-            this.buttonPausePhoneServer.Click += new System.EventHandler(this.buttonPausePhoneServer_Click);
+            resources.ApplyResources(this.richTextBoxError, "richTextBoxError");
+            this.richTextBoxError.Name = "richTextBoxError";
+            this.richTextBoxError.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.richTextBoxError_MouseDoubleClick);
+            // 
+            // textBox1
+            // 
+            resources.ApplyResources(this.textBox1, "textBox1");
+            this.textBox1.Name = "textBox1";
+            // 
+            // buttonSetSerialNumber
+            // 
+            resources.ApplyResources(this.buttonSetSerialNumber, "buttonSetSerialNumber");
+            this.buttonSetSerialNumber.Name = "buttonSetSerialNumber";
+            this.buttonSetSerialNumber.UseVisualStyleBackColor = true;
+            this.buttonSetSerialNumber.Click += new System.EventHandler(this.buttonSetSerialNumber_Click);
             // 
             // Main
             // 
             resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Control;
+            this.Controls.Add(this.richTextBoxError);
             this.Controls.Add(this.statusStrip1);
-            this.Controls.Add(this.tabControl1);
+            this.Controls.Add(this.tabControlUi);
             this.Controls.Add(this.richTextBoxMessage);
             this.Name = "Main";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Main_FormClosing);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarSetSpeed2)).EndInit();
-            this.tabControl1.ResumeLayout(false);
+            this.tabControlUi.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
             this.groupBoxMain.ResumeLayout(false);
             this.groupBoxMain.PerformLayout();
@@ -1917,18 +2157,26 @@
             this.tabPage3.ResumeLayout(false);
             this.contextMenuStrip1.ResumeLayout(false);
             this.tabPage5.ResumeLayout(false);
+            this.panelTesters.ResumeLayout(false);
+            this.groupBoxTester05.ResumeLayout(false);
+            this.groupBoxTester05.PerformLayout();
             this.groupBoxSelectBox.ResumeLayout(false);
             this.groupBoxSelectBox.PerformLayout();
             this.groupBox9.ResumeLayout(false);
             this.tabPage6.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.tabPage7.ResumeLayout(false);
-            this.groupBox10.ResumeLayout(false);
-            this.groupBox10.PerformLayout();
+            this.tabControlSetting.ResumeLayout(false);
+            this.tabPageConfig.ResumeLayout(false);
+            this.tabPageConfig.PerformLayout();
+            this.tabPageUser.ResumeLayout(false);
             this.groupBoxChangePassword.ResumeLayout(false);
             this.groupBoxChangePassword.PerformLayout();
             this.groupBox7.ResumeLayout(false);
             this.groupBox7.PerformLayout();
+            this.tabPageCom.ResumeLayout(false);
+            this.groupBox10.ResumeLayout(false);
+            this.groupBox10.PerformLayout();
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
             this.ResumeLayout(false);
@@ -1965,7 +2213,7 @@
         private System.Windows.Forms.Button buttonEableG2;
         private System.Windows.Forms.Button buttonEableG1;
         private System.Windows.Forms.Label labelPositionG2;
-        private System.Windows.Forms.TabControl tabControl1;
+        private System.Windows.Forms.TabControl tabControlUi;
         private System.Windows.Forms.TabPage tabPage1;
         private System.Windows.Forms.TabPage tabPage2;
         private System.Windows.Forms.TabPage tabPage4;
@@ -2010,11 +2258,9 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Button buttonG1TightOrLoose;
         private System.Windows.Forms.Button buttonG2TightOrLoose;
-        private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Button buttonBin;
         private System.Windows.Forms.Button buttonUnloadAndLoad;
         private System.Windows.Forms.Button buttonCalOffset;
-        private System.Windows.Forms.Button buttonReadyForPick;
         private System.Windows.Forms.Button buttonLoadForTeach;
         private System.Windows.Forms.Button buttonOK6;
         private System.Windows.Forms.ComboBox comboBox6;
@@ -2157,6 +2403,38 @@
         private System.Windows.Forms.Button buttonStartPhoneServer;
         private System.Windows.Forms.Button buttonCheckBox;
         private System.Windows.Forms.Button buttonPausePhoneServer;
+        private System.Windows.Forms.Button buttonTest;
+        private System.Windows.Forms.TabControl tabControlSetting;
+        private System.Windows.Forms.TabPage tabPageUser;
+        private System.Windows.Forms.TabPage tabPageCom;
+        private System.Windows.Forms.TabPage tabPageConfig;
+        private System.Windows.Forms.CheckBox checkBoxMotionSimulate;
+        private System.Windows.Forms.Panel panelTesters;
+        private System.Windows.Forms.GroupBox groupBoxTester06;
+        private System.Windows.Forms.GroupBox groupBoxTester05;
+        private System.Windows.Forms.GroupBox groupBoxTester04;
+        private System.Windows.Forms.GroupBox groupBoxTester03;
+        private System.Windows.Forms.GroupBox groupBoxTester02;
+        private System.Windows.Forms.GroupBox groupBoxTester01;
+        private System.Windows.Forms.Label labelTester05Connected;
+        private System.Windows.Forms.RichTextBox richTextBoxError;
+        private System.Windows.Forms.Label label32;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Label label35;
+        private System.Windows.Forms.Label label34;
+        private System.Windows.Forms.Label label36;
+        private System.Windows.Forms.Label label37;
+        private System.Windows.Forms.Label label38;
+        private System.Windows.Forms.Label labelTester05PhoneId;
+        private System.Windows.Forms.Label labelTester05PhoneFailCount;
+        private System.Windows.Forms.Label labelTester05PhoneTestTime;
+        private System.Windows.Forms.Label labelTester05PhoneTestResult;
+        private System.Windows.Forms.Label labelTester05PhoneStep;
+        private System.Windows.Forms.Label labelTester05PhoneSerialNumber;
+        private System.Windows.Forms.Button buttonEmptyNg;
+        private System.Windows.Forms.Button buttonEmptyBox05;
+        private System.Windows.Forms.Button buttonSetSerialNumber;
+        private System.Windows.Forms.TextBox textBox1;
     }
 }
 

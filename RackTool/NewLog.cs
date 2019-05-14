@@ -11,7 +11,8 @@ namespace RackTool
 {
     public  class NewLog
     {
-        private static readonly string log_config = System.AppDomain.CurrentDomain.BaseDirectory.ToString() + "NLog.config";
+        private static readonly string log_config = 
+            System.AppDomain.CurrentDomain.BaseDirectory.ToString() + "NLog.config";
         private static Logger _instance = null;
         private NewLog() { }
         public static Logger Instance

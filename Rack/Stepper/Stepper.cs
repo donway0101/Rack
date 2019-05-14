@@ -238,26 +238,33 @@ namespace Rack
         /// <param name="motor"></param>
         public void Enable(RackGripper motor)
         {
-            if (GetStatus(motor, StatusCode.Enabled) == true)
+            try
             {
-                return;
+                if (GetStatus(motor, StatusCode.Enabled) == true)
+                {
+                    return;
+                }
+
+                if (GetStatus(motor, StatusCode.Alarm) == true)
+                {
+                    ResetAlarm(motor);
+                }
+
+                string res = SendCommand(motor, "ME");
+
+                if (MotorAcknowledged(motor, res) != true)
+                {
+                    throw new Exception("Drive is NOT acknowledged");
+                }
+
+                if (GetStatus(motor, StatusCode.Enabled) == false)
+                {
+                    throw new Exception(motor + " can not be enabled");
+                }
             }
-
-            if (GetStatus(motor, StatusCode.Alarm)==true)
+            catch (Exception ex)
             {
-                ResetAlarm(motor);
-            }
-
-            string res = SendCommand(motor, "ME");
-
-            if (MotorAcknowledged(motor, res) != true) 
-            {
-                throw new Exception("Drive is NOT acknowledged");
-            }
-
-            if (GetStatus(motor, StatusCode.Enabled) == false)
-            {
-                throw new Exception(motor + " can not be enabled");
+                throw new Exception("Enable motor fail due to:" + ex.Message);
             }
         }
 
@@ -270,7 +277,7 @@ namespace Rack
         private bool MotorAcknowledged(RackGripper motor, string response)
         {
             bool idMatch = response.Substring(0, 1) == GetMotorId(motor);
-            bool endMatch = response.Substring(1, 1) == "%" | response.Substring(1, 1) == "*";
+            bool endMatch = response.Substring(1, 1) == "%" || response.Substring(1, 1) == "*";
             return idMatch && endMatch;
         }
 
@@ -614,7 +621,24 @@ namespace Rack
             string info = SendCommand(motor, "SC");
             string code = info.Substring(4, info.Length - 4);
 
-            string binaryValue = Convert.ToString(Convert.ToInt32(code, 16), 2);
+            string binaryValue;
+            try
+            {
+                binaryValue = Convert.ToString(Convert.ToInt32(code, 16), 2);
+            }
+            catch (Exception)
+            {
+                try
+                {
+                    info = SendCommand(motor, "SC");
+                    code = info.Substring(4, info.Length - 4);
+                    binaryValue = Convert.ToString(Convert.ToInt32(code, 16), 2);
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
+            }
 
             bool[] result = binaryValue.Select(c => c == '1').ToArray();
             Array.Reverse(result);

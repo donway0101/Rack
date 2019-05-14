@@ -25,14 +25,13 @@ namespace Rack
         public int TestCount { get; set; }
         public int PassCount { get; set; }
         public bool Enabled { get; set; } = false;
+        public bool TesterComputerConnected { get; set; }
         //Todo need to remember it?
         public bool Empty { get; set; } = true;
         /// <summary>
         /// Box is enabled and test is finished.
         /// </summary>
-        /// Todo make sure set phone properties before set it available.
         public bool Available { get; set; }
-        //Todo need to retry gold? remember it's fail time?
         public bool GoldPhoneChecked { get; set; }
         public ShieldBoxType Type { get; set; } = ShieldBoxType.Rf;
         public TargetPosition Position { get; set; } = new TargetPosition(){XPos = 400, ZPos = 700, YPos = 0};
@@ -101,11 +100,11 @@ namespace Rack
         /// 
         /// </summary>
         /// <param name="timeout">Takes less than 3 sec to open</param>
-        public void OpenBox(int timeout = 5000, bool setAvailable = true)
+        public void OpenBox(int timeout = 5000, bool setAvailable = true, bool openAfterBin=false)
         {
             Stopwatch stopwatch = new Stopwatch();
             stopwatch.Start();
-            while (RobotBining)
+            while (RobotBining && openAfterBin==false)
             {
                 Delay(100);
                 if (stopwatch.ElapsedMilliseconds > 120000)
@@ -236,7 +235,18 @@ namespace Rack
 
         public Task<bool> CloseBoxAsync()
         {
-            return Task.Factory.StartNew(() => true);
+            return Task.Run(() =>
+            {
+                try
+                {
+                    CloseBox();
+                    return true;
+                }
+                catch (Exception)
+                {
+                    return false;
+                }
+            });
         }
 
         public Task<bool> OpenBoxAsync()

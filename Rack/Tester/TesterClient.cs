@@ -6,8 +6,9 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Rack;
 
-namespace TesterSimulator
+namespace Rack
 {
     public class SocketClient
     {
@@ -41,7 +42,7 @@ namespace TesterSimulator
                         throw new SocketException();
                     }
                     Array.Resize(ref buffer, rec);
-                   string ClientReceivedMessage = Encoding.Default.GetString(buffer);
+                    string ClientReceivedMessage = Encoding.Default.GetString(buffer);
                 }
                 catch (Exception)
                 {

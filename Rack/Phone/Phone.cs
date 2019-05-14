@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.Security.AccessControl;
 
 namespace Rack
@@ -32,10 +33,11 @@ namespace Rack
                 OnTestComplete();
             }
         }
-        /// Todo link to shield box test result.
-        public int FailCount { get; set; }
 
-        //Todo will use in a unload and load movement.
+        public Stopwatch TestCycleTimeStopWatch { get; set; } = new Stopwatch();
+
+        public int MaxTestCycleTimeSec { get; set; } = 60;
+        public int FailCount { get; set; }
         public RackGripper OnGripper { get; set; }
         public ShieldBox ShieldBox { get; set; }
         public RackTestStep Step { get; set; } = RackTestStep.Rf;
