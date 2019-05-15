@@ -29,6 +29,7 @@ namespace Rack
         public double DefaultRobotSpeed { get; set; } = 10;        
 
         public bool RobotHomeComplete { get; set; }
+        public bool BoxChecked { get; set; }
         public bool SetupComplete { get; set; }
 
         public EthercatMotion Motion;

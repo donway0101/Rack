@@ -214,13 +214,6 @@ namespace Rack
                             state = (int)ShieldBoxState.Open;
                         }
                         SendMessage(TesterCommand.GetShieldedBoxState + ","+ state + ";");
-                        if (state == (int)ShieldBoxState.Close)
-                        {
-                            if (ShieldBox.Phone!=null)
-                            {
-                                ShieldBox.Phone.TestCycleTimeStopWatch.Restart();
-                            }
-                        }
                         OnInfoOccured(20002, "Rack response shieldedBox state to Tester " + Id + ".");
                         break;
                     case TesterCommand.SetTestResult:

@@ -69,27 +69,69 @@ namespace Rack
         }
 
         public void CloseAllBoxAsync()
-        {
-            List<Task<bool>> closeBoxTask = new List<Task<bool>>();
+        {          
+            List<Task<int>> tasks = new List<Task<int>>();
             foreach (var box in ShieldBoxs)
             {
                 if (box.Enabled)
                 {
                     if (box.IsClosed() == false)
                     {
-                        //box.CloseBox();
-                        closeBoxTask.Add(box.CloseBoxAsync());
+                        tasks.Add(box.CloseBoxAsync());
                     }
                 }
             }
 
-            //foreach (var task in closeBoxTask)
-            //{
-            //    if (wait task == false)
-            //    {
-            //        throw new Exception("Close box fail.");
-            //    }
-            //}
+            Task<int>[] boxTask = new Task<int>[tasks.Count];
+
+            // Todo list to array.
+            //Array.Copy(tasks, closeBoxTask, tasks.Count);
+
+            for (int i = 0; i < tasks.Count; i++)
+            {
+                boxTask[i] = tasks[i];
+            }
+
+            Task.WaitAll(boxTask);
+
+            foreach (var task in boxTask)
+            {
+                if (task.Result != 0)
+                {
+                    throw new Exception("Box " + task.Result + " close fail.");
+                }
+            }
+        }
+
+        public void OpenAllBoxAsync()
+        {
+            List<Task<int>> tasks = new List<Task<int>>();
+            foreach (var box in ShieldBoxs)
+            {
+                if (box.Enabled)
+                {
+                    if (box.IsClosed() == true)
+                    {
+                        tasks.Add(box.OpenBoxAsync());
+                    }
+                }
+            }
+
+            Task<int>[] boxTask = new Task<int>[tasks.Count];
+            for (int i = 0; i < tasks.Count; i++)
+            {
+                boxTask[i] = tasks[i];
+            }
+
+            Task.WaitAll(boxTask);
+
+            foreach (var task in boxTask)
+            {
+                if (task.Result != 0)
+                {
+                    throw new Exception("Box " + task.Result + " open fail.");
+                }
+            }
         }
 
         public void CloseAllBox()
@@ -131,11 +173,16 @@ namespace Rack
         public void CheckBox()
         {
             OnInfoOccured(20011, "Test shield box.");
+            BoxChecked = false;
             InvalidAllBox();
-            CloseAllBox();
+            CloseAllBoxAsync();
             Thread.Sleep(1000);
-            OpenAllBox();
+            OpenAllBoxAsync();
+            //CloseAllBox();
+            //Thread.Sleep(1000);
+            //OpenAllBox();
             ValidAllBox();
+            BoxChecked = true;
             OnInfoOccured(20012, "Test shield box succeed.");
         }
 

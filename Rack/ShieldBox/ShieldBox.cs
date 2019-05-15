@@ -142,6 +142,10 @@ namespace Rack
                 if (changeState)
                 {
                     ReadyForTesting = true;
+                    if (Phone != null)
+                    {
+                        Phone.TestCycleTimeStopWatch.Restart();
+                    }
                 }
             }
             catch (Exception e)
@@ -233,25 +237,36 @@ namespace Rack
             }           
         }
 
-        public Task<bool> CloseBoxAsync()
+        public Task<int> CloseBoxAsync()
         {
             return Task.Run(() =>
             {
                 try
                 {
                     CloseBox();
-                    return true;
+                    return 0;
                 }
                 catch (Exception)
                 {
-                    return false;
+                    return (int)Id;
                 }
             });
         }
 
-        public Task<bool> OpenBoxAsync()
+        public Task<int> OpenBoxAsync()
         {
-            return Task.Factory.StartNew(() => true);
+            return Task.Run(() =>
+            {
+                try
+                {
+                    OpenBox();
+                    return 0;
+                }
+                catch (Exception)
+                {
+                    return (int)Id;
+                }
+            });
         }
     }
 }

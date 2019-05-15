@@ -319,7 +319,6 @@ namespace RackTool
             {
                 _rack.Steppers.Enable(RackGripper.One);
             }
-            RefleshRobotUi();
         }
 
         private void button21_Click(object sender, EventArgs e)
@@ -332,7 +331,6 @@ namespace RackTool
             {
                 _rack.Steppers.Enable(RackGripper.Two);
             }
-            RefleshRobotUi();
         }
 
         private void buttonEableX1_Click(object sender, EventArgs e)
@@ -345,7 +343,6 @@ namespace RackTool
                 }
                 else
                     _rack.Motion.Disable(_rack.Motion.MotorX1);
-                RefleshRobotUi();
             }
             catch (Exception ex)
             {
@@ -362,7 +359,6 @@ namespace RackTool
 
                 else
                     _rack.Motion.Disable(_rack.Motion.MotorX2);
-                RefleshRobotUi();
             }
             catch (Exception ex)
             {
@@ -380,7 +376,6 @@ namespace RackTool
 
                 else
                     _rack.Motion.Disable(_rack.Motion.MotorY);
-                RefleshRobotUi();
             }
             catch (Exception ex)
             {
@@ -398,7 +393,6 @@ namespace RackTool
 
                 else
                     _rack.Motion.Disable(_rack.Motion.MotorR);
-                RefleshRobotUi();
             }
             catch (Exception ex)
             {
@@ -416,7 +410,6 @@ namespace RackTool
 
                 else
                     _rack.Motion.Disable(_rack.Motion.MotorZ);
-                RefleshRobotUi();
             }
             catch (Exception ex)
             {
@@ -664,41 +657,19 @@ namespace RackTool
         {
             labelSpeed1.Text = trackBarSetSpeed1.Value.ToString();
         }
-        private void RefleshRobotUi()
-        {
-            try
-            {
-                foreach (var item in _rack.Motion.Motors)
-                {
-                    MotorStates State = _rack.Motion.GetRobotState(item);
-                    switch (item.Id)
-                    {
-                        case Axis.ACSC_AXIS_0: buttonEableZ.Text = Convert.ToBoolean(State & MotorStates.ACSC_MST_ENABLE) ? "Disable" : "Enable"; break;
-                        case Axis.ACSC_AXIS_1: buttonEableX1.Text = Convert.ToBoolean(State & MotorStates.ACSC_MST_ENABLE) ? "Disable" : "Enable"; break;
-                        case Axis.ACSC_AXIS_2: buttonEableX2.Text = Convert.ToBoolean(State & MotorStates.ACSC_MST_ENABLE) ? "Disable" : "Enable"; break;
-                        case Axis.ACSC_AXIS_3: buttonEableY.Text = Convert.ToBoolean(State & MotorStates.ACSC_MST_ENABLE) ? "Disable" : "Enable"; break;
-                        case Axis.ACSC_AXIS_4: buttonEableR.Text = Convert.ToBoolean(State & MotorStates.ACSC_MST_ENABLE) ? "Disable" : "Enable"; break;
-                        default:
-                            break;
-                    }
-                }
-                buttonG1TightOrLoose.Text = _rack.EcatIo.GetInput(Input.Gripper01Tight) ? "G1Open" : "G1Close";
-                buttonG2TightOrLoose.Text = _rack.EcatIo.GetInput(Input.Gripper02Tight) ? "G2Open" : "G2Close";
-                buttonEableG1.Text = _rack.Steppers.GetStatus(RackGripper.One, StatusCode.Enabled) ? "Disable" : "Enable";
-                buttonEableG2.Text = _rack.Steppers.GetStatus(RackGripper.Two, StatusCode.Enabled) ? "Disable" : "Enable";
-            }
-            catch (Exception ex)
-            {
 
-                MessageBox.Show("RefleshRobotUi" + ex.Message);
-            }
-
-        }
         private void buttonSave_Click(object sender, EventArgs e)
         {
             try
             {
+               DialogResult result = MessageBox.Show("是否覆盖  " + _selectedTargetPosition + "  的示教位置？",
+                    "警告", MessageBoxButtons.YesNo);
+                if (result == DialogResult.No)
+                {
+                    return;
+                }
                 _rack.SaveTeachPosition(_selectedTargetPosition);
+                MessageBox.Show("  " + _selectedTargetPosition + "  的示教位置更新成功");
             }
             catch (Exception exception)
             {
@@ -1162,6 +1133,17 @@ namespace RackTool
                         if (box.Phone.TestCycleTimeStopWatch.ElapsedMilliseconds >
                             box.Phone.MaxTestCycleTimeSec * 1000)
                         {
+                            OnErrorOccured(this, 40011, "Phone test timeout in box:" + box.Id);
+                            try
+                            {
+                                box.OpenBox();
+                                box.Phone.FailCount = 3; //Set as NG.
+                                box.Phone.TestResult = TestResult.Fail;
+                            }
+                            catch (Exception ex)
+                            {
+                                OnErrorOccured(this, 40008, ex.Message);
+                            }                          
                             _errorsList.Add(new CqcRackError()
                             { Code = 40011, Description = "Phone test timeout in box:" + box.Id });
                         }
@@ -1172,6 +1154,18 @@ namespace RackTool
                         { Code = 40012, Description = "Tester computer of box:" + box.Id + " not connect." });
                     }
                 }
+            }
+
+            if (_rack.BoxChecked == false)
+            {
+                _errorsList.Add(new CqcRackError()
+                { Code = 40019, Description = "Box are not checked." });
+            }
+
+            if (_rack.RobotHomeComplete == false)
+            {
+                _errorsList.Add(new CqcRackError()
+                { Code = 40020, Description = "Robot not homed." });
             }
 
             _systemFault = false;
@@ -1243,18 +1237,48 @@ namespace RackTool
             }));
         }
 
+        private void Delay(int ms = 50)
+        {
+            Thread.Sleep(ms);
+        }
+
         private void UpdateRobotUi()
         {
             labelPositionG1.BeginInvoke((MethodInvoker)(() => { labelPositionG1.Text = _rack.Steppers.GetPosition(RackGripper.One).ToString("0.00"); }));
+            Delay();
             labelPositionG2.BeginInvoke((MethodInvoker)(() => { labelPositionG2.Text = _rack.Steppers.GetPosition(RackGripper.Two).ToString("0.00"); }));
+            Delay();
             labelPositionX.BeginInvoke((MethodInvoker)(() => { labelPositionX.Text = _rack.Motion.GetPositionX().ToString("0.00"); }));
+            Delay();
             labelPositionY.BeginInvoke((MethodInvoker)(() => { labelPositionY.Text = _rack.Motion.GetPosition(_rack.Motion.MotorY).ToString("0.00"); }));
+            Delay();
             labelPositionZ.BeginInvoke((MethodInvoker)(() => { labelPositionZ.Text = _rack.Motion.GetPosition(_rack.Motion.MotorZ).ToString("0.00"); }));
+            Delay();
             labelPositionR.BeginInvoke((MethodInvoker)(() => { labelPositionR.Text = _rack.Motion.GetPosition(_rack.Motion.MotorR).ToString("0.00"); }));
+            Delay();
             trackBarSetSpeed2.BeginInvoke((MethodInvoker)(() =>
             {
                 trackBarSetSpeed2.Value = (int)(_rack.Motion.GetVelocity(_rack.Motion.MotorZ) / _rack.Motion.MotorZ.SpeedFactor);
             }));
+            Delay();
+            buttonEableZ.BeginInvoke((MethodInvoker)(() => { buttonEableZ.Text = Convert.ToBoolean(_rack.Motion.GetRobotState(_rack.Motion.MotorZ) & MotorStates.ACSC_MST_ENABLE) ? "Disable" : "Enable";}));
+            Delay();
+            buttonEableX1.BeginInvoke((MethodInvoker)(() => { buttonEableX1.Text = Convert.ToBoolean(_rack.Motion.GetRobotState(_rack.Motion.MotorX1) & MotorStates.ACSC_MST_ENABLE) ? "Disable" : "Enable"; }));
+            Delay();
+            buttonEableX2.BeginInvoke((MethodInvoker)(() => { buttonEableX2.Text = Convert.ToBoolean(_rack.Motion.GetRobotState(_rack.Motion.MotorX2) & MotorStates.ACSC_MST_ENABLE) ? "Disable" : "Enable"; }));
+            Delay();
+            buttonEableY.BeginInvoke((MethodInvoker)(() => { buttonEableY.Text = Convert.ToBoolean(_rack.Motion.GetRobotState(_rack.Motion.MotorY) & MotorStates.ACSC_MST_ENABLE) ? "Disable" : "Enable"; }));
+            Delay();
+            buttonEableR.BeginInvoke((MethodInvoker)(() => { buttonEableR.Text = Convert.ToBoolean(_rack.Motion.GetRobotState(_rack.Motion.MotorR) & MotorStates.ACSC_MST_ENABLE) ? "Disable" : "Enable"; }));
+            Delay();
+            buttonG1TightOrLoose.BeginInvoke((MethodInvoker)(() => { buttonG1TightOrLoose.Text = _rack.EcatIo.GetInput(Input.Gripper01Tight) ? "G1Open" : "G1Close"; }));
+            Delay();
+            buttonG2TightOrLoose.BeginInvoke((MethodInvoker)(() => { buttonG2TightOrLoose.Text = _rack.EcatIo.GetInput(Input.Gripper02Tight) ? "G2Open" : "G2Close"; }));
+            Delay();
+            buttonEableG1.BeginInvoke((MethodInvoker)(() => { buttonEableG1.Text = _rack.Steppers.GetStatus(RackGripper.One, StatusCode.Enabled) ? "Disable" : "Enable"; }));
+            Delay();
+            buttonEableG2.BeginInvoke((MethodInvoker)(() => { buttonEableG2.Text = _rack.Steppers.GetStatus(RackGripper.Two, StatusCode.Enabled) ? "Disable" : "Enable"; }));
+            Delay();
         }
         #endregion
 

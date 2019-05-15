@@ -36,7 +36,7 @@ namespace Rack
 
         public Stopwatch TestCycleTimeStopWatch { get; set; } = new Stopwatch();
 
-        public int MaxTestCycleTimeSec { get; set; } = 60;
+        public int MaxTestCycleTimeSec { get; set; } = 120;
         public int FailCount { get; set; }
         public RackGripper OnGripper { get; set; }
         public ShieldBox ShieldBox { get; set; }

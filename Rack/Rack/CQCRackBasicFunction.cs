@@ -318,12 +318,18 @@ namespace Rack
             {
                 if (LatestPhone.OnGripper != RackGripper.None)
                 {
+                    OnInfoOccured(20016, "Already got a phone in " + gripper + ".");
                     return;
                 }
             }
             else
             {
                 throw new Exception("Phone is not ready.");
+            }
+
+            if (EcatIo.GetInput(Input.PickHasPhone) == false)
+            {
+                throw new Exception("No phone in pick position. Quit picking.");
             }
 
             RobotTakeControlOnConveyor();
@@ -527,7 +533,7 @@ namespace Rack
             MoveToTargetPosition(gripper, targetPosition);
             OpenGripper(gripper);
             MoveToPointTillEnd(Motion.MotorZ, targetPosition.ApproachHeight);
-            MoveToPointTillEnd(Motion.MotorY, Motion.PickPosition.YPos);
+            MoveToPointTillEnd(Motion.MotorY, Motion.HomePosition.YPos);
             OnInfoOccured(20023, "Finish loading phone to box:" + box.Id + ".");
         }        
 
