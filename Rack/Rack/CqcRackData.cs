@@ -36,11 +36,12 @@ namespace Rack
 
     public enum TeachPos
     {
+        //if two enumItem = same value, when using it, it will cause problem.
         None = 99,
         ConveyorLeft= 98,
-        ConveyorRight = 98,
+        ConveyorRight = 97,
         G1ToG2Offset = 96,
-        PickOffset = 96,
+        PickOffset = 95,
         
         Home = 41,
         Pick = 42,

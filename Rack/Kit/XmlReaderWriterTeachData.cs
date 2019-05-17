@@ -15,10 +15,14 @@ namespace Rack
         {
             XElement root = XElement.Load(file);
 
-            XElement elem = root
-              .Elements(PosItem.Teach.ToString())
-              .Elements(PosItem.Pos.ToString())
-              .Single(itemName => itemName.Attribute(PosItem.Name.ToString()).Value == PosName.ToString());
+            var child1 = root.Elements(PosItem.Teach.ToString());
+            var child2 = child1.Elements(PosItem.Pos.ToString());
+            var elem = child2.Single(element => element.Attribute(PosItem.Name.ToString()).Value == PosName.ToString());
+
+            //XElement elem = root
+            //  .Elements(PosItem.Teach.ToString())
+            //  .Elements(PosItem.Pos.ToString())
+            //  .Single(element => element.Attribute(PosItem.Name.ToString()).Value == PosName.ToString());
 
             return elem.Attribute(attribute.ToString()).Value;
         }

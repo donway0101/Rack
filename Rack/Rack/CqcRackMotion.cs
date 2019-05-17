@@ -131,21 +131,24 @@ namespace Rack
         {
             Motion.ToPoint(Motion.MotorZ, target.ApproachHeight);
             Motion.ToPointX(Motion.ConveyorRightPosition.XPos);
-            ToPointGripper(target, gripper);
+            ToPointR(target, gripper);
 
             Motion.WaitTillZBiggerThan(Motion.PickPosition.ApproachHeight - 20);
             Motion.BreakToPointX(target.XPos);
 
             Motion.WaitTillEndX();
-            WaitTillEndGripper(target, gripper);
+            Motion.WaitTillEnd(Motion.MotorR);
 
-            MotorYOutThenBreakMotorZDown(target);
+            MotorYOutThenBreakMotorZDown(target, gripper);
         }
 
-        private void MotorYOutThenBreakMotorZDown(TargetPosition target)
+        private void MotorYOutThenBreakMotorZDown(TargetPosition target, RackGripper gripper)
         {
-            MoveToPointTillEnd(Motion.MotorY, target.YPos);
-            Steppers.CheckEnabled();
+            Motion.ToPoint(Motion.MotorY, target.YPos);
+            ToPointGripper(target, gripper);
+            Motion.WaitTillEnd(Motion.MotorY);
+            WaitTillEndGripper(target, gripper);
+
             Motion.BreakToPointWaitTillEnd(Motion.MotorZ, target.ZPos);
         }
 
@@ -153,7 +156,7 @@ namespace Rack
         {
             Motion.ToPoint(Motion.MotorZ, Motion.PickPosition.ApproachHeight);
             Motion.ToPointX(Motion.ConveyorRightPosition.XPos);
-            ToPointGripper(target, gripper);
+            ToPointR(target, gripper);
 
             Motion.WaitTillZBiggerThan(Motion.PickPosition.ApproachHeight - 20);
             Motion.BreakToPointX(target.XPos);
@@ -163,56 +166,59 @@ namespace Rack
 
             Motion.WaitTillEndX();
             Motion.WaitTillEnd(Motion.MotorZ);
-            WaitTillEndGripper(target, gripper);
+            Motion.WaitTillEnd(Motion.MotorR);
 
-            MotorYOutThenMotorZDown(target);
+            MotorYOutThenMotorZDown(target, gripper);
         }
 
         private void MoveFromRightToLeftTop(RackGripper gripper, TargetPosition target, TargetPosition currentPosition)
         {
             Motion.ToPoint(Motion.MotorZ, target.ApproachHeight);
             Motion.ToPointX(Motion.ConveyorRightPosition.XPos);
-            ToPointGripper(target, gripper);
+            ToPointR(target, gripper);
 
             Motion.WaitTillZBiggerThan(Motion.PickPosition.ApproachHeight - 20);
             Motion.BreakToPointX(target.XPos);
 
             Motion.WaitTillEndX();
             Motion.WaitTillEnd(Motion.MotorZ);
-            WaitTillEndGripper(target, gripper);
+            Motion.WaitTillEnd(Motion.MotorR);
 
-            MotorYOutThenMotorZDown(target);
+            MotorYOutThenMotorZDown(target, gripper);
         }
 
         private void MoveFromRightToRight(RackGripper gripper, TargetPosition target)
         {
             Motion.ToPoint(Motion.MotorZ, target.ApproachHeight);
             Motion.ToPointX(target.XPos);
-            ToPointWaitTillEndGripper(target, gripper);
+            ToPointR(target, gripper);
             Motion.WaitTillEndX();
             Motion.WaitTillEnd(Motion.MotorZ);
-            MotorYOutThenMotorZDown(target);
+            Motion.WaitTillEnd(Motion.MotorR);
+            MotorYOutThenMotorZDown(target, gripper);
         }
 
-        private void MotorYOutThenMotorZDown(TargetPosition target)
+        private void MotorYOutThenMotorZDown(TargetPosition target, RackGripper gripper)
         {
-            MoveToPointTillEnd(Motion.MotorY, target.YPos);
-            Steppers.CheckEnabled();
+            Motion.ToPoint(Motion.MotorY, target.YPos);
+            ToPointGripper(target, gripper);
+            Motion.WaitTillEnd(Motion.MotorY);
+            WaitTillEndGripper(target, gripper);
             MoveToPointTillEnd(Motion.MotorZ, target.ZPos);
         }
 
         private void MoveFromLeftToRightTop(RackGripper gripper, TargetPosition target, TargetPosition currentPosition)
         {
             Motion.ToPoint(Motion.MotorZ, target.ApproachHeight);
-            ToPointGripper(target, gripper);
+            ToPointR(target, gripper);
             Motion.WaitTillZBiggerThan(Motion.PickPosition.ApproachHeight - 20);
             Motion.ToPointX(target.XPos);
 
             Motion.WaitTillEndX();
             Motion.WaitTillEnd(Motion.MotorZ);
-            WaitTillEndGripper(target, gripper);
+            Motion.WaitTillEnd(Motion.MotorR);
 
-            MotorYOutThenMotorZDown(target);
+            MotorYOutThenMotorZDown(target, gripper);
         }
 
         private void MoveFromLeftToRightBottom(RackGripper gripper, TargetPosition target)
@@ -221,109 +227,107 @@ namespace Rack
             Motion.WaitTillZBiggerThan(Motion.PickPosition.ApproachHeight - 20);
 
             Motion.ToPointX(target.XPos);
-            ToPointGripper(target, gripper);
+            ToPointR(target, gripper);
 
             Motion.WaitTillXBiggerThan(Motion.ConveyorRightPosition.XPos);
             Motion.BreakToPoint(Motion.MotorZ, target.ApproachHeight);
 
             Motion.WaitTillEndX();
             Motion.WaitTillEnd(Motion.MotorZ);
-            WaitTillEndGripper(target, gripper);
+            Motion.WaitTillEnd(Motion.MotorR);
 
-            MotorYOutThenMotorZDown(target);
+            MotorYOutThenMotorZDown(target, gripper);
         }
 
         private void MoveFromLeftToLeft(RackGripper gripper, TargetPosition target)
         {
             Motion.ToPointX(target.XPos);
-            ToPointGripper(target, gripper);
+            ToPointR(target, gripper);
             Motion.ToPoint(Motion.MotorZ, target.ApproachHeight);
             Motion.WaitTillEndX();
             Motion.WaitTillEnd(Motion.MotorZ);
-            WaitTillEndGripper(target, gripper);
-            MotorYOutThenMotorZDown(target);
+            Motion.WaitTillEnd(Motion.MotorR);
+            MotorYOutThenMotorZDown(target, gripper);
         }
 
         private void MoveFromLeftToConveyor(RackGripper gripper, TargetPosition target, TargetPosition currentPosition)
         {
             Motion.ToPoint(Motion.MotorZ, target.ApproachHeight);
-            ToPointGripper(target, gripper);
+            ToPointR(target, gripper);
             Motion.WaitTillZBiggerThan(Motion.PickPosition.ApproachHeight - 20);
             Motion.ToPointX(target.XPos);
 
             Motion.WaitTillEndX();
-            Motion.WaitTillEnd(Motion.MotorZ);
-            WaitTillEndGripper(target, gripper);
+            Motion.WaitTillEnd(Motion.MotorR);
 
-            MotorYOutThenMotorZDown(target);
+            MotorYOutThenBreakMotorZDown(target, gripper);
         }
 
         private void MoveFromConveyorToRightTop(RackGripper gripper, TargetPosition target)
         {
             Motion.ToPointX(target.XPos);
-            ToPointGripper(target, gripper);
+            ToPointR(target, gripper);
             Motion.ToPoint(Motion.MotorZ, target.ApproachHeight);
 
             Motion.WaitTillEndX();
             Motion.WaitTillEnd(Motion.MotorZ);
-            WaitTillEndGripper(target, gripper);
-            MotorYOutThenMotorZDown(target);
+            Motion.WaitTillEnd(Motion.MotorR);
+            MotorYOutThenMotorZDown(target, gripper);
         }
 
         private void MoveFromConveyorToRightBottom(RackGripper gripper, TargetPosition target)
         {
             Motion.ToPointX(target.XPos);
             Motion.ToPoint(Motion.MotorZ, Motion.PickPosition.ApproachHeight);
-            ToPointGripper(target, gripper);
+            ToPointR(target, gripper);
 
             Motion.WaitTillXBiggerThan(Motion.ConveyorRightPosition.XPos);
             Motion.BreakToPoint(Motion.MotorZ, target.ApproachHeight);
 
             Motion.WaitTillEndX();
             Motion.WaitTillEnd(Motion.MotorZ);
-            WaitTillEndGripper(target, gripper);
+            Motion.WaitTillEnd(Motion.MotorR);
 
-            MotorYOutThenMotorZDown(target);
+            MotorYOutThenMotorZDown(target, gripper);
         }
 
         private void MoveFromConveyorToLeftTop(RackGripper gripper, TargetPosition target)
         {
             Motion.ToPointX(target.XPos);
-            ToPointGripper(target, gripper);
+            ToPointR(target, gripper);
             Motion.ToPoint(Motion.MotorZ, target.ApproachHeight);
             Motion.WaitTillEndX();
             Motion.WaitTillEnd(Motion.MotorZ);
-            WaitTillEndGripper(target, gripper);
-            MotorYOutThenMotorZDown(target);
+            Motion.WaitTillEnd(Motion.MotorR);
+            MotorYOutThenMotorZDown(target, gripper);
         }
 
         private void MoveFromConveyorToLeftBottom(RackGripper gripper, TargetPosition target)
         {
             Motion.ToPointX(target.XPos);
             Motion.ToPoint(Motion.MotorZ, Motion.PickPosition.ApproachHeight);
-            ToPointGripper(target, gripper);
+            ToPointR(target, gripper);
 
             Motion.WaitTillXSmallerThan(Motion.ConveyorLeftPosition.XPos);
             Motion.BreakToPoint(Motion.MotorZ, target.ApproachHeight);
 
             Motion.WaitTillEndX();
             Motion.WaitTillEnd(Motion.MotorZ);
-            WaitTillEndGripper(target, gripper);
+            Motion.WaitTillEnd(Motion.MotorR);
 
-            MotorYOutThenMotorZDown(target);
+            MotorYOutThenMotorZDown(target, gripper);
         }
 
         private void MoveFromConveyorToConveyor(RackGripper gripper, TargetPosition target)
         {
             Motion.ToPointX(target.XPos);
             Motion.ToPoint(Motion.MotorZ, target.ApproachHeight);
-            ToPointGripper(target, gripper);
+            ToPointR(target, gripper);
 
             Motion.WaitTillEndX();
-            Motion.WaitTillEnd(Motion.MotorZ);
-            WaitTillEndGripper(target, gripper);
+            Motion.WaitTillEnd(Motion.MotorR);
 
-            MotorYOutThenMotorZDown(target);
+            MotorYOutThenBreakMotorZDown(target, gripper);
         }
 
     }

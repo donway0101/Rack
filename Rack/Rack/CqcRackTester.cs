@@ -23,7 +23,7 @@ namespace Rack
                 Tester3 = new Tester(3,"192.168.8.100", 1003);
                 Tester4 = new Tester(4,"192.168.8.100", 1004);
                 Tester5 = new Tester(5,"192.168.8.100", 1005);
-                Tester6 = new Tester(6, "192.168.8.100", 1006);
+                Tester6 = new Tester(6,"192.168.8.100", 1006);
 
                 Testers = new Tester[6] { Tester1, Tester2, Tester3, Tester4, Tester5, Tester6 };
 

@@ -24,8 +24,10 @@ namespace Rack
         public int Id { get; set; }
         public ShieldBox ShieldBox { get; set; }
         public int RobotState { get; set; } = 2; //Ready.
+        public bool SimulateMode { get; set; }
+        public string SimulateSerialNumber { get; set; } = "DefaultSerial";
 
-        public bool Connected
+    public bool Connected
         {
             get { return _connected; }
             set {
@@ -213,7 +215,16 @@ namespace Rack
                         {
                             state = (int)ShieldBoxState.Open;
                         }
-                        SendMessage(TesterCommand.GetShieldedBoxState + ","+ state + ";");
+
+                        if (SimulateMode)
+                        {
+                            SendMessage(TesterCommand.GetShieldedBoxState + ",2;");
+                        }
+                        else
+                        {
+                            SendMessage(TesterCommand.GetShieldedBoxState + "," + state + ";");
+                        }
+                        
                         OnInfoOccured(20002, "Rack response shieldedBox state to Tester " + Id + ".");
                         break;
                     case TesterCommand.SetTestResult:
@@ -227,17 +238,24 @@ namespace Rack
                             SendMessage(TesterCommand.SetTestResult + ",OK;");
                             OnInfoOccured(20003, "Rack response send test result to Tester " + Id + ".");
 
-                            if (subMessage[1] == "1")
+                            switch (subMessage[1])
                             {
-                                ShieldBox.OpenBox();
-                                ShieldBox.Phone.TestResult = TestResult.Fail;
-                                ShieldBox.Phone.FailCount++;
-                            }
-                            else
-                            {
-                                ShieldBox.OpenBox();
-                                ShieldBox.Phone.TestResult = TestResult.Pass;
-                            }                            
+                                case "0":
+                                    ShieldBox.OpenBox();
+                                    ShieldBox.Phone.TestResult = TestResult.Pass;
+                                    break;
+                                case "1":
+                                    ShieldBox.OpenBox();
+                                    ShieldBox.Phone.TestResult = TestResult.Fail;
+                                    ShieldBox.Phone.FailCount++;
+                                    break;
+                                case "2":
+                                    //Battery low. NG.
+                                    break;
+
+                                default:
+                                    break;
+                            }                          
                         }
                         catch (BoxException)
                         {
@@ -251,7 +269,14 @@ namespace Rack
 
                     case TesterCommand.GetSerialNumber:
                         OnInfoOccured(20028, "Tester " + Id + " requesting Serial Number.");
-                        SendMessage(TesterCommand.GetSerialNumber + "," + ShieldBox.Phone.SerialNumber + ";");
+                        if (SimulateMode)
+                        {                          
+                            SendMessage(TesterCommand.GetSerialNumber + "," + SimulateSerialNumber + ";");
+                        }
+                        else
+                        {
+                            SendMessage(TesterCommand.GetSerialNumber + "," + ShieldBox.Phone.SerialNumber + ";");
+                        }
                         OnInfoOccured(20028, "Rack response Get Serial Number to Tester " + Id + ".");
                         break;
 

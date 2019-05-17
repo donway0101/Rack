@@ -95,6 +95,8 @@
             this.tabControlUi = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.groupBoxMain = new System.Windows.Forms.GroupBox();
+            this.buttonSetSerialNumber = new System.Windows.Forms.Button();
+            this.textBox1 = new System.Windows.Forms.TextBox();
             this.buttonEmptyNg = new System.Windows.Forms.Button();
             this.buttonTest = new System.Windows.Forms.Button();
             this.buttonPausePhoneServer = new System.Windows.Forms.Button();
@@ -190,15 +192,19 @@
             this.imageList1 = new System.Windows.Forms.ImageList(this.components);
             this.tabPage5 = new System.Windows.Forms.TabPage();
             this.panelTesters = new System.Windows.Forms.Panel();
-            this.groupBoxTester06 = new System.Windows.Forms.GroupBox();
             this.groupBoxTester05 = new System.Windows.Forms.GroupBox();
-            this.buttonEmptyBox05 = new System.Windows.Forms.Button();
+            this.checkBoxTesterSimulate05 = new System.Windows.Forms.CheckBox();
+            this.buttonSetSerial05 = new System.Windows.Forms.Button();
+            this.textBoxSerial05 = new System.Windows.Forms.TextBox();
+            this.buttonSetClosedBox05 = new System.Windows.Forms.Button();
             this.labelTester05PhoneFailCount = new System.Windows.Forms.Label();
             this.labelTester05PhoneTestTime = new System.Windows.Forms.Label();
+            this.buttonPassTester05 = new System.Windows.Forms.Button();
             this.labelTester05PhoneTestResult = new System.Windows.Forms.Label();
             this.labelTester05PhoneStep = new System.Windows.Forms.Label();
             this.labelTester05PhoneSerialNumber = new System.Windows.Forms.Label();
             this.labelTester05PhoneId = new System.Windows.Forms.Label();
+            this.buttonEmptyBox05 = new System.Windows.Forms.Button();
             this.label38 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.label37 = new System.Windows.Forms.Label();
@@ -207,12 +213,10 @@
             this.label32 = new System.Windows.Forms.Label();
             this.label35 = new System.Windows.Forms.Label();
             this.label34 = new System.Windows.Forms.Label();
-            this.groupBoxTester04 = new System.Windows.Forms.GroupBox();
-            this.groupBoxTester03 = new System.Windows.Forms.GroupBox();
-            this.groupBoxTester02 = new System.Windows.Forms.GroupBox();
-            this.groupBoxTester01 = new System.Windows.Forms.GroupBox();
+            this.groupBoxTester06 = new System.Windows.Forms.GroupBox();
             this.buttonTesterSendFail = new System.Windows.Forms.Button();
             this.buttonTesterSendPass = new System.Windows.Forms.Button();
+            this.groupBoxTester04 = new System.Windows.Forms.GroupBox();
             this.buttonStartTesterSimulator = new System.Windows.Forms.Button();
             this.groupBoxSelectBox = new System.Windows.Forms.GroupBox();
             this.radioButtonBox6 = new System.Windows.Forms.RadioButton();
@@ -221,22 +225,47 @@
             this.radioButtonBox3 = new System.Windows.Forms.RadioButton();
             this.radioButtonBox2 = new System.Windows.Forms.RadioButton();
             this.radioButtonBox1 = new System.Windows.Forms.RadioButton();
-            this.groupBox9 = new System.Windows.Forms.GroupBox();
-            this.buttonCreateFile = new System.Windows.Forms.Button();
-            this.buttonCreateXml = new System.Windows.Forms.Button();
-            this.buttonBoxSave = new System.Windows.Forms.Button();
+            this.groupBoxTester03 = new System.Windows.Forms.GroupBox();
+            this.groupBoxTester02 = new System.Windows.Forms.GroupBox();
+            this.checkBoxTesterSimulate02 = new System.Windows.Forms.CheckBox();
+            this.buttonSetSerial02 = new System.Windows.Forms.Button();
+            this.textBoxSerial02 = new System.Windows.Forms.TextBox();
+            this.button2 = new System.Windows.Forms.Button();
+            this.labelTester02PhoneFailCount = new System.Windows.Forms.Label();
+            this.labelTester02PhoneTestTime = new System.Windows.Forms.Label();
+            this.button3 = new System.Windows.Forms.Button();
+            this.labelTester02PhoneTestResult = new System.Windows.Forms.Label();
+            this.labelTester02PhoneStep = new System.Windows.Forms.Label();
+            this.labelTester02PhoneSerialNumber = new System.Windows.Forms.Label();
+            this.labelTester02PhoneId = new System.Windows.Forms.Label();
+            this.button4 = new System.Windows.Forms.Button();
+            this.label45 = new System.Windows.Forms.Label();
+            this.label46 = new System.Windows.Forms.Label();
+            this.label47 = new System.Windows.Forms.Label();
+            this.labelTester02Connected = new System.Windows.Forms.Label();
+            this.label49 = new System.Windows.Forms.Label();
+            this.label50 = new System.Windows.Forms.Label();
+            this.label51 = new System.Windows.Forms.Label();
+            this.label52 = new System.Windows.Forms.Label();
+            this.groupBoxTester01 = new System.Windows.Forms.GroupBox();
             this.tabPage6 = new System.Windows.Forms.TabPage();
-            this.buttonLogLoad = new System.Windows.Forms.Button();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.Column1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Column2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Column4 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Column3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.contextMenuStripLoadLog = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.loadLogToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tabPage7 = new System.Windows.Forms.TabPage();
             this.tabControlSetting = new System.Windows.Forms.TabControl();
             this.tabPageConfig = new System.Windows.Forms.TabPage();
+            this.checkBoxServerSimulate = new System.Windows.Forms.CheckBox();
             this.checkBoxMotionSimulate = new System.Windows.Forms.CheckBox();
             this.tabPageUser = new System.Windows.Forms.TabPage();
+            this.groupBox9 = new System.Windows.Forms.GroupBox();
+            this.buttonCreateFile = new System.Windows.Forms.Button();
+            this.buttonCreateXml = new System.Windows.Forms.Button();
+            this.buttonBoxSave = new System.Windows.Forms.Button();
             this.groupBoxChangePassword = new System.Windows.Forms.GroupBox();
             this.label16 = new System.Windows.Forms.Label();
             this.textBoxNewPassword = new System.Windows.Forms.TextBox();
@@ -277,8 +306,62 @@
             this.toolStripStatusLabelPower = new System.Windows.Forms.ToolStripStatusLabel();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.richTextBoxError = new System.Windows.Forms.RichTextBox();
-            this.textBox1 = new System.Windows.Forms.TextBox();
-            this.buttonSetSerialNumber = new System.Windows.Forms.Button();
+            this.labelTester01PhoneFailCount = new System.Windows.Forms.Label();
+            this.labelTester01PhoneTestTime = new System.Windows.Forms.Label();
+            this.labelTester01PhoneTestResult = new System.Windows.Forms.Label();
+            this.labelTester01PhoneStep = new System.Windows.Forms.Label();
+            this.labelTester01PhoneSerialNumber = new System.Windows.Forms.Label();
+            this.labelTester01PhoneId = new System.Windows.Forms.Label();
+            this.label58 = new System.Windows.Forms.Label();
+            this.label59 = new System.Windows.Forms.Label();
+            this.label60 = new System.Windows.Forms.Label();
+            this.labelTester01Connected = new System.Windows.Forms.Label();
+            this.label62 = new System.Windows.Forms.Label();
+            this.label63 = new System.Windows.Forms.Label();
+            this.label64 = new System.Windows.Forms.Label();
+            this.label65 = new System.Windows.Forms.Label();
+            this.labelTester03PhoneFailCount = new System.Windows.Forms.Label();
+            this.labelTester03PhoneTestTime = new System.Windows.Forms.Label();
+            this.labelTester03PhoneTestResult = new System.Windows.Forms.Label();
+            this.labelTester03PhoneStep = new System.Windows.Forms.Label();
+            this.labelTester03PhoneSerialNumber = new System.Windows.Forms.Label();
+            this.labelTester03PhoneId = new System.Windows.Forms.Label();
+            this.label72 = new System.Windows.Forms.Label();
+            this.label73 = new System.Windows.Forms.Label();
+            this.label74 = new System.Windows.Forms.Label();
+            this.labelTester03Connected = new System.Windows.Forms.Label();
+            this.label76 = new System.Windows.Forms.Label();
+            this.label77 = new System.Windows.Forms.Label();
+            this.label78 = new System.Windows.Forms.Label();
+            this.label79 = new System.Windows.Forms.Label();
+            this.labelTester04PhoneFailCount = new System.Windows.Forms.Label();
+            this.labelTester04PhoneTestTime = new System.Windows.Forms.Label();
+            this.labelTester04PhoneTestResult = new System.Windows.Forms.Label();
+            this.labelTester04PhoneStep = new System.Windows.Forms.Label();
+            this.labelTester04PhoneSerialNumber = new System.Windows.Forms.Label();
+            this.labelTester04PhoneId = new System.Windows.Forms.Label();
+            this.label86 = new System.Windows.Forms.Label();
+            this.label87 = new System.Windows.Forms.Label();
+            this.label88 = new System.Windows.Forms.Label();
+            this.labelTester04Connected = new System.Windows.Forms.Label();
+            this.label90 = new System.Windows.Forms.Label();
+            this.label91 = new System.Windows.Forms.Label();
+            this.label92 = new System.Windows.Forms.Label();
+            this.label93 = new System.Windows.Forms.Label();
+            this.labelTester06PhoneFailCount = new System.Windows.Forms.Label();
+            this.labelTester06PhoneTestTime = new System.Windows.Forms.Label();
+            this.labelTester06PhoneTestResult = new System.Windows.Forms.Label();
+            this.labelTester06PhoneStep = new System.Windows.Forms.Label();
+            this.labelTester06PhoneSerialNumber = new System.Windows.Forms.Label();
+            this.labelTester06PhoneId = new System.Windows.Forms.Label();
+            this.label100 = new System.Windows.Forms.Label();
+            this.label101 = new System.Windows.Forms.Label();
+            this.label102 = new System.Windows.Forms.Label();
+            this.labelTester06Connected = new System.Windows.Forms.Label();
+            this.label104 = new System.Windows.Forms.Label();
+            this.label105 = new System.Windows.Forms.Label();
+            this.label106 = new System.Windows.Forms.Label();
+            this.label107 = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarSetSpeed2)).BeginInit();
@@ -298,14 +381,20 @@
             this.tabPage5.SuspendLayout();
             this.panelTesters.SuspendLayout();
             this.groupBoxTester05.SuspendLayout();
+            this.groupBoxTester06.SuspendLayout();
+            this.groupBoxTester04.SuspendLayout();
             this.groupBoxSelectBox.SuspendLayout();
-            this.groupBox9.SuspendLayout();
+            this.groupBoxTester03.SuspendLayout();
+            this.groupBoxTester02.SuspendLayout();
+            this.groupBoxTester01.SuspendLayout();
             this.tabPage6.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
+            this.contextMenuStripLoadLog.SuspendLayout();
             this.tabPage7.SuspendLayout();
             this.tabControlSetting.SuspendLayout();
             this.tabPageConfig.SuspendLayout();
             this.tabPageUser.SuspendLayout();
+            this.groupBox9.SuspendLayout();
             this.groupBoxChangePassword.SuspendLayout();
             this.groupBox7.SuspendLayout();
             this.tabPageCom.SuspendLayout();
@@ -806,6 +895,18 @@
             resources.ApplyResources(this.groupBoxMain, "groupBoxMain");
             this.groupBoxMain.Name = "groupBoxMain";
             this.groupBoxMain.TabStop = false;
+            // 
+            // buttonSetSerialNumber
+            // 
+            resources.ApplyResources(this.buttonSetSerialNumber, "buttonSetSerialNumber");
+            this.buttonSetSerialNumber.Name = "buttonSetSerialNumber";
+            this.buttonSetSerialNumber.UseVisualStyleBackColor = true;
+            this.buttonSetSerialNumber.Click += new System.EventHandler(this.buttonSetSerialNumber_Click);
+            // 
+            // textBox1
+            // 
+            resources.ApplyResources(this.textBox1, "textBox1");
+            this.textBox1.Name = "textBox1";
             // 
             // buttonEmptyNg
             // 
@@ -1496,41 +1597,39 @@
             // tabPage5
             // 
             this.tabPage5.Controls.Add(this.panelTesters);
-            this.tabPage5.Controls.Add(this.buttonTesterSendFail);
-            this.tabPage5.Controls.Add(this.buttonTesterSendPass);
-            this.tabPage5.Controls.Add(this.buttonStartTesterSimulator);
-            this.tabPage5.Controls.Add(this.groupBoxSelectBox);
-            this.tabPage5.Controls.Add(this.groupBox9);
             resources.ApplyResources(this.tabPage5, "tabPage5");
             this.tabPage5.Name = "tabPage5";
             this.tabPage5.UseVisualStyleBackColor = true;
             // 
             // panelTesters
             // 
-            this.panelTesters.Controls.Add(this.groupBoxTester06);
             this.panelTesters.Controls.Add(this.groupBoxTester05);
+            this.panelTesters.Controls.Add(this.groupBoxTester06);
+            this.panelTesters.Controls.Add(this.buttonTesterSendFail);
+            this.panelTesters.Controls.Add(this.buttonTesterSendPass);
             this.panelTesters.Controls.Add(this.groupBoxTester04);
+            this.panelTesters.Controls.Add(this.buttonStartTesterSimulator);
+            this.panelTesters.Controls.Add(this.groupBoxSelectBox);
             this.panelTesters.Controls.Add(this.groupBoxTester03);
             this.panelTesters.Controls.Add(this.groupBoxTester02);
             this.panelTesters.Controls.Add(this.groupBoxTester01);
             resources.ApplyResources(this.panelTesters, "panelTesters");
             this.panelTesters.Name = "panelTesters";
             // 
-            // groupBoxTester06
-            // 
-            resources.ApplyResources(this.groupBoxTester06, "groupBoxTester06");
-            this.groupBoxTester06.Name = "groupBoxTester06";
-            this.groupBoxTester06.TabStop = false;
-            // 
             // groupBoxTester05
             // 
-            this.groupBoxTester05.Controls.Add(this.buttonEmptyBox05);
+            this.groupBoxTester05.Controls.Add(this.checkBoxTesterSimulate05);
+            this.groupBoxTester05.Controls.Add(this.buttonSetSerial05);
+            this.groupBoxTester05.Controls.Add(this.textBoxSerial05);
+            this.groupBoxTester05.Controls.Add(this.buttonSetClosedBox05);
             this.groupBoxTester05.Controls.Add(this.labelTester05PhoneFailCount);
             this.groupBoxTester05.Controls.Add(this.labelTester05PhoneTestTime);
+            this.groupBoxTester05.Controls.Add(this.buttonPassTester05);
             this.groupBoxTester05.Controls.Add(this.labelTester05PhoneTestResult);
             this.groupBoxTester05.Controls.Add(this.labelTester05PhoneStep);
             this.groupBoxTester05.Controls.Add(this.labelTester05PhoneSerialNumber);
             this.groupBoxTester05.Controls.Add(this.labelTester05PhoneId);
+            this.groupBoxTester05.Controls.Add(this.buttonEmptyBox05);
             this.groupBoxTester05.Controls.Add(this.label38);
             this.groupBoxTester05.Controls.Add(this.label5);
             this.groupBoxTester05.Controls.Add(this.label37);
@@ -1543,12 +1642,31 @@
             this.groupBoxTester05.Name = "groupBoxTester05";
             this.groupBoxTester05.TabStop = false;
             // 
-            // buttonEmptyBox05
+            // checkBoxTesterSimulate05
             // 
-            resources.ApplyResources(this.buttonEmptyBox05, "buttonEmptyBox05");
-            this.buttonEmptyBox05.Name = "buttonEmptyBox05";
-            this.buttonEmptyBox05.UseVisualStyleBackColor = true;
-            this.buttonEmptyBox05.Click += new System.EventHandler(this.buttonEmptyBox05_Click);
+            resources.ApplyResources(this.checkBoxTesterSimulate05, "checkBoxTesterSimulate05");
+            this.checkBoxTesterSimulate05.Name = "checkBoxTesterSimulate05";
+            this.checkBoxTesterSimulate05.UseVisualStyleBackColor = true;
+            this.checkBoxTesterSimulate05.CheckedChanged += new System.EventHandler(this.checkBoxTesterSimulate05_CheckedChanged);
+            // 
+            // buttonSetSerial05
+            // 
+            resources.ApplyResources(this.buttonSetSerial05, "buttonSetSerial05");
+            this.buttonSetSerial05.Name = "buttonSetSerial05";
+            this.buttonSetSerial05.UseVisualStyleBackColor = true;
+            this.buttonSetSerial05.Click += new System.EventHandler(this.buttonSetSerial05_Click);
+            // 
+            // textBoxSerial05
+            // 
+            resources.ApplyResources(this.textBoxSerial05, "textBoxSerial05");
+            this.textBoxSerial05.Name = "textBoxSerial05";
+            // 
+            // buttonSetClosedBox05
+            // 
+            resources.ApplyResources(this.buttonSetClosedBox05, "buttonSetClosedBox05");
+            this.buttonSetClosedBox05.Name = "buttonSetClosedBox05";
+            this.buttonSetClosedBox05.UseVisualStyleBackColor = true;
+            this.buttonSetClosedBox05.Click += new System.EventHandler(this.buttonSetClosedBox05_Click);
             // 
             // labelTester05PhoneFailCount
             // 
@@ -1559,6 +1677,13 @@
             // 
             resources.ApplyResources(this.labelTester05PhoneTestTime, "labelTester05PhoneTestTime");
             this.labelTester05PhoneTestTime.Name = "labelTester05PhoneTestTime";
+            // 
+            // buttonPassTester05
+            // 
+            resources.ApplyResources(this.buttonPassTester05, "buttonPassTester05");
+            this.buttonPassTester05.Name = "buttonPassTester05";
+            this.buttonPassTester05.UseVisualStyleBackColor = true;
+            this.buttonPassTester05.Click += new System.EventHandler(this.buttonPassTester05_Click);
             // 
             // labelTester05PhoneTestResult
             // 
@@ -1579,6 +1704,13 @@
             // 
             resources.ApplyResources(this.labelTester05PhoneId, "labelTester05PhoneId");
             this.labelTester05PhoneId.Name = "labelTester05PhoneId";
+            // 
+            // buttonEmptyBox05
+            // 
+            resources.ApplyResources(this.buttonEmptyBox05, "buttonEmptyBox05");
+            this.buttonEmptyBox05.Name = "buttonEmptyBox05";
+            this.buttonEmptyBox05.UseVisualStyleBackColor = true;
+            this.buttonEmptyBox05.Click += new System.EventHandler(this.buttonEmptyBox05_Click);
             // 
             // label38
             // 
@@ -1621,29 +1753,25 @@
             resources.ApplyResources(this.label34, "label34");
             this.label34.Name = "label34";
             // 
-            // groupBoxTester04
+            // groupBoxTester06
             // 
-            resources.ApplyResources(this.groupBoxTester04, "groupBoxTester04");
-            this.groupBoxTester04.Name = "groupBoxTester04";
-            this.groupBoxTester04.TabStop = false;
-            // 
-            // groupBoxTester03
-            // 
-            resources.ApplyResources(this.groupBoxTester03, "groupBoxTester03");
-            this.groupBoxTester03.Name = "groupBoxTester03";
-            this.groupBoxTester03.TabStop = false;
-            // 
-            // groupBoxTester02
-            // 
-            resources.ApplyResources(this.groupBoxTester02, "groupBoxTester02");
-            this.groupBoxTester02.Name = "groupBoxTester02";
-            this.groupBoxTester02.TabStop = false;
-            // 
-            // groupBoxTester01
-            // 
-            resources.ApplyResources(this.groupBoxTester01, "groupBoxTester01");
-            this.groupBoxTester01.Name = "groupBoxTester01";
-            this.groupBoxTester01.TabStop = false;
+            this.groupBoxTester06.Controls.Add(this.labelTester06PhoneFailCount);
+            this.groupBoxTester06.Controls.Add(this.labelTester06PhoneTestTime);
+            this.groupBoxTester06.Controls.Add(this.labelTester06PhoneTestResult);
+            this.groupBoxTester06.Controls.Add(this.labelTester06PhoneStep);
+            this.groupBoxTester06.Controls.Add(this.labelTester06PhoneSerialNumber);
+            this.groupBoxTester06.Controls.Add(this.labelTester06PhoneId);
+            this.groupBoxTester06.Controls.Add(this.label100);
+            this.groupBoxTester06.Controls.Add(this.label101);
+            this.groupBoxTester06.Controls.Add(this.label102);
+            this.groupBoxTester06.Controls.Add(this.labelTester06Connected);
+            this.groupBoxTester06.Controls.Add(this.label104);
+            this.groupBoxTester06.Controls.Add(this.label105);
+            this.groupBoxTester06.Controls.Add(this.label106);
+            this.groupBoxTester06.Controls.Add(this.label107);
+            resources.ApplyResources(this.groupBoxTester06, "groupBoxTester06");
+            this.groupBoxTester06.Name = "groupBoxTester06";
+            this.groupBoxTester06.TabStop = false;
             // 
             // buttonTesterSendFail
             // 
@@ -1658,6 +1786,26 @@
             this.buttonTesterSendPass.Name = "buttonTesterSendPass";
             this.buttonTesterSendPass.UseVisualStyleBackColor = true;
             this.buttonTesterSendPass.Click += new System.EventHandler(this.buttonTesterSendPass_Click);
+            // 
+            // groupBoxTester04
+            // 
+            this.groupBoxTester04.Controls.Add(this.labelTester04PhoneFailCount);
+            this.groupBoxTester04.Controls.Add(this.labelTester04PhoneTestTime);
+            this.groupBoxTester04.Controls.Add(this.labelTester04PhoneTestResult);
+            this.groupBoxTester04.Controls.Add(this.labelTester04PhoneStep);
+            this.groupBoxTester04.Controls.Add(this.labelTester04PhoneSerialNumber);
+            this.groupBoxTester04.Controls.Add(this.labelTester04PhoneId);
+            this.groupBoxTester04.Controls.Add(this.label86);
+            this.groupBoxTester04.Controls.Add(this.label87);
+            this.groupBoxTester04.Controls.Add(this.label88);
+            this.groupBoxTester04.Controls.Add(this.labelTester04Connected);
+            this.groupBoxTester04.Controls.Add(this.label90);
+            this.groupBoxTester04.Controls.Add(this.label91);
+            this.groupBoxTester04.Controls.Add(this.label92);
+            this.groupBoxTester04.Controls.Add(this.label93);
+            resources.ApplyResources(this.groupBoxTester04, "groupBoxTester04");
+            this.groupBoxTester04.Name = "groupBoxTester04";
+            this.groupBoxTester04.TabStop = false;
             // 
             // buttonStartTesterSimulator
             // 
@@ -1722,50 +1870,186 @@
             this.radioButtonBox1.UseVisualStyleBackColor = true;
             this.radioButtonBox1.CheckedChanged += new System.EventHandler(this.radioButtonBox1_CheckedChanged);
             // 
-            // groupBox9
+            // groupBoxTester03
             // 
-            this.groupBox9.Controls.Add(this.buttonCreateFile);
-            this.groupBox9.Controls.Add(this.buttonCreateXml);
-            this.groupBox9.Controls.Add(this.buttonBoxSave);
-            resources.ApplyResources(this.groupBox9, "groupBox9");
-            this.groupBox9.Name = "groupBox9";
-            this.groupBox9.TabStop = false;
+            this.groupBoxTester03.Controls.Add(this.labelTester03PhoneFailCount);
+            this.groupBoxTester03.Controls.Add(this.labelTester03PhoneTestTime);
+            this.groupBoxTester03.Controls.Add(this.labelTester03PhoneTestResult);
+            this.groupBoxTester03.Controls.Add(this.labelTester03PhoneStep);
+            this.groupBoxTester03.Controls.Add(this.labelTester03PhoneSerialNumber);
+            this.groupBoxTester03.Controls.Add(this.labelTester03PhoneId);
+            this.groupBoxTester03.Controls.Add(this.label72);
+            this.groupBoxTester03.Controls.Add(this.label73);
+            this.groupBoxTester03.Controls.Add(this.label74);
+            this.groupBoxTester03.Controls.Add(this.labelTester03Connected);
+            this.groupBoxTester03.Controls.Add(this.label76);
+            this.groupBoxTester03.Controls.Add(this.label77);
+            this.groupBoxTester03.Controls.Add(this.label78);
+            this.groupBoxTester03.Controls.Add(this.label79);
+            resources.ApplyResources(this.groupBoxTester03, "groupBoxTester03");
+            this.groupBoxTester03.Name = "groupBoxTester03";
+            this.groupBoxTester03.TabStop = false;
             // 
-            // buttonCreateFile
+            // groupBoxTester02
             // 
-            resources.ApplyResources(this.buttonCreateFile, "buttonCreateFile");
-            this.buttonCreateFile.Name = "buttonCreateFile";
-            this.buttonCreateFile.UseVisualStyleBackColor = true;
-            this.buttonCreateFile.Click += new System.EventHandler(this.buttonCreateFile_Click);
+            this.groupBoxTester02.Controls.Add(this.checkBoxTesterSimulate02);
+            this.groupBoxTester02.Controls.Add(this.buttonSetSerial02);
+            this.groupBoxTester02.Controls.Add(this.textBoxSerial02);
+            this.groupBoxTester02.Controls.Add(this.button2);
+            this.groupBoxTester02.Controls.Add(this.labelTester02PhoneFailCount);
+            this.groupBoxTester02.Controls.Add(this.labelTester02PhoneTestTime);
+            this.groupBoxTester02.Controls.Add(this.button3);
+            this.groupBoxTester02.Controls.Add(this.labelTester02PhoneTestResult);
+            this.groupBoxTester02.Controls.Add(this.labelTester02PhoneStep);
+            this.groupBoxTester02.Controls.Add(this.labelTester02PhoneSerialNumber);
+            this.groupBoxTester02.Controls.Add(this.labelTester02PhoneId);
+            this.groupBoxTester02.Controls.Add(this.button4);
+            this.groupBoxTester02.Controls.Add(this.label45);
+            this.groupBoxTester02.Controls.Add(this.label46);
+            this.groupBoxTester02.Controls.Add(this.label47);
+            this.groupBoxTester02.Controls.Add(this.labelTester02Connected);
+            this.groupBoxTester02.Controls.Add(this.label49);
+            this.groupBoxTester02.Controls.Add(this.label50);
+            this.groupBoxTester02.Controls.Add(this.label51);
+            this.groupBoxTester02.Controls.Add(this.label52);
+            resources.ApplyResources(this.groupBoxTester02, "groupBoxTester02");
+            this.groupBoxTester02.Name = "groupBoxTester02";
+            this.groupBoxTester02.TabStop = false;
             // 
-            // buttonCreateXml
+            // checkBoxTesterSimulate02
             // 
-            resources.ApplyResources(this.buttonCreateXml, "buttonCreateXml");
-            this.buttonCreateXml.Name = "buttonCreateXml";
-            this.buttonCreateXml.UseVisualStyleBackColor = true;
-            this.buttonCreateXml.Click += new System.EventHandler(this.buttonCreateXml_Click_1);
+            resources.ApplyResources(this.checkBoxTesterSimulate02, "checkBoxTesterSimulate02");
+            this.checkBoxTesterSimulate02.Name = "checkBoxTesterSimulate02";
+            this.checkBoxTesterSimulate02.UseVisualStyleBackColor = true;
+            this.checkBoxTesterSimulate02.CheckedChanged += new System.EventHandler(this.checkBoxTesterSimulate02_CheckedChanged);
             // 
-            // buttonBoxSave
+            // buttonSetSerial02
             // 
-            resources.ApplyResources(this.buttonBoxSave, "buttonBoxSave");
-            this.buttonBoxSave.Name = "buttonBoxSave";
-            this.buttonBoxSave.UseVisualStyleBackColor = true;
-            this.buttonBoxSave.Click += new System.EventHandler(this.buttonBoxSave_Click_1);
+            resources.ApplyResources(this.buttonSetSerial02, "buttonSetSerial02");
+            this.buttonSetSerial02.Name = "buttonSetSerial02";
+            this.buttonSetSerial02.UseVisualStyleBackColor = true;
+            this.buttonSetSerial02.Click += new System.EventHandler(this.buttonSetSerial02_Click);
+            // 
+            // textBoxSerial02
+            // 
+            resources.ApplyResources(this.textBoxSerial02, "textBoxSerial02");
+            this.textBoxSerial02.Name = "textBoxSerial02";
+            // 
+            // button2
+            // 
+            resources.ApplyResources(this.button2, "button2");
+            this.button2.Name = "button2";
+            this.button2.UseVisualStyleBackColor = true;
+            // 
+            // labelTester02PhoneFailCount
+            // 
+            resources.ApplyResources(this.labelTester02PhoneFailCount, "labelTester02PhoneFailCount");
+            this.labelTester02PhoneFailCount.Name = "labelTester02PhoneFailCount";
+            // 
+            // labelTester02PhoneTestTime
+            // 
+            resources.ApplyResources(this.labelTester02PhoneTestTime, "labelTester02PhoneTestTime");
+            this.labelTester02PhoneTestTime.Name = "labelTester02PhoneTestTime";
+            // 
+            // button3
+            // 
+            resources.ApplyResources(this.button3, "button3");
+            this.button3.Name = "button3";
+            this.button3.UseVisualStyleBackColor = true;
+            // 
+            // labelTester02PhoneTestResult
+            // 
+            resources.ApplyResources(this.labelTester02PhoneTestResult, "labelTester02PhoneTestResult");
+            this.labelTester02PhoneTestResult.Name = "labelTester02PhoneTestResult";
+            // 
+            // labelTester02PhoneStep
+            // 
+            resources.ApplyResources(this.labelTester02PhoneStep, "labelTester02PhoneStep");
+            this.labelTester02PhoneStep.Name = "labelTester02PhoneStep";
+            // 
+            // labelTester02PhoneSerialNumber
+            // 
+            resources.ApplyResources(this.labelTester02PhoneSerialNumber, "labelTester02PhoneSerialNumber");
+            this.labelTester02PhoneSerialNumber.Name = "labelTester02PhoneSerialNumber";
+            // 
+            // labelTester02PhoneId
+            // 
+            resources.ApplyResources(this.labelTester02PhoneId, "labelTester02PhoneId");
+            this.labelTester02PhoneId.Name = "labelTester02PhoneId";
+            // 
+            // button4
+            // 
+            resources.ApplyResources(this.button4, "button4");
+            this.button4.Name = "button4";
+            this.button4.UseVisualStyleBackColor = true;
+            // 
+            // label45
+            // 
+            resources.ApplyResources(this.label45, "label45");
+            this.label45.Name = "label45";
+            // 
+            // label46
+            // 
+            resources.ApplyResources(this.label46, "label46");
+            this.label46.Name = "label46";
+            // 
+            // label47
+            // 
+            resources.ApplyResources(this.label47, "label47");
+            this.label47.Name = "label47";
+            // 
+            // labelTester02Connected
+            // 
+            resources.ApplyResources(this.labelTester02Connected, "labelTester02Connected");
+            this.labelTester02Connected.ForeColor = System.Drawing.Color.LightGray;
+            this.labelTester02Connected.Name = "labelTester02Connected";
+            // 
+            // label49
+            // 
+            resources.ApplyResources(this.label49, "label49");
+            this.label49.Name = "label49";
+            // 
+            // label50
+            // 
+            resources.ApplyResources(this.label50, "label50");
+            this.label50.Name = "label50";
+            // 
+            // label51
+            // 
+            resources.ApplyResources(this.label51, "label51");
+            this.label51.Name = "label51";
+            // 
+            // label52
+            // 
+            resources.ApplyResources(this.label52, "label52");
+            this.label52.Name = "label52";
+            // 
+            // groupBoxTester01
+            // 
+            this.groupBoxTester01.Controls.Add(this.labelTester01PhoneFailCount);
+            this.groupBoxTester01.Controls.Add(this.labelTester01PhoneTestTime);
+            this.groupBoxTester01.Controls.Add(this.labelTester01PhoneTestResult);
+            this.groupBoxTester01.Controls.Add(this.labelTester01PhoneStep);
+            this.groupBoxTester01.Controls.Add(this.labelTester01PhoneSerialNumber);
+            this.groupBoxTester01.Controls.Add(this.labelTester01PhoneId);
+            this.groupBoxTester01.Controls.Add(this.label58);
+            this.groupBoxTester01.Controls.Add(this.label59);
+            this.groupBoxTester01.Controls.Add(this.label60);
+            this.groupBoxTester01.Controls.Add(this.labelTester01Connected);
+            this.groupBoxTester01.Controls.Add(this.label62);
+            this.groupBoxTester01.Controls.Add(this.label63);
+            this.groupBoxTester01.Controls.Add(this.label64);
+            this.groupBoxTester01.Controls.Add(this.label65);
+            resources.ApplyResources(this.groupBoxTester01, "groupBoxTester01");
+            this.groupBoxTester01.Name = "groupBoxTester01";
+            this.groupBoxTester01.TabStop = false;
             // 
             // tabPage6
             // 
-            this.tabPage6.Controls.Add(this.buttonLogLoad);
             this.tabPage6.Controls.Add(this.dataGridView1);
             resources.ApplyResources(this.tabPage6, "tabPage6");
             this.tabPage6.Name = "tabPage6";
             this.tabPage6.UseVisualStyleBackColor = true;
-            // 
-            // buttonLogLoad
-            // 
-            resources.ApplyResources(this.buttonLogLoad, "buttonLogLoad");
-            this.buttonLogLoad.Name = "buttonLogLoad";
-            this.buttonLogLoad.UseVisualStyleBackColor = true;
-            this.buttonLogLoad.Click += new System.EventHandler(this.buttonLogLoad_Click_1);
             // 
             // dataGridView1
             // 
@@ -1776,6 +2060,7 @@
             this.Column2,
             this.Column4,
             this.Column3});
+            this.dataGridView1.ContextMenuStrip = this.contextMenuStripLoadLog;
             resources.ApplyResources(this.dataGridView1, "dataGridView1");
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.ReadOnly = true;
@@ -1805,6 +2090,20 @@
             this.Column3.Name = "Column3";
             this.Column3.ReadOnly = true;
             // 
+            // contextMenuStripLoadLog
+            // 
+            this.contextMenuStripLoadLog.ImageScalingSize = new System.Drawing.Size(20, 20);
+            this.contextMenuStripLoadLog.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.loadLogToolStripMenuItem});
+            this.contextMenuStripLoadLog.Name = "contextMenuStripLoadLog";
+            resources.ApplyResources(this.contextMenuStripLoadLog, "contextMenuStripLoadLog");
+            // 
+            // loadLogToolStripMenuItem
+            // 
+            this.loadLogToolStripMenuItem.Name = "loadLogToolStripMenuItem";
+            resources.ApplyResources(this.loadLogToolStripMenuItem, "loadLogToolStripMenuItem");
+            this.loadLogToolStripMenuItem.Click += new System.EventHandler(this.loadLogToolStripMenuItem_Click);
+            // 
             // tabPage7
             // 
             this.tabPage7.Controls.Add(this.tabControlSetting);
@@ -1823,10 +2122,18 @@
             // 
             // tabPageConfig
             // 
+            this.tabPageConfig.Controls.Add(this.checkBoxServerSimulate);
             this.tabPageConfig.Controls.Add(this.checkBoxMotionSimulate);
             resources.ApplyResources(this.tabPageConfig, "tabPageConfig");
             this.tabPageConfig.Name = "tabPageConfig";
             this.tabPageConfig.UseVisualStyleBackColor = true;
+            // 
+            // checkBoxServerSimulate
+            // 
+            resources.ApplyResources(this.checkBoxServerSimulate, "checkBoxServerSimulate");
+            this.checkBoxServerSimulate.Name = "checkBoxServerSimulate";
+            this.checkBoxServerSimulate.UseVisualStyleBackColor = true;
+            this.checkBoxServerSimulate.CheckedChanged += new System.EventHandler(this.checkBoxServerSimulate_CheckedChanged);
             // 
             // checkBoxMotionSimulate
             // 
@@ -1837,11 +2144,39 @@
             // 
             // tabPageUser
             // 
+            this.tabPageUser.Controls.Add(this.groupBox9);
             this.tabPageUser.Controls.Add(this.groupBoxChangePassword);
             this.tabPageUser.Controls.Add(this.groupBox7);
             resources.ApplyResources(this.tabPageUser, "tabPageUser");
             this.tabPageUser.Name = "tabPageUser";
             this.tabPageUser.UseVisualStyleBackColor = true;
+            // 
+            // groupBox9
+            // 
+            this.groupBox9.Controls.Add(this.buttonCreateFile);
+            this.groupBox9.Controls.Add(this.buttonCreateXml);
+            this.groupBox9.Controls.Add(this.buttonBoxSave);
+            resources.ApplyResources(this.groupBox9, "groupBox9");
+            this.groupBox9.Name = "groupBox9";
+            this.groupBox9.TabStop = false;
+            // 
+            // buttonCreateFile
+            // 
+            resources.ApplyResources(this.buttonCreateFile, "buttonCreateFile");
+            this.buttonCreateFile.Name = "buttonCreateFile";
+            this.buttonCreateFile.UseVisualStyleBackColor = true;
+            // 
+            // buttonCreateXml
+            // 
+            resources.ApplyResources(this.buttonCreateXml, "buttonCreateXml");
+            this.buttonCreateXml.Name = "buttonCreateXml";
+            this.buttonCreateXml.UseVisualStyleBackColor = true;
+            // 
+            // buttonBoxSave
+            // 
+            resources.ApplyResources(this.buttonBoxSave, "buttonBoxSave");
+            this.buttonBoxSave.Name = "buttonBoxSave";
+            this.buttonBoxSave.UseVisualStyleBackColor = true;
             // 
             // groupBoxChangePassword
             // 
@@ -2109,17 +2444,289 @@
             this.richTextBoxError.Name = "richTextBoxError";
             this.richTextBoxError.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.richTextBoxError_MouseDoubleClick);
             // 
-            // textBox1
+            // labelTester01PhoneFailCount
             // 
-            resources.ApplyResources(this.textBox1, "textBox1");
-            this.textBox1.Name = "textBox1";
+            resources.ApplyResources(this.labelTester01PhoneFailCount, "labelTester01PhoneFailCount");
+            this.labelTester01PhoneFailCount.Name = "labelTester01PhoneFailCount";
             // 
-            // buttonSetSerialNumber
+            // labelTester01PhoneTestTime
             // 
-            resources.ApplyResources(this.buttonSetSerialNumber, "buttonSetSerialNumber");
-            this.buttonSetSerialNumber.Name = "buttonSetSerialNumber";
-            this.buttonSetSerialNumber.UseVisualStyleBackColor = true;
-            this.buttonSetSerialNumber.Click += new System.EventHandler(this.buttonSetSerialNumber_Click);
+            resources.ApplyResources(this.labelTester01PhoneTestTime, "labelTester01PhoneTestTime");
+            this.labelTester01PhoneTestTime.Name = "labelTester01PhoneTestTime";
+            // 
+            // labelTester01PhoneTestResult
+            // 
+            resources.ApplyResources(this.labelTester01PhoneTestResult, "labelTester01PhoneTestResult");
+            this.labelTester01PhoneTestResult.Name = "labelTester01PhoneTestResult";
+            // 
+            // labelTester01PhoneStep
+            // 
+            resources.ApplyResources(this.labelTester01PhoneStep, "labelTester01PhoneStep");
+            this.labelTester01PhoneStep.Name = "labelTester01PhoneStep";
+            // 
+            // labelTester01PhoneSerialNumber
+            // 
+            resources.ApplyResources(this.labelTester01PhoneSerialNumber, "labelTester01PhoneSerialNumber");
+            this.labelTester01PhoneSerialNumber.Name = "labelTester01PhoneSerialNumber";
+            // 
+            // labelTester01PhoneId
+            // 
+            resources.ApplyResources(this.labelTester01PhoneId, "labelTester01PhoneId");
+            this.labelTester01PhoneId.Name = "labelTester01PhoneId";
+            // 
+            // label58
+            // 
+            resources.ApplyResources(this.label58, "label58");
+            this.label58.Name = "label58";
+            // 
+            // label59
+            // 
+            resources.ApplyResources(this.label59, "label59");
+            this.label59.Name = "label59";
+            // 
+            // label60
+            // 
+            resources.ApplyResources(this.label60, "label60");
+            this.label60.Name = "label60";
+            // 
+            // labelTester01Connected
+            // 
+            resources.ApplyResources(this.labelTester01Connected, "labelTester01Connected");
+            this.labelTester01Connected.ForeColor = System.Drawing.Color.LightGray;
+            this.labelTester01Connected.Name = "labelTester01Connected";
+            // 
+            // label62
+            // 
+            resources.ApplyResources(this.label62, "label62");
+            this.label62.Name = "label62";
+            // 
+            // label63
+            // 
+            resources.ApplyResources(this.label63, "label63");
+            this.label63.Name = "label63";
+            // 
+            // label64
+            // 
+            resources.ApplyResources(this.label64, "label64");
+            this.label64.Name = "label64";
+            // 
+            // label65
+            // 
+            resources.ApplyResources(this.label65, "label65");
+            this.label65.Name = "label65";
+            // 
+            // labelTester03PhoneFailCount
+            // 
+            resources.ApplyResources(this.labelTester03PhoneFailCount, "labelTester03PhoneFailCount");
+            this.labelTester03PhoneFailCount.Name = "labelTester03PhoneFailCount";
+            // 
+            // labelTester03PhoneTestTime
+            // 
+            resources.ApplyResources(this.labelTester03PhoneTestTime, "labelTester03PhoneTestTime");
+            this.labelTester03PhoneTestTime.Name = "labelTester03PhoneTestTime";
+            // 
+            // labelTester03PhoneTestResult
+            // 
+            resources.ApplyResources(this.labelTester03PhoneTestResult, "labelTester03PhoneTestResult");
+            this.labelTester03PhoneTestResult.Name = "labelTester03PhoneTestResult";
+            // 
+            // labelTester03PhoneStep
+            // 
+            resources.ApplyResources(this.labelTester03PhoneStep, "labelTester03PhoneStep");
+            this.labelTester03PhoneStep.Name = "labelTester03PhoneStep";
+            // 
+            // labelTester03PhoneSerialNumber
+            // 
+            resources.ApplyResources(this.labelTester03PhoneSerialNumber, "labelTester03PhoneSerialNumber");
+            this.labelTester03PhoneSerialNumber.Name = "labelTester03PhoneSerialNumber";
+            // 
+            // labelTester03PhoneId
+            // 
+            resources.ApplyResources(this.labelTester03PhoneId, "labelTester03PhoneId");
+            this.labelTester03PhoneId.Name = "labelTester03PhoneId";
+            // 
+            // label72
+            // 
+            resources.ApplyResources(this.label72, "label72");
+            this.label72.Name = "label72";
+            // 
+            // label73
+            // 
+            resources.ApplyResources(this.label73, "label73");
+            this.label73.Name = "label73";
+            // 
+            // label74
+            // 
+            resources.ApplyResources(this.label74, "label74");
+            this.label74.Name = "label74";
+            // 
+            // labelTester03Connected
+            // 
+            resources.ApplyResources(this.labelTester03Connected, "labelTester03Connected");
+            this.labelTester03Connected.ForeColor = System.Drawing.Color.LightGray;
+            this.labelTester03Connected.Name = "labelTester03Connected";
+            // 
+            // label76
+            // 
+            resources.ApplyResources(this.label76, "label76");
+            this.label76.Name = "label76";
+            // 
+            // label77
+            // 
+            resources.ApplyResources(this.label77, "label77");
+            this.label77.Name = "label77";
+            // 
+            // label78
+            // 
+            resources.ApplyResources(this.label78, "label78");
+            this.label78.Name = "label78";
+            // 
+            // label79
+            // 
+            resources.ApplyResources(this.label79, "label79");
+            this.label79.Name = "label79";
+            // 
+            // labelTester04PhoneFailCount
+            // 
+            resources.ApplyResources(this.labelTester04PhoneFailCount, "labelTester04PhoneFailCount");
+            this.labelTester04PhoneFailCount.Name = "labelTester04PhoneFailCount";
+            // 
+            // labelTester04PhoneTestTime
+            // 
+            resources.ApplyResources(this.labelTester04PhoneTestTime, "labelTester04PhoneTestTime");
+            this.labelTester04PhoneTestTime.Name = "labelTester04PhoneTestTime";
+            // 
+            // labelTester04PhoneTestResult
+            // 
+            resources.ApplyResources(this.labelTester04PhoneTestResult, "labelTester04PhoneTestResult");
+            this.labelTester04PhoneTestResult.Name = "labelTester04PhoneTestResult";
+            // 
+            // labelTester04PhoneStep
+            // 
+            resources.ApplyResources(this.labelTester04PhoneStep, "labelTester04PhoneStep");
+            this.labelTester04PhoneStep.Name = "labelTester04PhoneStep";
+            // 
+            // labelTester04PhoneSerialNumber
+            // 
+            resources.ApplyResources(this.labelTester04PhoneSerialNumber, "labelTester04PhoneSerialNumber");
+            this.labelTester04PhoneSerialNumber.Name = "labelTester04PhoneSerialNumber";
+            // 
+            // labelTester04PhoneId
+            // 
+            resources.ApplyResources(this.labelTester04PhoneId, "labelTester04PhoneId");
+            this.labelTester04PhoneId.Name = "labelTester04PhoneId";
+            // 
+            // label86
+            // 
+            resources.ApplyResources(this.label86, "label86");
+            this.label86.Name = "label86";
+            // 
+            // label87
+            // 
+            resources.ApplyResources(this.label87, "label87");
+            this.label87.Name = "label87";
+            // 
+            // label88
+            // 
+            resources.ApplyResources(this.label88, "label88");
+            this.label88.Name = "label88";
+            // 
+            // labelTester04Connected
+            // 
+            resources.ApplyResources(this.labelTester04Connected, "labelTester04Connected");
+            this.labelTester04Connected.ForeColor = System.Drawing.Color.LightGray;
+            this.labelTester04Connected.Name = "labelTester04Connected";
+            // 
+            // label90
+            // 
+            resources.ApplyResources(this.label90, "label90");
+            this.label90.Name = "label90";
+            // 
+            // label91
+            // 
+            resources.ApplyResources(this.label91, "label91");
+            this.label91.Name = "label91";
+            // 
+            // label92
+            // 
+            resources.ApplyResources(this.label92, "label92");
+            this.label92.Name = "label92";
+            // 
+            // label93
+            // 
+            resources.ApplyResources(this.label93, "label93");
+            this.label93.Name = "label93";
+            // 
+            // labelTester06PhoneFailCount
+            // 
+            resources.ApplyResources(this.labelTester06PhoneFailCount, "labelTester06PhoneFailCount");
+            this.labelTester06PhoneFailCount.Name = "labelTester06PhoneFailCount";
+            // 
+            // labelTester06PhoneTestTime
+            // 
+            resources.ApplyResources(this.labelTester06PhoneTestTime, "labelTester06PhoneTestTime");
+            this.labelTester06PhoneTestTime.Name = "labelTester06PhoneTestTime";
+            // 
+            // labelTester06PhoneTestResult
+            // 
+            resources.ApplyResources(this.labelTester06PhoneTestResult, "labelTester06PhoneTestResult");
+            this.labelTester06PhoneTestResult.Name = "labelTester06PhoneTestResult";
+            // 
+            // labelTester06PhoneStep
+            // 
+            resources.ApplyResources(this.labelTester06PhoneStep, "labelTester06PhoneStep");
+            this.labelTester06PhoneStep.Name = "labelTester06PhoneStep";
+            // 
+            // labelTester06PhoneSerialNumber
+            // 
+            resources.ApplyResources(this.labelTester06PhoneSerialNumber, "labelTester06PhoneSerialNumber");
+            this.labelTester06PhoneSerialNumber.Name = "labelTester06PhoneSerialNumber";
+            // 
+            // labelTester06PhoneId
+            // 
+            resources.ApplyResources(this.labelTester06PhoneId, "labelTester06PhoneId");
+            this.labelTester06PhoneId.Name = "labelTester06PhoneId";
+            // 
+            // label100
+            // 
+            resources.ApplyResources(this.label100, "label100");
+            this.label100.Name = "label100";
+            // 
+            // label101
+            // 
+            resources.ApplyResources(this.label101, "label101");
+            this.label101.Name = "label101";
+            // 
+            // label102
+            // 
+            resources.ApplyResources(this.label102, "label102");
+            this.label102.Name = "label102";
+            // 
+            // labelTester06Connected
+            // 
+            resources.ApplyResources(this.labelTester06Connected, "labelTester06Connected");
+            this.labelTester06Connected.ForeColor = System.Drawing.Color.LightGray;
+            this.labelTester06Connected.Name = "labelTester06Connected";
+            // 
+            // label104
+            // 
+            resources.ApplyResources(this.label104, "label104");
+            this.label104.Name = "label104";
+            // 
+            // label105
+            // 
+            resources.ApplyResources(this.label105, "label105");
+            this.label105.Name = "label105";
+            // 
+            // label106
+            // 
+            resources.ApplyResources(this.label106, "label106");
+            this.label106.Name = "label106";
+            // 
+            // label107
+            // 
+            resources.ApplyResources(this.label107, "label107");
+            this.label107.Name = "label107";
             // 
             // Main
             // 
@@ -2160,16 +2767,27 @@
             this.panelTesters.ResumeLayout(false);
             this.groupBoxTester05.ResumeLayout(false);
             this.groupBoxTester05.PerformLayout();
+            this.groupBoxTester06.ResumeLayout(false);
+            this.groupBoxTester06.PerformLayout();
+            this.groupBoxTester04.ResumeLayout(false);
+            this.groupBoxTester04.PerformLayout();
             this.groupBoxSelectBox.ResumeLayout(false);
             this.groupBoxSelectBox.PerformLayout();
-            this.groupBox9.ResumeLayout(false);
+            this.groupBoxTester03.ResumeLayout(false);
+            this.groupBoxTester03.PerformLayout();
+            this.groupBoxTester02.ResumeLayout(false);
+            this.groupBoxTester02.PerformLayout();
+            this.groupBoxTester01.ResumeLayout(false);
+            this.groupBoxTester01.PerformLayout();
             this.tabPage6.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
+            this.contextMenuStripLoadLog.ResumeLayout(false);
             this.tabPage7.ResumeLayout(false);
             this.tabControlSetting.ResumeLayout(false);
             this.tabPageConfig.ResumeLayout(false);
             this.tabPageConfig.PerformLayout();
             this.tabPageUser.ResumeLayout(false);
+            this.groupBox9.ResumeLayout(false);
             this.groupBoxChangePassword.ResumeLayout(false);
             this.groupBoxChangePassword.PerformLayout();
             this.groupBox7.ResumeLayout(false);
@@ -2334,7 +2952,6 @@
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel4;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabelPower;
         private System.Windows.Forms.DataGridView dataGridView1;
-        private System.Windows.Forms.Button buttonLogLoad;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column1;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column2;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column4;
@@ -2370,11 +2987,7 @@
         private System.Windows.Forms.Button buttonX1MoveTo;
         private System.Windows.Forms.Label label22;
         private System.Windows.Forms.Button buttonEnableAll;
-        private System.Windows.Forms.GroupBox groupBox9;
         private System.Windows.Forms.Timer timer1;
-        private System.Windows.Forms.Button buttonCreateXml;
-        private System.Windows.Forms.Button buttonBoxSave;
-        private System.Windows.Forms.Button buttonCreateFile;
         private System.Windows.Forms.GroupBox groupBox10;
         private System.Windows.Forms.Label label33;
         private System.Windows.Forms.Label label31;
@@ -2435,6 +3048,94 @@
         private System.Windows.Forms.Button buttonEmptyBox05;
         private System.Windows.Forms.Button buttonSetSerialNumber;
         private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.Button buttonPassTester05;
+        private System.Windows.Forms.Button buttonSetClosedBox05;
+        private System.Windows.Forms.CheckBox checkBoxServerSimulate;
+        private System.Windows.Forms.GroupBox groupBox9;
+        private System.Windows.Forms.Button buttonCreateFile;
+        private System.Windows.Forms.Button buttonCreateXml;
+        private System.Windows.Forms.Button buttonBoxSave;
+        private System.Windows.Forms.ContextMenuStrip contextMenuStripLoadLog;
+        private System.Windows.Forms.ToolStripMenuItem loadLogToolStripMenuItem;
+        private System.Windows.Forms.TextBox textBoxSerial05;
+        private System.Windows.Forms.Button buttonSetSerial05;
+        private System.Windows.Forms.CheckBox checkBoxTesterSimulate05;
+        private System.Windows.Forms.CheckBox checkBoxTesterSimulate02;
+        private System.Windows.Forms.Button buttonSetSerial02;
+        private System.Windows.Forms.TextBox textBoxSerial02;
+        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.Label labelTester02PhoneFailCount;
+        private System.Windows.Forms.Label labelTester02PhoneTestTime;
+        private System.Windows.Forms.Button button3;
+        private System.Windows.Forms.Label labelTester02PhoneTestResult;
+        private System.Windows.Forms.Label labelTester02PhoneStep;
+        private System.Windows.Forms.Label labelTester02PhoneSerialNumber;
+        private System.Windows.Forms.Label labelTester02PhoneId;
+        private System.Windows.Forms.Button button4;
+        private System.Windows.Forms.Label label45;
+        private System.Windows.Forms.Label label46;
+        private System.Windows.Forms.Label label47;
+        private System.Windows.Forms.Label labelTester02Connected;
+        private System.Windows.Forms.Label label49;
+        private System.Windows.Forms.Label label50;
+        private System.Windows.Forms.Label label51;
+        private System.Windows.Forms.Label label52;
+        private System.Windows.Forms.Label labelTester01PhoneFailCount;
+        private System.Windows.Forms.Label labelTester01PhoneTestTime;
+        private System.Windows.Forms.Label labelTester01PhoneTestResult;
+        private System.Windows.Forms.Label labelTester01PhoneStep;
+        private System.Windows.Forms.Label labelTester01PhoneSerialNumber;
+        private System.Windows.Forms.Label labelTester01PhoneId;
+        private System.Windows.Forms.Label label58;
+        private System.Windows.Forms.Label label59;
+        private System.Windows.Forms.Label label60;
+        private System.Windows.Forms.Label labelTester01Connected;
+        private System.Windows.Forms.Label label62;
+        private System.Windows.Forms.Label label63;
+        private System.Windows.Forms.Label label64;
+        private System.Windows.Forms.Label label65;
+        private System.Windows.Forms.Label labelTester06PhoneFailCount;
+        private System.Windows.Forms.Label labelTester06PhoneTestTime;
+        private System.Windows.Forms.Label labelTester06PhoneTestResult;
+        private System.Windows.Forms.Label labelTester06PhoneStep;
+        private System.Windows.Forms.Label labelTester06PhoneSerialNumber;
+        private System.Windows.Forms.Label labelTester06PhoneId;
+        private System.Windows.Forms.Label label100;
+        private System.Windows.Forms.Label label101;
+        private System.Windows.Forms.Label label102;
+        private System.Windows.Forms.Label labelTester06Connected;
+        private System.Windows.Forms.Label label104;
+        private System.Windows.Forms.Label label105;
+        private System.Windows.Forms.Label label106;
+        private System.Windows.Forms.Label label107;
+        private System.Windows.Forms.Label labelTester04PhoneFailCount;
+        private System.Windows.Forms.Label labelTester04PhoneTestTime;
+        private System.Windows.Forms.Label labelTester04PhoneTestResult;
+        private System.Windows.Forms.Label labelTester04PhoneStep;
+        private System.Windows.Forms.Label labelTester04PhoneSerialNumber;
+        private System.Windows.Forms.Label labelTester04PhoneId;
+        private System.Windows.Forms.Label label86;
+        private System.Windows.Forms.Label label87;
+        private System.Windows.Forms.Label label88;
+        private System.Windows.Forms.Label labelTester04Connected;
+        private System.Windows.Forms.Label label90;
+        private System.Windows.Forms.Label label91;
+        private System.Windows.Forms.Label label92;
+        private System.Windows.Forms.Label label93;
+        private System.Windows.Forms.Label labelTester03PhoneFailCount;
+        private System.Windows.Forms.Label labelTester03PhoneTestTime;
+        private System.Windows.Forms.Label labelTester03PhoneTestResult;
+        private System.Windows.Forms.Label labelTester03PhoneStep;
+        private System.Windows.Forms.Label labelTester03PhoneSerialNumber;
+        private System.Windows.Forms.Label labelTester03PhoneId;
+        private System.Windows.Forms.Label label72;
+        private System.Windows.Forms.Label label73;
+        private System.Windows.Forms.Label label74;
+        private System.Windows.Forms.Label labelTester03Connected;
+        private System.Windows.Forms.Label label76;
+        private System.Windows.Forms.Label label77;
+        private System.Windows.Forms.Label label78;
+        private System.Windows.Forms.Label label79;
     }
 }
 

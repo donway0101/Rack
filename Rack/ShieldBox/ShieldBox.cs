@@ -18,7 +18,22 @@ namespace Rack
         public long Id { get; set; }
         public bool RobotBining { get; set; } = false;
 
-        public string PortName = "COM3";
+        private string _portName = "COM3";
+        public string PortName
+        {
+            get { return _portName; }
+            set
+            {
+                if (_serial!=null)
+                {
+                    if (_serial.IsOpen == false)
+                    {
+                        _serial.PortName = value;
+                    }                   
+                }
+                _portName = value;
+            }
+        }
         public ShieldBoxState State { get; set; } = ShieldBoxState.Close;
         public bool ReadyForTesting { get; set; }
         public int PassRate { get; set; }
@@ -87,7 +102,14 @@ namespace Rack
                 Delay(50);
                 _response = string.Empty;
                 string cmd = command + CmdEnding;
-                _serial.Write(cmd);
+                try
+                {
+                    _serial.Write(cmd);
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("Try sending command to box " + Id + " failed due to:" + ex.Message);
+                }
             }            
         }
 
@@ -115,6 +137,11 @@ namespace Rack
 
             try
             {
+                if (IsClosed() == false)
+                {
+                    return;
+                }
+
                 SendCommand(ShieldBoxCommand.OPEN, ShieldBoxResponse.OpenSuccessful, timeout);
                 State = ShieldBoxState.Open;
                 ReadyForTesting = false;
@@ -137,6 +164,11 @@ namespace Rack
         {
             try
             {
+                if (IsClosed())
+                {
+                    return;
+                }
+
                 SendCommand(ShieldBoxCommand.CLOSE, ShieldBoxResponse.CloseSuccessful, timeout);
                 State = ShieldBoxState.Close;
                 if (changeState)

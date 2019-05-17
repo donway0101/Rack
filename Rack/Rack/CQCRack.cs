@@ -17,6 +17,24 @@ namespace Rack
         #region Robot
 
         public bool RobotInSimulateMode { get; set; } = false;
+        private bool _serverInSimulateMode;
+
+        /// <summary>
+        /// Set after tester initialized. 
+        /// </summary>
+        public bool ServerInSimulateMode
+        {
+            get { return _serverInSimulateMode; }
+            set
+            {
+                _serverInSimulateMode = value;
+                foreach (var tester in Testers)
+                {
+                    tester.SimulateMode = value;
+                }
+            }
+        }
+
         public bool ShieldBoxOnline { get; set; } = true;
         public bool TesterOnline { get; set; } = true;
         public bool ScannerOnline { get; set; } = true;
@@ -25,7 +43,7 @@ namespace Rack
         public bool ConveyorOnline { get; set; } = true;
         public bool MotorsOnline { get; set; } = true;
         public bool EthercatOnline { get; set; } = true;
-
+        
         public double DefaultRobotSpeed { get; set; } = 10;        
 
         public bool RobotHomeComplete { get; set; }
@@ -38,6 +56,7 @@ namespace Rack
 
         public bool SystemFault { get; set; }
         public bool ConveyorFault { get; set; }
+        public bool ProductionFault { get; set; }
         #endregion
 
         #region ShieldBox

@@ -131,11 +131,14 @@ namespace Rack
         public void RunBeltPick()
         {
             _io.SetOutput(Output.BeltPick, true);
+            //Todo 
+            _io.SetOutput(Output.BeltConveyorOne, true);
         }
 
         public void StopBeltPick()
         {
             _io.SetOutput(Output.BeltPick, false);
+            _io.SetOutput(Output.BeltConveyorOne, false);
         }
 
         public void RunBeltBin()

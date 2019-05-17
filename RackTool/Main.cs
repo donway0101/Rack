@@ -29,6 +29,7 @@ namespace RackTool
         private List<CqcRackError> _errorsList = new List<CqcRackError>();
         private List<CqcRackError> _warningsList = new List<CqcRackError>();
 
+        private string _msgBuffer = string.Empty;
         private string _errorText = string.Empty;
         private string _warningText = string.Empty;
 
@@ -75,7 +76,6 @@ namespace RackTool
             }
             catch (Exception ex)
             {
-
                 MessageBox.Show(ex.Message);
             }
         }
@@ -89,7 +89,6 @@ namespace RackTool
             }
             catch (Exception ex)
             {
-
                 MessageBox.Show(ex.Message);
             }
         }
@@ -103,7 +102,6 @@ namespace RackTool
             }
             catch (Exception ex)
             {
-
                 MessageBox.Show(ex.Message);
             }
         }
@@ -113,12 +111,20 @@ namespace RackTool
             richTextBoxMessage.BeginInvoke((MethodInvoker)(() =>
             {
                 string newMsg = DateTime.Now.ToString("HH:mm:ss ") + code.ToString() + " " + description + Environment.NewLine;
-                richTextBoxMessage.AppendText(newMsg);
+                
                 if (_scrollRichTextBox)
                 {
-                    richTextBoxMessage.SelectionStart = richTextBoxMessage.Text.Length;
-                    richTextBoxMessage.ScrollToCaret();
+                    richTextBoxMessage.AppendText(_msgBuffer);
+                    _msgBuffer = string.Empty;
+                    richTextBoxMessage.AppendText(newMsg);
+                    //richTextBoxMessage.SelectionStart = richTextBoxMessage.Text.Length;
+                    //richTextBoxMessage.ScrollToCaret();
                 }
+                else
+                {
+                    _msgBuffer += newMsg;
+                }
+                
             }));
         }
 
@@ -303,7 +309,7 @@ namespace RackTool
 
         private void buttonTest_Click(object sender, EventArgs e)
         {
-
+           var gripper =  _rack.GetAvailableGripper();
         }
         #endregion
 
@@ -1620,9 +1626,9 @@ namespace RackTool
                             break;
                     }
                     XmlReaderWriter.SetBoxAttribute(Files.BoxData, BoxId, ShieldBoxItem.State, "Disable");
-                    XmlReaderWriter.SetBoxAttribute(Files.BoxData, BoxId, ShieldBoxItem.COM, "None");
-                    if (_portName.Contains(Com) == false)
-                        _portName.Add(Com);
+                    //XmlReaderWriter.SetBoxAttribute(Files.BoxData, BoxId, ShieldBoxItem.COM, "None");
+                    //if (_portName.Contains(Com) == false)
+                    //    _portName.Add(Com);
                     RefleshBoxUi();
                 }
                 else
@@ -2418,67 +2424,9 @@ namespace RackTool
 
         #endregion
 
-        #region Log
-        private void buttonLogLoad_Click_1(object sender, EventArgs e)
-        {
-            try
-            {
-                string FileName = string.Empty;
-                OpenFileDialog OpenFile = new OpenFileDialog()
-                {
-                    InitialDirectory = System.IO.Path.GetDirectoryName(
-                        System.AppDomain.CurrentDomain.BaseDirectory + @"\Logs\")
-                };
-
-                DialogResult Result = OpenFile.ShowDialog();
-                if (Result == DialogResult.OK)
-                    FileName = OpenFile.FileName;
-                else
-                    return;
-                dataGridView1.Rows.Clear();
-                StreamReader Reader = new StreamReader(FileName, Encoding.Default);
-                while (!Reader.EndOfStream)
-                {
-
-                    string[] Items = Reader.ReadLine().Split(' ');
-                    //if (Items.Length != 5)
-                    //{
-                    //    //Reader.Close();
-                    //    //Reader.Dispose();
-                    //    continue;
-                    //}
-
-                    string description = string.Empty;
-                    for (int i = 4; i < Items.Length; i++)
-                    {
-                        description += Items[i] + " ";
-                    }
-
-                    DataGridViewRow dataGridViewRow = new DataGridViewRow();
-                    foreach (DataGridViewColumn Item in dataGridView1.Columns)
-                    {
-                        dataGridViewRow.Cells.Add(Item.CellTemplate.Clone() as DataGridViewCell);
-                    }
-                    dataGridViewRow.Cells[0].Value = Items[0] + " " + Items[1];
-                    dataGridViewRow.Cells[1].Value = Items[2];
-                    dataGridViewRow.Cells[2].Value = Items[3];
-                    dataGridViewRow.Cells[3].Value = description;
-                    dataGridView1.Rows.Add(dataGridViewRow);
-                }
-            }
-            catch (Exception ex)
-            {
-
-                MessageBox.Show(ex.Message);
-            }
-        }
-
-        #endregion
-
         #region Tester
         private void buttonBoxSave_Click_1(object sender, EventArgs e)
         {
-
             try
             {
                 XmlReaderWriter.CreateBoxDataFile(Files.BoxData);
@@ -2598,19 +2546,169 @@ namespace RackTool
             {
                 if (_rack.ShieldBox1.Enabled)
                 {
+                    SetIndicator(labelTester01Connected, _rack.Tester1.Connected);
+                    if (_rack.ShieldBox1.Phone != null)
+                    {
+                        SetText(labelTester01PhoneId, _rack.ShieldBox1.Phone.Id);
+                        SetText(labelTester01PhoneSerialNumber, _rack.ShieldBox1.Phone.SerialNumber);
+                        SetText(labelTester01PhoneStep, _rack.ShieldBox1.Phone.Step);
+
+                        SetText(labelTester01PhoneTestResult, _rack.ShieldBox1.Phone.TestResult);
+                        SetText(labelTester01PhoneFailCount, _rack.ShieldBox1.Phone.FailCount);
+                        SetText(labelTester01PhoneTestTime,
+                            _rack.ShieldBox1.Phone.TestCycleTimeStopWatch.ElapsedMilliseconds / 1000);
+                    }
+                    else
+                    {
+                        SetText(labelTester01PhoneId, "----");
+                        SetText(labelTester01PhoneSerialNumber, "----");
+                        SetText(labelTester01PhoneStep, "----");
+                        SetText(labelTester01PhoneTestResult, "----");
+                        SetText(labelTester01PhoneFailCount, "----");
+                        SetText(labelTester01PhoneTestTime, "----");
+                    }
+                }
+            }
+
+            if (_rack.ShieldBox2 != null)
+            {
+                if (_rack.ShieldBox2.Enabled)
+                {
+                    SetIndicator(labelTester02Connected, _rack.Tester2.Connected);
+                    if (_rack.ShieldBox2.Phone != null)
+                    {
+                        SetText(labelTester02PhoneId, _rack.ShieldBox2.Phone.Id);
+                        SetText(labelTester02PhoneSerialNumber, _rack.ShieldBox2.Phone.SerialNumber);
+                        SetText(labelTester02PhoneStep, _rack.ShieldBox2.Phone.Step);
+
+                        SetText(labelTester02PhoneTestResult, _rack.ShieldBox2.Phone.TestResult);
+                        SetText(labelTester02PhoneFailCount, _rack.ShieldBox2.Phone.FailCount);
+                        SetText(labelTester02PhoneTestTime,
+                            _rack.ShieldBox2.Phone.TestCycleTimeStopWatch.ElapsedMilliseconds / 1000);
+                    }
+                    else
+                    {
+                        SetText(labelTester02PhoneId, "----");
+                        SetText(labelTester02PhoneSerialNumber, "----");
+                        SetText(labelTester02PhoneStep, "----");
+                        SetText(labelTester02PhoneTestResult, "----");
+                        SetText(labelTester02PhoneFailCount, "----");
+                        SetText(labelTester02PhoneTestTime, "----");
+                    }
+                }
+            }
+
+            if (_rack.ShieldBox3 != null)
+            {
+                if (_rack.ShieldBox3.Enabled)
+                {
+                    SetIndicator(labelTester03Connected, _rack.Tester3.Connected);
+                    if (_rack.ShieldBox3.Phone != null)
+                    {
+                        SetText(labelTester03PhoneId, _rack.ShieldBox3.Phone.Id);
+                        SetText(labelTester03PhoneSerialNumber, _rack.ShieldBox3.Phone.SerialNumber);
+                        SetText(labelTester03PhoneStep, _rack.ShieldBox3.Phone.Step);
+
+                        SetText(labelTester03PhoneTestResult, _rack.ShieldBox3.Phone.TestResult);
+                        SetText(labelTester03PhoneFailCount, _rack.ShieldBox3.Phone.FailCount);
+                        SetText(labelTester03PhoneTestTime,
+                            _rack.ShieldBox3.Phone.TestCycleTimeStopWatch.ElapsedMilliseconds / 1000);
+                    }
+                    else
+                    {
+                        SetText(labelTester03PhoneId, "----");
+                        SetText(labelTester03PhoneSerialNumber, "----");
+                        SetText(labelTester03PhoneStep, "----");
+                        SetText(labelTester03PhoneTestResult, "----");
+                        SetText(labelTester03PhoneFailCount, "----");
+                        SetText(labelTester03PhoneTestTime, "----");
+                    }
+                }
+            }
+
+            if (_rack.ShieldBox4 != null)
+            {
+                if (_rack.ShieldBox4.Enabled)
+                {
+                    SetIndicator(labelTester04Connected, _rack.Tester4.Connected);
+                    if (_rack.ShieldBox4.Phone != null)
+                    {
+                        SetText(labelTester04PhoneId, _rack.ShieldBox4.Phone.Id);
+                        SetText(labelTester04PhoneSerialNumber, _rack.ShieldBox4.Phone.SerialNumber);
+                        SetText(labelTester04PhoneStep, _rack.ShieldBox4.Phone.Step);
+
+                        SetText(labelTester04PhoneTestResult, _rack.ShieldBox4.Phone.TestResult);
+                        SetText(labelTester04PhoneFailCount, _rack.ShieldBox4.Phone.FailCount);
+                        SetText(labelTester04PhoneTestTime,
+                            _rack.ShieldBox4.Phone.TestCycleTimeStopWatch.ElapsedMilliseconds / 1000);
+                    }
+                    else
+                    {
+                        SetText(labelTester04PhoneId, "----");
+                        SetText(labelTester04PhoneSerialNumber, "----");
+                        SetText(labelTester04PhoneStep, "----");
+                        SetText(labelTester04PhoneTestResult, "----");
+                        SetText(labelTester04PhoneFailCount, "----");
+                        SetText(labelTester04PhoneTestTime, "----");
+                    }
+                }
+            }
+
+            if (_rack.ShieldBox5 != null)
+            {
+                if (_rack.ShieldBox5.Enabled)
+                {
                     SetIndicator(labelTester05Connected, _rack.Tester5.Connected);
                     if (_rack.ShieldBox5.Phone != null)
                     {
                         SetText(labelTester05PhoneId, _rack.ShieldBox5.Phone.Id);
                         SetText(labelTester05PhoneSerialNumber, _rack.ShieldBox5.Phone.SerialNumber);
                         SetText(labelTester05PhoneStep, _rack.ShieldBox5.Phone.Step);
+
                         SetText(labelTester05PhoneTestResult, _rack.ShieldBox5.Phone.TestResult);
                         SetText(labelTester05PhoneFailCount, _rack.ShieldBox5.Phone.FailCount);
                         SetText(labelTester05PhoneTestTime,
                             _rack.ShieldBox5.Phone.TestCycleTimeStopWatch.ElapsedMilliseconds / 1000);
                     }
+                    else
+                    {
+                        SetText(labelTester05PhoneId, "----");
+                        SetText(labelTester05PhoneSerialNumber, "----");
+                        SetText(labelTester05PhoneStep, "----");
+                        SetText(labelTester05PhoneTestResult, "----");
+                        SetText(labelTester05PhoneFailCount, "----");
+                        SetText(labelTester05PhoneTestTime, "----");
+                    }
                 }
-            }           
+            }
+
+            if (_rack.ShieldBox6 != null)
+            {
+                if (_rack.ShieldBox6.Enabled)
+                {
+                    SetIndicator(labelTester06Connected, _rack.Tester6.Connected);
+                    if (_rack.ShieldBox6.Phone != null)
+                    {
+                        SetText(labelTester06PhoneId, _rack.ShieldBox6.Phone.Id);
+                        SetText(labelTester06PhoneSerialNumber, _rack.ShieldBox6.Phone.SerialNumber);
+                        SetText(labelTester06PhoneStep, _rack.ShieldBox6.Phone.Step);
+
+                        SetText(labelTester06PhoneTestResult, _rack.ShieldBox6.Phone.TestResult);
+                        SetText(labelTester06PhoneFailCount, _rack.ShieldBox6.Phone.FailCount);
+                        SetText(labelTester06PhoneTestTime,
+                            _rack.ShieldBox6.Phone.TestCycleTimeStopWatch.ElapsedMilliseconds / 1000);
+                    }
+                    else
+                    {
+                        SetText(labelTester06PhoneId, "----");
+                        SetText(labelTester06PhoneSerialNumber, "----");
+                        SetText(labelTester06PhoneStep, "----");
+                        SetText(labelTester06PhoneTestResult, "----");
+                        SetText(labelTester06PhoneFailCount, "----");
+                        SetText(labelTester06PhoneTestTime, "----");
+                    }
+                }
+            }
         }
 
         #endregion
@@ -2636,17 +2734,11 @@ namespace RackTool
         {
             if (richTextBoxMessage.Height > this.Height / 2)
             {
-                richTextBoxMessage.Height = tabControlUi.Location.Y - 10;
-                richTextBoxError.Height = tabControlUi.Location.Y - 10;
-                tabControlUi.Visible = true;
-                _scrollRichTextBox = true;
+                WhenTextBoxClose();
             }
             else
             {
-                richTextBoxMessage.Height = this.Height - 100;
-                richTextBoxError.Height = this.Height - 100;
-                tabControlUi.Visible = false;
-                _scrollRichTextBox = false;
+                WhenTextBoxOpen();
             }
         }
 
@@ -2654,18 +2746,29 @@ namespace RackTool
         {
             if (richTextBoxError.Height > this.Height / 2)
             {
-                richTextBoxError.Height = tabControlUi.Location.Y - 10;
-                richTextBoxMessage.Height = tabControlUi.Location.Y - 10;
-                tabControlUi.Visible = true;
-                _keepMonitoringSystem = true;
+                WhenTextBoxClose();
             }
             else
             {
-                richTextBoxError.Height = this.Height - 100;
-                richTextBoxMessage.Height = this.Height - 100;
-                tabControlUi.Visible = false;
-                _keepMonitoringSystem = false;
+                WhenTextBoxOpen();
             }
+        }
+
+        private void WhenTextBoxClose()
+        {
+            richTextBoxMessage.Height = tabControlUi.Location.Y - 10;
+            richTextBoxError.Height = tabControlUi.Location.Y - 10;
+            tabControlUi.Visible = true;
+            _scrollRichTextBox = true;
+        }
+
+        private void WhenTextBoxOpen()
+        {
+            richTextBoxError.Height = this.Height - 100;
+            richTextBoxMessage.Height = this.Height - 100;
+            tabControlUi.Visible = false;
+            _keepMonitoringSystem = false;
+            _scrollRichTextBox = false;
         }
 
         private void buttonEmptyNg_Click(object sender, EventArgs e)
@@ -2700,6 +2803,129 @@ namespace RackTool
             {
                 MessageBox.Show("Set serial number fail：" + ex.Message);
             }
+        }
+
+        private void buttonPassTester05_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (_rack.ShieldBox5.IsClosed() == true)
+                    _rack.ShieldBox5.OpenBox();
+                _rack.ShieldBox5.Phone.TestResult = TestResult.Pass;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Set passed fail：" + ex.Message);
+            }
+        }
+
+        private void buttonSetClosedBox05_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                _rack.ShieldBox5.State = ShieldBoxState.Close;
+                _rack.ShieldBox5.ReadyForTesting = true;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Set box closed fail：" + ex.Message);
+            }
+        }
+
+        private void checkBoxServerSimulate_CheckedChanged(object sender, EventArgs e)
+        {
+            CheckBox checkBox = (CheckBox)sender;
+            _rack.ServerInSimulateMode = checkBox.Checked;
+        }
+
+        private void loadLogToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                string FileName = string.Empty;
+                OpenFileDialog OpenFile = new OpenFileDialog()
+                {
+                    InitialDirectory = System.IO.Path.GetDirectoryName(
+                        System.AppDomain.CurrentDomain.BaseDirectory + @"\Logs\")
+                };
+
+                DialogResult Result = OpenFile.ShowDialog();
+                if (Result == DialogResult.OK)
+                    FileName = OpenFile.FileName;
+                else
+                    return;
+                dataGridView1.Rows.Clear();
+                StreamReader Reader = new StreamReader(FileName, Encoding.Default);
+                while (!Reader.EndOfStream)
+                {
+
+                    string[] Items = Reader.ReadLine().Split(' ');
+                    //if (Items.Length != 5)
+                    //{
+                    //    //Reader.Close();
+                    //    //Reader.Dispose();
+                    //    continue;
+                    //}
+
+                    string description = string.Empty;
+                    for (int i = 4; i < Items.Length; i++)
+                    {
+                        description += Items[i] + " ";
+                    }
+
+                    DataGridViewRow dataGridViewRow = new DataGridViewRow();
+                    foreach (DataGridViewColumn Item in dataGridView1.Columns)
+                    {
+                        dataGridViewRow.Cells.Add(Item.CellTemplate.Clone() as DataGridViewCell);
+                    }
+                    dataGridViewRow.Cells[0].Value = Items[0] + " " + Items[1];
+                    dataGridViewRow.Cells[1].Value = Items[2];
+                    dataGridViewRow.Cells[2].Value = Items[3];
+                    dataGridViewRow.Cells[3].Value = description;
+                    dataGridView1.Rows.Add(dataGridViewRow);
+                }
+            }
+            catch (Exception ex)
+            {
+
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private void buttonSetSerial05_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                _rack.Tester5.SimulateSerialNumber = textBoxSerial05.Text;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Set serial number fail：" + ex.Message);
+            }
+        }
+
+        private void checkBoxTesterSimulate05_CheckedChanged(object sender, EventArgs e)
+        {
+            CheckBox checkBox = (CheckBox)sender;
+            _rack.Tester5.SimulateMode = checkBox.Checked;
+        }
+
+        private void buttonSetSerial02_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                _rack.Tester2.SimulateSerialNumber = textBoxSerial02.Text;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Set serial number fail：" + ex.Message);
+            }
+        }
+
+        private void checkBoxTesterSimulate02_CheckedChanged(object sender, EventArgs e)
+        {
+            CheckBox checkBox = (CheckBox)sender;
+            _rack.Tester2.SimulateMode = checkBox.Checked;
         }
     }
 }

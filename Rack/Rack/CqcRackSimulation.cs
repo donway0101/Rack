@@ -18,6 +18,7 @@
             if (ScannerOnline)
             {
                 phone.SerialNumber = Scanner.SerialNumber;
+                Scanner.ScanSuccessful = false;
             }
 
             phone.TestComplete -= Phone_TestComplete;

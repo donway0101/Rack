@@ -73,7 +73,6 @@ namespace Rack
 
         private void WaitTillEndGripper(TargetPosition target, RackGripper gripper)
         {
-            Motion.WaitTillEnd(Motion.MotorR);
             if (gripper == RackGripper.One)
             {
                 Steppers.WaitTillEnd(RackGripper.One, target.APos);
@@ -90,17 +89,27 @@ namespace Rack
         {
             if (gripper == RackGripper.One)
             {
-                Motion.ToPoint(Motion.MotorR, target.RPos);
                 Steppers.ToPoint(RackGripper.One, target.APos);
                 Steppers.ToPoint(RackGripper.Two, 0);
             }
             else
             {
-                Motion.ToPoint(Motion.MotorR, target.RPos - 60);
                 Steppers.ToPoint(RackGripper.Two, target.APos);
                 Steppers.ToPoint(RackGripper.One, 0);
             }
         }
-       
+
+        private void ToPointR(TargetPosition target, RackGripper gripper)
+        {
+            if (gripper == RackGripper.One)
+            {
+                Motion.ToPoint(Motion.MotorR, target.RPos);
+            }
+            else
+            {
+                Motion.ToPoint(Motion.MotorR, target.RPos - 60);
+            }
+        }
+
     }
 }

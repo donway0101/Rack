@@ -24,25 +24,60 @@ namespace Rack
             while (true)
             {
                 PhoneServerManualResetEvent.WaitOne();
+                if (ProductionFault)
+                {
+                    OnInfoOccured(20030, "Try to NG phones due to last production error.");
+                    try
+                    {
+                        if(GripperIsAvailable(RackGripper.One) == false)
+                        {
+                            Bin(RackGripper.One);
+                            Delay(5000);
+                        }
+
+                        if (GripperIsAvailable(RackGripper.Two) == false)
+                        {
+                            Bin(RackGripper.Two);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        OnErrorOccured(40021, "Can't serve phone due to:" + ex.Message);
+                        Delay(5000);
+                        continue;                      
+                    }
+                    
+                    ProductionFault = false;
+                }
 
                 Delay(500);
                 if (HasNoPhoneToBeServed())
                     continue;
 
-                List<Phone> luckyPhones = ArrangePhones();
-                if (luckyPhones.Count==0)
-                    continue;
-
-                foreach (var phone in luckyPhones)
-                {
-                    OnInfoOccured(20013, "Found phone Id:" + phone.Id + 
-                        " Step:" + phone.Step + " Procedure: " + phone.Procedure + " to serve.");
-                }
-                
-                RemovePhoneToBeServed(luckyPhones);
-
+                List<Phone> luckyPhones = new List<Phone>();
                 try
                 {
+                    luckyPhones = ArrangePhones();
+                    if (luckyPhones.Count == 0)
+                        continue;
+
+                    foreach (var phone in luckyPhones)
+                    {
+                        if (phone.ShieldBox!=null)
+                        {
+                            OnInfoOccured(20013, "Found phone Id:" + phone.Id +
+                            " Step:" + phone.Step + " Procedure: " + phone.Procedure +
+                            " in box:" + phone.ShieldBox.Id + "." + " to serve.");
+                        }
+                        else
+                        {
+                            OnInfoOccured(20013, "Found phone Id:" + phone.Id +
+                            " Step:" + phone.Step + " Procedure: " + phone.Procedure + "." + " to serve.");
+                        }                        
+                    }
+
+                    RemovePhoneToBeServed(luckyPhones);
+
                     #region Work on Rf phones.
                     if (luckyPhones.First().Step == RackTestStep.Rf)
                     {
@@ -193,6 +228,7 @@ namespace Rack
 
                                     luckyPhones.Remove(thirdPhone);
                                     InfoPhoneAboutToBeServed(thirdPhone);
+                                    ComboUnloadAndLoad(secondPhone, thirdPhone, out gripper);
                                     switch (thirdPhone.Procedure)
                                     {
                                         case RackProcedure.Bin:
@@ -318,6 +354,7 @@ namespace Rack
                 {
                     OnErrorOccured(40016, "Can't serve phone due to:" + e.Message);
                     PhoneServerManualResetEvent.Reset();
+                    ProductionFault = true;
                 }
                 finally
                 {
@@ -336,7 +373,16 @@ namespace Rack
 
         private void InfoPhoneAboutToBeServed(Phone phone)
         {
-            OnInfoOccured(20014, "Serving phone Id:" + phone.Id + " Step:" + phone.Step + ".");
+            if (phone.ShieldBox!=null)
+            {
+                OnInfoOccured(20014, "Serving phone Id:" + phone.Id + " Step:" + phone.Step +
+               " Procedure:" + phone.Procedure + " in box:" + phone.ShieldBox.Id + ".");
+            }
+            else
+            {
+                OnInfoOccured(20014, "Serving phone Id:" + phone.Id + " Step:" + phone.Step +
+               " Procedure:" + phone.Procedure + ".");
+            }           
         }
 
         private void ClassifyPhones()
@@ -1354,7 +1400,22 @@ namespace Rack
         {
             lock (_phoneToBeServedLocker)
             {
-                PhoneToBeServed.AddRange(phones);
+                foreach (var phoneRec in phones)
+                {
+                    bool differPhone = true;
+                    foreach (var pho in PhoneToBeServed)
+                    {
+                        if (phoneRec.Id == pho.Id)
+                        {
+                            differPhone = false;
+                        }
+                    }
+
+                    if (differPhone)
+                    {
+                        PhoneToBeServed.Add(phoneRec);
+                    }
+                }
             }
         }
 

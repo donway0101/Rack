@@ -171,8 +171,8 @@ namespace Rack
             HomePosition = LoadPosition(TeachPos.Home, TeachPos.None);
             PickPosition = LoadPosition(TeachPos.Pick, TeachPos.Pick);
             BinPosition = LoadPosition(TeachPos.Bin, TeachPos.Bin);
-            ConveyorLeftPosition = LoadPosition(TeachPos.ConveyorLeft, TeachPos.None);
-            ConveyorRightPosition = LoadPosition(TeachPos.ConveyorRight, TeachPos.None);
+            ConveyorLeftPosition = LoadPosition(TeachPos.ConveyorLeft, TeachPos.ConveyorLeft);
+            ConveyorRightPosition = LoadPosition(TeachPos.ConveyorRight, TeachPos.ConveyorRight);
 
             ShieldBox1 = LoadPosition(TeachPos.ShieldBox1, TeachPos.ShieldBox1);
             ShieldBox2 = LoadPosition(TeachPos.ShieldBox2, TeachPos.ShieldBox2);
@@ -209,6 +209,7 @@ namespace Rack
             TargetPosition target = new TargetPosition
             {
                 TeachPos = id,
+
                 XPos = Convert.ToDouble(
                     XmlReaderWriter.GetTeachAttribute(Files.RackData, pos, PosItem.XPos)),
                 YPos = Convert.ToDouble(
@@ -449,10 +450,6 @@ namespace Rack
         public void ToPointWaitTillEnd(Motor motor, double point, int timeout=120000)
         {
             point *= motor.Direction;
-            //if (Math.Abs(point)<0.001)
-            //{
-            //    point = 0.0;
-            //}
             try
             {
                 _ch.ToPoint(MotionFlags.ACSC_AMF_MAXIMUM, motor.Id, point);
