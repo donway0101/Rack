@@ -251,8 +251,10 @@ namespace Rack
                                     break;
                                 case "2":
                                     //Battery low. NG.
+                                    ShieldBox.OpenBox();
+                                    ShieldBox.Phone.TestResult = TestResult.Fail;
+                                    ShieldBox.Phone.FailCount = 3;
                                     break;
-
                                 default:
                                     break;
                             }                          

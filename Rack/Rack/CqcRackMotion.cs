@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Diagnostics;
+using System.Threading.Tasks;
 
 namespace Rack
 {
     public partial class CqcRack
     {
-        private void MoveToTargetPosition(RackGripper gripper, TargetPosition target)
+        private void MoveToTargetPosition(RackGripper gripper, TargetPosition target, bool phoneSlipIn)
         {
             if(RobotInSimulateMode)
                 return;
@@ -39,7 +41,7 @@ namespace Rack
                 #region Move from right to ...
                 if (target.XPos > Motion.ConveyorRightPosition.XPos) //To right. 
                 {
-                    MoveFromRightToRight(gripper, target);
+                    MoveFromRightToRight(gripper, target, phoneSlipIn);
                 }
                 else
                 {
@@ -47,11 +49,11 @@ namespace Rack
                     {
                         if (target.ZPos > Motion.PickPosition.ApproachHeight) //To left top.
                         {
-                            MoveFromRightToLeftTop(gripper, target, currentPosition);
+                            MoveFromRightToLeftTop(gripper, target, currentPosition, phoneSlipIn);
                         }
                         else //To left bottom.
                         {
-                            MoveFromRightToLeftBottom(gripper, target);
+                            MoveFromRightToLeftBottom(gripper, target, phoneSlipIn);
                         }
                     }
                     else //To Conveyor.
@@ -70,18 +72,18 @@ namespace Rack
                     {
                         if (target.ZPos < Motion.PickPosition.ApproachHeight) // To right bottom.
                         {
-                            MoveFromLeftToRightBottom(gripper, target);
+                            MoveFromLeftToRightBottom(gripper, target, phoneSlipIn);
                         }
                         else //To right top.
                         {
-                            MoveFromLeftToRightTop(gripper, target, currentPosition);
+                            MoveFromLeftToRightTop(gripper, target, currentPosition, phoneSlipIn);
                         }
                     }
                     else
                     {
                         if (target.XPos < Motion.ConveyorLeftPosition.XPos)//To left.
                         {
-                            MoveFromLeftToLeft(gripper, target);
+                            MoveFromLeftToLeft(gripper, target, phoneSlipIn);
                         }
                         else//To conveyor.
                         {
@@ -97,11 +99,11 @@ namespace Rack
                     {
                         if (target.ZPos < Motion.PickPosition.ApproachHeight) // To right bottom.
                         {
-                            MoveFromConveyorToRightBottom(gripper, target);
+                            MoveFromConveyorToRightBottom(gripper, target, phoneSlipIn);
                         }
                         else //To right top.
                         {
-                            MoveFromConveyorToRightTop(gripper, target);
+                            MoveFromConveyorToRightTop(gripper, target, phoneSlipIn);
                         }
                     }
                     else
@@ -110,11 +112,11 @@ namespace Rack
                         {
                             if (target.ZPos < Motion.PickPosition.ApproachHeight)// To left bottom.
                             {
-                                MoveFromConveyorToLeftBottom(gripper, target);
+                                MoveFromConveyorToLeftBottom(gripper, target, phoneSlipIn);
                             }
                             else //To left top.
                             {
-                                MoveFromConveyorToLeftTop(gripper, target);
+                                MoveFromConveyorToLeftTop(gripper, target, phoneSlipIn);
                             }
                         }
                         else //To conveyor.
@@ -145,14 +147,14 @@ namespace Rack
         private void MotorYOutThenBreakMotorZDown(TargetPosition target, RackGripper gripper)
         {
             Motion.ToPoint(Motion.MotorY, target.YPos);
-            ToPointGripper(target, gripper);
-            Motion.WaitTillEnd(Motion.MotorY);
+            ToPointGripper(target, gripper);          
             WaitTillEndGripper(target, gripper);
+            Motion.WaitTillEnd(Motion.MotorY);
 
             Motion.BreakToPointWaitTillEnd(Motion.MotorZ, target.ZPos);
         }
 
-        private void MoveFromRightToLeftBottom(RackGripper gripper, TargetPosition target)
+        private void MoveFromRightToLeftBottom(RackGripper gripper, TargetPosition target, bool phoneSlipIn)
         {
             Motion.ToPoint(Motion.MotorZ, Motion.PickPosition.ApproachHeight);
             Motion.ToPointX(Motion.ConveyorRightPosition.XPos);
@@ -168,10 +170,11 @@ namespace Rack
             Motion.WaitTillEnd(Motion.MotorZ);
             Motion.WaitTillEnd(Motion.MotorR);
 
-            MotorYOutThenMotorZDown(target, gripper);
+            MotorYOutThenMotorZDown(target, gripper, phoneSlipIn);
         }
 
-        private void MoveFromRightToLeftTop(RackGripper gripper, TargetPosition target, TargetPosition currentPosition)
+        private void MoveFromRightToLeftTop(RackGripper gripper, TargetPosition target, 
+            TargetPosition currentPosition, bool phoneSlipIn)
         {
             Motion.ToPoint(Motion.MotorZ, target.ApproachHeight);
             Motion.ToPointX(Motion.ConveyorRightPosition.XPos);
@@ -184,10 +187,10 @@ namespace Rack
             Motion.WaitTillEnd(Motion.MotorZ);
             Motion.WaitTillEnd(Motion.MotorR);
 
-            MotorYOutThenMotorZDown(target, gripper);
+            MotorYOutThenMotorZDown(target, gripper, phoneSlipIn);
         }
 
-        private void MoveFromRightToRight(RackGripper gripper, TargetPosition target)
+        private void MoveFromRightToRight(RackGripper gripper, TargetPosition target, bool phoneSlipIn)
         {
             Motion.ToPoint(Motion.MotorZ, target.ApproachHeight);
             Motion.ToPointX(target.XPos);
@@ -195,19 +198,44 @@ namespace Rack
             Motion.WaitTillEndX();
             Motion.WaitTillEnd(Motion.MotorZ);
             Motion.WaitTillEnd(Motion.MotorR);
-            MotorYOutThenMotorZDown(target, gripper);
+            MotorYOutThenMotorZDown(target, gripper, phoneSlipIn);
         }
 
-        private void MotorYOutThenMotorZDown(TargetPosition target, RackGripper gripper)
+        private void MotorYOutThenMotorZDown(TargetPosition target, RackGripper gripper, bool phoneSlipIn)
         {
             Motion.ToPoint(Motion.MotorY, target.YPos);
             ToPointGripper(target, gripper);
-            Motion.WaitTillEnd(Motion.MotorY);
             WaitTillEndGripper(target, gripper);
+            Motion.WaitTillEnd(Motion.MotorY);   
+            
+            if (phoneSlipIn)
+            {
+                Task.Run(() => {
+                    Stopwatch stopwatch = new Stopwatch();
+                    stopwatch.Start();
+                    while (stopwatch.ElapsedMilliseconds < 5000)
+                    {
+                        if (Motion.GetPosition(Motion.MotorZ) < target.ZPos + SlipInHeight)
+                        {
+                            try
+                            {
+                                OpenGripper(gripper);
+                            }
+                            catch (Exception)
+                            {
+                                break;
+                            }
+                        }
+                        Delay(5);
+                    }
+                });
+            }
+
             MoveToPointTillEnd(Motion.MotorZ, target.ZPos);
         }
 
-        private void MoveFromLeftToRightTop(RackGripper gripper, TargetPosition target, TargetPosition currentPosition)
+        private void MoveFromLeftToRightTop(RackGripper gripper, TargetPosition target, 
+            TargetPosition currentPosition, bool phoneSlipIn)
         {
             Motion.ToPoint(Motion.MotorZ, target.ApproachHeight);
             ToPointR(target, gripper);
@@ -218,10 +246,10 @@ namespace Rack
             Motion.WaitTillEnd(Motion.MotorZ);
             Motion.WaitTillEnd(Motion.MotorR);
 
-            MotorYOutThenMotorZDown(target, gripper);
+            MotorYOutThenMotorZDown(target, gripper, phoneSlipIn);
         }
 
-        private void MoveFromLeftToRightBottom(RackGripper gripper, TargetPosition target)
+        private void MoveFromLeftToRightBottom(RackGripper gripper, TargetPosition target, bool phoneSlipIn)
         {
             Motion.ToPoint(Motion.MotorZ, Motion.PickPosition.ApproachHeight);
             Motion.WaitTillZBiggerThan(Motion.PickPosition.ApproachHeight - 20);
@@ -236,10 +264,10 @@ namespace Rack
             Motion.WaitTillEnd(Motion.MotorZ);
             Motion.WaitTillEnd(Motion.MotorR);
 
-            MotorYOutThenMotorZDown(target, gripper);
+            MotorYOutThenMotorZDown(target, gripper, phoneSlipIn);
         }
 
-        private void MoveFromLeftToLeft(RackGripper gripper, TargetPosition target)
+        private void MoveFromLeftToLeft(RackGripper gripper, TargetPosition target, bool phoneSlipIn)
         {
             Motion.ToPointX(target.XPos);
             ToPointR(target, gripper);
@@ -247,7 +275,7 @@ namespace Rack
             Motion.WaitTillEndX();
             Motion.WaitTillEnd(Motion.MotorZ);
             Motion.WaitTillEnd(Motion.MotorR);
-            MotorYOutThenMotorZDown(target, gripper);
+            MotorYOutThenMotorZDown(target, gripper, phoneSlipIn);
         }
 
         private void MoveFromLeftToConveyor(RackGripper gripper, TargetPosition target, TargetPosition currentPosition)
@@ -263,7 +291,7 @@ namespace Rack
             MotorYOutThenBreakMotorZDown(target, gripper);
         }
 
-        private void MoveFromConveyorToRightTop(RackGripper gripper, TargetPosition target)
+        private void MoveFromConveyorToRightTop(RackGripper gripper, TargetPosition target, bool phoneSlipIn)
         {
             Motion.ToPointX(target.XPos);
             ToPointR(target, gripper);
@@ -272,10 +300,10 @@ namespace Rack
             Motion.WaitTillEndX();
             Motion.WaitTillEnd(Motion.MotorZ);
             Motion.WaitTillEnd(Motion.MotorR);
-            MotorYOutThenMotorZDown(target, gripper);
+            MotorYOutThenMotorZDown(target, gripper, phoneSlipIn);
         }
 
-        private void MoveFromConveyorToRightBottom(RackGripper gripper, TargetPosition target)
+        private void MoveFromConveyorToRightBottom(RackGripper gripper, TargetPosition target, bool phoneSlipIn)
         {
             Motion.ToPointX(target.XPos);
             Motion.ToPoint(Motion.MotorZ, Motion.PickPosition.ApproachHeight);
@@ -288,10 +316,10 @@ namespace Rack
             Motion.WaitTillEnd(Motion.MotorZ);
             Motion.WaitTillEnd(Motion.MotorR);
 
-            MotorYOutThenMotorZDown(target, gripper);
+            MotorYOutThenMotorZDown(target, gripper, phoneSlipIn);
         }
 
-        private void MoveFromConveyorToLeftTop(RackGripper gripper, TargetPosition target)
+        private void MoveFromConveyorToLeftTop(RackGripper gripper, TargetPosition target, bool phoneSlipIn)
         {
             Motion.ToPointX(target.XPos);
             ToPointR(target, gripper);
@@ -299,10 +327,10 @@ namespace Rack
             Motion.WaitTillEndX();
             Motion.WaitTillEnd(Motion.MotorZ);
             Motion.WaitTillEnd(Motion.MotorR);
-            MotorYOutThenMotorZDown(target, gripper);
+            MotorYOutThenMotorZDown(target, gripper, phoneSlipIn);
         }
 
-        private void MoveFromConveyorToLeftBottom(RackGripper gripper, TargetPosition target)
+        private void MoveFromConveyorToLeftBottom(RackGripper gripper, TargetPosition target, bool phoneSlipIn)
         {
             Motion.ToPointX(target.XPos);
             Motion.ToPoint(Motion.MotorZ, Motion.PickPosition.ApproachHeight);
@@ -315,7 +343,7 @@ namespace Rack
             Motion.WaitTillEnd(Motion.MotorZ);
             Motion.WaitTillEnd(Motion.MotorR);
 
-            MotorYOutThenMotorZDown(target, gripper);
+            MotorYOutThenMotorZDown(target, gripper, phoneSlipIn);
         }
 
         private void MoveFromConveyorToConveyor(RackGripper gripper, TargetPosition target)

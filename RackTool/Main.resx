@@ -172,7 +172,7 @@
     <value>groupBoxMain</value>
   </data>
   <data name="&gt;&gt;buttonHome.ZOrder" xml:space="preserve">
-    <value>11</value>
+    <value>9</value>
   </data>
   <data name="buttonStop.Font" type="System.Drawing.Font, System.Drawing">
     <value>SimSun, 18pt, style=Bold</value>
@@ -202,7 +202,7 @@
     <value>groupBoxMain</value>
   </data>
   <data name="&gt;&gt;buttonStop.ZOrder" xml:space="preserve">
-    <value>10</value>
+    <value>8</value>
   </data>
   <data name="label10.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -2049,36 +2049,6 @@
   <data name="&gt;&gt;buttonPausePhoneServer.ZOrder" xml:space="preserve">
     <value>4</value>
   </data>
-  <data name="trackBarSetSpeed1.AutoSize" type="System.Boolean, mscorlib">
-    <value>False</value>
-  </data>
-  <data name="trackBarSetSpeed1.Location" type="System.Drawing.Point, System.Drawing">
-    <value>742, 42</value>
-  </data>
-  <data name="trackBarSetSpeed1.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>4, 4, 4, 4</value>
-  </data>
-  <data name="trackBarSetSpeed1.Orientation" type="System.Windows.Forms.Orientation, System.Windows.Forms">
-    <value>Vertical</value>
-  </data>
-  <data name="trackBarSetSpeed1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>226, 491</value>
-  </data>
-  <data name="trackBarSetSpeed1.TabIndex" type="System.Int32, mscorlib">
-    <value>24</value>
-  </data>
-  <data name="&gt;&gt;trackBarSetSpeed1.Name" xml:space="preserve">
-    <value>trackBarSetSpeed1</value>
-  </data>
-  <data name="&gt;&gt;trackBarSetSpeed1.Type" xml:space="preserve">
-    <value>System.Windows.Forms.TrackBar, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;trackBarSetSpeed1.Parent" xml:space="preserve">
-    <value>groupBoxMain</value>
-  </data>
-  <data name="&gt;&gt;trackBarSetSpeed1.ZOrder" xml:space="preserve">
-    <value>5</value>
-  </data>
   <data name="buttonCheckBox.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
   </data>
@@ -2107,40 +2077,7 @@
     <value>groupBoxMain</value>
   </data>
   <data name="&gt;&gt;buttonCheckBox.ZOrder" xml:space="preserve">
-    <value>6</value>
-  </data>
-  <data name="labelSpeed1.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
-  </data>
-  <data name="labelSpeed1.Font" type="System.Drawing.Font, System.Drawing">
-    <value>SimSun, 16.2pt, style=Bold</value>
-  </data>
-  <data name="labelSpeed1.Location" type="System.Drawing.Point, System.Drawing">
-    <value>756, 10</value>
-  </data>
-  <data name="labelSpeed1.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>4, 0, 4, 0</value>
-  </data>
-  <data name="labelSpeed1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>42, 28</value>
-  </data>
-  <data name="labelSpeed1.TabIndex" type="System.Int32, mscorlib">
-    <value>25</value>
-  </data>
-  <data name="labelSpeed1.Text" xml:space="preserve">
-    <value>20</value>
-  </data>
-  <data name="&gt;&gt;labelSpeed1.Name" xml:space="preserve">
-    <value>labelSpeed1</value>
-  </data>
-  <data name="&gt;&gt;labelSpeed1.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;labelSpeed1.Parent" xml:space="preserve">
-    <value>groupBoxMain</value>
-  </data>
-  <data name="&gt;&gt;labelSpeed1.ZOrder" xml:space="preserve">
-    <value>7</value>
+    <value>5</value>
   </data>
   <data name="buttonStartPhoneServer.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
@@ -2170,7 +2107,7 @@
     <value>groupBoxMain</value>
   </data>
   <data name="&gt;&gt;buttonStartPhoneServer.ZOrder" xml:space="preserve">
-    <value>8</value>
+    <value>6</value>
   </data>
   <data name="buttonReset.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
@@ -2200,7 +2137,7 @@
     <value>groupBoxMain</value>
   </data>
   <data name="&gt;&gt;buttonReset.ZOrder" xml:space="preserve">
-    <value>9</value>
+    <value>7</value>
   </data>
   <data name="groupBoxMain.Location" type="System.Drawing.Point, System.Drawing">
     <value>141, 6</value>
@@ -2212,7 +2149,7 @@
     <value>4, 4, 4, 4</value>
   </data>
   <data name="groupBoxMain.Size" type="System.Drawing.Size, System.Drawing">
-    <value>1109, 563</value>
+    <value>1063, 520</value>
   </data>
   <data name="groupBoxMain.TabIndex" type="System.Int32, mscorlib">
     <value>29</value>
@@ -7706,6 +7643,33 @@
   <data name="&gt;&gt;tabPage3.ZOrder" xml:space="preserve">
     <value>3</value>
   </data>
+  <data name="checkBoxAutoPass.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="checkBoxAutoPass.Location" type="System.Drawing.Point, System.Drawing">
+    <value>664, 499</value>
+  </data>
+  <data name="checkBoxAutoPass.Size" type="System.Drawing.Size, System.Drawing">
+    <value>101, 19</value>
+  </data>
+  <data name="checkBoxAutoPass.TabIndex" type="System.Int32, mscorlib">
+    <value>19</value>
+  </data>
+  <data name="checkBoxAutoPass.Text" xml:space="preserve">
+    <value>Auto pass</value>
+  </data>
+  <data name="&gt;&gt;checkBoxAutoPass.Name" xml:space="preserve">
+    <value>checkBoxAutoPass</value>
+  </data>
+  <data name="&gt;&gt;checkBoxAutoPass.Type" xml:space="preserve">
+    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;checkBoxAutoPass.Parent" xml:space="preserve">
+    <value>panelTesters</value>
+  </data>
+  <data name="&gt;&gt;checkBoxAutoPass.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
   <data name="checkBoxTesterSimulate05.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>
@@ -8304,7 +8268,7 @@
     <value>panelTesters</value>
   </data>
   <data name="&gt;&gt;groupBoxTester05.ZOrder" xml:space="preserve">
-    <value>0</value>
+    <value>1</value>
   </data>
   <data name="labelTester06PhoneFailCount.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -8754,7 +8718,7 @@
     <value>panelTesters</value>
   </data>
   <data name="&gt;&gt;groupBoxTester06.ZOrder" xml:space="preserve">
-    <value>1</value>
+    <value>2</value>
   </data>
   <data name="buttonTesterSendFail.Location" type="System.Drawing.Point, System.Drawing">
     <value>508, 499</value>
@@ -8778,7 +8742,7 @@
     <value>panelTesters</value>
   </data>
   <data name="&gt;&gt;buttonTesterSendFail.ZOrder" xml:space="preserve">
-    <value>2</value>
+    <value>3</value>
   </data>
   <data name="buttonTesterSendPass.Location" type="System.Drawing.Point, System.Drawing">
     <value>400, 499</value>
@@ -8802,7 +8766,7 @@
     <value>panelTesters</value>
   </data>
   <data name="&gt;&gt;buttonTesterSendPass.ZOrder" xml:space="preserve">
-    <value>3</value>
+    <value>4</value>
   </data>
   <data name="labelTester04PhoneFailCount.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -9252,7 +9216,7 @@
     <value>panelTesters</value>
   </data>
   <data name="&gt;&gt;groupBoxTester04.ZOrder" xml:space="preserve">
-    <value>4</value>
+    <value>5</value>
   </data>
   <data name="buttonStartTesterSimulator.Location" type="System.Drawing.Point, System.Drawing">
     <value>3, 493</value>
@@ -9276,7 +9240,7 @@
     <value>panelTesters</value>
   </data>
   <data name="&gt;&gt;buttonStartTesterSimulator.ZOrder" xml:space="preserve">
-    <value>5</value>
+    <value>6</value>
   </data>
   <data name="radioButtonBox6.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -9462,7 +9426,7 @@
     <value>panelTesters</value>
   </data>
   <data name="&gt;&gt;groupBoxSelectBox.ZOrder" xml:space="preserve">
-    <value>6</value>
+    <value>7</value>
   </data>
   <data name="labelTester03PhoneFailCount.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -9912,7 +9876,7 @@
     <value>panelTesters</value>
   </data>
   <data name="&gt;&gt;groupBoxTester03.ZOrder" xml:space="preserve">
-    <value>7</value>
+    <value>8</value>
   </data>
   <data name="checkBoxTesterSimulate02.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -10521,7 +10485,7 @@
     <value>panelTesters</value>
   </data>
   <data name="&gt;&gt;groupBoxTester02.ZOrder" xml:space="preserve">
-    <value>8</value>
+    <value>9</value>
   </data>
   <data name="labelTester01PhoneFailCount.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -10971,7 +10935,7 @@
     <value>panelTesters</value>
   </data>
   <data name="&gt;&gt;groupBoxTester01.ZOrder" xml:space="preserve">
-    <value>9</value>
+    <value>10</value>
   </data>
   <data name="panelTesters.Location" type="System.Drawing.Point, System.Drawing">
     <value>3, 3</value>

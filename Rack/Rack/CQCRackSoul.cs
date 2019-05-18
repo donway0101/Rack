@@ -101,8 +101,12 @@ namespace Rack
                                     switch (firstPhone.Procedure)
                                     {
                                         case RackProcedure.Pick:
-                                            gripper = GetAvailableGripper();
-                                            Pick(gripper);
+                                            gripper = firstPhone.OnGripper;
+                                            if (firstPhone.OnGripper == RackGripper.None)
+                                            {
+                                                gripper = GetAvailableGripper();
+                                                Pick(gripper);
+                                            }                                            
                                             OkToReloadOnConveyor();
                                             break;
 
@@ -1157,8 +1161,12 @@ namespace Rack
             ShieldBox box = ConverterTeachPosToShieldBox(phone.NextTargetPosition.TeachPos);
             try
             {
-                RackGripper gripper = GetAvailableGripper();
-                Pick(gripper);
+                RackGripper gripper = phone.OnGripper;
+                if (phone.OnGripper == RackGripper.None)
+                {
+                    gripper = GetAvailableGripper();
+                    Pick(gripper);
+                }
                 Link(phone, box);
                 OkToReloadOnConveyor();
                 Load(gripper, box);

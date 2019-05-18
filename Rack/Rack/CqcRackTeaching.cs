@@ -122,7 +122,7 @@ namespace Rack
         {
             TargetPosition target = ConverterTeachPosToTargetPosition(selectedTeachPos);
             target.ZPos = target.ZPos + 30;
-            MoveToTargetPosition(gripper, target);
+            MoveToTargetPosition(gripper, target, false);
             DisableMotorsForTeaching();
             Motion.SetSpeedImm(3);
         }

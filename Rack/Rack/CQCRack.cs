@@ -57,6 +57,8 @@ namespace Rack
         public bool SystemFault { get; set; }
         public bool ConveyorFault { get; set; }
         public bool ProductionFault { get; set; }
+
+        public uint SlipInHeight { get; set; } = 12;
         #endregion
 
         #region ShieldBox

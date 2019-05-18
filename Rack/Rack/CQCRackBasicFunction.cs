@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Threading;
+using System.Threading.Tasks;
 using ACS.SPiiPlusNET;
 
 namespace Rack
@@ -180,7 +181,7 @@ namespace Rack
             Motion.DisableAll();
         }
 
-        public void HomeRobot(double homeSpeed = 5.0)
+        public void HomeRobot(double homeSpeed = 20.0)
         {
             if (SetupComplete == false)
             {
@@ -346,7 +347,7 @@ namespace Rack
                 target.XPos = target.XPos + Motion.PickOffset.XPos;
             }
             
-            MoveToTargetPosition(gripper, target);
+            MoveToTargetPosition(gripper, target, false);
             CloseGripper(gripper);
             MoveToPointTillEnd(Motion.MotorZ, Motion.PickPosition.ApproachHeight);
             MoveToPointTillEnd(Motion.MotorY, Motion.HomePosition.YPos);
@@ -390,7 +391,7 @@ namespace Rack
         public void Place(RackGripper gripper)
         {
             OnInfoOccured(20026, "Try placing with " + gripper + ".");
-            if (Conveyor.HasPlaceAPhone==true || EcatIo.GetInput(Input.PickHasPhone) == true)
+            if (Conveyor.HasPlaceAPhone==true)
             {
                 throw new Exception("Last place movement has't finished.");
             }
@@ -401,11 +402,12 @@ namespace Rack
 
             CheckSafety();
 
+            RackGripper theOtherGripper = RackGripper.None;
             if (Conveyor.PickPhoneSensor())
             {
                 if (LatestPhone != null)
                 {
-                    RackGripper theOtherGripper = gripper == RackGripper.One ? RackGripper.Two : RackGripper.One;
+                    theOtherGripper = gripper == RackGripper.One ? RackGripper.Two : RackGripper.One;
                     Pick(theOtherGripper, false);
                 }
                 else
@@ -428,12 +430,33 @@ namespace Rack
             CheckPhoneLost(gripper);
 
             TargetPosition placePosition = Motion.PickPosition;
-            placePosition.XPos = placePosition.XPos + 0.5;
-            MoveToTargetPosition(gripper, placePosition);
+            placePosition.XPos = placePosition.XPos + 1;
+
+            if (theOtherGripper != RackGripper.None)
+            {
+                Motion.ToPointX(placePosition.XPos);
+                ToPointR(placePosition, gripper);
+                ToPointGripper(placePosition, gripper);
+                WaitTillEndGripper(placePosition, gripper);
+                Motion.WaitTillEndX();
+                Motion.WaitTillEnd(Motion.MotorR);
+                MotorYOutThenBreakMotorZDown(placePosition, gripper);
+            }
+            else
+            {
+                MoveToTargetPosition(gripper, placePosition, true);
+            }           
+
             OpenGripper(gripper);
             MoveToPointTillEnd(Motion.MotorZ, Motion.PickPosition.ApproachHeight);
             MoveToPointTillEnd(Motion.MotorY, Motion.HomePosition.YPos);
             Conveyor.HasPlaceAPhone = true;
+
+            if (theOtherGripper!= RackGripper.None)
+            {
+                Steppers.ToPoint(theOtherGripper, Motion.PickPosition.APos);
+                Steppers.WaitTillEnd(theOtherGripper, Motion.PickPosition.APos);
+            }
 
             RobotReleaseControlOnConveyor();
             OnInfoOccured(20026, "Finish placing with " + gripper + ".");
@@ -497,7 +520,7 @@ namespace Rack
 
             Conveyor.StopBeltBin();
 
-            MoveToTargetPosition(gripper, Motion.BinPosition);
+            MoveToTargetPosition(gripper, Motion.BinPosition, true);
             OpenGripper(gripper);
 
             Conveyor.HasBinAPhone = true;
@@ -519,7 +542,7 @@ namespace Rack
 
         public void Load(RackGripper gripper, TargetPosition position)
         {
-            MoveToTargetPosition(gripper, position);
+            MoveToTargetPosition(gripper, position, true);
             OpenGripper(gripper);
             MoveToPointTillEnd(Motion.MotorZ, position.ApproachHeight);
             YRetractFromBox();
@@ -533,7 +556,7 @@ namespace Rack
             {
                 throw new Exception("Box " + box.Id + " is not opened");
             }            
-            MoveToTargetPosition(gripper, target);
+            MoveToTargetPosition(gripper, target, true);
             OpenGripper(gripper);
             MoveToPointTillEnd(Motion.MotorZ, target.ApproachHeight);
             YRetractFromBox();
@@ -546,16 +569,15 @@ namespace Rack
             Motion.ToPoint(Motion.MotorY, Motion.PickPosition.YPos);
             Steppers.ToPoint(RackGripper.One, Motion.PickPosition.APos);
             Steppers.ToPoint(RackGripper.Two, Motion.PickPosition.APos);
-
-            Motion.WaitTillEnd(Motion.MotorY);
             Steppers.WaitTillEnd(RackGripper.One, Motion.PickPosition.APos);
             Steppers.WaitTillEnd(RackGripper.Two, Motion.PickPosition.APos);
+            Motion.WaitTillEnd(Motion.MotorY);           
         }
 
         public void Unload(RackGripper gripper, TargetPosition target)
         {
             CheckGripperAvailable(gripper);
-            MoveToTargetPosition(gripper, target);
+            MoveToTargetPosition(gripper, target, false);
             CloseGripper(gripper);
             MoveToPointTillEnd(Motion.MotorZ, target.ApproachHeight);
             YRetractFromBox();
@@ -570,7 +592,7 @@ namespace Rack
         {
             OnInfoOccured(20018, "Try unloading phone:" + phone.Id + " with " + gripper + ".");
             TargetPosition pos = phone.CurrentTargetPosition;
-            MoveToTargetPosition(gripper, pos);
+            MoveToTargetPosition(gripper, pos, false);
             CloseGripper(gripper);
             MoveToPointTillEnd(Motion.MotorZ, pos.ApproachHeight);
             YRetractFromBox();
@@ -672,10 +694,32 @@ namespace Rack
             {
                 throw new Exception("Box " + box.Id + " is not opened.");
             }
-            MoveToTargetPosition(gripper, box.Position);
+            MoveToTargetPosition(gripper, box.Position, false);
             CloseGripper(gripper);
             MoveToPointTillEnd(Motion.MotorZ, box.Position.ApproachHeight); //Up.
             ChangeGripper(box.Position, ref gripper); //Switch gripper.
+
+            //Slip in phone.
+            Task.Run(() => {
+                Stopwatch stopwatch = new Stopwatch();
+                stopwatch.Start();
+                while (stopwatch.ElapsedMilliseconds < 5000)
+                {
+                    if (Motion.GetPosition(Motion.MotorZ) < box.Position.ZPos + SlipInHeight)
+                    {
+                        try
+                        {
+                            OpenGripper(gripper);
+                        }
+                        catch (Exception)
+                        {
+                            break;
+                        }
+                    }
+                    Delay(5);
+                }
+            });
+
             MoveToPointTillEnd(Motion.MotorZ, box.Position.ZPos); //Down.
             OpenGripper(gripper);
             MoveToPointTillEnd(Motion.MotorZ, box.Position.ApproachHeight); //Up.

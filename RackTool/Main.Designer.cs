@@ -100,9 +100,7 @@
             this.buttonEmptyNg = new System.Windows.Forms.Button();
             this.buttonTest = new System.Windows.Forms.Button();
             this.buttonPausePhoneServer = new System.Windows.Forms.Button();
-            this.trackBarSetSpeed1 = new System.Windows.Forms.TrackBar();
             this.buttonCheckBox = new System.Windows.Forms.Button();
-            this.labelSpeed1 = new System.Windows.Forms.Label();
             this.buttonStartPhoneServer = new System.Windows.Forms.Button();
             this.buttonReset = new System.Windows.Forms.Button();
             this.tabPage2 = new System.Windows.Forms.TabPage();
@@ -362,13 +360,13 @@
             this.label105 = new System.Windows.Forms.Label();
             this.label106 = new System.Windows.Forms.Label();
             this.label107 = new System.Windows.Forms.Label();
+            this.checkBoxAutoPass = new System.Windows.Forms.CheckBox();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarSetSpeed2)).BeginInit();
             this.tabControlUi.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.groupBoxMain.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.trackBarSetSpeed1)).BeginInit();
             this.tabPage2.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.tabPage4.SuspendLayout();
@@ -885,9 +883,7 @@
             this.groupBoxMain.Controls.Add(this.buttonEmptyNg);
             this.groupBoxMain.Controls.Add(this.buttonTest);
             this.groupBoxMain.Controls.Add(this.buttonPausePhoneServer);
-            this.groupBoxMain.Controls.Add(this.trackBarSetSpeed1);
             this.groupBoxMain.Controls.Add(this.buttonCheckBox);
-            this.groupBoxMain.Controls.Add(this.labelSpeed1);
             this.groupBoxMain.Controls.Add(this.buttonStartPhoneServer);
             this.groupBoxMain.Controls.Add(this.buttonReset);
             this.groupBoxMain.Controls.Add(this.buttonStop);
@@ -929,26 +925,12 @@
             this.buttonPausePhoneServer.UseVisualStyleBackColor = true;
             this.buttonPausePhoneServer.Click += new System.EventHandler(this.buttonPausePhoneServer_Click);
             // 
-            // trackBarSetSpeed1
-            // 
-            resources.ApplyResources(this.trackBarSetSpeed1, "trackBarSetSpeed1");
-            this.trackBarSetSpeed1.Maximum = 1000;
-            this.trackBarSetSpeed1.Name = "trackBarSetSpeed1";
-            this.trackBarSetSpeed1.Value = 20;
-            this.trackBarSetSpeed1.Scroll += new System.EventHandler(this.trackBarSetSpeed1_Scroll);
-            this.trackBarSetSpeed1.ValueChanged += new System.EventHandler(this.trackBarSetSpeed1_ValueChanged);
-            // 
             // buttonCheckBox
             // 
             resources.ApplyResources(this.buttonCheckBox, "buttonCheckBox");
             this.buttonCheckBox.Name = "buttonCheckBox";
             this.buttonCheckBox.UseVisualStyleBackColor = true;
             this.buttonCheckBox.Click += new System.EventHandler(this.buttonCheckBox_Click);
-            // 
-            // labelSpeed1
-            // 
-            resources.ApplyResources(this.labelSpeed1, "labelSpeed1");
-            this.labelSpeed1.Name = "labelSpeed1";
             // 
             // buttonStartPhoneServer
             // 
@@ -1603,6 +1585,7 @@
             // 
             // panelTesters
             // 
+            this.panelTesters.Controls.Add(this.checkBoxAutoPass);
             this.panelTesters.Controls.Add(this.groupBoxTester05);
             this.panelTesters.Controls.Add(this.groupBoxTester06);
             this.panelTesters.Controls.Add(this.buttonTesterSendFail);
@@ -2728,6 +2711,13 @@
             resources.ApplyResources(this.label107, "label107");
             this.label107.Name = "label107";
             // 
+            // checkBoxAutoPass
+            // 
+            resources.ApplyResources(this.checkBoxAutoPass, "checkBoxAutoPass");
+            this.checkBoxAutoPass.Name = "checkBoxAutoPass";
+            this.checkBoxAutoPass.UseVisualStyleBackColor = true;
+            this.checkBoxAutoPass.CheckedChanged += new System.EventHandler(this.checkBoxAutoPass_CheckedChanged);
+            // 
             // Main
             // 
             resources.ApplyResources(this, "$this");
@@ -2748,7 +2738,6 @@
             this.tabPage1.ResumeLayout(false);
             this.groupBoxMain.ResumeLayout(false);
             this.groupBoxMain.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.trackBarSetSpeed1)).EndInit();
             this.tabPage2.ResumeLayout(false);
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
@@ -2765,6 +2754,7 @@
             this.contextMenuStrip1.ResumeLayout(false);
             this.tabPage5.ResumeLayout(false);
             this.panelTesters.ResumeLayout(false);
+            this.panelTesters.PerformLayout();
             this.groupBoxTester05.ResumeLayout(false);
             this.groupBoxTester05.PerformLayout();
             this.groupBoxTester06.ResumeLayout(false);
@@ -2866,8 +2856,6 @@
         private System.Windows.Forms.Label label15;
         private System.Windows.Forms.Label labelSpeed2;
         private System.Windows.Forms.TrackBar trackBarSetSpeed2;
-        private System.Windows.Forms.Label labelSpeed1;
-        private System.Windows.Forms.TrackBar trackBarSetSpeed1;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button buttonLowSpeed;
         private System.Windows.Forms.Button buttonMiddleSpeed;
@@ -3136,6 +3124,7 @@
         private System.Windows.Forms.Label label77;
         private System.Windows.Forms.Label label78;
         private System.Windows.Forms.Label label79;
+        private System.Windows.Forms.CheckBox checkBoxAutoPass;
     }
 }
 

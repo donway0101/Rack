@@ -77,7 +77,7 @@ namespace Rack
             {
                 Close();
                 Thread.Sleep(500);
-                SerialPort = new SerialPort(PortName, 9600, Parity.None, 8, StopBits.One);
+                SerialPort = new SerialPort(PortName, 38400, Parity.None, 8, StopBits.One);
                 SerialPort.Open();
                 SerialPort.DataReceived += SerialPort_DataReceived;
                 Thread.Sleep(300);

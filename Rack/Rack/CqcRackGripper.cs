@@ -71,31 +71,60 @@ namespace Rack
             }
         }
 
-        private void WaitTillEndGripper(TargetPosition target, RackGripper gripper)
+        private void WaitTillEndGripper(TargetPosition target, RackGripper gripper, bool phoneConveyorVertical = false)
         {
             if (gripper == RackGripper.One)
             {
                 Steppers.WaitTillEnd(RackGripper.One, target.APos);
-                Steppers.WaitTillEnd(RackGripper.Two, 0);
+                if (phoneConveyorVertical)
+                {
+                    Steppers.WaitTillEnd(RackGripper.Two, target.APos);
+                }
+                else
+                {
+                    Steppers.WaitTillEnd(RackGripper.Two, 0);
+                }
             }
             else
             {
-                Steppers.WaitTillEnd(RackGripper.One, 0);
+                if (phoneConveyorVertical)
+                {
+                    Steppers.WaitTillEnd(RackGripper.One, target.APos);
+                }
+                else
+                {
+                    Steppers.WaitTillEnd(RackGripper.One, 0);
+                }
                 Steppers.WaitTillEnd(RackGripper.Two, target.APos);
             }
         }
 
-        private void ToPointGripper(TargetPosition target, RackGripper gripper)
+        private void ToPointGripper(TargetPosition target, RackGripper gripper, bool phoneConveyorVertical = false)
         {
             if (gripper == RackGripper.One)
             {
                 Steppers.ToPoint(RackGripper.One, target.APos);
-                Steppers.ToPoint(RackGripper.Two, 0);
+                if (phoneConveyorVertical)
+                {
+                    Steppers.ToPoint(RackGripper.Two, target.APos);
+                }
+                else
+                {
+                    Steppers.ToPoint(RackGripper.Two, 0);
+                }
+                
             }
             else
             {
+                if (phoneConveyorVertical)
+                {
+                    Steppers.ToPoint(RackGripper.One, target.APos);
+                }
+                else
+                {
+                    Steppers.ToPoint(RackGripper.One, 0);
+                }
                 Steppers.ToPoint(RackGripper.Two, target.APos);
-                Steppers.ToPoint(RackGripper.One, 0);
             }
         }
 

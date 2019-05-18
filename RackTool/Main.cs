@@ -24,6 +24,7 @@ namespace RackTool
         private ArrayList _portName;
         private Power _power = Power.None;
         private bool _isStart = false;
+        private bool _autoPass = false;
         private TabControlPage currentPage = TabControlPage.Setting;
 
         private List<CqcRackError> _errorsList = new List<CqcRackError>();
@@ -165,10 +166,6 @@ namespace RackTool
         #endregion
 
         #region Main
-        private void trackBarSetSpeed1_Scroll(object sender, EventArgs e)
-        {
-            _rack.SetRobotSpeedImm(Convert.ToDouble(trackBarSetSpeed1.Value));
-        }
 
         private async void button_Start_Click(object sender, EventArgs e)
         {
@@ -426,7 +423,7 @@ namespace RackTool
         #endregion
         private void trackBarSetSpeed2_Scroll(object sender, EventArgs e)
         {
-            _rack.SetRobotSpeedImm(Convert.ToDouble(trackBarSetSpeed2.Value));
+            _rack.SetRobotSpeed(Convert.ToDouble(trackBarSetSpeed2.Value));
         }
         private void buttonG1TightOrLoose_Click(object sender, EventArgs e)
         {
@@ -656,12 +653,6 @@ namespace RackTool
         private void trackBarSetSpeed2_ValueChanged(object sender, EventArgs e)
         {
             labelSpeed2.Text = trackBarSetSpeed2.Value.ToString();
-
-        }
-
-        private void trackBarSetSpeed1_ValueChanged(object sender, EventArgs e)
-        {
-            labelSpeed1.Text = trackBarSetSpeed1.Value.ToString();
         }
 
         private void buttonSave_Click(object sender, EventArgs e)
@@ -1063,16 +1054,16 @@ namespace RackTool
         #region SpeedSwitch
         private void buttonLowSpeed_Click(object sender, EventArgs e)
         {
-            _rack.SetRobotSpeedImm(1);
+            _rack.SetRobotSpeed(1);
         }
 
         private void buttonMiddleSpeed_Click(object sender, EventArgs e)
         {
-            _rack.SetRobotSpeedImm(100);
+            _rack.SetRobotSpeed(100);
         }
         private void buttonHighSpeed_Click(object sender, EventArgs e)
         {
-            _rack.SetRobotSpeedImm(200);
+            _rack.SetRobotSpeed(200);
         }
         #endregion
         #endregion 
@@ -1145,6 +1136,7 @@ namespace RackTool
                                 box.OpenBox();
                                 box.Phone.FailCount = 3; //Set as NG.
                                 box.Phone.TestResult = TestResult.Fail;
+                                box.Phone.TestCycleTimeStopWatch.Reset();
                             }
                             catch (Exception ex)
                             {
@@ -1237,10 +1229,7 @@ namespace RackTool
 
         private void UpdateMainUi()
         {
-            trackBarSetSpeed1.BeginInvoke((MethodInvoker)(() =>
-            {
-                trackBarSetSpeed1.Value = (int)(_rack.Motion.GetVelocity(_rack.Motion.MotorZ) / _rack.Motion.MotorZ.SpeedFactor);
-            }));
+
         }
 
         private void Delay(int ms = 50)
@@ -2926,6 +2915,37 @@ namespace RackTool
         {
             CheckBox checkBox = (CheckBox)sender;
             _rack.Tester2.SimulateMode = checkBox.Checked;
+        }
+
+        private void checkBoxAutoPass_CheckedChanged(object sender, EventArgs e)
+        {
+            _autoPass = checkBoxAutoPass.Checked;
+            Task.Run(() => {
+                while (_autoPass)
+                {
+                    foreach (var box in _rack.ShieldBoxs)
+                    {
+                        if (box.Phone!=null)
+                        {
+                            if (box.Phone.TestCycleTimeStopWatch.ElapsedMilliseconds/1000>5)
+                            {
+                                box.Phone.TestCycleTimeStopWatch.Reset();
+                                try
+                                {
+                                    box.OpenBox();
+                                }
+                                catch (Exception)
+                                {
+                                    break;
+                                }                              
+                                box.Phone.TestResult = TestResult.Pass;
+                            }
+                        }
+                    }
+
+                    Delay(100);
+                }
+            });
         }
     }
 }
