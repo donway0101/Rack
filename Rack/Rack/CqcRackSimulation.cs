@@ -18,6 +18,7 @@
             if (ScannerOnline)
             {
                 phone.SerialNumber = Scanner.SerialNumber;
+                Scanner.SerialNumber = "NoSerialNumber";
                 Scanner.ScanSuccessful = false;
             }
 
@@ -28,16 +29,6 @@
 
             LatestPhone = phone;
         }       
-
-        //public void AddGoldPhone()
-        //{
-        //    AddPhoneToBeServed(new Phone()
-        //    {
-        //        AtBoxType = ShieldBoxType.Rf,
-        //        Id = -1,
-        //        Type = PhoneType.Golden,
-        //    });
-        //}
 
         public void ShieldBoxSetupForSimulation()
         {
@@ -60,9 +51,11 @@
             }
         }
 
-        public void TesterSetupForSimulation()
+        public void GoldPhoneSetup()
         {
-            //TesterSetup();
+            GoldRf.CurrentTargetPosition = Motion.Gold1;
+
+            GoldWifi.CurrentTargetPosition = Motion.Gold2;
         }
     }
 }

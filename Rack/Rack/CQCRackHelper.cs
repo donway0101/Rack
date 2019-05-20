@@ -98,7 +98,7 @@ namespace Rack
                 case TeachPos.ShieldBox6:
                     return ShieldBox6;
                 default:
-                    throw new Exception("Teach pos match no shield box.");
+                    return null;
             }
         }
 

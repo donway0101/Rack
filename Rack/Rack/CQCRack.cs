@@ -106,8 +106,16 @@ namespace Rack
         #endregion
 
         #region PhoneServer
+
+        public Phone GoldRf = new Phone()
+        { Id = -1, SerialNumber="00000000001", GoldPhoneBusy=false,};
+        public Phone GoldWifi = new Phone()
+        { Id = -2, SerialNumber = "00000000001", GoldPhoneBusy = false };
+
         // Todo read xml?
-        public long PhoneCount { get; set; }
+        public long PhoneCount { get; set; } = 1;
+
+        public long CurrentServedPhoneId { get; set; }
 
         /// <summary>
         /// Can be on conveyor or on gripper.

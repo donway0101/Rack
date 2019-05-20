@@ -98,6 +98,11 @@ namespace RackTool
         {
             try
             {
+                if (code == (int)Error.OpenBoxFail)
+                {
+                    //Todo add to history error list, if reset, then the list is cleared.
+                }
+
                 NewLog.Instance.Error(code.ToString() + " " + description);
                 AddMessageToTextBox(code, description);
             }
@@ -498,7 +503,7 @@ namespace RackTool
                     if (Result == DialogResult.No)
                         return;
                     ShieldBox box = _rack.ConverterTeachPosToShieldBox(_selectedTargetPosition);
-                    _rack.UnloadAndLoad(box, _selectedGripper);
+                    _rack.UnloadAndLoad(box, _selectedGripper, true);
                 }
                 catch (Exception ex)
                 {
@@ -542,10 +547,10 @@ namespace RackTool
 
             await Task.Run((Action)(() =>
             {
-                ShieldBox box = _rack.ConverterTeachPosToShieldBox(_selectedTargetPosition);
                 try
                 {
-                    _rack.Load(_selectedGripper, box);
+                    TargetPosition target = _rack.ConverterTeachPosToTargetPosition(_selectedTargetPosition);
+                    _rack.Load(_selectedGripper, target);
                 }
                 catch (Exception ex)
                 {
@@ -565,7 +570,7 @@ namespace RackTool
             _selectedTargetPosition = (TeachPos)comboBoxMovePos.SelectedItem;
         }
 
-        private double defaultTestSpeed = 5;
+        private double defaultTestSpeed = 10;
 
         private async void buttonPick_Click(object sender, EventArgs e)
         {
@@ -2749,6 +2754,7 @@ namespace RackTool
             richTextBoxError.Height = tabControlUi.Location.Y - 10;
             tabControlUi.Visible = true;
             _scrollRichTextBox = true;
+            AddMessageToTextBox(20000, "User collapes message text.");
         }
 
         private void WhenTextBoxOpen()
@@ -2927,16 +2933,21 @@ namespace RackTool
                     {
                         if (box.Phone!=null)
                         {
-                            if (box.Phone.TestCycleTimeStopWatch.ElapsedMilliseconds/1000>5)
-                            {
-                                box.Phone.TestCycleTimeStopWatch.Reset();
+                            if (box.Phone.TestCycleTimeStopWatch.ElapsedMilliseconds/1000 > 5)
+                            {                                
                                 try
                                 {
+                                    if (box.IsClosed()==false)
+                                    {
+                                        continue;
+                                    }
                                     box.OpenBox();
+                                    box.Phone.TestCycleTimeStopWatch.Reset();
                                 }
                                 catch (Exception)
                                 {
-                                    break;
+                                    OnErrorOccured(this, 40001, "Can't open box door.");
+                                    Delay(3000);
                                 }                              
                                 box.Phone.TestResult = TestResult.Pass;
                             }
@@ -2946,6 +2957,30 @@ namespace RackTool
                     Delay(100);
                 }
             });
+        }
+
+        private void buttonBox05GoldStart_Click(object sender, EventArgs e)
+        {
+            _rack.ShieldBox5.GoldPhoneCheckRequest = true;
+            MessageBox.Show("GoldPhoneCheckRequest set.");
+        }
+
+        private void buttonBox05GoldEnd_Click(object sender, EventArgs e)
+        {
+            _rack.ShieldBox5.GoldPhoneChecked = true;
+            MessageBox.Show("GoldPhoneChecked set.");
+        }
+
+        private void buttonBox01GoldStart_Click(object sender, EventArgs e)
+        {
+            _rack.ShieldBox1.GoldPhoneCheckRequest = true;
+            MessageBox.Show("GoldPhoneCheckRequest set.");
+        }
+
+        private void buttonBox01GoldEnd_Click(object sender, EventArgs e)
+        {
+            _rack.ShieldBox1.GoldPhoneChecked = true;
+            MessageBox.Show("GoldPhoneChecked set.");
         }
     }
 }

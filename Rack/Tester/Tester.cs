@@ -261,7 +261,7 @@ namespace Rack
                         }
                         catch (BoxException)
                         {
-                            OnErrorOccured(40001, "Open box failed.");
+                            OnErrorOccured((int)Error.OpenBoxFail, "Open box failed.");
                         }
                         catch (Exception)
                         {

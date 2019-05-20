@@ -31,14 +31,15 @@ namespace Rack
                         {
                             if (OkToLetInNewPhone())
                             {
-                                if (ScannerOnline)
-                                {
-                                    if (Scanner.ScanSuccessful == false)
-                                    {
-                                        throw new Exception("Scan fail, please remove phone manually.");
-                                    }
-                                }                               
+                                //if (ScannerOnline)
+                                //{
+                                //    if (Scanner.ScanSuccessful == false)
+                                //    {
+                                //        throw new Exception("Scan fail, please remove phone manually.");
+                                //    }
+                                //}                               
                                 Conveyor.InposForPicking();
+                                //Conveyor is still stop, so no new SN would enter.
                                 AddNewPhone();
                             }
                         }
@@ -52,15 +53,16 @@ namespace Rack
                     if (LatestPhone != null && Conveyor.PickBufferHasPhone && Conveyor.HasPlaceAPhone == false)
                     {
                         Conveyor.StopBeltPick();
-                    }
-
-                    ConveyorIsBusy = false;
-
+                    }                    
                 }
                 catch (Exception e)
                 {
                     OnErrorOccured(40007, e.Message);
-                    Delay(5000);
+                    Delay(3000);
+                }
+                finally
+                {
+                    ConveyorIsBusy = false;
                 }
 
                 Delay(100);
@@ -69,6 +71,11 @@ namespace Rack
 
         private bool OkToLetInNewPhone()
         {
+            if (Conveyor.HasPlaceAPhone)
+            {
+                return false;
+            }
+
             int failPhoneNum = 0;
             foreach (var box in ShieldBoxs)
             {
@@ -91,7 +98,7 @@ namespace Rack
 
             foreach (var box in ShieldBoxs)
             {
-                if (box.Enabled && box.Empty && box.Type == ShieldBoxType.Rf)
+                if (box.Enabled && box.Empty && box.Type == ShieldBoxType.Rf && box.GoldPhoneCheckRequest == false)
                 {
                     return true;
                 }

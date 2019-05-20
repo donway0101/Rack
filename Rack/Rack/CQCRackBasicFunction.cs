@@ -103,6 +103,8 @@ namespace Rack
                 Scanner.Start();               
             }
 
+            GoldPhoneSetup();
+
             SelfChecking();
 
             SetupComplete = true;
@@ -350,6 +352,9 @@ namespace Rack
             MoveToTargetPosition(gripper, target, false);
             CloseGripper(gripper);
             MoveToPointTillEnd(Motion.MotorZ, Motion.PickPosition.ApproachHeight);
+
+            CheckPhoneLost(gripper);
+
             MoveToPointTillEnd(Motion.MotorY, Motion.HomePosition.YPos);
             LatestPhone.OnGripper = gripper;
 
@@ -440,7 +445,7 @@ namespace Rack
                 WaitTillEndGripper(placePosition, gripper);
                 Motion.WaitTillEndX();
                 Motion.WaitTillEnd(Motion.MotorR);
-                MotorYOutThenBreakMotorZDown(placePosition, gripper);
+                MotorYOutThenBreakMotorZDown(placePosition, gripper, false);
             }
             else
             {
@@ -472,14 +477,14 @@ namespace Rack
             {
                 if (!EcatIo.GetInput(Input.Gripper01))
                 {
-                    throw new Exception("Gripper one is empty when place.");
+                    throw new Exception("Gripper one is empty, phone is lost.");
                 }
             }
             else
             {
                 if (!EcatIo.GetInput(Input.Gripper02))
                 {
-                    throw new Exception("Gripper two is empty when place.");
+                    throw new Exception("Gripper two is empty, phone is lost.");
                 }
             }
         }
@@ -548,7 +553,7 @@ namespace Rack
             YRetractFromBox();
         }
 
-        public void Load(RackGripper gripper, ShieldBox box)
+        public void Load(RackGripper gripper, ShieldBox box, bool closeBox)
         {
             OnInfoOccured(20023, "Try loading phone to box:" + box.Id + " with " + gripper + ".");
             TargetPosition target = ConvertShieldBoxToTargetPosition(box);
@@ -559,6 +564,10 @@ namespace Rack
             MoveToTargetPosition(gripper, target, true);
             OpenGripper(gripper);
             MoveToPointTillEnd(Motion.MotorZ, target.ApproachHeight);
+            if (closeBox)
+            {
+                CloseBoxAsync(box);
+            }
             YRetractFromBox();
 
             OnInfoOccured(20023, "Finish loading phone to box:" + box.Id + ".");
@@ -567,15 +576,37 @@ namespace Rack
         private void YRetractFromBox()
         {
             Motion.ToPoint(Motion.MotorY, Motion.PickPosition.YPos);
-            Steppers.ToPoint(RackGripper.One, Motion.PickPosition.APos);
-            Steppers.ToPoint(RackGripper.Two, Motion.PickPosition.APos);
-            Steppers.WaitTillEnd(RackGripper.One, Motion.PickPosition.APos);
-            Steppers.WaitTillEnd(RackGripper.Two, Motion.PickPosition.APos);
+            if (GripperIsAvailable(RackGripper.One) == false)
+            {
+                Steppers.ToPoint(RackGripper.One, Motion.PickPosition.APos);
+            }
+            if (GripperIsAvailable(RackGripper.Two) == false)
+            {
+                Steppers.ToPoint(RackGripper.Two, Motion.PickPosition.APos);
+            }
+            if (GripperIsAvailable(RackGripper.One) == false)
+            {
+                Steppers.WaitTillEnd(RackGripper.One, Motion.PickPosition.APos);
+            }
+            if (GripperIsAvailable(RackGripper.Two) == false)
+            {
+                Steppers.WaitTillEnd(RackGripper.Two, Motion.PickPosition.APos);
+            }     
             Motion.WaitTillEnd(Motion.MotorY);           
         }
 
         public void Unload(RackGripper gripper, TargetPosition target)
         {
+            ShieldBox box = ConverterTeachPosToShieldBox(target.TeachPos);
+
+            if (box!=null)
+            {
+                if (box.IsClosed())
+                {
+                    throw new Exception("Cant unload, box is not opened.");
+                }
+            }
+
             CheckGripperAvailable(gripper);
             MoveToTargetPosition(gripper, target, false);
             CloseGripper(gripper);
@@ -591,11 +622,21 @@ namespace Rack
         public void Unload(RackGripper gripper, Phone phone)
         {
             OnInfoOccured(20018, "Try unloading phone:" + phone.Id + " with " + gripper + ".");
+
+            ShieldBox box = ConverterTeachPosToShieldBox(phone.CurrentTargetPosition.TeachPos);
+            if (box != null)
+            {
+                if (box.IsClosed())
+                {
+                    throw new Exception("Cant unload, box is not opened.");
+                }
+            }
             TargetPosition pos = phone.CurrentTargetPosition;
             MoveToTargetPosition(gripper, pos, false);
             CloseGripper(gripper);
             MoveToPointTillEnd(Motion.MotorZ, pos.ApproachHeight);
             YRetractFromBox();
+            CheckPhoneLost(gripper);
             OnInfoOccured(20018, "Finish unloading phone:" + phone.Id);
         }
 
@@ -686,7 +727,7 @@ namespace Rack
         //    YRetractFromBox();
         //}
 
-        public void UnloadAndLoad(ShieldBox box, RackGripper gripper)
+        public void UnloadAndLoad(ShieldBox box, RackGripper gripper, bool closeBox)
         {
             OnInfoOccured(20025, "Try unload and load box: " + box.Id + " with " + gripper + ".");
             CheckGripperAvailable(gripper);
@@ -696,8 +737,13 @@ namespace Rack
             }
             MoveToTargetPosition(gripper, box.Position, false);
             CloseGripper(gripper);
-            MoveToPointTillEnd(Motion.MotorZ, box.Position.ApproachHeight); //Up.
+
+            Motion.ToPoint(Motion.MotorZ, box.Position.ZPos + 50);
+            Motion.WaitTillZBiggerThan(box.Position.ZPos + 30);
             ChangeGripper(box.Position, ref gripper); //Switch gripper.
+            Motion.WaitTillEnd(Motion.MotorZ);
+
+            CheckPhoneLost(gripper);
 
             //Slip in phone.
             Task.Run(() => {
@@ -722,7 +768,14 @@ namespace Rack
 
             MoveToPointTillEnd(Motion.MotorZ, box.Position.ZPos); //Down.
             OpenGripper(gripper);
+
             MoveToPointTillEnd(Motion.MotorZ, box.Position.ApproachHeight); //Up.
+
+            if (closeBox)
+            {
+                CloseBoxAsync(box);
+            }         
+
             YRetractFromBox();
             OnInfoOccured(20025, "Finish unload and load box: " + box.Id + " with " + gripper + ".");
         }
@@ -751,10 +804,13 @@ namespace Rack
 
         public void Reset()
         {
-            Motion.SetSpeedImm(DefaultRobotSpeed);
+            Motion.SetSpeed(DefaultRobotSpeed);
             //SystemFault = false;
             RobotReleaseControlOnConveyor();
-            OkToReloadOnConveyor();          
+            OkToReloadOnConveyor();
+            Conveyor.HasBinAPhone = false;
+            Conveyor.HasPlaceAPhone = false;
+
         }
     }
 }

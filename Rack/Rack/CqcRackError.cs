@@ -21,4 +21,11 @@ namespace Rack
 
 
     }
+
+    public enum Error
+    {
+        OpenBoxFail = 40001,
+
+        PhoneLost = 40023,
+    }
 }

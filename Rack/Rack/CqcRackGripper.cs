@@ -111,8 +111,7 @@ namespace Rack
                 else
                 {
                     Steppers.ToPoint(RackGripper.Two, 0);
-                }
-                
+                }               
             }
             else
             {

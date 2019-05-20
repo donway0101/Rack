@@ -11,6 +11,7 @@ namespace Rack
         /// </summary>
         public long Id { get; set; }
         public PhoneType Type { get; set; } = PhoneType.Normal;
+        public bool GoldPhoneBusy { get; set; }
         public string SerialNumber { get; set; }     
         public TargetPosition CurrentTargetPosition { get; set; } = new TargetPosition() { TeachPos = TeachPos.None };
         public TargetPosition NextTargetPosition { get; set; } = new TargetPosition() { TeachPos = TeachPos.None };

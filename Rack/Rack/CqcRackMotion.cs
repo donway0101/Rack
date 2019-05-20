@@ -144,11 +144,14 @@ namespace Rack
             MotorYOutThenBreakMotorZDown(target, gripper);
         }
 
-        private void MotorYOutThenBreakMotorZDown(TargetPosition target, RackGripper gripper)
+        private void MotorYOutThenBreakMotorZDown(TargetPosition target, RackGripper gripper, bool moveStepper = true)
         {
             Motion.ToPoint(Motion.MotorY, target.YPos);
-            ToPointGripper(target, gripper);          
-            WaitTillEndGripper(target, gripper);
+            if (moveStepper)
+            {
+                ToPointGripper(target, gripper);
+                WaitTillEndGripper(target, gripper);
+            }          
             Motion.WaitTillEnd(Motion.MotorY);
 
             Motion.BreakToPointWaitTillEnd(Motion.MotorZ, target.ZPos);

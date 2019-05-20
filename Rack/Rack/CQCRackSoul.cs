@@ -50,6 +50,88 @@ namespace Rack
                     ProductionFault = false;
                 }
 
+                try
+                {
+                    foreach (var box in ShieldBoxs)
+                    {
+                        //Gold phone in.
+                        if (box.GoldPhoneCheckRequest && box.GoldPhoneChecking == false && box.Empty)
+                        {
+                            if (box.Type == ShieldBoxType.Rf)
+                            {
+                                if (GoldRf.GoldPhoneBusy)
+                                {
+                                    break;
+                                }
+                                else
+                                {
+                                    RackGripper gripper = GetAvailableGripper();
+                                    Unload(gripper, GoldRf.CurrentTargetPosition);
+                                    GoldRf.GoldPhoneBusy = true;
+                                    Load(gripper, box, true);                                    
+                                    Link(GoldRf, box);
+                                }
+                            }
+
+                            if (box.Type == ShieldBoxType.Wifi)
+                            {
+                                if (GoldWifi.GoldPhoneBusy)
+                                {
+                                    break;
+                                }
+                                else
+                                {
+                                    RackGripper gripper = GetAvailableGripper();
+                                    Unload(gripper, GoldWifi.CurrentTargetPosition);
+                                    GoldWifi.GoldPhoneBusy = true;
+                                    Load(gripper, box, true);
+                                    Link(GoldWifi, box);
+                                }
+                            }
+
+                            //Todo how to recover if error occured?
+                            box.GoldPhoneChecked = false;
+                            box.GoldPhoneChecking = true;
+                        }
+
+                        //Gold phone out.
+                        if (box.GoldPhoneCheckRequest && box.GoldPhoneChecked && box.GoldPhoneChecking == true)
+                        {
+                            box.OpenBox();
+
+                            if (box.Type == ShieldBoxType.Rf)
+                            {
+                                RackGripper gripper = GetAvailableGripper();
+                                Unload(gripper, GoldRf.CurrentTargetPosition);
+                                Unlink(GoldRf);
+                                Load(gripper, Motion.Gold1);
+                                GoldRf.GoldPhoneBusy = false;
+                                GoldRf.CurrentTargetPosition = Motion.Gold1;
+                            }
+
+                            if (box.Type == ShieldBoxType.Wifi)
+                            {
+                                RackGripper gripper = GetAvailableGripper();
+                                Unload(gripper, GoldWifi.CurrentTargetPosition);
+                                Unlink(GoldWifi);
+                                Load(gripper, Motion.Gold2);
+                                GoldWifi.GoldPhoneBusy = false;
+                                GoldWifi.CurrentTargetPosition = Motion.Gold2;
+                            }
+
+                            box.GoldPhoneChecking = false;
+                            box.GoldPhoneCheckRequest = false;
+                        }
+                    }
+                }
+                catch (Exception e)
+                {
+                    OnErrorOccured(40024, "Gold phone check fault due to:" + e.Message);
+                    PhoneServerManualResetEvent.Reset();
+                    ProductionFault = true;
+                    continue;
+                }
+
                 Delay(500);
                 if (HasNoPhoneToBeServed())
                     continue;
@@ -132,9 +214,9 @@ namespace Rack
 
                                             ShieldBox box = ConverterTeachPosToShieldBox(
                                                    secondPhone.NextTargetPosition.TeachPos);
-                                            Load(gripper, box);
+                                            Load(gripper, box, true);
                                             Link(secondPhone, box);
-                                            CloseBoxAsync(box);
+                                            //CloseBoxAsync(box);
                                             break;
 
                                         default:
@@ -298,9 +380,9 @@ namespace Rack
 
                                                 ShieldBox box = ConverterTeachPosToShieldBox(
                                                     secondPhone.NextTargetPosition.TeachPos);
-                                                Load(gripper, box);
+                                                Load(gripper, box, true);
                                                 Link(secondPhone, box);
-                                                CloseBoxAsync(box);
+                                                //CloseBoxAsync(box);
                                                 break;
 
                                             default:
@@ -377,6 +459,7 @@ namespace Rack
 
         private void InfoPhoneAboutToBeServed(Phone phone)
         {
+            CurrentServedPhoneId = phone.Id;
             if (phone.ShieldBox!=null)
             {
                 OnInfoOccured(20014, "Serving phone Id:" + phone.Id + " Step:" + phone.Step +
@@ -1091,14 +1174,14 @@ namespace Rack
             #endregion
         }
 
-        private void ComboUnloadAndLoad(Phone phoneIn, Phone phoneOut, out RackGripper gripper)
+        private void ComboUnloadAndLoad(Phone phoneIn, Phone phoneOut, out RackGripper gripper, bool closeBox = true)
         {
             ShieldBox box = phoneOut.ShieldBox;
             gripper = GetAvailableGripper();
-            UnloadAndLoad(box, gripper);
+            UnloadAndLoad(box, gripper, closeBox);
             Unlink(phoneOut);
             Link(phoneIn, box);
-            CloseBoxAsync(box);
+            //CloseBoxAsync(box);
         }
 
         private void ComboUnload(Phone phone)
@@ -1145,9 +1228,9 @@ namespace Rack
                 " from box:" + phone.ShieldBox.Id +  " to box:" + nextBox.Id + " with " + gripper + ".");
             Unload(gripper, phone);
             Unlink(phone);
-            Load(gripper, nextBox);
+            Load(gripper, nextBox, true);
             Link(phone, nextBox);
-            CloseBoxAsync(nextBox);
+            //CloseBoxAsync(nextBox);
         }
 
         /// <summary>
@@ -1169,8 +1252,8 @@ namespace Rack
                 }
                 Link(phone, box);
                 OkToReloadOnConveyor();
-                Load(gripper, box);
-                CloseBoxAsync(box);
+                Load(gripper, box, true);
+                //CloseBoxAsync(box);
             }
             catch (Exception)
             {
@@ -1188,6 +1271,7 @@ namespace Rack
             box.Available = false;
             box.Empty = false;
             box.Phone = phone;
+            phone.TestCycleTimeStopWatch.Restart();
         }
 
         private void Unlink(Phone phone, ShieldBox box)
@@ -1207,7 +1291,7 @@ namespace Rack
             ShieldBox box = phone.ShieldBox;
             OnInfoOccured(20022, "Unlink phone:" + phone.Id + " with box:" + box.Id);
             phone.ShieldBox = null;
-            phone.TestCycleTimeStopWatch.Reset();
+            phone.TestCycleTimeStopWatch.Stop();
             box.Available = true;
             box.Empty = true;
             box.Phone = null;
@@ -1232,7 +1316,7 @@ namespace Rack
         {
             foreach (var box in ShieldBoxs)
             {
-                if (box.Enabled && box.Empty && box.Type == type)
+                if (box.Enabled && box.Empty && box.Type == type && box.GoldPhoneCheckRequest==false)
                 {
                     return box;
                 }
@@ -1263,7 +1347,7 @@ namespace Rack
                         foreach (var box in ShieldBoxs)
                         {
                             var foundBox = true;
-                            if (box.Enabled && box.Available && box.Type == type)
+                            if (box.Enabled && box.Available && box.Type == type && box.GoldPhoneCheckRequest == false)
                             {
                                 foreach (var footprint in phone.TargetPositionFootprint)
                                 {
@@ -1297,7 +1381,6 @@ namespace Rack
 
                     return retryBoxs; 
                     #endregion
-
                 case RackTestMode.AAB:
                     #region AAB mode
                     retryBoxs = new List<ShieldBox>();
@@ -1312,7 +1395,7 @@ namespace Rack
                             foreach (var box in ShieldBoxs)
                             {
                                 var foundBox = true;
-                                if (box.Enabled && box.Available && box.Type == type)
+                                if (box.Enabled && box.Available && box.Type == type && box.GoldPhoneCheckRequest == false)
                                 {
                                     foreach (var footprint in phone.TargetPositionFootprint)
                                     {
@@ -1355,7 +1438,7 @@ namespace Rack
                         foreach (var box in ShieldBoxs)
                         {
                             var foundBox = true;
-                            if (box.Enabled && box.Available && box.Type == type)
+                            if (box.Enabled && box.Available && box.Type == type && box.GoldPhoneCheckRequest == false)
                             {
                                 foreach (var footprint in phone.TargetPositionFootprint)
                                 {
@@ -1434,6 +1517,17 @@ namespace Rack
                 foreach (var phone in phones)
                 {
                     PhoneToBeServed.Remove(phone);
+                    //PhoneToBeServed.Remove(phone);
+                }
+
+                string leftId = string.Empty;
+                foreach (var phone in PhoneToBeServed)
+                {
+                    leftId += phone.Id + " ";
+                }
+                if (leftId != string.Empty)
+                {
+                    OnInfoOccured(20031, "Phone:" + leftId + " in PhoneToBeServed.");
                 }
             }
         }
@@ -1452,6 +1546,12 @@ namespace Rack
                         }
                     }
                 }
+
+                //if (phone.Id == CurrentServedPhoneId)
+                //{
+                //    return;
+                //}
+
                 PhoneToBeServed.Add(phone);                
             }
         }

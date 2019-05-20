@@ -48,6 +48,8 @@ namespace Rack
         /// </summary>
         public bool Available { get; set; }
         public bool GoldPhoneChecked { get; set; }
+        public bool GoldPhoneChecking { get; set; }
+        public bool GoldPhoneCheckRequest { get; set; }
         public ShieldBoxType Type { get; set; } = ShieldBoxType.Rf;
         public TargetPosition Position { get; set; } = new TargetPosition(){XPos = 400, ZPos = 700, YPos = 0};
 
@@ -150,7 +152,7 @@ namespace Rack
                     Available = true;
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 throw new BoxException("OpenBox " + Id + " timeout");
             }
@@ -173,14 +175,10 @@ namespace Rack
                 State = ShieldBoxState.Close;
                 if (changeState)
                 {
-                    ReadyForTesting = true;
-                    if (Phone != null)
-                    {
-                        Phone.TestCycleTimeStopWatch.Restart();
-                    }
+                    ReadyForTesting = true;                 
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 throw new BoxException("CloseBox " + Id + " timeout");
             }            

@@ -260,7 +260,6 @@ namespace Rack
 
         private void Monitor()
         {
-            int pickBufferSensorCount = 0;
             bool placedPhoneDetected = false;
             bool binedPhoneDetected = false;
 
@@ -323,31 +322,12 @@ namespace Rack
                         }
                     }
 
-                    if (PickBufferPhoneSensor())
-                    {
-                        pickBufferSensorCount++;
-                        if (pickBufferSensorCount > 10)
-                        {
-                            PickBufferHasPhone = true;
-                            pickBufferSensorCount = 0;
-                        }
-                    }
-                    else
-                    {
-                        pickBufferSensorCount++;
-                        if (pickBufferSensorCount > 10)
-                        {
-                            PickBufferHasPhone = false;
-                            pickBufferSensorCount = 0;
-                        }
-                    }
-
-
+                    PickBufferHasPhone = PickBufferPhoneSensor();
                 }
                 catch (Exception ex)
                 {
-                    OnErrorOccured(444, ex.Message);
-                    Delay(5000);
+                    OnErrorOccured(40022, ex.Message);
+                    Delay(3000);
                 }
 
                 Delay(100);
