@@ -324,6 +324,10 @@ namespace Rack
             foreach (var mtr in Motors)
             {
                 _ch.SetVelocity(mtr.Id, velocity*mtr.SpeedFactor);
+                if (velocity==0)
+                {
+                    continue;
+                }
                 _ch.SetAcceleration(mtr.Id, velocity * 10.0);
                 _ch.SetDeceleration(mtr.Id, velocity * 10.0);
                 _ch.SetKillDeceleration(mtr.Id, velocity * 100.0);
@@ -434,6 +438,10 @@ namespace Rack
             point *= motor.Direction;
             _ch.ToPoint(MotionFlags.ACSC_AMF_MAXIMUM, motor.Id, point);
             _ch.WaitMotionEnd(motor.Id, timeout);
+            if (IsEnabled(motor) == false)
+            {
+                throw new Exception("Motor " + motor.Id + " is disabled");
+            }
         }
 
         public void Break(Motor motor)
@@ -460,6 +468,10 @@ namespace Rack
             }
             
             _ch.WaitMotionEnd(motor.Id, timeout);
+            if (IsEnabled(motor) == false)
+            {
+                throw new Exception("Motor " + motor.Id + " is disabled");
+            }
         }
 
         public void BreakToPointX(double point)
@@ -553,11 +565,23 @@ namespace Rack
             ToPointX(point);
             _ch.WaitMotionEnd(MotorX1.Id, timeout);
             _ch.WaitMotionEnd(MotorX2.Id, timeout);
+            if (IsEnabled(MotorX1) == false)
+            {
+                throw new Exception("Motor X1 is disabled");
+            }
+            if (IsEnabled(MotorX2) == false)
+            {
+                throw new Exception("Motor X2 is disabled");
+            }
         }
 
         public void WaitTillEnd(Motor motor, int timeout = 60000)
         {
             _ch.WaitMotionEnd(motor.Id, timeout);
+            if (IsEnabled(motor) == false)
+            {
+                throw new Exception("Motor "+ motor.Id +" is disabled");
+            }
         }
 
         public void WaitTillXBiggerThan(double point, int timeout = 60000)
@@ -606,6 +630,14 @@ namespace Rack
         {
             _ch.WaitMotionEnd(MotorX1.Id, timeout);
             _ch.WaitMotionEnd(MotorX2.Id, timeout);
+            if (IsEnabled(MotorX1) == false)
+            {
+                throw new Exception("Motor X1 is disabled");
+            }
+            if (IsEnabled(MotorX2) == false)
+            {
+                throw new Exception("Motor X2 is disabled");
+            }
         }
 
         public void ToPointM(Motor[] motors, double[] points)
@@ -620,35 +652,6 @@ namespace Rack
             _ch.ToPointM(MotionFlags.ACSC_AMF_MAXIMUM, axes, points);
         }
 
-        public void Test()
-        {
-            //Enable(MotorX1);
-
-            //ToPoint(MotorX1, 260);
-
-            //Console.WriteLine("doing");
-
-            //Ch.WaitMotionEnd(Axis.ACSC_AXIS_1, 60000);
-
-            //Console.WriteLine("Finish");
-
-            //Enable(MotorX1);
-            //Enable(MotorX2);
-
-            //Motor[] motors = new Motor[2] { MotorX1, MotorX2 };
-            //double[] pos = new double[2] { 260, 260 };
-
-            //ToPointM(motors, pos);
-
-            //Console.WriteLine("doing");
-
-            //_ch.WaitMotionEnd(Axis.ACSC_AXIS_1, 60000);
-            //Console.WriteLine("finis1");
-            //_ch.WaitMotionEnd(Axis.ACSC_AXIS_2, 60000);
-
-            //Console.WriteLine("Finish2");
-        }
-
         public void Estop()
         {
 
@@ -657,6 +660,11 @@ namespace Rack
         public MotorStates GetRobotState(Motor motor)
         {
             return _ch.GetMotorState(motor.Id);
+        }
+
+        public bool IsEnabled(Motor motor)
+        {
+            return Convert.ToBoolean(GetRobotState(motor) & MotorStates.ACSC_MST_ENABLE);
         }
 
     }

@@ -20,6 +20,11 @@ namespace Rack
         private bool _serverInSimulateMode;
 
         /// <summary>
+        /// Gripper one is a reference. Gripper 2 is offset.
+        /// </summary>
+        public double PickXOffset { get; set; } = 1;
+
+        /// <summary>
         /// Set after tester initialized. 
         /// </summary>
         public bool ServerInSimulateMode
@@ -106,6 +111,11 @@ namespace Rack
         #endregion
 
         #region PhoneServer
+
+        /// <summary>
+        /// Only RF test in a Rack.
+        /// </summary>
+        public bool OneTestInRack { get; set; } = false;
 
         public Phone GoldRf = new Phone()
         { Id = -1, SerialNumber="00000000001", GoldPhoneBusy=false,};

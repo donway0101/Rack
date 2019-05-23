@@ -12,7 +12,8 @@ namespace Rack
         public long Id { get; set; }
         public PhoneType Type { get; set; } = PhoneType.Normal;
         public bool GoldPhoneBusy { get; set; }
-        public string SerialNumber { get; set; }     
+        public string SerialNumber { get; set; }
+        public bool AutoOpenBox { get; set; } = true;
         public TargetPosition CurrentTargetPosition { get; set; } = new TargetPosition() { TeachPos = TeachPos.None };
         public TargetPosition NextTargetPosition { get; set; } = new TargetPosition() { TeachPos = TeachPos.None };
         public List<TargetPosition> TargetPositionFootprint { get; set; } = new List<TargetPosition>();
@@ -37,7 +38,7 @@ namespace Rack
 
         public Stopwatch TestCycleTimeStopWatch { get; set; } = new Stopwatch();
 
-        public int MaxTestCycleTimeSec { get; set; } = 600;
+        public int MaxTestCycleTimeSec { get; set; } = 180;
         public int FailCount { get; set; }
         public RackGripper OnGripper { get; set; }
         public ShieldBox ShieldBox { get; set; }

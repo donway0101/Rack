@@ -60,7 +60,7 @@ namespace Rack
             {
                 if (Steppers == null)
                 {
-                    Steppers = new Stepper("COM6");
+                    Steppers = new Stepper("COM2");
                 }
                 Steppers.Setup();
                 SetStepperSpeed(DefaultRobotSpeed);
@@ -79,6 +79,8 @@ namespace Rack
                 Conveyor.ErrorOccured += Conveyor_ErrorOccured;
 
                 StartConveyorManager();
+
+                LatestPhone = null;
             }
 
             if (ShieldBoxOnline)
@@ -94,7 +96,7 @@ namespace Rack
             {
                 if (Scanner==null)
                 {
-                    Scanner = new Scanner("COM12");
+                    Scanner = new Scanner("COM44");
                     Scanner.InfoOccured -= Scanner_InfoOccured;
                     Scanner.InfoOccured += Scanner_InfoOccured;
                     Scanner.ErrorOccured -= Scanner_ErrorOccured;
@@ -183,7 +185,7 @@ namespace Rack
             Motion.DisableAll();
         }
 
-        public void HomeRobot(double homeSpeed = 20.0)
+        public void HomeRobot(double homeSpeed = 20.0, bool checkGripperEmpty = true)
         {
             if (SetupComplete == false)
             {
@@ -303,10 +305,13 @@ namespace Rack
                 }
             }
 
-            if (EcatIo.GetInput(Input.Gripper01) | EcatIo.GetInput(Input.Gripper02))
+            if (checkGripperEmpty)
             {
-                throw new Exception("Has phone on gripper, take it down first.");
-            }
+                if (EcatIo.GetInput(Input.Gripper01) | EcatIo.GetInput(Input.Gripper02))
+                {
+                    throw new Exception("Has phone on gripper, take it down first.");
+                }
+            }          
 
             OpenGripper(RackGripper.One);
             OpenGripper(RackGripper.Two);
@@ -337,8 +342,6 @@ namespace Rack
 
             RobotTakeControlOnConveyor();
 
-            CheckSafety();
-
             CheckGripperAvailable(gripper);
 
             Conveyor.ReadyForPicking();
@@ -349,7 +352,8 @@ namespace Rack
                 target.XPos = target.XPos + Motion.PickOffset.XPos;
             }
             
-            MoveToTargetPosition(gripper, target, false);
+            MoveToTargetPosition(gripper, target, false, false);
+
             CloseGripper(gripper);
             MoveToPointTillEnd(Motion.MotorZ, Motion.PickPosition.ApproachHeight);
 
@@ -405,8 +409,6 @@ namespace Rack
 
             Conveyor.StopBeltPick();
 
-            CheckSafety();
-
             RackGripper theOtherGripper = RackGripper.None;
             if (Conveyor.PickPhoneSensor())
             {
@@ -435,7 +437,16 @@ namespace Rack
             CheckPhoneLost(gripper);
 
             TargetPosition placePosition = Motion.PickPosition;
-            placePosition.XPos = placePosition.XPos + 1;
+            if (gripper == RackGripper.Two)
+            {
+                placePosition.XPos = placePosition.XPos + 1 + Motion.PickOffset.XPos;
+            }
+            else
+            {
+                placePosition.XPos = placePosition.XPos + 1;
+            }
+
+            placePosition.ZPos = placePosition.ZPos + 4;
 
             if (theOtherGripper != RackGripper.None)
             {
@@ -449,7 +460,7 @@ namespace Rack
             }
             else
             {
-                MoveToTargetPosition(gripper, placePosition, true);
+                MoveToTargetPosition(gripper, placePosition, true, false);
             }           
 
             OpenGripper(gripper);
@@ -514,7 +525,7 @@ namespace Rack
             ShieldBox3.RobotBining = true;
             bool needReopen = false;
 
-            if (ShieldBox3.Enabled)
+            if (ShieldBox3.WasEnabled)
             {
                 if (ShieldBox3.IsClosed() == false)
                 {
@@ -535,7 +546,7 @@ namespace Rack
 
             Conveyor.RunBeltBin();
 
-            if (needReopen)
+            if (needReopen && ShieldBox3.Enabled)
             {
                 ShieldBox3.OpenBox(5000, true, true);
             }
@@ -560,7 +571,8 @@ namespace Rack
             if (box.IsClosed() == true)
             {
                 throw new Exception("Box " + box.Id + " is not opened");
-            }            
+            }
+            
             MoveToTargetPosition(gripper, target, true);
             OpenGripper(gripper);
             MoveToPointTillEnd(Motion.MotorZ, target.ApproachHeight);
@@ -576,22 +588,27 @@ namespace Rack
         private void YRetractFromBox()
         {
             Motion.ToPoint(Motion.MotorY, Motion.PickPosition.YPos);
-            if (GripperIsAvailable(RackGripper.One) == false)
+
+            bool gripperOneHasPhone = GripperIsAvailable(RackGripper.One);
+            bool gripperTwoHasPhone = GripperIsAvailable(RackGripper.Two);
+
+            if (gripperOneHasPhone == false)
             {
                 Steppers.ToPoint(RackGripper.One, Motion.PickPosition.APos);
             }
-            if (GripperIsAvailable(RackGripper.Two) == false)
+            if (gripperTwoHasPhone == false)
             {
                 Steppers.ToPoint(RackGripper.Two, Motion.PickPosition.APos);
             }
-            if (GripperIsAvailable(RackGripper.One) == false)
+            if (gripperOneHasPhone == false)
             {
                 Steppers.WaitTillEnd(RackGripper.One, Motion.PickPosition.APos);
             }
-            if (GripperIsAvailable(RackGripper.Two) == false)
+            if (gripperTwoHasPhone == false)
             {
                 Steppers.WaitTillEnd(RackGripper.Two, Motion.PickPosition.APos);
-            }     
+            } 
+            
             Motion.WaitTillEnd(Motion.MotorY);           
         }
 
@@ -712,6 +729,14 @@ namespace Rack
             {
                 throw new Exception("Conveyor Fault, need to reset first.");
             }
+
+            foreach (var mtr in Motion.Motors)
+            {
+                if (!Motion.IsEnabled(mtr))
+                {
+                    throw new Exception("Motor " + mtr.Id + " is not enabled.");
+                }
+            }
         }
 
         //public void UnloadAndLoad(TargetPosition target, RackGripper gripper)
@@ -793,11 +818,11 @@ namespace Rack
 
         private TargetPosition AddOffset(RackGripper gripper, TargetPosition target)
         {
-            if (gripper == RackGripper.Two && target.TeachPos != TeachPos.Pick)
+            if (gripper == RackGripper.Two)
             {
                 target.XPos = target.XPos + Motion.G1ToG2Offset.XPos;
-                target.YPos = target.YPos - Motion.G1ToG2Offset.YPos;
-                target.APos = target.APos - Motion.G1ToG2Offset.APos;
+                target.YPos = target.YPos + Motion.G1ToG2Offset.YPos;
+                target.APos = target.APos + Motion.G1ToG2Offset.APos;
             }
             return target;
         }

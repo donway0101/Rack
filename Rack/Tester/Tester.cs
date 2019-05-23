@@ -238,23 +238,40 @@ namespace Rack
                             SendMessage(TesterCommand.SetTestResult + ",OK;");
                             OnInfoOccured(20003, "Rack response send test result to Tester " + Id + ".");
 
+                            if (ShieldBox.Phone.AutoOpenBox)
+                            {
+                                ShieldBox.OpenBox();
+                            }
+
                             switch (subMessage[1])
                             {
-                                case "0":
-                                    ShieldBox.OpenBox();
-                                    ShieldBox.Phone.TestResult = TestResult.Pass;
+                                case "0":                                   
+                                    ShieldBox.Phone.TestResult = TestResult.Pass;                                    
                                     break;
+
                                 case "1":
-                                    ShieldBox.OpenBox();
                                     ShieldBox.Phone.TestResult = TestResult.Fail;
                                     ShieldBox.Phone.FailCount++;
                                     break;
+
                                 case "2":
                                     //Battery low. NG.
-                                    ShieldBox.OpenBox();
                                     ShieldBox.Phone.TestResult = TestResult.Fail;
                                     ShieldBox.Phone.FailCount = 3;
                                     break;
+
+                                case "3":
+                                    //Procedure not match.
+                                    ShieldBox.Phone.TestResult = TestResult.Fail;
+                                    ShieldBox.Phone.FailCount = 3;
+                                    break;
+
+                                case "4":
+                                    //Timeout match.
+                                    ShieldBox.Phone.TestResult = TestResult.Fail;
+                                    ShieldBox.Phone.FailCount = 3;
+                                    break;
+
                                 default:
                                     break;
                             }                          
@@ -263,9 +280,9 @@ namespace Rack
                         {
                             OnErrorOccured((int)Error.OpenBoxFail, "Open box failed.");
                         }
-                        catch (Exception)
+                        catch (Exception ex)
                         {
-                            OnErrorOccured(40002, "Tester send back a result while no phone in shield box.");
+                            OnErrorOccured(40002, "SetTestResult error: " + ex.Message);
                         }
                         break;
 

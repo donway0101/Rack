@@ -39,7 +39,23 @@ namespace Rack
         public int PassRate { get; set; }
         public int TestCount { get; set; }
         public int PassCount { get; set; }
-        public bool Enabled { get; set; } = false;
+        private bool _enabled = false;
+        public bool Enabled
+        {
+            get { return _enabled; }
+            set
+            {
+                _enabled = value;
+                if (value == true)
+                {
+                    //Available = true;
+                    WasEnabled = true;
+                }
+            }
+        }
+
+        public bool WasEnabled { get; set; }
+
         public bool TesterComputerConnected { get; set; }
         //Todo need to remember it?
         public bool Empty { get; set; } = true;
@@ -223,23 +239,41 @@ namespace Rack
         private void SendCommand(ShieldBoxCommand command, string response, int timeout = 5000)
         {
             //bool retryCmd = false;
-            SendCmd(command);
-            Stopwatch stopwatch = new Stopwatch();
-            stopwatch.Start();
-            while (_response != response && _response != ShieldBoxResponse.ResponseEnding + response)
+            try
             {
-                if (stopwatch.ElapsedMilliseconds > timeout)
+                SendCmd(command);
+                Stopwatch stopwatch = new Stopwatch();
+                stopwatch.Start();
+                while (_response != response && _response != ShieldBoxResponse.ResponseEnding + response)
                 {
-                    throw new TimeoutException();
-                }
+                    if (stopwatch.ElapsedMilliseconds > timeout)
+                    {
+                        throw new TimeoutException();
+                    }
 
-                //if (stopwatch.ElapsedMilliseconds > timeout*0.8 && retryCmd == false)
-                //{
-                //    SendCmd(command);
-                //    stopwatch.Restart();
-                //    retryCmd = true;
-                //}
-                Delay(100);
+                    //if (stopwatch.ElapsedMilliseconds > timeout*0.8 && retryCmd == false)
+                    //{
+                    //    SendCmd(command);
+                    //    stopwatch.Restart();
+                    //    retryCmd = true;
+                    //}
+                    Delay(100);
+                }
+            }
+            catch (Exception)
+            {
+
+                SendCmd(command);
+                Stopwatch stopwatch = new Stopwatch();
+                stopwatch.Start();
+                while (_response != response && _response != ShieldBoxResponse.ResponseEnding + response)
+                {
+                    if (stopwatch.ElapsedMilliseconds > timeout)
+                    {
+                        throw new TimeoutException();
+                    }
+                    Delay(100);
+                }
             }
         }
 

@@ -95,7 +95,6 @@ namespace Rack
                 xOffset.ToString(CultureInfo.CurrentCulture));
             XmlReaderWriter.SetTeachAttribute(Files.RackData, TeachPos.G1ToG2Offset, PosItem.YPos,
                 yOffset.ToString(CultureInfo.CurrentCulture));
-
             XmlReaderWriter.SetTeachAttribute(Files.RackData, TeachPos.G1ToG2Offset, PosItem.APos,
                 aOffset.ToString(CultureInfo.CurrentCulture));
         }

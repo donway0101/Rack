@@ -9,6 +9,7 @@ namespace Rack
     {
         private readonly EthercatIo _io;
         private Thread _conveyorMonitorThread;
+        private Thread _sensorMonitorThread;
 
         public bool PickBufferHasPhone { get; set; }
 
@@ -226,6 +227,15 @@ namespace Rack
 
             if (_conveyorMonitorThread.IsAlive == false)
                 _conveyorMonitorThread.Start();
+
+            if (_sensorMonitorThread == null)
+                _sensorMonitorThread = new Thread(BufferPhoneSensorMonitor)
+                {
+                    IsBackground = true
+                };
+
+            if (_sensorMonitorThread.IsAlive == false)
+                _sensorMonitorThread.Start();
         }
 
         public void ReadyForPicking()
@@ -321,8 +331,6 @@ namespace Rack
                             NgFullWarning = false;
                         }
                     }
-
-                    PickBufferHasPhone = PickBufferPhoneSensor();
                 }
                 catch (Exception ex)
                 {
@@ -331,6 +339,38 @@ namespace Rack
                 }
 
                 Delay(100);
+            }
+        }
+
+        private void BufferPhoneSensorMonitor()
+        {
+            int count = 0;
+            while (true)
+            {
+                try
+                {
+                    if (PickBufferPhoneSensor())
+                    {
+                        count++;
+                        if (count>10)
+                        {
+                            PickBufferHasPhone = true;
+                        }
+                    }
+                    else
+                    {
+                        count = 0;
+                        PickBufferHasPhone = false;
+                    }
+
+                    Delay(100);
+                }
+                catch (Exception ex)
+                {
+
+                    OnErrorOccured(40022, ex.Message);
+                    Delay(1000);
+                }
             }
         }
 

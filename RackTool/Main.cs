@@ -74,6 +74,11 @@ namespace RackTool
             {
                 NewLog.Instance.Info(code.ToString() + " " + description);
                 AddMessageToTextBox(code, description);
+
+                if (code == 20032)
+                {
+                    Task.Run(() => { MessageBox.Show(description); });
+                }
             }
             catch (Exception ex)
             {
@@ -207,7 +212,7 @@ namespace RackTool
             });
 
             if (startSuccessful)
-            {
+            {                
                 SetupUiForTeaching();
                 OnInfoOccured(this, 20005, "System start OK.");
             }
@@ -311,7 +316,8 @@ namespace RackTool
 
         private void buttonTest_Click(object sender, EventArgs e)
         {
-           var gripper =  _rack.GetAvailableGripper();
+            //var gripper =  _rack.GetAvailableGripper();
+            //Task.Run(() => { MessageBox.Show("Hello."); });
         }
         #endregion
 
@@ -485,7 +491,6 @@ namespace RackTool
                 }
                 catch (Exception ex)
                 {
-
                     MessageBox.Show(ex.Message);
                 }
             });
@@ -543,6 +548,10 @@ namespace RackTool
         }
         private async void buttonLoad_Click(object sender, EventArgs e)
         {
+            if (Ask("Load") == false)
+            {
+                return;
+            }
             _rack.SetRobotSpeed(defaultTestSpeed);
 
             await Task.Run((Action)(() =>
@@ -570,10 +579,22 @@ namespace RackTool
             _selectedTargetPosition = (TeachPos)comboBoxMovePos.SelectedItem;
         }
 
-        private double defaultTestSpeed = 10;
+        private bool Ask(string question)
+        {
+            return MessageBox.Show(question, "确认",
+                             MessageBoxButtons.YesNo,
+                             MessageBoxIcon.Question) == DialogResult.Yes;
+        }
+
+        private double defaultTestSpeed = 50;
 
         private async void buttonPick_Click(object sender, EventArgs e)
         {
+            if (Ask("Pick") == false)
+            {
+                return;
+            }
+
             _rack.SetRobotSpeed(defaultTestSpeed);
 
             await Task.Run(() =>
@@ -592,6 +613,11 @@ namespace RackTool
 
         private async void buttonPlace_Click(object sender, EventArgs e)
         {
+            if (Ask("Place") == false)
+            {
+                return;
+            }
+
             _rack.SetRobotSpeed(defaultTestSpeed);
 
             await Task.Run(() =>
@@ -609,6 +635,11 @@ namespace RackTool
         }
         private async void buttonUnload_Click(object sender, EventArgs e)
         {
+            if (Ask("Unload") == false)
+            {
+                return;
+            }
+
             _rack.SetRobotSpeed(defaultTestSpeed);
 
             await Task.Run((Action)(() =>
@@ -640,11 +671,6 @@ namespace RackTool
             _rack.Conveyor.Start();
         }
 
-        private void button39_Click(object sender, EventArgs e)
-        {
-            //_rack.Conveyor.CommandInposForPicking = true;
-        }
-
         private void button40_Click(object sender, EventArgs e)
         {
             _rack.Conveyor.ReadyForPicking();
@@ -653,11 +679,6 @@ namespace RackTool
         private void button41_Click(object sender, EventArgs e)
         {
             _rack.LatestPhone = null;
-        }
-
-        private void trackBarSetSpeed2_ValueChanged(object sender, EventArgs e)
-        {
-            labelSpeed2.Text = trackBarSetSpeed2.Value.ToString();
         }
 
         private void buttonSave_Click(object sender, EventArgs e)
@@ -1260,16 +1281,22 @@ namespace RackTool
             {
                 trackBarSetSpeed2.Value = (int)(_rack.Motion.GetVelocity(_rack.Motion.MotorZ) / _rack.Motion.MotorZ.SpeedFactor);
             }));
+
+            labelSpeed2.BeginInvoke((MethodInvoker)(() =>
+            {
+                labelSpeed2.Text = trackBarSetSpeed2.Value.ToString();
+            }));
+
             Delay();
-            buttonEableZ.BeginInvoke((MethodInvoker)(() => { buttonEableZ.Text = Convert.ToBoolean(_rack.Motion.GetRobotState(_rack.Motion.MotorZ) & MotorStates.ACSC_MST_ENABLE) ? "Disable" : "Enable";}));
+            buttonEableZ.BeginInvoke((MethodInvoker)(() => { buttonEableZ.Text = _rack.Motion.IsEnabled(_rack.Motion.MotorZ) ? "Disable" : "Enable";}));
             Delay();
-            buttonEableX1.BeginInvoke((MethodInvoker)(() => { buttonEableX1.Text = Convert.ToBoolean(_rack.Motion.GetRobotState(_rack.Motion.MotorX1) & MotorStates.ACSC_MST_ENABLE) ? "Disable" : "Enable"; }));
+            buttonEableX1.BeginInvoke((MethodInvoker)(() => { buttonEableX1.Text = _rack.Motion.IsEnabled(_rack.Motion.MotorX1)? "Disable" : "Enable"; }));
             Delay();
-            buttonEableX2.BeginInvoke((MethodInvoker)(() => { buttonEableX2.Text = Convert.ToBoolean(_rack.Motion.GetRobotState(_rack.Motion.MotorX2) & MotorStates.ACSC_MST_ENABLE) ? "Disable" : "Enable"; }));
+            buttonEableX2.BeginInvoke((MethodInvoker)(() => { buttonEableX2.Text = _rack.Motion.IsEnabled(_rack.Motion.MotorX2) ? "Disable" : "Enable"; }));
             Delay();
-            buttonEableY.BeginInvoke((MethodInvoker)(() => { buttonEableY.Text = Convert.ToBoolean(_rack.Motion.GetRobotState(_rack.Motion.MotorY) & MotorStates.ACSC_MST_ENABLE) ? "Disable" : "Enable"; }));
+            buttonEableY.BeginInvoke((MethodInvoker)(() => { buttonEableY.Text = _rack.Motion.IsEnabled(_rack.Motion.MotorY)  ? "Disable" : "Enable"; }));
             Delay();
-            buttonEableR.BeginInvoke((MethodInvoker)(() => { buttonEableR.Text = Convert.ToBoolean(_rack.Motion.GetRobotState(_rack.Motion.MotorR) & MotorStates.ACSC_MST_ENABLE) ? "Disable" : "Enable"; }));
+            buttonEableR.BeginInvoke((MethodInvoker)(() => { buttonEableR.Text = _rack.Motion.IsEnabled(_rack.Motion.MotorR) ? "Disable" : "Enable"; }));
             Delay();
             buttonG1TightOrLoose.BeginInvoke((MethodInvoker)(() => { buttonG1TightOrLoose.Text = _rack.EcatIo.GetInput(Input.Gripper01Tight) ? "G1Open" : "G1Close"; }));
             Delay();
@@ -1581,12 +1608,27 @@ namespace RackTool
                 listViewBox.SelectedItems[0].ImageIndex = 0;
                 switch (listViewBox.SelectedItems[0].Text)
                 {
-                    case "Box1": BoxId = 1; break;
-                    case "Box2": BoxId = 2; break;
-                    case "Box3": BoxId = 3; break;
-                    case "Box4": BoxId = 4; break;
-                    case "Box5": BoxId = 5; break;
-                    case "Box6": BoxId = 6; break;
+                    case "Box1": BoxId = 1;
+                        _rack.ShieldBox1.Enabled = true;
+                        break;
+                    case "Box2": BoxId = 2;
+                        _rack.ShieldBox2.Enabled = true;
+                        break;
+                    case "Box3": BoxId = 3;
+                        _rack.ShieldBox3.Enabled = true;
+                        break;
+                    case "Box4": BoxId = 4;
+                        _rack.ShieldBox4.Enabled = true;
+                        break;
+                    case "Box5": BoxId = 5;
+                        _rack.ShieldBox5.Enabled = true;
+                        break;
+                    case "Box6": BoxId = 6;
+                        _rack.ShieldBox6.Enabled = true;
+                        _rack.ShieldBox6.Enabled = true;
+                        _rack.ShieldBox6.Enabled = true;
+                        _rack.ShieldBox6.Enabled = true;
+                        break;
                     default:
                         break;
                 }
@@ -1610,12 +1652,32 @@ namespace RackTool
                     listViewBox.SelectedItems[0].ImageIndex = 1;
                     switch (listViewBox.SelectedItems[0].Text)
                     {
-                        case "Box1": BoxId = 1; Com = comboBox1.Text; comboBox1.Text = "None"; break;
-                        case "Box2": BoxId = 2; Com = comboBox2.Text; comboBox2.Text = "None"; break;
-                        case "Box3": BoxId = 3; Com = comboBox3.Text; comboBox3.Text = "None"; break;
-                        case "Box4": BoxId = 4; Com = comboBox4.Text; comboBox4.Text = "None"; break;
-                        case "Box5": BoxId = 5; Com = comboBox5.Text; comboBox5.Text = "None"; break;
-                        case "Box6": BoxId = 6; Com = comboBox6.Text; comboBox6.Text = "None"; break;
+                        case "Box1": BoxId = 1; Com = comboBox1.Text; comboBox1.Text = "None";
+                            //Todo check null
+                            _rack.ShieldBox1.Enabled = false;
+                            _rack.ShieldBox1.Available = false;
+                            break;
+                        case "Box2": BoxId = 2; Com = comboBox2.Text; comboBox2.Text = "None";
+                            _rack.ShieldBox2.Enabled = false;
+                            _rack.ShieldBox2.Available = false;
+                            break;
+                        case "Box3":
+                            BoxId = 3; Com = comboBox3.Text; comboBox3.Text = "None";
+                            _rack.ShieldBox3.Enabled = false;
+                            _rack.ShieldBox3.Available = false;
+                            break;
+                        case "Box4": BoxId = 4; Com = comboBox4.Text; comboBox4.Text = "None";
+                            _rack.ShieldBox4.Enabled = false;
+                            _rack.ShieldBox4.Available = false;
+                            break;
+                        case "Box5": BoxId = 5; Com = comboBox5.Text; comboBox5.Text = "None";
+                            _rack.ShieldBox5.Enabled = false;
+                            _rack.ShieldBox5.Available = false;
+                            break;
+                        case "Box6": BoxId = 6; Com = comboBox6.Text; comboBox6.Text = "None";
+                            _rack.ShieldBox6.Enabled = false;
+                            _rack.ShieldBox6.Available = false;
+                            break;
                         default:
                             break;
                     }
@@ -2044,7 +2106,14 @@ namespace RackTool
         {
             label.BeginInvoke((MethodInvoker)(() =>
             {
-                label.Text = obj.ToString();
+                if (obj!=null)
+                {
+                    label.Text = obj.ToString();
+                }
+                else
+                {
+                    label.Text = "???";
+                }              
             }));
         }
 
@@ -2710,7 +2779,8 @@ namespace RackTool
         private void Main_FormClosing(object sender, FormClosingEventArgs e)
         {
             DialogResult dialogResult = MessageBox.Show("是否退出程序？", "退出", MessageBoxButtons.YesNo);
-            if (dialogResult == DialogResult.No)
+
+            if (dialogResult != DialogResult.Yes)
             {
                 return;
             }
@@ -2721,6 +2791,26 @@ namespace RackTool
             {
                 _uiUpdateThread.Abort();
                 //_uiUpdateThread.Join();
+            }
+        }
+
+        protected override void OnFormClosing(FormClosingEventArgs e)
+        {
+            var result = MessageBox.Show("是否退出程序？", "退出",
+                             MessageBoxButtons.YesNo,
+                             MessageBoxIcon.Question);
+
+            e.Cancel = (result == DialogResult.No);
+
+            if (result == DialogResult.Yes)
+            {
+                NewLog.Instance.Info("20004 User close program.");
+
+                if (_uiUpdateThread != null)
+                {
+                    _uiUpdateThread.Abort();
+                    //_uiUpdateThread.Join();
+                }
             }
         }
 
@@ -2780,6 +2870,7 @@ namespace RackTool
             {
                 _rack.RemovePhoneToBeServed(_rack.ShieldBox5.Phone);
                 _rack.Unlink(_rack.ShieldBox5.Phone);
+                MessageBox.Show("清空箱子成功.");
             }
             catch (Exception ex)
             {
@@ -2814,18 +2905,18 @@ namespace RackTool
             }
         }
 
-        private void buttonSetClosedBox05_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                _rack.ShieldBox5.State = ShieldBoxState.Close;
-                _rack.ShieldBox5.ReadyForTesting = true;
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Set box closed fail：" + ex.Message);
-            }
-        }
+        //private void buttonSetClosedBox05_Click(object sender, EventArgs e)
+        //{
+        //    try
+        //    {
+        //        _rack.ShieldBox5.State = ShieldBoxState.Close;
+        //        _rack.ShieldBox5.ReadyForTesting = true;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        MessageBox.Show("Set box closed fail：" + ex.Message);
+        //    }
+        //}
 
         private void checkBoxServerSimulate_CheckedChanged(object sender, EventArgs e)
         {
@@ -2981,6 +3072,153 @@ namespace RackTool
         {
             _rack.ShieldBox1.GoldPhoneChecked = true;
             MessageBox.Show("GoldPhoneChecked set.");
+        }
+
+        private void checkBoxTesterSimulate03_CheckedChanged(object sender, EventArgs e)
+        {
+            CheckBox checkBox = (CheckBox)sender;
+            _rack.Tester3.SimulateMode = checkBox.Checked;
+        }
+
+        private void buttonBox03GoldStart_Click(object sender, EventArgs e)
+        {
+            _rack.ShieldBox3.GoldPhoneCheckRequest = true;
+            MessageBox.Show("GoldPhoneCheckRequest set.");
+        }
+
+        private void buttonBox03GoldEnd_Click(object sender, EventArgs e)
+        {
+            _rack.ShieldBox3.GoldPhoneChecked = true;
+            MessageBox.Show("GoldPhoneChecked set.");
+        }
+
+        private void buttonBox02GoldStart_Click(object sender, EventArgs e)
+        {
+            _rack.ShieldBox2.GoldPhoneCheckRequest = true;
+            MessageBox.Show("GoldPhoneCheckRequest set.");
+        }
+
+        private void buttonBox04GoldStart_Click(object sender, EventArgs e)
+        {
+            _rack.ShieldBox4.GoldPhoneCheckRequest = true;
+            MessageBox.Show("GoldPhoneCheckRequest set.");
+        }
+
+        private void buttonBox06GoldStart_Click(object sender, EventArgs e)
+        {
+            _rack.ShieldBox6.GoldPhoneCheckRequest = true;
+            MessageBox.Show("GoldPhoneCheckRequest set.");
+        }
+
+        private void buttonBox02GoldEnd_Click(object sender, EventArgs e)
+        {
+            _rack.ShieldBox2.GoldPhoneChecked = true;
+            MessageBox.Show("GoldPhoneChecked set.");
+        }
+
+        private void buttonBox04GoldEnd_Click(object sender, EventArgs e)
+        {
+            _rack.ShieldBox4.GoldPhoneChecked = true;
+            MessageBox.Show("GoldPhoneChecked set.");
+        }
+
+        private void buttonBox06GoldEnd_Click(object sender, EventArgs e)
+        {
+            _rack.ShieldBox6.GoldPhoneChecked = true;
+            MessageBox.Show("GoldPhoneChecked set.");
+        }
+
+        private void checkBoxTesterSimulate04_CheckedChanged(object sender, EventArgs e)
+        {
+            CheckBox checkBox = (CheckBox)sender;
+            _rack.Tester4.SimulateMode = checkBox.Checked;
+        }
+
+        private void checkBoxTesterSimulate01_CheckedChanged(object sender, EventArgs e)
+        {
+            CheckBox checkBox = (CheckBox)sender;
+            _rack.Tester1.SimulateMode = checkBox.Checked;
+        }
+
+        private void checkBoxTesterSimulate06_CheckedChanged(object sender, EventArgs e)
+        {
+            CheckBox checkBox = (CheckBox)sender;
+            _rack.Tester6.SimulateMode = checkBox.Checked;
+        }
+
+        private void buttonEmptyBox02_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                _rack.RemovePhoneToBeServed(_rack.ShieldBox2.Phone);
+                _rack.Unlink(_rack.ShieldBox2.Phone);
+                MessageBox.Show("清空箱子成功.");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("清空箱子失败：" + ex.Message);
+            }
+        }
+
+        private void buttonEmptyBox01_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                _rack.RemovePhoneToBeServed(_rack.ShieldBox1.Phone);
+                _rack.Unlink(_rack.ShieldBox1.Phone);
+                MessageBox.Show("清空箱子成功.");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("清空箱子失败：" + ex.Message);
+            }
+        }
+
+        private void buttonEmptyBox03_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                _rack.RemovePhoneToBeServed(_rack.ShieldBox3.Phone);
+                _rack.Unlink(_rack.ShieldBox3.Phone);
+                MessageBox.Show("清空箱子成功.");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("清空箱子失败：" + ex.Message);
+            }
+        }
+
+        private void buttonEmptyBox04_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                _rack.RemovePhoneToBeServed(_rack.ShieldBox4.Phone);
+                _rack.Unlink(_rack.ShieldBox4.Phone);
+                MessageBox.Show("清空箱子成功.");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("清空箱子失败：" + ex.Message);
+            }
+        }
+
+        private void buttonEmptyBox06_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                _rack.RemovePhoneToBeServed(_rack.ShieldBox6.Phone);
+                _rack.Unlink(_rack.ShieldBox6.Phone);
+                MessageBox.Show("清空箱子成功.");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("清空箱子失败：" + ex.Message);
+            }
+        }
+
+        private void Main_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }

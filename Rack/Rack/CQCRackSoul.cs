@@ -29,6 +29,9 @@ namespace Rack
                     OnInfoOccured(20030, "Try to NG phones due to last production error.");
                     try
                     {
+                        //If sensor is very near gold position, sensor may mistrigger.
+                        HomeRobot(30, false);
+
                         if(GripperIsAvailable(RackGripper.One) == false)
                         {
                             Bin(RackGripper.One);
@@ -89,6 +92,7 @@ namespace Rack
                                 }
                             }
 
+                            OnInfoOccured(20032, "OK to Gold box: " + box.Id + ".");
                             //Todo how to recover if error occured?
                             box.GoldPhoneChecked = false;
                             box.GoldPhoneChecking = true;
@@ -163,9 +167,69 @@ namespace Rack
                     #region Work on Rf phones.
                     if (luckyPhones.First().Step == RackTestStep.Rf)
                     {
-                        if (luckyPhones.Count >= 3)
+                        if (luckyPhones.Count > 3)
                         {
                             throw new Exception("Error 16229461984");
+                        }
+
+                        if (luckyPhones.Count == 3)
+                        {
+                            #region Three rf phones in a time.
+                            if (luckyPhones.Count == 3)
+                            {
+                                //If there is three phones, it has two combo move, 
+                                // and the last phone must either be place or bin.
+                                var firstPhone = luckyPhones.First();
+                                var secondPhone = luckyPhones.ElementAt(1);
+                                var thirdPhone = luckyPhones.ElementAt(2);
+                                RackGripper gripper;
+                                if (firstPhone.NextTargetPosition.TeachPos == secondPhone.CurrentTargetPosition.TeachPos &&
+                                    secondPhone.NextTargetPosition.TeachPos == thirdPhone.CurrentTargetPosition.TeachPos)
+                                {
+                                    if (firstPhone.Procedure != RackProcedure.Pick)
+                                    {
+                                        throw new Exception("Error 4456688566857");
+                                    }
+                                    if (secondPhone.Procedure != RackProcedure.Retry)
+                                    {
+                                        throw new Exception("Error 456789127458861");
+                                    }
+                                    if (thirdPhone.Procedure != RackProcedure.Place &&
+                                        thirdPhone.Procedure != RackProcedure.Bin)
+                                    {
+                                        throw new Exception("Error 45691677586554");
+                                    }
+
+                                    luckyPhones.Remove(firstPhone);
+                                    InfoPhoneAboutToBeServed(firstPhone);
+                                    ComboUnload(firstPhone);
+
+                                    luckyPhones.Remove(secondPhone);
+                                    InfoPhoneAboutToBeServed(secondPhone);
+                                    ComboUnloadAndLoad(firstPhone, secondPhone, out gripper);
+
+                                    luckyPhones.Remove(thirdPhone);
+                                    InfoPhoneAboutToBeServed(thirdPhone);
+                                    ComboUnloadAndLoad(secondPhone, thirdPhone, out gripper);
+                                    switch (thirdPhone.Procedure)
+                                    {
+                                        case RackProcedure.Bin:
+                                            Bin(gripper);
+                                            break;
+                                        case RackProcedure.Place:
+                                            throw new Exception("Error 48961202164");
+                                            //Place(gripper);
+                                            //break;
+                                        default:
+                                            break;
+                                    }
+                                }
+                                else //Arrange error.
+                                {
+                                    throw new Exception("Error 16229461984");
+                                }
+                            }
+                            #endregion
                         }
                         else
                         {
@@ -188,7 +252,7 @@ namespace Rack
                                             {
                                                 gripper = GetAvailableGripper();
                                                 Pick(gripper);
-                                            }                                            
+                                            }
                                             OkToReloadOnConveyor();
                                             break;
 
@@ -208,7 +272,7 @@ namespace Rack
                                             ComboUnloadAndLoad(firstPhone, secondPhone, out gripper);
                                             Bin(gripper);
                                             break;
-                                           
+
                                         case RackProcedure.Retry:
                                             ComboUnloadAndLoad(firstPhone, secondPhone, out gripper);
 
@@ -221,7 +285,7 @@ namespace Rack
 
                                         default:
                                             throw new Exception("Error 989491878165");
-                                    }                                    
+                                    }
                                 }
                                 else //Arrange error.
                                 {
@@ -261,7 +325,7 @@ namespace Rack
                                         break;
                                     default:
                                         throw new Exception("Error 6417989416269");
-                                }                                
+                                }
                             }
                             #endregion
                         }
@@ -509,14 +573,15 @@ namespace Rack
                     return phones;
             }
 
-            if (WifiPhones.Count>0)
+            if (OneTestInRack == false)
             {
-                return ArrangeWifiPhones();
+                if (WifiPhones.Count > 0)
+                {
+                    return ArrangeWifiPhones();
+                }
             }
-            else
-            {
-                return phones;
-            }           
+
+            return phones;          
         }
 
         private List<Phone> ArrangeWifiPhones()
@@ -1133,7 +1198,10 @@ namespace Rack
                         var pPhone = rfPickPhone.First();
                         var bPhone = rfBinPhone.First();
                         pPhone.NextTargetPosition = bPhone.CurrentTargetPosition;
-                        rfLuckyPhones.Add(pPhone);
+                        if (rfBinPhone.First().ShieldBox.Enabled)
+                        {
+                            rfLuckyPhones.Add(pPhone);
+                        }                       
                         rfLuckyPhones.Add(bPhone);
                         return rfLuckyPhones;
                     }
@@ -1302,7 +1370,7 @@ namespace Rack
             foreach (var box in ShieldBoxs)
             {
                 Console.Write("Box{0} Available:{1} Empty:{2} Checked:{3}", 
-                    box.Id, box.Available, box.Empty, box.Available);
+                    box.Id, box.Available, box.Empty, box.GoldPhoneChecked);
                 if (box.Phone != null)
                 {
                     Console.Write(" Phone:{0} Step:{1} Box:{2}", box.Phone.Id, box.Phone.Step, box.Phone.ShieldBox.Id);
@@ -1316,7 +1384,8 @@ namespace Rack
         {
             foreach (var box in ShieldBoxs)
             {
-                if (box.Enabled && box.Empty && box.Type == type && box.GoldPhoneCheckRequest==false)
+                if (box.Enabled && box.Available && 
+                    box.Empty && box.Type == type && box.GoldPhoneCheckRequest==false)
                 {
                     return box;
                 }
@@ -1347,7 +1416,8 @@ namespace Rack
                         foreach (var box in ShieldBoxs)
                         {
                             var foundBox = true;
-                            if (box.Enabled && box.Available && box.Type == type && box.GoldPhoneCheckRequest == false)
+                            if (box.Enabled && box.Available && box.Type == type &&
+                                box.GoldPhoneCheckRequest == false)
                             {
                                 foreach (var footprint in phone.TargetPositionFootprint)
                                 {
@@ -1438,7 +1508,8 @@ namespace Rack
                         foreach (var box in ShieldBoxs)
                         {
                             var foundBox = true;
-                            if (box.Enabled && box.Available && box.Type == type && box.GoldPhoneCheckRequest == false)
+                            if (box.Enabled && box.Available && box.Type == type && 
+                                box.GoldPhoneCheckRequest == false)
                             {
                                 foreach (var footprint in phone.TargetPositionFootprint)
                                 {
@@ -1467,7 +1538,7 @@ namespace Rack
 
                     if (retryBoxs.Count == 0)
                     {
-                        throw new ShieldBoxNotFoundException("GetBoxesForWifiRetryPhone failed.");
+                        throw new ShieldBoxNotFoundException("GetBoxesForRetryPhone failed.");
                     }
 
                     return retryBoxs;

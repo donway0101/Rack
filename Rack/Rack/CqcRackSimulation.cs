@@ -54,8 +54,10 @@
         public void GoldPhoneSetup()
         {
             GoldRf.CurrentTargetPosition = Motion.Gold1;
+            GoldRf.AutoOpenBox = false;
 
             GoldWifi.CurrentTargetPosition = Motion.Gold2;
+            GoldWifi.AutoOpenBox = false;
         }
     }
 }

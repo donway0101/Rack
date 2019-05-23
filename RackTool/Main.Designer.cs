@@ -192,12 +192,13 @@
             this.panelTesters = new System.Windows.Forms.Panel();
             this.checkBoxAutoPass = new System.Windows.Forms.CheckBox();
             this.groupBoxTester05 = new System.Windows.Forms.GroupBox();
+            this.buttonBox05GoldEnd = new System.Windows.Forms.Button();
+            this.buttonBox05GoldStart = new System.Windows.Forms.Button();
             this.checkBoxTesterSimulate05 = new System.Windows.Forms.CheckBox();
             this.buttonSetSerial05 = new System.Windows.Forms.Button();
             this.textBoxSerial05 = new System.Windows.Forms.TextBox();
             this.labelTester05PhoneFailCount = new System.Windows.Forms.Label();
             this.labelTester05PhoneTestTime = new System.Windows.Forms.Label();
-            this.buttonPassTester05 = new System.Windows.Forms.Button();
             this.labelTester05PhoneTestResult = new System.Windows.Forms.Label();
             this.labelTester05PhoneStep = new System.Windows.Forms.Label();
             this.labelTester05PhoneSerialNumber = new System.Windows.Forms.Label();
@@ -212,6 +213,12 @@
             this.label35 = new System.Windows.Forms.Label();
             this.label34 = new System.Windows.Forms.Label();
             this.groupBoxTester06 = new System.Windows.Forms.GroupBox();
+            this.buttonEmptyBox06 = new System.Windows.Forms.Button();
+            this.checkBoxTesterSimulate06 = new System.Windows.Forms.CheckBox();
+            this.buttonSetSerial06 = new System.Windows.Forms.Button();
+            this.textBoxSerial06 = new System.Windows.Forms.TextBox();
+            this.buttonBox06GoldEnd = new System.Windows.Forms.Button();
+            this.buttonBox06GoldStart = new System.Windows.Forms.Button();
             this.labelTester06PhoneFailCount = new System.Windows.Forms.Label();
             this.labelTester06PhoneTestTime = new System.Windows.Forms.Label();
             this.labelTester06PhoneTestResult = new System.Windows.Forms.Label();
@@ -229,6 +236,12 @@
             this.buttonTesterSendFail = new System.Windows.Forms.Button();
             this.buttonTesterSendPass = new System.Windows.Forms.Button();
             this.groupBoxTester04 = new System.Windows.Forms.GroupBox();
+            this.buttonEmptyBox04 = new System.Windows.Forms.Button();
+            this.checkBoxTesterSimulate04 = new System.Windows.Forms.CheckBox();
+            this.buttonSetSerial04 = new System.Windows.Forms.Button();
+            this.textBoxSerial04 = new System.Windows.Forms.TextBox();
+            this.buttonBox04GoldEnd = new System.Windows.Forms.Button();
+            this.buttonBox04GoldStart = new System.Windows.Forms.Button();
             this.labelTester04PhoneFailCount = new System.Windows.Forms.Label();
             this.labelTester04PhoneTestTime = new System.Windows.Forms.Label();
             this.labelTester04PhoneTestResult = new System.Windows.Forms.Label();
@@ -252,6 +265,12 @@
             this.radioButtonBox2 = new System.Windows.Forms.RadioButton();
             this.radioButtonBox1 = new System.Windows.Forms.RadioButton();
             this.groupBoxTester03 = new System.Windows.Forms.GroupBox();
+            this.buttonEmptyBox03 = new System.Windows.Forms.Button();
+            this.buttonBox03GoldEnd = new System.Windows.Forms.Button();
+            this.buttonBox03GoldStart = new System.Windows.Forms.Button();
+            this.checkBoxTesterSimulate03 = new System.Windows.Forms.CheckBox();
+            this.buttonSetSerial03 = new System.Windows.Forms.Button();
+            this.textBoxSerial03 = new System.Windows.Forms.TextBox();
             this.labelTester03PhoneFailCount = new System.Windows.Forms.Label();
             this.labelTester03PhoneTestTime = new System.Windows.Forms.Label();
             this.labelTester03PhoneTestResult = new System.Windows.Forms.Label();
@@ -267,17 +286,18 @@
             this.label78 = new System.Windows.Forms.Label();
             this.label79 = new System.Windows.Forms.Label();
             this.groupBoxTester02 = new System.Windows.Forms.GroupBox();
+            this.buttonBox02GoldEnd = new System.Windows.Forms.Button();
+            this.buttonBox02GoldStart = new System.Windows.Forms.Button();
             this.checkBoxTesterSimulate02 = new System.Windows.Forms.CheckBox();
             this.buttonSetSerial02 = new System.Windows.Forms.Button();
             this.textBoxSerial02 = new System.Windows.Forms.TextBox();
             this.labelTester02PhoneFailCount = new System.Windows.Forms.Label();
             this.labelTester02PhoneTestTime = new System.Windows.Forms.Label();
-            this.button3 = new System.Windows.Forms.Button();
             this.labelTester02PhoneTestResult = new System.Windows.Forms.Label();
             this.labelTester02PhoneStep = new System.Windows.Forms.Label();
             this.labelTester02PhoneSerialNumber = new System.Windows.Forms.Label();
             this.labelTester02PhoneId = new System.Windows.Forms.Label();
-            this.button4 = new System.Windows.Forms.Button();
+            this.buttonEmptyBox02 = new System.Windows.Forms.Button();
             this.label45 = new System.Windows.Forms.Label();
             this.label46 = new System.Windows.Forms.Label();
             this.label47 = new System.Windows.Forms.Label();
@@ -287,6 +307,12 @@
             this.label51 = new System.Windows.Forms.Label();
             this.label52 = new System.Windows.Forms.Label();
             this.groupBoxTester01 = new System.Windows.Forms.GroupBox();
+            this.buttonEmptyBox01 = new System.Windows.Forms.Button();
+            this.checkBoxTesterSimulate01 = new System.Windows.Forms.CheckBox();
+            this.buttonSetSerial01 = new System.Windows.Forms.Button();
+            this.textBoxSerial01 = new System.Windows.Forms.TextBox();
+            this.buttonBox01GoldEnd = new System.Windows.Forms.Button();
+            this.buttonBox01GoldStart = new System.Windows.Forms.Button();
             this.labelTester01PhoneFailCount = new System.Windows.Forms.Label();
             this.labelTester01PhoneTestTime = new System.Windows.Forms.Label();
             this.labelTester01PhoneTestResult = new System.Windows.Forms.Label();
@@ -309,11 +335,9 @@
             this.Column3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.contextMenuStripLoadLog = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.loadLogToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.loadNGToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tabPage7 = new System.Windows.Forms.TabPage();
             this.tabControlSetting = new System.Windows.Forms.TabControl();
-            this.tabPageConfig = new System.Windows.Forms.TabPage();
-            this.checkBoxServerSimulate = new System.Windows.Forms.CheckBox();
-            this.checkBoxMotionSimulate = new System.Windows.Forms.CheckBox();
             this.tabPageUser = new System.Windows.Forms.TabPage();
             this.groupBox9 = new System.Windows.Forms.GroupBox();
             this.buttonCreateFile = new System.Windows.Forms.Button();
@@ -338,6 +362,9 @@
             this.textBoxLoginName = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
             this.textBoxPassWord = new System.Windows.Forms.TextBox();
+            this.tabPageConfig = new System.Windows.Forms.TabPage();
+            this.checkBoxServerSimulate = new System.Windows.Forms.CheckBox();
+            this.checkBoxMotionSimulate = new System.Windows.Forms.CheckBox();
             this.tabPageCom = new System.Windows.Forms.TabPage();
             this.groupBox10 = new System.Windows.Forms.GroupBox();
             this.label33 = new System.Windows.Forms.Label();
@@ -359,10 +386,6 @@
             this.toolStripStatusLabelPower = new System.Windows.Forms.ToolStripStatusLabel();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.richTextBoxError = new System.Windows.Forms.RichTextBox();
-            this.buttonBox05GoldStart = new System.Windows.Forms.Button();
-            this.buttonBox05GoldEnd = new System.Windows.Forms.Button();
-            this.buttonBox01GoldEnd = new System.Windows.Forms.Button();
-            this.buttonBox01GoldStart = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarSetSpeed2)).BeginInit();
@@ -392,11 +415,11 @@
             this.contextMenuStripLoadLog.SuspendLayout();
             this.tabPage7.SuspendLayout();
             this.tabControlSetting.SuspendLayout();
-            this.tabPageConfig.SuspendLayout();
             this.tabPageUser.SuspendLayout();
             this.groupBox9.SuspendLayout();
             this.groupBoxChangePassword.SuspendLayout();
             this.groupBox7.SuspendLayout();
+            this.tabPageConfig.SuspendLayout();
             this.tabPageCom.SuspendLayout();
             this.groupBox10.SuspendLayout();
             this.statusStrip1.SuspendLayout();
@@ -698,7 +721,6 @@
             this.trackBarSetSpeed2.Name = "trackBarSetSpeed2";
             this.trackBarSetSpeed2.Value = 1;
             this.trackBarSetSpeed2.Scroll += new System.EventHandler(this.trackBarSetSpeed2_Scroll);
-            this.trackBarSetSpeed2.ValueChanged += new System.EventHandler(this.trackBarSetSpeed2_ValueChanged);
             // 
             // buttonEableR
             // 
@@ -1617,7 +1639,6 @@
             this.groupBoxTester05.Controls.Add(this.textBoxSerial05);
             this.groupBoxTester05.Controls.Add(this.labelTester05PhoneFailCount);
             this.groupBoxTester05.Controls.Add(this.labelTester05PhoneTestTime);
-            this.groupBoxTester05.Controls.Add(this.buttonPassTester05);
             this.groupBoxTester05.Controls.Add(this.labelTester05PhoneTestResult);
             this.groupBoxTester05.Controls.Add(this.labelTester05PhoneStep);
             this.groupBoxTester05.Controls.Add(this.labelTester05PhoneSerialNumber);
@@ -1634,6 +1655,20 @@
             resources.ApplyResources(this.groupBoxTester05, "groupBoxTester05");
             this.groupBoxTester05.Name = "groupBoxTester05";
             this.groupBoxTester05.TabStop = false;
+            // 
+            // buttonBox05GoldEnd
+            // 
+            resources.ApplyResources(this.buttonBox05GoldEnd, "buttonBox05GoldEnd");
+            this.buttonBox05GoldEnd.Name = "buttonBox05GoldEnd";
+            this.buttonBox05GoldEnd.UseVisualStyleBackColor = true;
+            this.buttonBox05GoldEnd.Click += new System.EventHandler(this.buttonBox05GoldEnd_Click);
+            // 
+            // buttonBox05GoldStart
+            // 
+            resources.ApplyResources(this.buttonBox05GoldStart, "buttonBox05GoldStart");
+            this.buttonBox05GoldStart.Name = "buttonBox05GoldStart";
+            this.buttonBox05GoldStart.UseVisualStyleBackColor = true;
+            this.buttonBox05GoldStart.Click += new System.EventHandler(this.buttonBox05GoldStart_Click);
             // 
             // checkBoxTesterSimulate05
             // 
@@ -1663,13 +1698,6 @@
             // 
             resources.ApplyResources(this.labelTester05PhoneTestTime, "labelTester05PhoneTestTime");
             this.labelTester05PhoneTestTime.Name = "labelTester05PhoneTestTime";
-            // 
-            // buttonPassTester05
-            // 
-            resources.ApplyResources(this.buttonPassTester05, "buttonPassTester05");
-            this.buttonPassTester05.Name = "buttonPassTester05";
-            this.buttonPassTester05.UseVisualStyleBackColor = true;
-            this.buttonPassTester05.Click += new System.EventHandler(this.buttonPassTester05_Click);
             // 
             // labelTester05PhoneTestResult
             // 
@@ -1741,6 +1769,12 @@
             // 
             // groupBoxTester06
             // 
+            this.groupBoxTester06.Controls.Add(this.buttonEmptyBox06);
+            this.groupBoxTester06.Controls.Add(this.checkBoxTesterSimulate06);
+            this.groupBoxTester06.Controls.Add(this.buttonSetSerial06);
+            this.groupBoxTester06.Controls.Add(this.textBoxSerial06);
+            this.groupBoxTester06.Controls.Add(this.buttonBox06GoldEnd);
+            this.groupBoxTester06.Controls.Add(this.buttonBox06GoldStart);
             this.groupBoxTester06.Controls.Add(this.labelTester06PhoneFailCount);
             this.groupBoxTester06.Controls.Add(this.labelTester06PhoneTestTime);
             this.groupBoxTester06.Controls.Add(this.labelTester06PhoneTestResult);
@@ -1758,6 +1792,45 @@
             resources.ApplyResources(this.groupBoxTester06, "groupBoxTester06");
             this.groupBoxTester06.Name = "groupBoxTester06";
             this.groupBoxTester06.TabStop = false;
+            // 
+            // buttonEmptyBox06
+            // 
+            resources.ApplyResources(this.buttonEmptyBox06, "buttonEmptyBox06");
+            this.buttonEmptyBox06.Name = "buttonEmptyBox06";
+            this.buttonEmptyBox06.UseVisualStyleBackColor = true;
+            this.buttonEmptyBox06.Click += new System.EventHandler(this.buttonEmptyBox06_Click);
+            // 
+            // checkBoxTesterSimulate06
+            // 
+            resources.ApplyResources(this.checkBoxTesterSimulate06, "checkBoxTesterSimulate06");
+            this.checkBoxTesterSimulate06.Name = "checkBoxTesterSimulate06";
+            this.checkBoxTesterSimulate06.UseVisualStyleBackColor = true;
+            this.checkBoxTesterSimulate06.CheckedChanged += new System.EventHandler(this.checkBoxTesterSimulate06_CheckedChanged);
+            // 
+            // buttonSetSerial06
+            // 
+            resources.ApplyResources(this.buttonSetSerial06, "buttonSetSerial06");
+            this.buttonSetSerial06.Name = "buttonSetSerial06";
+            this.buttonSetSerial06.UseVisualStyleBackColor = true;
+            // 
+            // textBoxSerial06
+            // 
+            resources.ApplyResources(this.textBoxSerial06, "textBoxSerial06");
+            this.textBoxSerial06.Name = "textBoxSerial06";
+            // 
+            // buttonBox06GoldEnd
+            // 
+            resources.ApplyResources(this.buttonBox06GoldEnd, "buttonBox06GoldEnd");
+            this.buttonBox06GoldEnd.Name = "buttonBox06GoldEnd";
+            this.buttonBox06GoldEnd.UseVisualStyleBackColor = true;
+            this.buttonBox06GoldEnd.Click += new System.EventHandler(this.buttonBox06GoldEnd_Click);
+            // 
+            // buttonBox06GoldStart
+            // 
+            resources.ApplyResources(this.buttonBox06GoldStart, "buttonBox06GoldStart");
+            this.buttonBox06GoldStart.Name = "buttonBox06GoldStart";
+            this.buttonBox06GoldStart.UseVisualStyleBackColor = true;
+            this.buttonBox06GoldStart.Click += new System.EventHandler(this.buttonBox06GoldStart_Click);
             // 
             // labelTester06PhoneFailCount
             // 
@@ -1846,6 +1919,12 @@
             // 
             // groupBoxTester04
             // 
+            this.groupBoxTester04.Controls.Add(this.buttonEmptyBox04);
+            this.groupBoxTester04.Controls.Add(this.checkBoxTesterSimulate04);
+            this.groupBoxTester04.Controls.Add(this.buttonSetSerial04);
+            this.groupBoxTester04.Controls.Add(this.textBoxSerial04);
+            this.groupBoxTester04.Controls.Add(this.buttonBox04GoldEnd);
+            this.groupBoxTester04.Controls.Add(this.buttonBox04GoldStart);
             this.groupBoxTester04.Controls.Add(this.labelTester04PhoneFailCount);
             this.groupBoxTester04.Controls.Add(this.labelTester04PhoneTestTime);
             this.groupBoxTester04.Controls.Add(this.labelTester04PhoneTestResult);
@@ -1863,6 +1942,45 @@
             resources.ApplyResources(this.groupBoxTester04, "groupBoxTester04");
             this.groupBoxTester04.Name = "groupBoxTester04";
             this.groupBoxTester04.TabStop = false;
+            // 
+            // buttonEmptyBox04
+            // 
+            resources.ApplyResources(this.buttonEmptyBox04, "buttonEmptyBox04");
+            this.buttonEmptyBox04.Name = "buttonEmptyBox04";
+            this.buttonEmptyBox04.UseVisualStyleBackColor = true;
+            this.buttonEmptyBox04.Click += new System.EventHandler(this.buttonEmptyBox04_Click);
+            // 
+            // checkBoxTesterSimulate04
+            // 
+            resources.ApplyResources(this.checkBoxTesterSimulate04, "checkBoxTesterSimulate04");
+            this.checkBoxTesterSimulate04.Name = "checkBoxTesterSimulate04";
+            this.checkBoxTesterSimulate04.UseVisualStyleBackColor = true;
+            this.checkBoxTesterSimulate04.CheckedChanged += new System.EventHandler(this.checkBoxTesterSimulate04_CheckedChanged);
+            // 
+            // buttonSetSerial04
+            // 
+            resources.ApplyResources(this.buttonSetSerial04, "buttonSetSerial04");
+            this.buttonSetSerial04.Name = "buttonSetSerial04";
+            this.buttonSetSerial04.UseVisualStyleBackColor = true;
+            // 
+            // textBoxSerial04
+            // 
+            resources.ApplyResources(this.textBoxSerial04, "textBoxSerial04");
+            this.textBoxSerial04.Name = "textBoxSerial04";
+            // 
+            // buttonBox04GoldEnd
+            // 
+            resources.ApplyResources(this.buttonBox04GoldEnd, "buttonBox04GoldEnd");
+            this.buttonBox04GoldEnd.Name = "buttonBox04GoldEnd";
+            this.buttonBox04GoldEnd.UseVisualStyleBackColor = true;
+            this.buttonBox04GoldEnd.Click += new System.EventHandler(this.buttonBox04GoldEnd_Click);
+            // 
+            // buttonBox04GoldStart
+            // 
+            resources.ApplyResources(this.buttonBox04GoldStart, "buttonBox04GoldStart");
+            this.buttonBox04GoldStart.Name = "buttonBox04GoldStart";
+            this.buttonBox04GoldStart.UseVisualStyleBackColor = true;
+            this.buttonBox04GoldStart.Click += new System.EventHandler(this.buttonBox04GoldStart_Click);
             // 
             // labelTester04PhoneFailCount
             // 
@@ -2000,6 +2118,12 @@
             // 
             // groupBoxTester03
             // 
+            this.groupBoxTester03.Controls.Add(this.buttonEmptyBox03);
+            this.groupBoxTester03.Controls.Add(this.buttonBox03GoldEnd);
+            this.groupBoxTester03.Controls.Add(this.buttonBox03GoldStart);
+            this.groupBoxTester03.Controls.Add(this.checkBoxTesterSimulate03);
+            this.groupBoxTester03.Controls.Add(this.buttonSetSerial03);
+            this.groupBoxTester03.Controls.Add(this.textBoxSerial03);
             this.groupBoxTester03.Controls.Add(this.labelTester03PhoneFailCount);
             this.groupBoxTester03.Controls.Add(this.labelTester03PhoneTestTime);
             this.groupBoxTester03.Controls.Add(this.labelTester03PhoneTestResult);
@@ -2017,6 +2141,45 @@
             resources.ApplyResources(this.groupBoxTester03, "groupBoxTester03");
             this.groupBoxTester03.Name = "groupBoxTester03";
             this.groupBoxTester03.TabStop = false;
+            // 
+            // buttonEmptyBox03
+            // 
+            resources.ApplyResources(this.buttonEmptyBox03, "buttonEmptyBox03");
+            this.buttonEmptyBox03.Name = "buttonEmptyBox03";
+            this.buttonEmptyBox03.UseVisualStyleBackColor = true;
+            this.buttonEmptyBox03.Click += new System.EventHandler(this.buttonEmptyBox03_Click);
+            // 
+            // buttonBox03GoldEnd
+            // 
+            resources.ApplyResources(this.buttonBox03GoldEnd, "buttonBox03GoldEnd");
+            this.buttonBox03GoldEnd.Name = "buttonBox03GoldEnd";
+            this.buttonBox03GoldEnd.UseVisualStyleBackColor = true;
+            this.buttonBox03GoldEnd.Click += new System.EventHandler(this.buttonBox03GoldEnd_Click);
+            // 
+            // buttonBox03GoldStart
+            // 
+            resources.ApplyResources(this.buttonBox03GoldStart, "buttonBox03GoldStart");
+            this.buttonBox03GoldStart.Name = "buttonBox03GoldStart";
+            this.buttonBox03GoldStart.UseVisualStyleBackColor = true;
+            this.buttonBox03GoldStart.Click += new System.EventHandler(this.buttonBox03GoldStart_Click);
+            // 
+            // checkBoxTesterSimulate03
+            // 
+            resources.ApplyResources(this.checkBoxTesterSimulate03, "checkBoxTesterSimulate03");
+            this.checkBoxTesterSimulate03.Name = "checkBoxTesterSimulate03";
+            this.checkBoxTesterSimulate03.UseVisualStyleBackColor = true;
+            this.checkBoxTesterSimulate03.CheckedChanged += new System.EventHandler(this.checkBoxTesterSimulate03_CheckedChanged);
+            // 
+            // buttonSetSerial03
+            // 
+            resources.ApplyResources(this.buttonSetSerial03, "buttonSetSerial03");
+            this.buttonSetSerial03.Name = "buttonSetSerial03";
+            this.buttonSetSerial03.UseVisualStyleBackColor = true;
+            // 
+            // textBoxSerial03
+            // 
+            resources.ApplyResources(this.textBoxSerial03, "textBoxSerial03");
+            this.textBoxSerial03.Name = "textBoxSerial03";
             // 
             // labelTester03PhoneFailCount
             // 
@@ -2091,17 +2254,18 @@
             // 
             // groupBoxTester02
             // 
+            this.groupBoxTester02.Controls.Add(this.buttonBox02GoldEnd);
+            this.groupBoxTester02.Controls.Add(this.buttonBox02GoldStart);
             this.groupBoxTester02.Controls.Add(this.checkBoxTesterSimulate02);
             this.groupBoxTester02.Controls.Add(this.buttonSetSerial02);
             this.groupBoxTester02.Controls.Add(this.textBoxSerial02);
             this.groupBoxTester02.Controls.Add(this.labelTester02PhoneFailCount);
             this.groupBoxTester02.Controls.Add(this.labelTester02PhoneTestTime);
-            this.groupBoxTester02.Controls.Add(this.button3);
             this.groupBoxTester02.Controls.Add(this.labelTester02PhoneTestResult);
             this.groupBoxTester02.Controls.Add(this.labelTester02PhoneStep);
             this.groupBoxTester02.Controls.Add(this.labelTester02PhoneSerialNumber);
             this.groupBoxTester02.Controls.Add(this.labelTester02PhoneId);
-            this.groupBoxTester02.Controls.Add(this.button4);
+            this.groupBoxTester02.Controls.Add(this.buttonEmptyBox02);
             this.groupBoxTester02.Controls.Add(this.label45);
             this.groupBoxTester02.Controls.Add(this.label46);
             this.groupBoxTester02.Controls.Add(this.label47);
@@ -2113,6 +2277,20 @@
             resources.ApplyResources(this.groupBoxTester02, "groupBoxTester02");
             this.groupBoxTester02.Name = "groupBoxTester02";
             this.groupBoxTester02.TabStop = false;
+            // 
+            // buttonBox02GoldEnd
+            // 
+            resources.ApplyResources(this.buttonBox02GoldEnd, "buttonBox02GoldEnd");
+            this.buttonBox02GoldEnd.Name = "buttonBox02GoldEnd";
+            this.buttonBox02GoldEnd.UseVisualStyleBackColor = true;
+            this.buttonBox02GoldEnd.Click += new System.EventHandler(this.buttonBox02GoldEnd_Click);
+            // 
+            // buttonBox02GoldStart
+            // 
+            resources.ApplyResources(this.buttonBox02GoldStart, "buttonBox02GoldStart");
+            this.buttonBox02GoldStart.Name = "buttonBox02GoldStart";
+            this.buttonBox02GoldStart.UseVisualStyleBackColor = true;
+            this.buttonBox02GoldStart.Click += new System.EventHandler(this.buttonBox02GoldStart_Click);
             // 
             // checkBoxTesterSimulate02
             // 
@@ -2143,12 +2321,6 @@
             resources.ApplyResources(this.labelTester02PhoneTestTime, "labelTester02PhoneTestTime");
             this.labelTester02PhoneTestTime.Name = "labelTester02PhoneTestTime";
             // 
-            // button3
-            // 
-            resources.ApplyResources(this.button3, "button3");
-            this.button3.Name = "button3";
-            this.button3.UseVisualStyleBackColor = true;
-            // 
             // labelTester02PhoneTestResult
             // 
             resources.ApplyResources(this.labelTester02PhoneTestResult, "labelTester02PhoneTestResult");
@@ -2169,11 +2341,12 @@
             resources.ApplyResources(this.labelTester02PhoneId, "labelTester02PhoneId");
             this.labelTester02PhoneId.Name = "labelTester02PhoneId";
             // 
-            // button4
+            // buttonEmptyBox02
             // 
-            resources.ApplyResources(this.button4, "button4");
-            this.button4.Name = "button4";
-            this.button4.UseVisualStyleBackColor = true;
+            resources.ApplyResources(this.buttonEmptyBox02, "buttonEmptyBox02");
+            this.buttonEmptyBox02.Name = "buttonEmptyBox02";
+            this.buttonEmptyBox02.UseVisualStyleBackColor = true;
+            this.buttonEmptyBox02.Click += new System.EventHandler(this.buttonEmptyBox02_Click);
             // 
             // label45
             // 
@@ -2218,6 +2391,10 @@
             // 
             // groupBoxTester01
             // 
+            this.groupBoxTester01.Controls.Add(this.buttonEmptyBox01);
+            this.groupBoxTester01.Controls.Add(this.checkBoxTesterSimulate01);
+            this.groupBoxTester01.Controls.Add(this.buttonSetSerial01);
+            this.groupBoxTester01.Controls.Add(this.textBoxSerial01);
             this.groupBoxTester01.Controls.Add(this.buttonBox01GoldEnd);
             this.groupBoxTester01.Controls.Add(this.buttonBox01GoldStart);
             this.groupBoxTester01.Controls.Add(this.labelTester01PhoneFailCount);
@@ -2237,6 +2414,45 @@
             resources.ApplyResources(this.groupBoxTester01, "groupBoxTester01");
             this.groupBoxTester01.Name = "groupBoxTester01";
             this.groupBoxTester01.TabStop = false;
+            // 
+            // buttonEmptyBox01
+            // 
+            resources.ApplyResources(this.buttonEmptyBox01, "buttonEmptyBox01");
+            this.buttonEmptyBox01.Name = "buttonEmptyBox01";
+            this.buttonEmptyBox01.UseVisualStyleBackColor = true;
+            this.buttonEmptyBox01.Click += new System.EventHandler(this.buttonEmptyBox01_Click);
+            // 
+            // checkBoxTesterSimulate01
+            // 
+            resources.ApplyResources(this.checkBoxTesterSimulate01, "checkBoxTesterSimulate01");
+            this.checkBoxTesterSimulate01.Name = "checkBoxTesterSimulate01";
+            this.checkBoxTesterSimulate01.UseVisualStyleBackColor = true;
+            this.checkBoxTesterSimulate01.CheckedChanged += new System.EventHandler(this.checkBoxTesterSimulate01_CheckedChanged);
+            // 
+            // buttonSetSerial01
+            // 
+            resources.ApplyResources(this.buttonSetSerial01, "buttonSetSerial01");
+            this.buttonSetSerial01.Name = "buttonSetSerial01";
+            this.buttonSetSerial01.UseVisualStyleBackColor = true;
+            // 
+            // textBoxSerial01
+            // 
+            resources.ApplyResources(this.textBoxSerial01, "textBoxSerial01");
+            this.textBoxSerial01.Name = "textBoxSerial01";
+            // 
+            // buttonBox01GoldEnd
+            // 
+            resources.ApplyResources(this.buttonBox01GoldEnd, "buttonBox01GoldEnd");
+            this.buttonBox01GoldEnd.Name = "buttonBox01GoldEnd";
+            this.buttonBox01GoldEnd.UseVisualStyleBackColor = true;
+            this.buttonBox01GoldEnd.Click += new System.EventHandler(this.buttonBox01GoldEnd_Click);
+            // 
+            // buttonBox01GoldStart
+            // 
+            resources.ApplyResources(this.buttonBox01GoldStart, "buttonBox01GoldStart");
+            this.buttonBox01GoldStart.Name = "buttonBox01GoldStart";
+            this.buttonBox01GoldStart.UseVisualStyleBackColor = true;
+            this.buttonBox01GoldStart.Click += new System.EventHandler(this.buttonBox01GoldStart_Click);
             // 
             // labelTester01PhoneFailCount
             // 
@@ -2359,7 +2575,8 @@
             // 
             this.contextMenuStripLoadLog.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.contextMenuStripLoadLog.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.loadLogToolStripMenuItem});
+            this.loadLogToolStripMenuItem,
+            this.loadNGToolStripMenuItem});
             this.contextMenuStripLoadLog.Name = "contextMenuStripLoadLog";
             resources.ApplyResources(this.contextMenuStripLoadLog, "contextMenuStripLoadLog");
             // 
@@ -2368,6 +2585,11 @@
             this.loadLogToolStripMenuItem.Name = "loadLogToolStripMenuItem";
             resources.ApplyResources(this.loadLogToolStripMenuItem, "loadLogToolStripMenuItem");
             this.loadLogToolStripMenuItem.Click += new System.EventHandler(this.loadLogToolStripMenuItem_Click);
+            // 
+            // loadNGToolStripMenuItem
+            // 
+            this.loadNGToolStripMenuItem.Name = "loadNGToolStripMenuItem";
+            resources.ApplyResources(this.loadNGToolStripMenuItem, "loadNGToolStripMenuItem");
             // 
             // tabPage7
             // 
@@ -2378,34 +2600,12 @@
             // 
             // tabControlSetting
             // 
-            this.tabControlSetting.Controls.Add(this.tabPageConfig);
             this.tabControlSetting.Controls.Add(this.tabPageUser);
+            this.tabControlSetting.Controls.Add(this.tabPageConfig);
             this.tabControlSetting.Controls.Add(this.tabPageCom);
             resources.ApplyResources(this.tabControlSetting, "tabControlSetting");
             this.tabControlSetting.Name = "tabControlSetting";
             this.tabControlSetting.SelectedIndex = 0;
-            // 
-            // tabPageConfig
-            // 
-            this.tabPageConfig.Controls.Add(this.checkBoxServerSimulate);
-            this.tabPageConfig.Controls.Add(this.checkBoxMotionSimulate);
-            resources.ApplyResources(this.tabPageConfig, "tabPageConfig");
-            this.tabPageConfig.Name = "tabPageConfig";
-            this.tabPageConfig.UseVisualStyleBackColor = true;
-            // 
-            // checkBoxServerSimulate
-            // 
-            resources.ApplyResources(this.checkBoxServerSimulate, "checkBoxServerSimulate");
-            this.checkBoxServerSimulate.Name = "checkBoxServerSimulate";
-            this.checkBoxServerSimulate.UseVisualStyleBackColor = true;
-            this.checkBoxServerSimulate.CheckedChanged += new System.EventHandler(this.checkBoxServerSimulate_CheckedChanged);
-            // 
-            // checkBoxMotionSimulate
-            // 
-            resources.ApplyResources(this.checkBoxMotionSimulate, "checkBoxMotionSimulate");
-            this.checkBoxMotionSimulate.Name = "checkBoxMotionSimulate";
-            this.checkBoxMotionSimulate.UseVisualStyleBackColor = true;
-            this.checkBoxMotionSimulate.CheckedChanged += new System.EventHandler(this.checkBoxMotionSimulate_CheckedChanged);
             // 
             // tabPageUser
             // 
@@ -2573,6 +2773,28 @@
             resources.ApplyResources(this.textBoxPassWord, "textBoxPassWord");
             this.textBoxPassWord.Name = "textBoxPassWord";
             // 
+            // tabPageConfig
+            // 
+            this.tabPageConfig.Controls.Add(this.checkBoxServerSimulate);
+            this.tabPageConfig.Controls.Add(this.checkBoxMotionSimulate);
+            resources.ApplyResources(this.tabPageConfig, "tabPageConfig");
+            this.tabPageConfig.Name = "tabPageConfig";
+            this.tabPageConfig.UseVisualStyleBackColor = true;
+            // 
+            // checkBoxServerSimulate
+            // 
+            resources.ApplyResources(this.checkBoxServerSimulate, "checkBoxServerSimulate");
+            this.checkBoxServerSimulate.Name = "checkBoxServerSimulate";
+            this.checkBoxServerSimulate.UseVisualStyleBackColor = true;
+            this.checkBoxServerSimulate.CheckedChanged += new System.EventHandler(this.checkBoxServerSimulate_CheckedChanged);
+            // 
+            // checkBoxMotionSimulate
+            // 
+            resources.ApplyResources(this.checkBoxMotionSimulate, "checkBoxMotionSimulate");
+            this.checkBoxMotionSimulate.Name = "checkBoxMotionSimulate";
+            this.checkBoxMotionSimulate.UseVisualStyleBackColor = true;
+            this.checkBoxMotionSimulate.CheckedChanged += new System.EventHandler(this.checkBoxMotionSimulate_CheckedChanged);
+            // 
             // tabPageCom
             // 
             this.tabPageCom.Controls.Add(this.groupBox10);
@@ -2709,34 +2931,6 @@
             this.richTextBoxError.Name = "richTextBoxError";
             this.richTextBoxError.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.richTextBoxError_MouseDoubleClick);
             // 
-            // buttonBox05GoldStart
-            // 
-            resources.ApplyResources(this.buttonBox05GoldStart, "buttonBox05GoldStart");
-            this.buttonBox05GoldStart.Name = "buttonBox05GoldStart";
-            this.buttonBox05GoldStart.UseVisualStyleBackColor = true;
-            this.buttonBox05GoldStart.Click += new System.EventHandler(this.buttonBox05GoldStart_Click);
-            // 
-            // buttonBox05GoldEnd
-            // 
-            resources.ApplyResources(this.buttonBox05GoldEnd, "buttonBox05GoldEnd");
-            this.buttonBox05GoldEnd.Name = "buttonBox05GoldEnd";
-            this.buttonBox05GoldEnd.UseVisualStyleBackColor = true;
-            this.buttonBox05GoldEnd.Click += new System.EventHandler(this.buttonBox05GoldEnd_Click);
-            // 
-            // buttonBox01GoldEnd
-            // 
-            resources.ApplyResources(this.buttonBox01GoldEnd, "buttonBox01GoldEnd");
-            this.buttonBox01GoldEnd.Name = "buttonBox01GoldEnd";
-            this.buttonBox01GoldEnd.UseVisualStyleBackColor = true;
-            this.buttonBox01GoldEnd.Click += new System.EventHandler(this.buttonBox01GoldEnd_Click);
-            // 
-            // buttonBox01GoldStart
-            // 
-            resources.ApplyResources(this.buttonBox01GoldStart, "buttonBox01GoldStart");
-            this.buttonBox01GoldStart.Name = "buttonBox01GoldStart";
-            this.buttonBox01GoldStart.UseVisualStyleBackColor = true;
-            this.buttonBox01GoldStart.Click += new System.EventHandler(this.buttonBox01GoldStart_Click);
-            // 
             // Main
             // 
             resources.ApplyResources(this, "$this");
@@ -2747,7 +2941,7 @@
             this.Controls.Add(this.tabControlUi);
             this.Controls.Add(this.richTextBoxMessage);
             this.Name = "Main";
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Main_FormClosing);
+            this.Load += new System.EventHandler(this.Main_Load);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.groupBox2.ResumeLayout(false);
@@ -2793,14 +2987,14 @@
             this.contextMenuStripLoadLog.ResumeLayout(false);
             this.tabPage7.ResumeLayout(false);
             this.tabControlSetting.ResumeLayout(false);
-            this.tabPageConfig.ResumeLayout(false);
-            this.tabPageConfig.PerformLayout();
             this.tabPageUser.ResumeLayout(false);
             this.groupBox9.ResumeLayout(false);
             this.groupBoxChangePassword.ResumeLayout(false);
             this.groupBoxChangePassword.PerformLayout();
             this.groupBox7.ResumeLayout(false);
             this.groupBox7.PerformLayout();
+            this.tabPageConfig.ResumeLayout(false);
+            this.tabPageConfig.PerformLayout();
             this.tabPageCom.ResumeLayout(false);
             this.groupBox10.ResumeLayout(false);
             this.groupBox10.PerformLayout();
@@ -3055,7 +3249,6 @@
         private System.Windows.Forms.Button buttonEmptyBox05;
         private System.Windows.Forms.Button buttonSetSerialNumber;
         private System.Windows.Forms.TextBox textBox1;
-        private System.Windows.Forms.Button buttonPassTester05;
         private System.Windows.Forms.CheckBox checkBoxServerSimulate;
         private System.Windows.Forms.GroupBox groupBox9;
         private System.Windows.Forms.Button buttonCreateFile;
@@ -3071,12 +3264,11 @@
         private System.Windows.Forms.TextBox textBoxSerial02;
         private System.Windows.Forms.Label labelTester02PhoneFailCount;
         private System.Windows.Forms.Label labelTester02PhoneTestTime;
-        private System.Windows.Forms.Button button3;
         private System.Windows.Forms.Label labelTester02PhoneTestResult;
         private System.Windows.Forms.Label labelTester02PhoneStep;
         private System.Windows.Forms.Label labelTester02PhoneSerialNumber;
         private System.Windows.Forms.Label labelTester02PhoneId;
-        private System.Windows.Forms.Button button4;
+        private System.Windows.Forms.Button buttonEmptyBox02;
         private System.Windows.Forms.Label label45;
         private System.Windows.Forms.Label label46;
         private System.Windows.Forms.Label label47;
@@ -3146,6 +3338,31 @@
         private System.Windows.Forms.Button buttonBox05GoldEnd;
         private System.Windows.Forms.Button buttonBox01GoldEnd;
         private System.Windows.Forms.Button buttonBox01GoldStart;
+        private System.Windows.Forms.CheckBox checkBoxTesterSimulate03;
+        private System.Windows.Forms.Button buttonSetSerial03;
+        private System.Windows.Forms.TextBox textBoxSerial03;
+        private System.Windows.Forms.Button buttonBox03GoldEnd;
+        private System.Windows.Forms.Button buttonBox03GoldStart;
+        private System.Windows.Forms.Button buttonBox02GoldEnd;
+        private System.Windows.Forms.Button buttonBox02GoldStart;
+        private System.Windows.Forms.Button buttonBox06GoldEnd;
+        private System.Windows.Forms.Button buttonBox06GoldStart;
+        private System.Windows.Forms.Button buttonBox04GoldEnd;
+        private System.Windows.Forms.Button buttonBox04GoldStart;
+        private System.Windows.Forms.CheckBox checkBoxTesterSimulate06;
+        private System.Windows.Forms.Button buttonSetSerial06;
+        private System.Windows.Forms.TextBox textBoxSerial06;
+        private System.Windows.Forms.CheckBox checkBoxTesterSimulate04;
+        private System.Windows.Forms.Button buttonSetSerial04;
+        private System.Windows.Forms.TextBox textBoxSerial04;
+        private System.Windows.Forms.CheckBox checkBoxTesterSimulate01;
+        private System.Windows.Forms.Button buttonSetSerial01;
+        private System.Windows.Forms.TextBox textBoxSerial01;
+        private System.Windows.Forms.Button buttonEmptyBox06;
+        private System.Windows.Forms.Button buttonEmptyBox04;
+        private System.Windows.Forms.Button buttonEmptyBox03;
+        private System.Windows.Forms.Button buttonEmptyBox01;
+        private System.Windows.Forms.ToolStripMenuItem loadNGToolStripMenuItem;
     }
 }
 

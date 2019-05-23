@@ -6,12 +6,18 @@ namespace Rack
 {
     public partial class CqcRack
     {
-        private void MoveToTargetPosition(RackGripper gripper, TargetPosition target, bool phoneSlipIn)
+        private void MoveToTargetPosition(RackGripper gripper, TargetPosition target, 
+            bool phoneSlipIn, bool addOffset=true)
         {
             if(RobotInSimulateMode)
                 return;
 
-            target = AddOffset(gripper, target);
+            CheckSafety();
+
+            if (addOffset)
+            {
+                target = AddOffset(gripper, target);
+            }            
 
             var currentPosition = GetRobotCurrentPose();
 
