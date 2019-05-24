@@ -25,25 +25,24 @@ namespace Rack
                 {
                     ConveyorIsBusy = true;
 
-                    if (LatestPhone==null)
+                    if (LatestPhone == null && Conveyor.PickBufferHasPhone)
                     {
-                        if (Conveyor.PickBufferHasPhone)
+                        if (OkToLetInNewPhone())
                         {
-                            if (OkToLetInNewPhone())
-                            {
-                                //if (ScannerOnline)
-                                //{
-                                //    if (Scanner.ScanSuccessful == false)
-                                //    {
-                                //        throw new Exception("Scan fail, please remove phone manually.");
-                                //    }
-                                //}                               
-                                Conveyor.InposForPicking();
-                                //Conveyor is still stop, so no new SN would enter.
-                                AddNewPhone();
-                            }
+                            //if (ScannerOnline)
+                            //{
+                            //    if (Scanner.ScanSuccessful == false)
+                            //    {
+                            //        throw new Exception("Scan fail, please remove phone manually.");
+                            //    }
+                            //}         
+                            
+                            Conveyor.InposForPicking();
+
+                            //Conveyor is still stop, so no new SN would enter, wrong SN would not happen.
+                            AddNewPhone();
                         }
-                    }
+                    }                    
 
                     if (LatestPhone == null || Conveyor.PickBufferHasPhone==false || Conveyor.HasPlaceAPhone)
                     {
@@ -53,12 +52,13 @@ namespace Rack
                     if (LatestPhone != null && Conveyor.PickBufferHasPhone && Conveyor.HasPlaceAPhone == false)
                     {
                         Conveyor.StopBeltPick();
-                    }                    
+                    } 
+                    
                 }
                 catch (Exception e)
                 {
-                    OnErrorOccured(40007, e.Message);
-                    Delay(3000);
+                    OnErrorOccured(40007, "Conveyor error:" + e.Message);
+                    _conveyorWorkingManualResetEvent.Reset();
                 }
                 finally
                 {
@@ -79,14 +79,11 @@ namespace Rack
             int failPhoneNum = 0;
             foreach (var box in ShieldBoxs)
             {
-                if (box.Enabled)
+                if (box.Phone != null)
                 {
-                    if (box.Phone != null)
+                    if (box.Type == ShieldBoxType.Rf && box.Phone.TestResult == TestResult.Fail)
                     {
-                        if (box.Phone.TestResult == TestResult.Fail)
-                        {
-                            failPhoneNum++;
-                        }
+                        failPhoneNum++;
                     }
                 }
             }
@@ -124,6 +121,12 @@ namespace Rack
 
         public void RobotReleaseControlOnConveyor()
         {
+            _conveyorWorkingManualResetEvent.Set();
+        }
+
+        public void ResetConveyor()
+        {
+            OkToReloadOnConveyor();
             _conveyorWorkingManualResetEvent.Set();
         }
 

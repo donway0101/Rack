@@ -122,11 +122,7 @@
             this.comboBoxGripper = new System.Windows.Forms.ComboBox();
             this.label3 = new System.Windows.Forms.Label();
             this.tabPage4 = new System.Windows.Forms.TabPage();
-            this.groupBoxConveyorOpreate = new System.Windows.Forms.GroupBox();
             this.checkBoxPickConveyorMoveForward = new System.Windows.Forms.CheckBox();
-            this.buttonConveyorStart = new System.Windows.Forms.Button();
-            this.buttonForPicked = new System.Windows.Forms.Button();
-            this.buttonForReady = new System.Windows.Forms.Button();
             this.groupBox6 = new System.Windows.Forms.GroupBox();
             this.label17 = new System.Windows.Forms.Label();
             this.label18 = new System.Windows.Forms.Label();
@@ -386,6 +382,8 @@
             this.toolStripStatusLabelPower = new System.Windows.Forms.ToolStripStatusLabel();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.richTextBoxError = new System.Windows.Forms.RichTextBox();
+            this.textBoxHomeRobotSpeed = new System.Windows.Forms.TextBox();
+            this.buttonSetHomeSpeed = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarSetSpeed2)).BeginInit();
@@ -395,7 +393,6 @@
             this.tabPage2.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.tabPage4.SuspendLayout();
-            this.groupBoxConveyorOpreate.SuspendLayout();
             this.groupBox6.SuspendLayout();
             this.groupBox5.SuspendLayout();
             this.groupBox4.SuspendLayout();
@@ -1108,23 +1105,13 @@
             // 
             // tabPage4
             // 
-            this.tabPage4.Controls.Add(this.groupBoxConveyorOpreate);
+            this.tabPage4.Controls.Add(this.checkBoxPickConveyorMoveForward);
             this.tabPage4.Controls.Add(this.groupBox6);
             this.tabPage4.Controls.Add(this.groupBox5);
             this.tabPage4.Controls.Add(this.groupBox4);
             resources.ApplyResources(this.tabPage4, "tabPage4");
             this.tabPage4.Name = "tabPage4";
             this.tabPage4.UseVisualStyleBackColor = true;
-            // 
-            // groupBoxConveyorOpreate
-            // 
-            this.groupBoxConveyorOpreate.Controls.Add(this.checkBoxPickConveyorMoveForward);
-            this.groupBoxConveyorOpreate.Controls.Add(this.buttonConveyorStart);
-            this.groupBoxConveyorOpreate.Controls.Add(this.buttonForPicked);
-            this.groupBoxConveyorOpreate.Controls.Add(this.buttonForReady);
-            resources.ApplyResources(this.groupBoxConveyorOpreate, "groupBoxConveyorOpreate");
-            this.groupBoxConveyorOpreate.Name = "groupBoxConveyorOpreate";
-            this.groupBoxConveyorOpreate.TabStop = false;
             // 
             // checkBoxPickConveyorMoveForward
             // 
@@ -1134,27 +1121,6 @@
             this.checkBoxPickConveyorMoveForward.Name = "checkBoxPickConveyorMoveForward";
             this.checkBoxPickConveyorMoveForward.UseVisualStyleBackColor = true;
             this.checkBoxPickConveyorMoveForward.CheckedChanged += new System.EventHandler(this.checkBoxPickConveyorMoveForward_CheckedChanged);
-            // 
-            // buttonConveyorStart
-            // 
-            resources.ApplyResources(this.buttonConveyorStart, "buttonConveyorStart");
-            this.buttonConveyorStart.Name = "buttonConveyorStart";
-            this.buttonConveyorStart.UseVisualStyleBackColor = true;
-            this.buttonConveyorStart.Click += new System.EventHandler(this.button38_Click);
-            // 
-            // buttonForPicked
-            // 
-            resources.ApplyResources(this.buttonForPicked, "buttonForPicked");
-            this.buttonForPicked.Name = "buttonForPicked";
-            this.buttonForPicked.UseVisualStyleBackColor = true;
-            this.buttonForPicked.Click += new System.EventHandler(this.button41_Click);
-            // 
-            // buttonForReady
-            // 
-            resources.ApplyResources(this.buttonForReady, "buttonForReady");
-            this.buttonForReady.Name = "buttonForReady";
-            this.buttonForReady.UseVisualStyleBackColor = true;
-            this.buttonForReady.Click += new System.EventHandler(this.button40_Click);
             // 
             // groupBox6
             // 
@@ -2775,6 +2741,8 @@
             // 
             // tabPageConfig
             // 
+            this.tabPageConfig.Controls.Add(this.buttonSetHomeSpeed);
+            this.tabPageConfig.Controls.Add(this.textBoxHomeRobotSpeed);
             this.tabPageConfig.Controls.Add(this.checkBoxServerSimulate);
             this.tabPageConfig.Controls.Add(this.checkBoxMotionSimulate);
             resources.ApplyResources(this.tabPageConfig, "tabPageConfig");
@@ -2931,6 +2899,17 @@
             this.richTextBoxError.Name = "richTextBoxError";
             this.richTextBoxError.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.richTextBoxError_MouseDoubleClick);
             // 
+            // textBoxHomeRobotSpeed
+            // 
+            resources.ApplyResources(this.textBoxHomeRobotSpeed, "textBoxHomeRobotSpeed");
+            this.textBoxHomeRobotSpeed.Name = "textBoxHomeRobotSpeed";
+            // 
+            // buttonSetHomeSpeed
+            // 
+            resources.ApplyResources(this.buttonSetHomeSpeed, "buttonSetHomeSpeed");
+            this.buttonSetHomeSpeed.Name = "buttonSetHomeSpeed";
+            this.buttonSetHomeSpeed.UseVisualStyleBackColor = true;
+            // 
             // Main
             // 
             resources.ApplyResources(this, "$this");
@@ -2955,8 +2934,7 @@
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
             this.tabPage4.ResumeLayout(false);
-            this.groupBoxConveyorOpreate.ResumeLayout(false);
-            this.groupBoxConveyorOpreate.PerformLayout();
+            this.tabPage4.PerformLayout();
             this.groupBox6.ResumeLayout(false);
             this.groupBox6.PerformLayout();
             this.groupBox5.ResumeLayout(false);
@@ -3057,10 +3035,7 @@
         private System.Windows.Forms.Button buttonLoad;
         private System.Windows.Forms.Button buttonSaveApproach;
         private System.Windows.Forms.Button buttonSavePosition;
-        private System.Windows.Forms.Button buttonConveyorStart;
         private System.Windows.Forms.CheckBox checkBoxPickConveyorMoveForward;
-        private System.Windows.Forms.Button buttonForReady;
-        private System.Windows.Forms.Button buttonForPicked;
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.Label label11;
         private System.Windows.Forms.Label label12;
@@ -3158,7 +3133,6 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn Column4;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column3;
         private System.Windows.Forms.GroupBox groupBoxMain;
-        private System.Windows.Forms.GroupBox groupBoxConveyorOpreate;
         private System.Windows.Forms.GroupBox groupBox4;
         private System.Windows.Forms.Label labelConveyorBinIn;
         private System.Windows.Forms.Label labelConveyorBinInTwo;
@@ -3363,6 +3337,8 @@
         private System.Windows.Forms.Button buttonEmptyBox03;
         private System.Windows.Forms.Button buttonEmptyBox01;
         private System.Windows.Forms.ToolStripMenuItem loadNGToolStripMenuItem;
+        private System.Windows.Forms.TextBox textBoxHomeRobotSpeed;
+        private System.Windows.Forms.Button buttonSetHomeSpeed;
     }
 }
 

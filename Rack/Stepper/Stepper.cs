@@ -52,12 +52,6 @@ namespace Rack
         private readonly double _countPerDegree = 0.0;
         #endregion
 
-        public bool StepperOneIsConnected { get; set; }
-
-        public bool StepperTwoIsConnected { get; set; }
-
-        public bool StepperIsConnected { get; set; }
-
         /// <summary>
         /// Constructor
         /// </summary>
@@ -93,17 +87,43 @@ namespace Rack
 
         public void Connect()
         {
-            string res = SendCommand(RackGripper.One, "IFD");
-            StepperOneIsConnected = MotorAcknowledged(RackGripper.One, res);
-
-            res = SendCommand(RackGripper.Two, "IFD");
-            StepperTwoIsConnected = MotorAcknowledged(RackGripper.Two, res);
-
-            StepperIsConnected = StepperOneIsConnected && StepperTwoIsConnected;
-
-            if (StepperIsConnected == false)
+            try
             {
+                SendCommand(RackGripper.One, "IFD");
+                SendCommand(RackGripper.Two, "IFD");
+            }
+            catch (Exception)
+            {
+
                 throw new Exception("Not all stepper's connection is good.");
+            }
+        }
+
+        private void SendCommand(RackGripper motor, string cmd)
+        {
+            string response;
+            bool idMatch, endMatch, result;
+            try
+            {
+                response = SendCmd(motor, cmd);
+                idMatch = response.Substring(0, 1) == GetMotorId(motor);
+                endMatch = response.Substring(1, 1) == "%" || response.Substring(1, 1) == "*";
+                result = idMatch && endMatch;
+                if (result == false)
+                {
+                    throw new Exception();
+                }
+            }
+            catch (Exception)
+            {
+                response = SendCmd(motor, cmd);
+                idMatch = response.Substring(0, 1) == GetMotorId(motor);
+                endMatch = response.Substring(1, 1) == "%" || response.Substring(1, 1) == "*";
+                result = idMatch && endMatch;
+                if (result == false)
+                {
+                    throw new Exception("Send command:" + cmd + " to motor " + motor + " failed.");
+                }
             }
         }
 
@@ -130,14 +150,14 @@ namespace Rack
         /// Set driver feedback format to decimal.
         /// </summary>
         /// <param name="motor"></param>
-        public void SetFeedbackFormatDecimal(RackGripper motor)
-        {
-            string res = SendCommand(motor, "IFD");
-            if (MotorAcknowledged(motor, res) == false)
-            {
-                throw new Exception("Drive is NOT acknowledged");
-            }
-        }
+        //public void SetFeedbackFormatDecimal(RackGripper motor)
+        //{
+        //    string res = SendCmd(motor, "IFD");
+        //    if (MotorAcknowledged(motor, res) == false)
+        //    {
+        //        throw new Exception("Drive is NOT acknowledged");
+        //    }
+        //}
 
         /// <summary>
         /// Store response from driver.
@@ -188,7 +208,7 @@ namespace Rack
 
         public void Stop(RackGripper motor)
         {
-            string res = SendCommand(motor, "STD");
+            string res = SendCmd(motor, "STD");
 
             if (MotorAcknowledged(motor, res) != true)
             {
@@ -200,7 +220,7 @@ namespace Rack
         /// Send command to motor through serial port, and wait for response.
         /// </summary>
         /// <param name="cmd"></param>
-        public string SendCommand(RackGripper motor,string cmd)
+        public string SendCmd(RackGripper motor,string cmd, int retryTimes = 5)
         {
             lock (PortWriteLocker)
             {
@@ -212,7 +232,6 @@ namespace Rack
                 {
                     try
                     {                     
-                        Thread.Sleep(100);
                         DriverResponsed = false;
                         Response = string.Empty;
                         SerialPort.Write(buffer, 0, buffer.Length);
@@ -221,8 +240,8 @@ namespace Rack
                     catch (Exception)
                     {
                         failCount++;
-                        Thread.Sleep(200);
-                        if (failCount>5)
+                        Thread.Sleep(100);
+                        if (failCount> retryTimes)
                         {
                             throw new Exception(command + " get no response.");
                         }                  
@@ -250,7 +269,7 @@ namespace Rack
                     ResetAlarm(motor);
                 }
 
-                string res = SendCommand(motor, "ME");
+                string res = SendCmd(motor, "ME");
 
                 if (MotorAcknowledged(motor, res) != true)
                 {
@@ -276,9 +295,16 @@ namespace Rack
         /// <returns></returns>
         private bool MotorAcknowledged(RackGripper motor, string response)
         {
-            bool idMatch = response.Substring(0, 1) == GetMotorId(motor);
-            bool endMatch = response.Substring(1, 1) == "%" || response.Substring(1, 1) == "*";
-            return idMatch && endMatch;
+            try
+            {
+                bool idMatch = response.Substring(0, 1) == GetMotorId(motor);
+                bool endMatch = response.Substring(1, 1) == "%" || response.Substring(1, 1) == "*";
+                return idMatch && endMatch;
+            }
+            catch (Exception)
+            {
+                return false;
+            }                      
         }
 
         /// <summary>
@@ -287,7 +313,7 @@ namespace Rack
         /// <param name="motor"></param>
         public void Disable(RackGripper motor)
         {
-            string res = SendCommand(motor, "MD");
+            string res = SendCmd(motor, "MD");
 
             if (MotorAcknowledged(motor, res) != true)
             {
@@ -321,7 +347,7 @@ namespace Rack
                 ToPointRelative(motor, -60);           
             }
 
-            string res = SendCommand(motor, "SH1H");
+            string res = SendCmd(motor, "SH1H");
             if (MotorAcknowledged(motor, res) == false)
             {
                 throw new Exception("Drive is NOT acknowledged of home search command SH1H");
@@ -333,13 +359,13 @@ namespace Rack
 
             ToPointRelative(motor, homeOffset);
 
-            res = SendCommand(motor, "EP0");
+            res = SendCmd(motor, "EP0");
             if (MotorAcknowledged(motor, res) == false)
             {
                 throw new Exception("Drive is NOT acknowledged");
             }
 
-            res = SendCommand(motor, "SP0");
+            res = SendCmd(motor, "SP0");
             if (MotorAcknowledged(motor, res) == false)
             {
                 throw new Exception("Drive is NOT acknowledged");
@@ -357,10 +383,14 @@ namespace Rack
         public void ToPoint(RackGripper motor, double angle)
         {
             int target = Convert.ToInt32(angle * _countPerDegree);
-            string res = SendCommand(motor, "FP" + target);
+            string res = SendCmd(motor, "FP" + target);
             if (MotorAcknowledged(motor, res) == false)
             {
-                throw new Exception("Drive is NOT acknowledged");
+                res = SendCmd(motor, "FP" + target);
+                if (MotorAcknowledged(motor, res) == false)
+                {
+                    throw new Exception("Drive is NOT acknowledged");
+                }                    
             }
 
             if (GetStatus(motor, StatusCode.Alarm))
@@ -374,7 +404,7 @@ namespace Rack
         public void ToPointWaitTillEnd(RackGripper motor, double angle)
         {
             int target = Convert.ToInt32(angle * _countPerDegree);
-            string res = SendCommand(motor, "FP" + target);
+            string res = SendCmd(motor, "FP" + target);
             if (MotorAcknowledged(motor, res) == false)
             {
                 throw new Exception("Drive is NOT acknowledged");
@@ -393,14 +423,14 @@ namespace Rack
                 try
                 {
                     int target1 = Convert.ToInt32(angle1 * _countPerDegree);
-                    string res1 = SendCommand(motor1, "FP" + target1);
+                    string res1 = SendCmd(motor1, "FP" + target1);
                     if (MotorAcknowledged(motor1, res1) == false)
                     {
                         throw new Exception("Drive is NOT acknowledged");
                     }
 
                     int target2 = Convert.ToInt32(angle2 * _countPerDegree);
-                    string res2 = SendCommand(motor2, "FP" + target2);
+                    string res2 = SendCmd(motor2, "FP" + target2);
                     if (MotorAcknowledged(motor2, res2) == false)
                     {
                         throw new Exception("Drive is NOT acknowledged");
@@ -442,7 +472,7 @@ namespace Rack
             double lastPos = GetPosition(motor);
 
             int target = Convert.ToInt32(angle * _countPerDegree);
-            string res = SendCommand(motor, "FL" + target);
+            string res = SendCmd(motor, "FL" + target);
             if (MotorAcknowledged(motor, res) == false)
             {
                 throw new Exception("Drive is NOT acknowledged");
@@ -540,13 +570,13 @@ namespace Rack
             //acc = Convert.ToDouble(times) * 0.167;
 
             //string accStr = acc.ToString("0.000");
-            string res = SendCommand(motor, "AC" + acceleration);
+            string res = SendCmd(motor, "AC" + acceleration);
             if (MotorAcknowledged(motor, res) == false)
             {
                 throw new Exception("Drive is NOT acknowledged");
             }
 
-            res = SendCommand(motor, "DE" + acceleration);
+            res = SendCmd(motor, "DE" + acceleration);
             if (MotorAcknowledged(motor, res) == false)
             {
                 throw new Exception("Drive is NOT acknowledged");
@@ -568,7 +598,7 @@ namespace Rack
             //vel = Convert.ToDouble(times) * 0.0042;
             //string velStr = vel.ToString("0.0000");
 
-            string res = SendCommand(motor, "VE" + velocity);
+            string res = SendCmd(motor, "VE" + velocity);
             if (MotorAcknowledged(motor, res) == false)
             {
                 throw new Exception("Drive is NOT acknowledged");
@@ -587,7 +617,7 @@ namespace Rack
         /// <param name="motor"></param>
         public void ResetAlarm(RackGripper motor)
         {
-            string res = SendCommand(motor, "AR");
+            string res = SendCmd(motor, "AR");
             if (MotorAcknowledged(motor, res) == false)
             {
                 throw new Exception("Drive is NOT acknowledged");
@@ -600,7 +630,7 @@ namespace Rack
                 throw new Exception("Drive's alarm can not be reset");
             }
 
-            res = SendCommand(motor, "ME");
+            res = SendCmd(motor, "ME");
             if (MotorAcknowledged(motor, res) == false)
             {
                 throw new Exception("Drive is NOT acknowledged");
@@ -618,26 +648,21 @@ namespace Rack
         /// <param name="motor"></param>
         public bool GetStatus(RackGripper motor, StatusCode status)
         {
-            string info = SendCommand(motor, "SC");
-            string code = info.Substring(4, info.Length - 4);
-
+            string info;
+            string code;
             string binaryValue;
+
             try
             {
+                info = SendCmd(motor, "SC");
+                code = info.Substring(4, info.Length - 4);
                 binaryValue = Convert.ToString(Convert.ToInt32(code, 16), 2);
             }
             catch (Exception)
             {
-                try
-                {
-                    info = SendCommand(motor, "SC");
-                    code = info.Substring(4, info.Length - 4);
-                    binaryValue = Convert.ToString(Convert.ToInt32(code, 16), 2);
-                }
-                catch (Exception)
-                {
-                    throw;
-                }
+                info = SendCmd(motor, "SC");
+                code = info.Substring(4, info.Length - 4);
+                binaryValue = Convert.ToString(Convert.ToInt32(code, 16), 2);
             }
 
             bool[] result = binaryValue.Select(c => c == '1').ToArray();
@@ -661,10 +686,14 @@ namespace Rack
         /// <returns></returns>
         public bool GetInput(RackGripper motor, InputStepper input)
         {
-            string res = SendCommand(motor, "IS");
+            string res = SendCmd(motor, "IS");
             if (res.Length != 12)
             {
-                throw new Exception("Input status response length error");
+                res = SendCmd(motor, "IS");
+                if (res.Length != 12)
+                {
+                    throw new Exception("Input status response length error");
+                }
             }
 
             return res.Substring(12 - (int)input, 1) == "0";
@@ -687,7 +716,7 @@ namespace Rack
             {
                 try
                 {
-                    res = SendCommand(motor, "IP");
+                    res = SendCmd(motor, "IP");
                     posString = res.Substring(4, res.Length - 4);
                     pos = Convert.ToInt32(posString);
                     break;

@@ -12,8 +12,20 @@ namespace Rack
             {
                 try
                 {
-                    Steppers.HomeMotor(RackGripper.One, -6.0);
-                    Steppers.HomeMotor(RackGripper.Two, -2.0);
+                    if (StepperHomeComplete)
+                    {
+                        Steppers.ToPoint(RackGripper.One, Motion.PickPosition.APos);
+                        Steppers.ToPoint(RackGripper.Two, Motion.PickPosition.APos);
+                        Steppers.WaitTillEnd(RackGripper.One, Motion.PickPosition.APos);
+                        Steppers.WaitTillEnd(RackGripper.Two, Motion.PickPosition.APos);
+                    }
+                    else
+                    {
+                        StepperHomeComplete = false;
+                        Steppers.HomeMotor(RackGripper.One, -6.0);
+                        Steppers.HomeMotor(RackGripper.Two, -2.0);
+                        StepperHomeComplete = true;
+                    }                    
                 }
                 catch (Exception ex)
                 {

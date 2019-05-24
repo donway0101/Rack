@@ -108,6 +108,11 @@ namespace RackTool
                     //Todo add to history error list, if reset, then the list is cleared.
                 }
 
+                if (code == 40007)
+                {
+                    ShowError(description);
+                }
+
                 NewLog.Instance.Error(code.ToString() + " " + description);
                 AddMessageToTextBox(code, description);
             }
@@ -115,6 +120,16 @@ namespace RackTool
             {
                 MessageBox.Show(ex.Message);
             }
+        }
+
+        private void ShowWarning(string description)
+        {
+            Task.Run(() => { MessageBox.Show(description, "Confirm", MessageBoxButtons.OK, MessageBoxIcon.Warning); });
+        }
+
+        private void ShowError(string description)
+        {
+            Task.Run(() => { MessageBox.Show(description, "Confirm", MessageBoxButtons.OK, MessageBoxIcon.Error); });
         }
 
         private void AddMessageToTextBox(int code, string description)
@@ -225,6 +240,8 @@ namespace RackTool
                 }
             }
 
+            richTextBoxMessage.SelectionStart = richTextBoxMessage.Text.Length;
+            richTextBoxMessage.ScrollToCaret();
             groupBoxMain.Enabled = startSuccessful;
             buttonStart.Enabled = true;
         }
@@ -661,24 +678,6 @@ namespace RackTool
             _rack.Conveyor.ConveyorMovingForward = checkBoxPickConveyorMoveForward.Checked;
             XmlReaderWriter.SetConveyorSetting(RackSetting.ConveyorMovingForward, _rack.Conveyor.ConveyorMovingForward.ToString());
             //bool b = Convert.ToBoolean(XmlReaderWriter.GetConveyorSetting(RackSetting.ConveyorMovingForward));
-        }
-
-        private void button38_Click(object sender, EventArgs e)
-        {
-            //_rack._conveyor.UpBlockSeparate(false);
-            //_rack._conveyor.InitialState();
-            //_rack._conveyor.UpBlockSeparate(true);
-            _rack.Conveyor.Start();
-        }
-
-        private void button40_Click(object sender, EventArgs e)
-        {
-            _rack.Conveyor.ReadyForPicking();
-        }
-
-        private void button41_Click(object sender, EventArgs e)
-        {
-            _rack.LatestPhone = null;
         }
 
         private void buttonSave_Click(object sender, EventArgs e)

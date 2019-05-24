@@ -79,8 +79,6 @@ namespace Rack
                 Conveyor.ErrorOccured += Conveyor_ErrorOccured;
 
                 StartConveyorManager();
-
-                LatestPhone = null;
             }
 
             if (ShieldBoxOnline)
@@ -185,7 +183,7 @@ namespace Rack
             Motion.DisableAll();
         }
 
-        public void HomeRobot(double homeSpeed = 20.0, bool checkGripperEmpty = true)
+        public void HomeRobot(double homeSpeed = 30.0, bool checkGripperEmpty = true)
         {
             if (SetupComplete == false)
             {
@@ -219,7 +217,8 @@ namespace Rack
 
                     if (currentHolder.TeachPos != TeachPos.Home)
                     {
-                        MoveToPointTillEnd(Motion.MotorZ, currentHolder.ApproachHeight);
+                        HomeGrippers();
+                        MoveToPointTillEnd(Motion.MotorZ, currentHolder.ApproachHeight);                      
                         MoveToPointTillEnd(Motion.MotorR, currentHolder.RPos);
                         MoveToPointTillEnd(Motion.MotorY, Motion.HomePosition.YPos);
                         MoveToPointTillEnd(Motion.MotorZ, Motion.HomePosition.ZPos);
@@ -236,12 +235,11 @@ namespace Rack
                 {
                     if (currentPosition.YPos < YIsNearHome)
                     {
+                        HomeGrippers();
                         MoveToPointTillEnd(Motion.MotorZ, Motion.HomePosition.ZPos);
                         MoveToPointTillEnd(Motion.MotorY, Motion.HomePosition.YPos);
                         MoveX1X2ToPointTillEnd(Motion.HomePosition.XPos);
                         MoveToPointTillEnd(Motion.MotorR, Motion.HomePosition.RPos);
-
-                        //Disable one of the motor.
                         HomeGrippers();
                     }
                     else
@@ -273,6 +271,7 @@ namespace Rack
                     if (currentHolder.TeachPos != TeachPos.Home)
                     {
                         MoveToPointTillEnd(Motion.MotorZ, currentHolder.ApproachHeight);
+                        HomeGrippers();
                         MoveToPointTillEnd(Motion.MotorR, currentHolder.RPos);
                         MoveToPointTillEnd(Motion.MotorY, Motion.HomePosition.YPos);
                         MoveToPointTillEnd(Motion.MotorZ, Motion.HomePosition.ZPos);
@@ -289,8 +288,8 @@ namespace Rack
                 {
                     if (currentPosition.YPos < YIsNearHome)
                     {
-
                         MoveToPointTillEnd(Motion.MotorY, Motion.HomePosition.YPos);
+                        HomeGrippers();
                         MoveToPointTillEnd(Motion.MotorZ, Motion.HomePosition.ZPos);
                         MoveX1X2ToPointTillEnd(Motion.HomePosition.XPos);
                         MoveToPointTillEnd(Motion.MotorR, Motion.HomePosition.RPos);
@@ -319,14 +318,22 @@ namespace Rack
             RobotHomeComplete = true;
         }
 
-        public void Pick(RackGripper gripper = RackGripper.One, bool releaseConveyor = true)
+        public void Pick(RackGripper gripper = RackGripper.None, bool okToReloadConveyor = true)
         {
-            OnInfoOccured(20016, "About to pick phone on conveyor with " + gripper + ".");
+            OnInfoOccured(20016, "Find gripper for pick.");
+            if (gripper == RackGripper.None)
+            {
+                gripper = GetAvailableGripper();
+            }
+            OnInfoOccured(20016, "About to pick phone on conveyor with gripper" + gripper + ".");
+
             if (LatestPhone != null)
             {
                 if (LatestPhone.OnGripper != RackGripper.None)
                 {
                     OnInfoOccured(20016, "Already got a phone in " + gripper + ".");
+                    //Robot not release control on conveyor in this case.
+                    OkToReloadOnConveyor();
                     return;
                 }
             }
@@ -357,15 +364,17 @@ namespace Rack
             CloseGripper(gripper);
             MoveToPointTillEnd(Motion.MotorZ, Motion.PickPosition.ApproachHeight);
 
-            CheckPhoneLost(gripper);
+            CheckPhoneLost(gripper);            
 
             MoveToPointTillEnd(Motion.MotorY, Motion.HomePosition.YPos);
             LatestPhone.OnGripper = gripper;
 
-            if (releaseConveyor)
-            {
-                RobotReleaseControlOnConveyor();
+            if (okToReloadConveyor)
+            {               
+                OkToReloadOnConveyor();
             }
+
+            RobotReleaseControlOnConveyor();
 
             OnInfoOccured(20017, "Pick phone succeed.");
         }
@@ -832,10 +841,9 @@ namespace Rack
             Motion.SetSpeed(DefaultRobotSpeed);
             //SystemFault = false;
             RobotReleaseControlOnConveyor();
-            OkToReloadOnConveyor();
+            ResetConveyor();
             Conveyor.HasBinAPhone = false;
             Conveyor.HasPlaceAPhone = false;
-
         }
     }
 }

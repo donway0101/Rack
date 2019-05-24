@@ -52,6 +52,8 @@ namespace Rack
         public double DefaultRobotSpeed { get; set; } = 10;        
 
         public bool RobotHomeComplete { get; set; }
+
+        public bool StepperHomeComplete { get; set; }
         public bool BoxChecked { get; set; }
         public bool SetupComplete { get; set; }
 
@@ -67,6 +69,9 @@ namespace Rack
         #endregion
 
         #region ShieldBox
+        private const bool CloseBoxAfterLoad = true;
+        private const bool NotCloseBoxAfterLoad = false;
+
         public ShieldBox ShieldBox1 { get; set; }
         public ShieldBox ShieldBox2 { get; set; }
         public ShieldBox ShieldBox3 { get; set; }

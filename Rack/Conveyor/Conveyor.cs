@@ -29,7 +29,7 @@ namespace Rack
 
         public int NgCount { get; set; }
 
-        public int MaxNg { get; set; } = 5;
+        public int MaxNg { get; set; } = 10;
 
         public bool RobotBinning { get; set; }
 

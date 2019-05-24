@@ -71,7 +71,7 @@ namespace Rack
                                     RackGripper gripper = GetAvailableGripper();
                                     Unload(gripper, GoldRf.CurrentTargetPosition);
                                     GoldRf.GoldPhoneBusy = true;
-                                    Load(gripper, box, true);                                    
+                                    Load(gripper, box, CloseBoxAfterLoad);                                    
                                     Link(GoldRf, box);
                                 }
                             }
@@ -87,7 +87,7 @@ namespace Rack
                                     RackGripper gripper = GetAvailableGripper();
                                     Unload(gripper, GoldWifi.CurrentTargetPosition);
                                     GoldWifi.GoldPhoneBusy = true;
-                                    Load(gripper, box, true);
+                                    Load(gripper, box, CloseBoxAfterLoad);
                                     Link(GoldWifi, box);
                                 }
                             }
@@ -233,7 +233,7 @@ namespace Rack
                         }
                         else
                         {
-                            #region Two phones in a time.
+                            #region Two Rf phones in a time.
                             if (luckyPhones.Count == 2)
                             {
                                 var firstPhone = luckyPhones.First();
@@ -247,13 +247,7 @@ namespace Rack
                                     switch (firstPhone.Procedure)
                                     {
                                         case RackProcedure.Pick:
-                                            gripper = firstPhone.OnGripper;
-                                            if (firstPhone.OnGripper == RackGripper.None)
-                                            {
-                                                gripper = GetAvailableGripper();
-                                                Pick(gripper);
-                                            }
-                                            OkToReloadOnConveyor();
+                                            Pick();
                                             break;
 
                                         case RackProcedure.Retry:
@@ -278,9 +272,8 @@ namespace Rack
 
                                             ShieldBox box = ConverterTeachPosToShieldBox(
                                                    secondPhone.NextTargetPosition.TeachPos);
-                                            Load(gripper, box, true);
+                                            Load(gripper, box, CloseBoxAfterLoad);
                                             Link(secondPhone, box);
-                                            //CloseBoxAsync(box);
                                             break;
 
                                         default:
@@ -444,7 +437,7 @@ namespace Rack
 
                                                 ShieldBox box = ConverterTeachPosToShieldBox(
                                                     secondPhone.NextTargetPosition.TeachPos);
-                                                Load(gripper, box, true);
+                                                Load(gripper, box, CloseBoxAfterLoad);
                                                 Link(secondPhone, box);
                                                 //CloseBoxAsync(box);
                                                 break;
@@ -646,6 +639,10 @@ namespace Rack
                     for (int i = 0; i < wifiBinOrPlacePhone.Count; i++)
                     {
                         boxOfBinOrPlace = wifiBinOrPlacePhone.ElementAt(i).ShieldBox;
+                        if (BoxCanReused(boxOfBinOrPlace) == false)
+                        {
+                            continue;
+                        }
                         for (int j = 0; j < wifiRetryPhone.Count; j++)
                         {
                             try
@@ -696,6 +693,10 @@ namespace Rack
                         for (int i = 0; i < wifiBinOrPlacePhone.Count; i++)
                         {
                             boxOfBinOrPlace = wifiBinOrPlacePhone.ElementAt(i).ShieldBox;
+                            if (BoxCanReused(boxOfBinOrPlace) == false)
+                            {
+                                continue;
+                            }
                             for (int j = 0; j < wifiRetryPhone.Count; j++)
                             {
                                 try
@@ -864,7 +865,11 @@ namespace Rack
                         var pPhone = wifiPickPhone.First();
                         var bOpPhone = wifiBinOrPlacePhone.First();
                         pPhone.NextTargetPosition = bOpPhone.CurrentTargetPosition;
-                        wifiLuckyPhones.Add(pPhone);
+
+                        if (BoxCanReused(bOpPhone.ShieldBox) == false)
+                        {
+                            wifiLuckyPhones.Add(pPhone);
+                        }
                         wifiLuckyPhones.Add(bOpPhone);
                         return wifiLuckyPhones;
                     }
@@ -981,6 +986,11 @@ namespace Rack
                     for (int i = 0; i < rfBinPhone.Count; i++)
                     {
                         boxOfBin = rfBinPhone.ElementAt(i).ShieldBox;
+                        if (BoxCanReused(boxOfBin) == false)
+                        {
+                            continue;
+                        }
+
                         for (int j = 0; j < rfRetryPhone.Count; j++)
                         {
                             try
@@ -1031,6 +1041,11 @@ namespace Rack
                         for (int i = 0; i < rfBinPhone.Count; i++)
                         {
                             boxOfBin = rfBinPhone.ElementAt(i).ShieldBox;
+                            if (BoxCanReused(boxOfBin) == false)
+                            {
+                                continue;
+                            }
+
                             for (int j = 0; j < rfRetryPhone.Count; j++)
                             {
                                 #region Try finding box for retry.
@@ -1198,10 +1213,10 @@ namespace Rack
                         var pPhone = rfPickPhone.First();
                         var bPhone = rfBinPhone.First();
                         pPhone.NextTargetPosition = bPhone.CurrentTargetPosition;
-                        if (rfBinPhone.First().ShieldBox.Enabled)
+                        if (BoxCanReused(rfBinPhone.First().ShieldBox))
                         {
                             rfLuckyPhones.Add(pPhone);
-                        }                       
+                        }
                         rfLuckyPhones.Add(bPhone);
                         return rfLuckyPhones;
                     }
@@ -1216,7 +1231,6 @@ namespace Rack
                     }
                     #endregion
                 }
-
                 #endregion
 
                 #region No retry, no bin, has pick.
@@ -1240,6 +1254,11 @@ namespace Rack
                 #endregion
             }
             #endregion
+        }
+
+        private bool BoxCanReused(ShieldBox box)
+        {
+            return box.Enabled && box.GoldPhoneCheckRequest == false;
         }
 
         private void ComboUnloadAndLoad(Phone phoneIn, Phone phoneOut, out RackGripper gripper, bool closeBox = true)
@@ -1296,7 +1315,7 @@ namespace Rack
                 " from box:" + phone.ShieldBox.Id +  " to box:" + nextBox.Id + " with " + gripper + ".");
             Unload(gripper, phone);
             Unlink(phone);
-            Load(gripper, nextBox, true);
+            Load(gripper, nextBox, CloseBoxAfterLoad);
             Link(phone, nextBox);
             //CloseBoxAsync(nextBox);
         }
@@ -1310,24 +1329,14 @@ namespace Rack
         private void ServeNewRfPhone(Phone phone)
         {
             ShieldBox box = ConverterTeachPosToShieldBox(phone.NextTargetPosition.TeachPos);
-            try
+            RackGripper gripper = phone.OnGripper;
+            if (gripper == RackGripper.None)
             {
-                RackGripper gripper = phone.OnGripper;
-                if (phone.OnGripper == RackGripper.None)
-                {
-                    gripper = GetAvailableGripper();
-                    Pick(gripper);
-                }
-                Link(phone, box);
-                OkToReloadOnConveyor();
-                Load(gripper, box, true);
-                //CloseBoxAsync(box);
+                gripper = GetAvailableGripper();
             }
-            catch (Exception)
-            {
-                Unlink(phone, box);
-                throw;
-            }
+            Pick(gripper);
+            Load(gripper, box, CloseBoxAfterLoad);
+            Link(phone, box);
         }
 
         private void Link(Phone phone, ShieldBox box)
