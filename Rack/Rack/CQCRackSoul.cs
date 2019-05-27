@@ -866,7 +866,7 @@ namespace Rack
                         var bOpPhone = wifiBinOrPlacePhone.First();
                         pPhone.NextTargetPosition = bOpPhone.CurrentTargetPosition;
 
-                        if (BoxCanReused(bOpPhone.ShieldBox) == false)
+                        if (BoxCanReused(bOpPhone.ShieldBox))
                         {
                             wifiLuckyPhones.Add(pPhone);
                         }
@@ -1349,6 +1349,10 @@ namespace Rack
             box.Empty = false;
             box.Phone = phone;
             phone.TestCycleTimeStopWatch.Restart();
+            if (_newPhoneSerialNumber == phone.SerialNumber)
+            {
+                _newPhoneHasBeenServed = true;
+            }
         }
 
         private void Unlink(Phone phone, ShieldBox box)

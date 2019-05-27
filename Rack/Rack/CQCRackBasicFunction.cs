@@ -534,14 +534,17 @@ namespace Rack
             ShieldBox3.RobotBining = true;
             bool needReopen = false;
 
-            if (ShieldBox3.WasEnabled)
+            if (gripper == RackGripper.One)
             {
-                if (ShieldBox3.IsClosed() == false)
+                if (ShieldBox3.WasEnabled)
                 {
-                    ShieldBox3.CloseBox(5000, false);
-                    needReopen = true;
+                    if (ShieldBox3.IsClosed() == false)
+                    {
+                        ShieldBox3.CloseBox(5000, false);
+                        needReopen = true;
+                    }
                 }
-            }          
+            }         
 
             Conveyor.StopBeltBin();
 
@@ -559,6 +562,7 @@ namespace Rack
             {
                 ShieldBox3.OpenBox(5000, true, true);
             }
+
             ShieldBox3.RobotBining = false;
             Conveyor.RobotBinning = false;
 
@@ -668,14 +672,29 @@ namespace Rack
 
         public RackGripper GetAvailableGripper()
         {
-            if (EcatIo.GetInput(Input.Gripper01Loose) && !EcatIo.GetInput(Input.Gripper01))
+            if (Motion.GetPosition(Motion.MotorR) > 0) //At gripper one.
             {
-                return RackGripper.One;
-            }
+                if (EcatIo.GetInput(Input.Gripper01Loose) && !EcatIo.GetInput(Input.Gripper01))
+                {
+                    return RackGripper.One;
+                }
 
-            if (EcatIo.GetInput(Input.Gripper02Loose) && !EcatIo.GetInput(Input.Gripper02))
+                if (EcatIo.GetInput(Input.Gripper02Loose) && !EcatIo.GetInput(Input.Gripper02))
+                {
+                    return RackGripper.Two;
+                }
+            }
+            else
             {
-                return RackGripper.Two;
+                if (EcatIo.GetInput(Input.Gripper02Loose) && !EcatIo.GetInput(Input.Gripper02))
+                {
+                    return RackGripper.Two;
+                }
+
+                if (EcatIo.GetInput(Input.Gripper01Loose) && !EcatIo.GetInput(Input.Gripper01))
+                {
+                    return RackGripper.One;
+                }
             }
 
             throw new Exception("GetAvailableGripper failed.");

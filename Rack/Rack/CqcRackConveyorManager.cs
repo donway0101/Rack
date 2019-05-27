@@ -93,9 +93,24 @@ namespace Rack
                 return false;
             }
 
+            int emptyBoxCount = 0;
             foreach (var box in ShieldBoxs)
             {
-                if (box.Enabled && box.Empty && box.Type == ShieldBoxType.Rf && box.GoldPhoneCheckRequest == false)
+                if (box.Enabled && box.Empty && box.Type == ShieldBoxType.Rf &&
+                    box.GoldPhoneCheckRequest == false)
+                {
+                    emptyBoxCount++;
+                }
+            }
+
+            if (emptyBoxCount > 1)
+            {
+                return true;
+            }
+
+            if (emptyBoxCount == 1)
+            {
+                if (_newPhoneHasBeenServed==true)
                 {
                     return true;
                 }

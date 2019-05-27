@@ -11,7 +11,9 @@ namespace Rack
         private readonly Api _ch = new Api();
         private const double YIsInBox = 200.0;
         private const double YIsNearHome = 10.0;
-        private bool _eventEnabled; 
+        private bool _eventEnabled;
+        private string _newPhoneSerialNumber = string.Empty;
+        private bool _newPhoneHasBeenServed = false;
         #endregion
 
         #region Robot

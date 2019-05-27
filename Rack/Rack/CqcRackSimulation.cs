@@ -18,6 +18,8 @@
             if (ScannerOnline)
             {
                 phone.SerialNumber = Scanner.SerialNumber;
+                _newPhoneSerialNumber = phone.SerialNumber;
+                _newPhoneHasBeenServed = false;
                 Scanner.SerialNumber = "NoSerialNumber";
                 Scanner.ScanSuccessful = false;
             }

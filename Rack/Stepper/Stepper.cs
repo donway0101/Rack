@@ -94,7 +94,6 @@ namespace Rack
             }
             catch (Exception)
             {
-
                 throw new Exception("Not all stepper's connection is good.");
             }
         }
@@ -208,11 +207,13 @@ namespace Rack
 
         public void Stop(RackGripper motor)
         {
-            string res = SendCmd(motor, "STD");
-
-            if (MotorAcknowledged(motor, res) != true)
+            try
             {
-                throw new Exception("Drive is NOT enabled");
+                SendCommand(motor, "STD");
+            }
+            catch (Exception)
+            {
+                throw new Exception("Drive is can NOT stopped.");
             }
         }
 
@@ -243,7 +244,7 @@ namespace Rack
                         Thread.Sleep(100);
                         if (failCount> retryTimes)
                         {
-                            throw new Exception(command + " get no response.");
+                            throw new Exception("Stepper command:" + command + " get no response.");
                         }                  
                     }
                 }
@@ -269,12 +270,7 @@ namespace Rack
                     ResetAlarm(motor);
                 }
 
-                string res = SendCmd(motor, "ME");
-
-                if (MotorAcknowledged(motor, res) != true)
-                {
-                    throw new Exception("Drive is NOT acknowledged");
-                }
+                SendCommand(motor, "ME");
 
                 if (GetStatus(motor, StatusCode.Enabled) == false)
                 {
@@ -313,12 +309,7 @@ namespace Rack
         /// <param name="motor"></param>
         public void Disable(RackGripper motor)
         {
-            string res = SendCmd(motor, "MD");
-
-            if (MotorAcknowledged(motor, res) != true)
-            {
-                throw new Exception("Drive is NOT disabled");
-            }
+            SendCommand(motor, "MD");
 
             if (GetStatus(motor, StatusCode.Enabled) == true)
             {
@@ -347,11 +338,7 @@ namespace Rack
                 ToPointRelative(motor, -60);           
             }
 
-            string res = SendCmd(motor, "SH1H");
-            if (MotorAcknowledged(motor, res) == false)
-            {
-                throw new Exception("Drive is NOT acknowledged of home search command SH1H");
-            }
+            SendCommand(motor, "SH1H");
 
             Thread.Sleep(50);
             WaitCondition(motor, StatusCode.Homing, false);
@@ -359,19 +346,8 @@ namespace Rack
 
             ToPointRelative(motor, homeOffset);
 
-            res = SendCmd(motor, "EP0");
-            if (MotorAcknowledged(motor, res) == false)
-            {
-                throw new Exception("Drive is NOT acknowledged");
-            }
-
-            res = SendCmd(motor, "SP0");
-            if (MotorAcknowledged(motor, res) == false)
-            {
-                throw new Exception("Drive is NOT acknowledged");
-            }
-
-
+            SendCommand(motor, "EP0");
+            SendCommand(motor, "SP0");
             SetSpeed(motor, defaultWorkingSpeed);
         }
 
@@ -383,15 +359,7 @@ namespace Rack
         public void ToPoint(RackGripper motor, double angle)
         {
             int target = Convert.ToInt32(angle * _countPerDegree);
-            string res = SendCmd(motor, "FP" + target);
-            if (MotorAcknowledged(motor, res) == false)
-            {
-                res = SendCmd(motor, "FP" + target);
-                if (MotorAcknowledged(motor, res) == false)
-                {
-                    throw new Exception("Drive is NOT acknowledged");
-                }                    
-            }
+            SendCommand(motor, "FP" + target);
 
             if (GetStatus(motor, StatusCode.Alarm))
             {
@@ -404,61 +372,10 @@ namespace Rack
         public void ToPointWaitTillEnd(RackGripper motor, double angle)
         {
             int target = Convert.ToInt32(angle * _countPerDegree);
-            string res = SendCmd(motor, "FP" + target);
-            if (MotorAcknowledged(motor, res) == false)
-            {
-                throw new Exception("Drive is NOT acknowledged");
-            }
+            SendCommand(motor, "FP" + target);
 
             Thread.Sleep(50);
-
             WaitTillEnd(motor, angle);
-        }
-
-        public async Task<bool> ToPointAsync(RackGripper motor1, double angle1, RackGripper motor2, double angle2,
-            int timeout = 10)
-        {
-            return await Task.Run(() =>
-            {
-                try
-                {
-                    int target1 = Convert.ToInt32(angle1 * _countPerDegree);
-                    string res1 = SendCmd(motor1, "FP" + target1);
-                    if (MotorAcknowledged(motor1, res1) == false)
-                    {
-                        throw new Exception("Drive is NOT acknowledged");
-                    }
-
-                    int target2 = Convert.ToInt32(angle2 * _countPerDegree);
-                    string res2 = SendCmd(motor2, "FP" + target2);
-                    if (MotorAcknowledged(motor2, res2) == false)
-                    {
-                        throw new Exception("Drive is NOT acknowledged");
-                    }
-
-                    Thread.Sleep(50);
-                    WaitTillEnd(motor1, angle1, timeout);
-                    WaitTillEnd(motor2, angle2, timeout);
-
-                    double currentPos1 = GetPosition(motor1);
-                    if (Math.Abs(currentPos1 - angle1) > 0.5)
-                    {
-                        throw new Exception("Position error is bigger than 0.5 degree.");
-                    }
-
-                    double currentPos2 = GetPosition(motor2);
-                    if (Math.Abs(currentPos2 - angle2) > 0.5)
-                    {
-                        throw new Exception("Position error is bigger than 0.5 degree.");
-                    }
-
-                    return true;
-                }
-                catch (Exception)
-                {
-                    return false;
-                }
-            });
         }
 
         /// <summary>
@@ -472,11 +389,7 @@ namespace Rack
             double lastPos = GetPosition(motor);
 
             int target = Convert.ToInt32(angle * _countPerDegree);
-            string res = SendCmd(motor, "FL" + target);
-            if (MotorAcknowledged(motor, res) == false)
-            {
-                throw new Exception("Drive is NOT acknowledged");
-            }
+            SendCommand(motor, "FL" + target);
 
             Thread.Sleep(50);
             WaitTillEnd(motor, lastPos + angle, timeout);        
@@ -570,17 +483,8 @@ namespace Rack
             //acc = Convert.ToDouble(times) * 0.167;
 
             //string accStr = acc.ToString("0.000");
-            string res = SendCmd(motor, "AC" + acceleration);
-            if (MotorAcknowledged(motor, res) == false)
-            {
-                throw new Exception("Drive is NOT acknowledged");
-            }
-
-            res = SendCmd(motor, "DE" + acceleration);
-            if (MotorAcknowledged(motor, res) == false)
-            {
-                throw new Exception("Drive is NOT acknowledged");
-            }
+            SendCommand(motor, "AC" + acceleration);
+            SendCommand(motor, "DE" + acceleration);
         }
 
         /// <summary>
@@ -598,11 +502,7 @@ namespace Rack
             //vel = Convert.ToDouble(times) * 0.0042;
             //string velStr = vel.ToString("0.0000");
 
-            string res = SendCmd(motor, "VE" + velocity);
-            if (MotorAcknowledged(motor, res) == false)
-            {
-                throw new Exception("Drive is NOT acknowledged");
-            }
+            SendCommand(motor, "VE" + velocity);
         }
 
         public void SetSpeed(RackGripper motor, int speed = 30)
@@ -617,11 +517,7 @@ namespace Rack
         /// <param name="motor"></param>
         public void ResetAlarm(RackGripper motor)
         {
-            string res = SendCmd(motor, "AR");
-            if (MotorAcknowledged(motor, res) == false)
-            {
-                throw new Exception("Drive is NOT acknowledged");
-            }
+            SendCommand(motor, "AR");
 
             Thread.Sleep(20);
 
@@ -630,11 +526,7 @@ namespace Rack
                 throw new Exception("Drive's alarm can not be reset");
             }
 
-            res = SendCmd(motor, "ME");
-            if (MotorAcknowledged(motor, res) == false)
-            {
-                throw new Exception("Drive is NOT acknowledged");
-            }
+            SendCommand(motor, "ME");
 
             if (GetStatus(motor, StatusCode.Enabled) == false)
             {
@@ -648,7 +540,7 @@ namespace Rack
         /// <param name="motor"></param>
         public bool GetStatus(RackGripper motor, StatusCode status)
         {
-            string info;
+            string info = string.Empty;
             string code;
             string binaryValue;
 
@@ -660,9 +552,27 @@ namespace Rack
             }
             catch (Exception)
             {
-                info = SendCmd(motor, "SC");
-                code = info.Substring(4, info.Length - 4);
-                binaryValue = Convert.ToString(Convert.ToInt32(code, 16), 2);
+                try
+                {
+                    Thread.Sleep(100);
+                    info = SendCmd(motor, "SC");
+                    code = info.Substring(4, info.Length - 4);
+                    binaryValue = Convert.ToString(Convert.ToInt32(code, 16), 2);
+                }
+                catch (Exception)
+                {
+                    try
+                    {
+                        Thread.Sleep(100);
+                        info = SendCmd(motor, "SC");
+                        code = info.Substring(4, info.Length - 4);
+                        binaryValue = Convert.ToString(Convert.ToInt32(code, 16), 2);
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new Exception("GetStatus fail due to:" + ex.Message + " response is: " + info);
+                    }
+                }
             }
 
             bool[] result = binaryValue.Select(c => c == '1').ToArray();
