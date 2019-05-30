@@ -225,7 +225,7 @@ namespace Rack
                             SendMessage(TesterCommand.GetShieldedBoxState + "," + state + ";");
                         }
                         
-                        OnInfoOccured(20002, "Rack response shieldedBox state to Tester " + Id + ".");
+                        OnInfoOccured(20002, "Send shieldedBox state to Tester " + Id + ".");
                         break;
                     case TesterCommand.SetTestResult:
                         OnInfoOccured(20003, "Tester " + Id + " send test result: " + subMessage[1] + ".");
@@ -250,24 +250,28 @@ namespace Rack
                                     break;
 
                                 case "1":
+                                    ShieldBox.Phone.FailDetail = "Normal_NG";
                                     ShieldBox.Phone.TestResult = TestResult.Fail;
                                     ShieldBox.Phone.FailCount++;
                                     break;
 
                                 case "2":
                                     //Battery low. NG.
+                                    ShieldBox.Phone.FailDetail = "Low_Battery";
                                     ShieldBox.Phone.TestResult = TestResult.Fail;
                                     ShieldBox.Phone.FailCount = 3;
                                     break;
 
                                 case "3":
                                     //Procedure not match.
+                                    ShieldBox.Phone.FailDetail = "Procedure_wrong";
                                     ShieldBox.Phone.TestResult = TestResult.Fail;
                                     ShieldBox.Phone.FailCount = 3;
                                     break;
 
                                 case "4":
                                     //Timeout match.
+                                    ShieldBox.Phone.FailDetail = "Test_timeout";
                                     ShieldBox.Phone.TestResult = TestResult.Fail;
                                     ShieldBox.Phone.FailCount = 3;
                                     break;
@@ -296,7 +300,7 @@ namespace Rack
                         {
                             SendMessage(TesterCommand.GetSerialNumber + "," + ShieldBox.Phone.SerialNumber + ";");
                         }
-                        OnInfoOccured(20028, "Rack response Get Serial Number to Tester " + Id + ".");
+                        OnInfoOccured(20028, "Send Serial Number:" + ShieldBox.Phone.SerialNumber + " to Tester " + Id + ".");
                         break;
 
                     default:

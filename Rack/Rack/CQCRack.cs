@@ -21,6 +21,8 @@ namespace Rack
         public bool RobotInSimulateMode { get; set; } = false;
         private bool _serverInSimulateMode;
 
+        public double HomeSpeed { get; set; } = 30;
+
         /// <summary>
         /// Gripper one is a reference. Gripper 2 is offset.
         /// </summary>
@@ -113,6 +115,7 @@ namespace Rack
         public bool ConveyorIsBusy { get; set; }
 
         private readonly ManualResetEvent _conveyorWorkingManualResetEvent = new ManualResetEvent(true);
+        private readonly ManualResetEvent _conveyorPickReadyManualResetEvent = new ManualResetEvent(true);
 
         private Thread _conveyorManagerThread;
         #endregion
@@ -198,6 +201,15 @@ namespace Rack
         protected void OnInfoOccured(int code, string description)
         {
             InfoOccured?.Invoke(this, code, description);
+        }
+
+        public delegate void ProductionCompleteEventHandler(object sender, bool pass, string sn, string footprint, string description);
+
+        public event ProductionCompleteEventHandler ProductionComplete;
+
+        protected void OnProductionComplete(bool pass, string sn, string footprint, string description)
+        {
+            ProductionComplete?.Invoke(this, pass, sn, footprint, description);
         }
         #endregion
 

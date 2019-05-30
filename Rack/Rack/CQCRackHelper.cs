@@ -181,7 +181,7 @@ namespace Rack
 
         private void SetRobotSpeedImm(double speed)
         {
-            Motion.SetSpeedImm(speed);
+            //Motion.SetSpeedImm(speed);
         }
 
     }

@@ -155,12 +155,54 @@ namespace Rack
             Motion.ToPoint(Motion.MotorY, target.YPos);
             if (moveStepper)
             {
-                ToPointGripper(target, gripper);
-                WaitTillEndGripper(target, gripper);
-            }          
+                ToPointGripperOnConveyorTillEnd(target, gripper);
+            }  
+            
             Motion.WaitTillEnd(Motion.MotorY);
 
             Motion.BreakToPointWaitTillEnd(Motion.MotorZ, target.ZPos);
+        }
+
+        public void ToPointGripperOnConveyorTillEnd(TargetPosition target, RackGripper gripper)
+        {
+            bool gripperOneAvailable = GripperIsAvailable(RackGripper.One);
+            bool gripperTwoAvailable = GripperIsAvailable(RackGripper.Two);
+
+            //ToPointGripper(target, gripper);
+            if (gripper == RackGripper.One)
+            {
+                Steppers.ToPoint(RackGripper.One, target.APos);
+                if (gripperTwoAvailable == false)
+                {
+                    Steppers.ToPoint(RackGripper.Two, 0);
+                }
+            }
+            else
+            {
+                if (gripperOneAvailable == false)
+                {
+                    Steppers.ToPoint(RackGripper.One, 0);
+                }
+                Steppers.ToPoint(RackGripper.Two, target.APos);
+            }
+
+            //WaitTillEndGripper(target, gripper);
+            if (gripper == RackGripper.One)
+            {
+                Steppers.WaitTillEnd(RackGripper.One, target.APos);
+                if (gripperTwoAvailable == false)
+                {
+                    Steppers.WaitTillEnd(RackGripper.Two, 0);
+                }
+            }
+            else
+            {
+                if (gripperOneAvailable == false)
+                {
+                    Steppers.WaitTillEnd(RackGripper.One, 0);
+                }
+                Steppers.WaitTillEnd(RackGripper.Two, target.APos);
+            }
         }
 
         private void MoveFromRightToLeftBottom(RackGripper gripper, TargetPosition target, bool phoneSlipIn)

@@ -95,6 +95,7 @@
             this.tabControlUi = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.groupBoxMain = new System.Windows.Forms.GroupBox();
+            this.buttonEstopReset = new System.Windows.Forms.Button();
             this.buttonSetSerialNumber = new System.Windows.Forms.Button();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.buttonEmptyNg = new System.Windows.Forms.Button();
@@ -359,6 +360,10 @@
             this.label6 = new System.Windows.Forms.Label();
             this.textBoxPassWord = new System.Windows.Forms.TextBox();
             this.tabPageConfig = new System.Windows.Forms.TabPage();
+            this.checkBoxNoSoftwareNgWarning = new System.Windows.Forms.CheckBox();
+            this.checkBoxOneTestInRack = new System.Windows.Forms.CheckBox();
+            this.buttonSetHomeSpeed = new System.Windows.Forms.Button();
+            this.textBoxHomeRobotSpeed = new System.Windows.Forms.TextBox();
             this.checkBoxServerSimulate = new System.Windows.Forms.CheckBox();
             this.checkBoxMotionSimulate = new System.Windows.Forms.CheckBox();
             this.tabPageCom = new System.Windows.Forms.TabPage();
@@ -382,8 +387,6 @@
             this.toolStripStatusLabelPower = new System.Windows.Forms.ToolStripStatusLabel();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.richTextBoxError = new System.Windows.Forms.RichTextBox();
-            this.textBoxHomeRobotSpeed = new System.Windows.Forms.TextBox();
-            this.buttonSetHomeSpeed = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarSetSpeed2)).BeginInit();
@@ -899,6 +902,7 @@
             // 
             // groupBoxMain
             // 
+            this.groupBoxMain.Controls.Add(this.buttonEstopReset);
             this.groupBoxMain.Controls.Add(this.buttonSetSerialNumber);
             this.groupBoxMain.Controls.Add(this.textBox1);
             this.groupBoxMain.Controls.Add(this.buttonEmptyNg);
@@ -912,6 +916,13 @@
             resources.ApplyResources(this.groupBoxMain, "groupBoxMain");
             this.groupBoxMain.Name = "groupBoxMain";
             this.groupBoxMain.TabStop = false;
+            // 
+            // buttonEstopReset
+            // 
+            resources.ApplyResources(this.buttonEstopReset, "buttonEstopReset");
+            this.buttonEstopReset.Name = "buttonEstopReset";
+            this.buttonEstopReset.UseVisualStyleBackColor = true;
+            this.buttonEstopReset.Click += new System.EventHandler(this.buttonEstopReset_Click);
             // 
             // buttonSetSerialNumber
             // 
@@ -2556,6 +2567,7 @@
             // 
             this.loadNGToolStripMenuItem.Name = "loadNGToolStripMenuItem";
             resources.ApplyResources(this.loadNGToolStripMenuItem, "loadNGToolStripMenuItem");
+            this.loadNGToolStripMenuItem.Click += new System.EventHandler(this.loadNGToolStripMenuItem_Click);
             // 
             // tabPage7
             // 
@@ -2741,6 +2753,8 @@
             // 
             // tabPageConfig
             // 
+            this.tabPageConfig.Controls.Add(this.checkBoxNoSoftwareNgWarning);
+            this.tabPageConfig.Controls.Add(this.checkBoxOneTestInRack);
             this.tabPageConfig.Controls.Add(this.buttonSetHomeSpeed);
             this.tabPageConfig.Controls.Add(this.textBoxHomeRobotSpeed);
             this.tabPageConfig.Controls.Add(this.checkBoxServerSimulate);
@@ -2748,6 +2762,32 @@
             resources.ApplyResources(this.tabPageConfig, "tabPageConfig");
             this.tabPageConfig.Name = "tabPageConfig";
             this.tabPageConfig.UseVisualStyleBackColor = true;
+            // 
+            // checkBoxNoSoftwareNgWarning
+            // 
+            resources.ApplyResources(this.checkBoxNoSoftwareNgWarning, "checkBoxNoSoftwareNgWarning");
+            this.checkBoxNoSoftwareNgWarning.Name = "checkBoxNoSoftwareNgWarning";
+            this.checkBoxNoSoftwareNgWarning.UseVisualStyleBackColor = true;
+            this.checkBoxNoSoftwareNgWarning.CheckedChanged += new System.EventHandler(this.checkBoxNoSoftwareNgWarning_CheckedChanged);
+            // 
+            // checkBoxOneTestInRack
+            // 
+            resources.ApplyResources(this.checkBoxOneTestInRack, "checkBoxOneTestInRack");
+            this.checkBoxOneTestInRack.Name = "checkBoxOneTestInRack";
+            this.checkBoxOneTestInRack.UseVisualStyleBackColor = true;
+            this.checkBoxOneTestInRack.CheckedChanged += new System.EventHandler(this.checkBoxOneTestInRack_CheckedChanged);
+            // 
+            // buttonSetHomeSpeed
+            // 
+            resources.ApplyResources(this.buttonSetHomeSpeed, "buttonSetHomeSpeed");
+            this.buttonSetHomeSpeed.Name = "buttonSetHomeSpeed";
+            this.buttonSetHomeSpeed.UseVisualStyleBackColor = true;
+            this.buttonSetHomeSpeed.Click += new System.EventHandler(this.buttonSetHomeSpeed_Click);
+            // 
+            // textBoxHomeRobotSpeed
+            // 
+            resources.ApplyResources(this.textBoxHomeRobotSpeed, "textBoxHomeRobotSpeed");
+            this.textBoxHomeRobotSpeed.Name = "textBoxHomeRobotSpeed";
             // 
             // checkBoxServerSimulate
             // 
@@ -2898,17 +2938,6 @@
             resources.ApplyResources(this.richTextBoxError, "richTextBoxError");
             this.richTextBoxError.Name = "richTextBoxError";
             this.richTextBoxError.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.richTextBoxError_MouseDoubleClick);
-            // 
-            // textBoxHomeRobotSpeed
-            // 
-            resources.ApplyResources(this.textBoxHomeRobotSpeed, "textBoxHomeRobotSpeed");
-            this.textBoxHomeRobotSpeed.Name = "textBoxHomeRobotSpeed";
-            // 
-            // buttonSetHomeSpeed
-            // 
-            resources.ApplyResources(this.buttonSetHomeSpeed, "buttonSetHomeSpeed");
-            this.buttonSetHomeSpeed.Name = "buttonSetHomeSpeed";
-            this.buttonSetHomeSpeed.UseVisualStyleBackColor = true;
             // 
             // Main
             // 
@@ -3339,6 +3368,9 @@
         private System.Windows.Forms.ToolStripMenuItem loadNGToolStripMenuItem;
         private System.Windows.Forms.TextBox textBoxHomeRobotSpeed;
         private System.Windows.Forms.Button buttonSetHomeSpeed;
+        private System.Windows.Forms.CheckBox checkBoxOneTestInRack;
+        private System.Windows.Forms.CheckBox checkBoxNoSoftwareNgWarning;
+        private System.Windows.Forms.Button buttonEstopReset;
     }
 }
 

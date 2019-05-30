@@ -12,7 +12,7 @@ namespace Rack
         private Thread _sensorMonitorThread;
 
         public bool PickBufferHasPhone { get; set; }
-
+        public bool PhoneReadyForPick { get; set; }
         public bool ConveyorMovingForward { get; set; } = true;
 
         /// <summary>
@@ -28,6 +28,8 @@ namespace Rack
         public bool NgFullWarning { get; set; }
 
         public int NgCount { get; set; }
+
+        public bool NoNgWarning { get; set; }
 
         public int MaxNg { get; set; } = 10;
 
@@ -240,6 +242,10 @@ namespace Rack
 
         public void ReadyForPicking()
         {
+            if (PhoneReadyForPick)
+            {
+                return;
+            }
             StopBeltPick();
             UpBlockPick(false);
             Delay(200);
@@ -247,10 +253,14 @@ namespace Rack
             Delay(200);
             PushPickInpos(false);
             Clamp(false);
+
+            PhoneReadyForPick = true;
         }
 
         public void InposForPicking()
         {
+            PhoneReadyForPick = false;
+
             UpBlockPick(true);
 
             RunBeltPick();
@@ -316,21 +326,25 @@ namespace Rack
                         }
                     }
 
-                    if (NgCount>=MaxNg)
+                    if (NoNgWarning==false)
                     {
-                        NgFullWarning = true;
-                        if (RobotBinning == false)
+                        if (NgCount >= MaxNg)
                         {
-                            RunBeltBin();
+                            NgFullWarning = true;
+                            if (RobotBinning == false)
+                            {
+                                RunBeltBin();
+                            }
+                        }
+                        else
+                        {
+                            if (NgCount == 0)
+                            {
+                                NgFullWarning = false;
+                            }
                         }
                     }
-                    else
-                    {
-                        if (NgCount==0)
-                        {
-                            NgFullWarning = false;
-                        }
-                    }
+
                 }
                 catch (Exception ex)
                 {

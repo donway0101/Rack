@@ -64,6 +64,19 @@ namespace RackTool
             _rack.ErrorOccured += OnErrorOccured;
             _rack.WarningOccured += OnWarningOccured;
             _rack.InfoOccured += OnInfoOccured;
+            _rack.ProductionComplete += _rack_ProductionComplete;
+        }
+
+        private void _rack_ProductionComplete(object sender, bool pass, string sn, string footprint, string description)
+        {
+            if (pass)
+            {
+                NewLog.Instance.Pass(sn, footprint);
+            }
+            else
+            {
+                NewLog.Instance.Ng(sn, footprint, description);
+            }
         }
         #endregion
 
@@ -290,7 +303,7 @@ namespace RackTool
                 try
                 {
                     OnInfoOccured(this, 20007, "Homing robot.");
-                    _rack.HomeRobot();
+                    _rack.HomeRobot(_rack.HomeSpeed);
                     OnInfoOccured(this, 20008, "Home robot complete.");
                     MessageBox.Show("Home Succeed.");
                 }
@@ -305,6 +318,7 @@ namespace RackTool
         private void buttonStartPhoneServer_Click(object sender, EventArgs e)
         {
             _rack.StartPhoneServer();
+            buttonHome.Enabled = false;
         }
 
         private async void buttonCheckBox_Click(object sender, EventArgs e)
@@ -329,6 +343,7 @@ namespace RackTool
         private void buttonPausePhoneServer_Click(object sender, EventArgs e)
         {
             _rack.PausePhoneServer();
+            buttonHome.Enabled = true;
         }
 
         private void buttonTest_Click(object sender, EventArgs e)
@@ -2931,7 +2946,8 @@ namespace RackTool
                 OpenFileDialog OpenFile = new OpenFileDialog()
                 {
                     InitialDirectory = System.IO.Path.GetDirectoryName(
-                        System.AppDomain.CurrentDomain.BaseDirectory + @"\Logs\")
+                        System.AppDomain.CurrentDomain.BaseDirectory + @"\Logs\"),
+                    Filter = "|*.log",
                 };
 
                 DialogResult Result = OpenFile.ShowDialog();
@@ -3218,6 +3234,103 @@ namespace RackTool
         private void Main_Load(object sender, EventArgs e)
         {
 
+        }
+
+        private void checkBoxOneTestInRack_CheckedChanged(object sender, EventArgs e)
+        {
+            CheckBox checkBox = (CheckBox)sender;
+            _rack.OneTestInRack = checkBox.Checked;
+        }
+
+        private void buttonSetHomeSpeed_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                _rack.HomeSpeed = Convert.ToDouble(textBoxHomeRobotSpeed.Text);               
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("设置回零速度失败：" + ex.Message);
+            }
+        }
+
+        private void checkBoxNoSoftwareNgWarning_CheckedChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private async void buttonEstopReset_Click(object sender, EventArgs e)
+        {
+            buttonEstopReset.Enabled = false;
+            await Task.Run(() => {
+
+                try
+                {
+                    _rack.Motion.Reboot();
+                    MessageBox.Show("急停恢复成功！");
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("急停恢复失败：" + ex.Message);
+                }
+
+            });
+            buttonEstopReset.Enabled = true;
+        }
+
+        private void loadNGToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                string FileName = string.Empty;
+                OpenFileDialog OpenFile = new OpenFileDialog()
+                {
+                    InitialDirectory = System.IO.Path.GetDirectoryName(
+                        System.AppDomain.CurrentDomain.BaseDirectory + @"\SN\"),
+                    Filter = "|*.SN",
+            };
+
+                DialogResult Result = OpenFile.ShowDialog();
+                if (Result == DialogResult.OK)
+                    FileName = OpenFile.FileName;
+                else
+                    return;
+                dataGridView1.Rows.Clear();
+                StreamReader Reader = new StreamReader(FileName, Encoding.Default);
+                while (!Reader.EndOfStream)
+                {
+
+                    string[] Items = Reader.ReadLine().Split(' ');
+                    //if (Items.Length != 5)
+                    //{
+                    //    //Reader.Close();
+                    //    //Reader.Dispose();
+                    //    continue;
+                    //}
+
+                    string description = string.Empty;
+                    for (int i = 4; i < Items.Length; i++)
+                    {
+                        description += Items[i] + " ";
+                    }
+
+                    DataGridViewRow dataGridViewRow = new DataGridViewRow();
+                    foreach (DataGridViewColumn Item in dataGridView1.Columns)
+                    {
+                        dataGridViewRow.Cells.Add(Item.CellTemplate.Clone() as DataGridViewCell);
+                    }
+                    dataGridViewRow.Cells[0].Value = Items[0] + " " + Items[1];
+                    dataGridViewRow.Cells[1].Value = Items[2];
+                    dataGridViewRow.Cells[2].Value = Items[3];
+                    dataGridViewRow.Cells[3].Value = description;
+                    dataGridView1.Rows.Add(dataGridViewRow);
+                }
+            }
+            catch (Exception ex)
+            {
+
+                MessageBox.Show(ex.Message);
+            }
         }
     }
 }

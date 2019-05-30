@@ -8,9 +8,6 @@ namespace Rack
 {
     public partial class CqcRack
     {
-
-
-
-
+ 
     }
 }

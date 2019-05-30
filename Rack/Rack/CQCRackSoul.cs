@@ -24,15 +24,17 @@ namespace Rack
             while (true)
             {
                 PhoneServerManualResetEvent.WaitOne();
+
+                #region Fault recovery.
                 if (ProductionFault)
                 {
                     OnInfoOccured(20030, "Try to NG phones due to last production error.");
                     try
                     {
                         //If sensor is very near gold position, sensor may mistrigger.
-                        HomeRobot(30, false);
+                        HomeRobot(HomeSpeed, false);
 
-                        if(GripperIsAvailable(RackGripper.One) == false)
+                        if (GripperIsAvailable(RackGripper.One) == false)
                         {
                             Bin(RackGripper.One);
                             Delay(5000);
@@ -47,12 +49,14 @@ namespace Rack
                     {
                         OnErrorOccured(40021, "Can't serve phone due to:" + ex.Message);
                         Delay(5000);
-                        continue;                      
+                        continue;
                     }
-                    
-                    ProductionFault = false;
-                }
 
+                    ProductionFault = false;
+                } 
+                #endregion
+
+                #region For gold checking.
                 try
                 {
                     foreach (var box in ShieldBoxs)
@@ -71,7 +75,7 @@ namespace Rack
                                     RackGripper gripper = GetAvailableGripper();
                                     Unload(gripper, GoldRf.CurrentTargetPosition);
                                     GoldRf.GoldPhoneBusy = true;
-                                    Load(gripper, box, CloseBoxAfterLoad);                                    
+                                    Load(gripper, box, CloseBoxAfterLoad);
                                     Link(GoldRf, box);
                                 }
                             }
@@ -134,7 +138,8 @@ namespace Rack
                     PhoneServerManualResetEvent.Reset();
                     ProductionFault = true;
                     continue;
-                }
+                } 
+                #endregion
 
                 Delay(500);
                 if (HasNoPhoneToBeServed())
@@ -147,9 +152,10 @@ namespace Rack
                     if (luckyPhones.Count == 0)
                         continue;
 
+                    #region For logging.
                     foreach (var phone in luckyPhones)
                     {
-                        if (phone.ShieldBox!=null)
+                        if (phone.ShieldBox != null)
                         {
                             OnInfoOccured(20013, "Found phone Id:" + phone.Id +
                             " Step:" + phone.Step + " Procedure: " + phone.Procedure +
@@ -159,241 +165,85 @@ namespace Rack
                         {
                             OnInfoOccured(20013, "Found phone Id:" + phone.Id +
                             " Step:" + phone.Step + " Procedure: " + phone.Procedure + "." + " to serve.");
-                        }                        
-                    }
+                        }
+                    } 
+                    #endregion
 
                     RemovePhoneToBeServed(luckyPhones);
 
-                    #region Work on Rf phones.
-                    if (luckyPhones.First().Step == RackTestStep.Rf)
+                    if (OneTestInRack)
                     {
-                        if (luckyPhones.Count > 3)
-                        {
-                            throw new Exception("Error 16229461984");
-                        }
-
-                        if (luckyPhones.Count == 3)
-                        {
-                            #region Three rf phones in a time.
-                            if (luckyPhones.Count == 3)
-                            {
-                                //If there is three phones, it has two combo move, 
-                                // and the last phone must either be place or bin.
-                                var firstPhone = luckyPhones.First();
-                                var secondPhone = luckyPhones.ElementAt(1);
-                                var thirdPhone = luckyPhones.ElementAt(2);
-                                RackGripper gripper;
-                                if (firstPhone.NextTargetPosition.TeachPos == secondPhone.CurrentTargetPosition.TeachPos &&
-                                    secondPhone.NextTargetPosition.TeachPos == thirdPhone.CurrentTargetPosition.TeachPos)
-                                {
-                                    if (firstPhone.Procedure != RackProcedure.Pick)
-                                    {
-                                        throw new Exception("Error 4456688566857");
-                                    }
-                                    if (secondPhone.Procedure != RackProcedure.Retry)
-                                    {
-                                        throw new Exception("Error 456789127458861");
-                                    }
-                                    if (thirdPhone.Procedure != RackProcedure.Place &&
-                                        thirdPhone.Procedure != RackProcedure.Bin)
-                                    {
-                                        throw new Exception("Error 45691677586554");
-                                    }
-
-                                    luckyPhones.Remove(firstPhone);
-                                    InfoPhoneAboutToBeServed(firstPhone);
-                                    ComboUnload(firstPhone);
-
-                                    luckyPhones.Remove(secondPhone);
-                                    InfoPhoneAboutToBeServed(secondPhone);
-                                    ComboUnloadAndLoad(firstPhone, secondPhone, out gripper);
-
-                                    luckyPhones.Remove(thirdPhone);
-                                    InfoPhoneAboutToBeServed(thirdPhone);
-                                    ComboUnloadAndLoad(secondPhone, thirdPhone, out gripper);
-                                    switch (thirdPhone.Procedure)
-                                    {
-                                        case RackProcedure.Bin:
-                                            Bin(gripper);
-                                            break;
-                                        case RackProcedure.Place:
-                                            throw new Exception("Error 48961202164");
-                                            //Place(gripper);
-                                            //break;
-                                        default:
-                                            break;
-                                    }
-                                }
-                                else //Arrange error.
-                                {
-                                    throw new Exception("Error 16229461984");
-                                }
-                            }
-                            #endregion
-                        }
-                        else
-                        {
-                            #region Two Rf phones in a time.
-                            if (luckyPhones.Count == 2)
-                            {
-                                var firstPhone = luckyPhones.First();
-                                var secondPhone = luckyPhones.ElementAt(1);
-                                RackGripper gripper;
-                                if (firstPhone.NextTargetPosition.TeachPos ==
-                                    secondPhone.CurrentTargetPosition.TeachPos)
-                                {
-                                    luckyPhones.Remove(firstPhone);
-                                    InfoPhoneAboutToBeServed(firstPhone);
-                                    switch (firstPhone.Procedure)
-                                    {
-                                        case RackProcedure.Pick:
-                                            Pick();
-                                            break;
-
-                                        case RackProcedure.Retry:
-                                            ComboUnload(firstPhone);
-                                            break;
-
-                                        default:
-                                            throw new Exception("Error 984616941611");
-                                    }
-
-                                    luckyPhones.Remove(secondPhone);
-                                    InfoPhoneAboutToBeServed(secondPhone);
-                                    switch (secondPhone.Procedure)
-                                    {
-                                        case RackProcedure.Bin:
-                                            ComboUnloadAndLoad(firstPhone, secondPhone, out gripper);
-                                            Bin(gripper);
-                                            break;
-
-                                        case RackProcedure.Retry:
-                                            ComboUnloadAndLoad(firstPhone, secondPhone, out gripper);
-
-                                            ShieldBox box = ConverterTeachPosToShieldBox(
-                                                   secondPhone.NextTargetPosition.TeachPos);
-                                            Load(gripper, box, CloseBoxAfterLoad);
-                                            Link(secondPhone, box);
-                                            break;
-
-                                        default:
-                                            throw new Exception("Error 989491878165");
-                                    }
-                                }
-                                else //Arrange error.
-                                {
-                                    throw new Exception("Error 549860315484");
-                                }
-                            }
-                            #endregion
-
-                            #region Only one Rf phone.
-                            else
-                            {
-                                var phone = luckyPhones.First();
-                                luckyPhones.Remove(phone);
-                                InfoPhoneAboutToBeServed(phone);
-                                switch (phone.Procedure)
-                                {
-                                    case RackProcedure.Bin:
-                                        RackGripper gripper;
-                                        ComboUnload(phone, out gripper);
-                                        Bin(gripper);
-                                        break;
-
-                                    case RackProcedure.Place:
-                                        OnInfoOccured(20020, "Turning a Rf into Wifi.");
-                                        phone.Step = RackTestStep.Wifi;
-                                        //Set result will trigger add phone to server.
-                                        phone.TestResult = TestResult.None;
-                                        phone.FailCount = 0;
-                                        break;
-
-                                    case RackProcedure.Retry:
-                                        MoveFromCurrentBoxToNext(phone);
-                                        break;
-
-                                    case RackProcedure.Pick:
-                                        ServeNewRfPhone(phone);
-                                        break;
-                                    default:
-                                        throw new Exception("Error 6417989416269");
-                                }
-                            }
-                            #endregion
-                        }
-                    }
-                    #endregion
-
-                    else
-                    {
-                        #region Work on wifi phones.
-                        if (luckyPhones.First().Step == RackTestStep.Wifi)
+                        #region Only Rf test.
+                        if (luckyPhones.First().Step == RackTestStep.Rf)
                         {
                             if (luckyPhones.Count > 3)
                             {
-                                throw new Exception("Error 4984639789151");
+                                throw new Exception("Error 162294789544514");
                             }
 
-                            #region Three wifi phones in a time.
                             if (luckyPhones.Count == 3)
                             {
-                                //If there is three phones, it has two combo move, 
-                                // and the last phone must either be place or bin.
-                                var firstPhone = luckyPhones.First();
-                                var secondPhone = luckyPhones.ElementAt(1);
-                                var thirdPhone = luckyPhones.ElementAt(2);
-                                RackGripper gripper;
-                                if (firstPhone.NextTargetPosition.TeachPos == secondPhone.CurrentTargetPosition.TeachPos &&
-                                    secondPhone.NextTargetPosition.TeachPos == thirdPhone.CurrentTargetPosition.TeachPos)
+                                #region Three rf phones in a time.
+                                if (luckyPhones.Count == 3)
                                 {
-                                    if (firstPhone.Procedure!= RackProcedure.Pick)
+                                    //If there is three phones, it has two combo move, 
+                                    // and the last phone must either be place or bin.
+                                    var firstPhone = luckyPhones.First();
+                                    var secondPhone = luckyPhones.ElementAt(1);
+                                    var thirdPhone = luckyPhones.ElementAt(2);
+                                    RackGripper gripper;
+                                    if (firstPhone.NextTargetPosition.TeachPos == secondPhone.CurrentTargetPosition.TeachPos &&
+                                        secondPhone.NextTargetPosition.TeachPos == thirdPhone.CurrentTargetPosition.TeachPos)
                                     {
-                                        throw new Exception("Error 445668138754");
-                                    }
-                                    if (secondPhone.Procedure != RackProcedure.Retry)
-                                    {
-                                        throw new Exception("Error 456789123584641");
-                                    }
-                                    if (thirdPhone.Procedure != RackProcedure.Place && 
-                                        thirdPhone.Procedure != RackProcedure.Bin)
-                                    {
-                                        throw new Exception("Error 456984616761654");
-                                    }
+                                        if (firstPhone.Procedure != RackProcedure.Pick)
+                                        {
+                                            throw new Exception("Error 44566484614616");
+                                        }
+                                        if (secondPhone.Procedure != RackProcedure.Retry)
+                                        {
+                                            throw new Exception("Error 456788498161641");
+                                        }
+                                        if (thirdPhone.Procedure != RackProcedure.Place &&
+                                            thirdPhone.Procedure != RackProcedure.Bin)
+                                        {
+                                            throw new Exception("Error 456918461648151");
+                                        }
 
-                                    luckyPhones.Remove(firstPhone);
-                                    InfoPhoneAboutToBeServed(firstPhone);
-                                    ComboUnload(firstPhone);
+                                        luckyPhones.Remove(firstPhone);
+                                        InfoPhoneAboutToBeServed(firstPhone);
+                                        Pick();
 
-                                    luckyPhones.Remove(secondPhone);
-                                    InfoPhoneAboutToBeServed(secondPhone);
-                                    ComboUnloadAndLoad(firstPhone, secondPhone, out gripper);
+                                        luckyPhones.Remove(secondPhone);
+                                        InfoPhoneAboutToBeServed(secondPhone);
+                                        ComboUnloadAndLoad(firstPhone, secondPhone, out gripper);
 
-                                    luckyPhones.Remove(thirdPhone);
-                                    InfoPhoneAboutToBeServed(thirdPhone);
-                                    ComboUnloadAndLoad(secondPhone, thirdPhone, out gripper);
-                                    switch (thirdPhone.Procedure)
+                                        luckyPhones.Remove(thirdPhone);
+                                        InfoPhoneAboutToBeServed(thirdPhone);
+                                        ComboUnloadAndLoad(secondPhone, thirdPhone, out gripper);
+                                        switch (thirdPhone.Procedure)
+                                        {
+                                            case RackProcedure.Bin:
+                                                Bin(gripper, thirdPhone);
+                                                break;
+
+                                            case RackProcedure.Place:
+                                                Place(gripper, thirdPhone);
+                                                break;
+
+                                            default:
+                                                break;
+                                        }
+                                    }
+                                    else //Arrange error.
                                     {
-                                        case RackProcedure.Bin:
-                                            Bin(gripper);
-                                            break;
-                                        case RackProcedure.Place:
-                                            Place(gripper);
-                                            break;
-                                        default:
-                                            break;
+                                        throw new Exception("Error 1622874941653516");
                                     }
                                 }
-                                else //Arrange error.
-                                {
-                                    throw new Exception("Error 16229461984");
-                                }
+                                #endregion
                             }
-                            #endregion
-
                             else
                             {
-                                #region Two wifi phones in a time.
+                                #region Two Rf phones in a time.
                                 if (luckyPhones.Count == 2)
                                 {
                                     var firstPhone = luckyPhones.First();
@@ -407,13 +257,13 @@ namespace Rack
                                         switch (firstPhone.Procedure)
                                         {
                                             case RackProcedure.Pick:
-                                                ComboUnload(firstPhone);
+                                                Pick();
                                                 break;
 
                                             case RackProcedure.Retry:
                                                 ComboUnload(firstPhone);
-                                                break;      
-                                                
+                                                break;
+
                                             default:
                                                 throw new Exception("Error 984616941611");
                                         }
@@ -424,36 +274,35 @@ namespace Rack
                                         {
                                             case RackProcedure.Bin:
                                                 ComboUnloadAndLoad(firstPhone, secondPhone, out gripper);
-                                                Bin(gripper);
-                                                break;
-
-                                            case RackProcedure.Place:
-                                                ComboUnloadAndLoad(firstPhone, secondPhone, out gripper);
-                                                Place(gripper);
+                                                Bin(gripper, secondPhone);
                                                 break;
 
                                             case RackProcedure.Retry:
                                                 ComboUnloadAndLoad(firstPhone, secondPhone, out gripper);
 
                                                 ShieldBox box = ConverterTeachPosToShieldBox(
-                                                    secondPhone.NextTargetPosition.TeachPos);
+                                                       secondPhone.NextTargetPosition.TeachPos);
                                                 Load(gripper, box, CloseBoxAfterLoad);
                                                 Link(secondPhone, box);
-                                                //CloseBoxAsync(box);
+                                                break;
+
+                                            case RackProcedure.Place:
+                                                ComboUnloadAndLoad(firstPhone, secondPhone, out gripper);
+                                                Place(gripper, secondPhone);
                                                 break;
 
                                             default:
                                                 throw new Exception("Error 989491878165");
                                         }
                                     }
-                                    else
+                                    else //Arrange error.
                                     {
                                         throw new Exception("Error 549860315484");
                                     }
-                                } 
+                                }
                                 #endregion
 
-                                #region Only one wifi phone in a time.
+                                #region Only one Rf phone.
                                 else
                                 {
                                     var phone = luckyPhones.First();
@@ -470,26 +319,349 @@ namespace Rack
                                             break;
 
                                         case RackProcedure.Retry:
-                                            //Arrange algorithm already find a box for retry phone.
                                             MoveFromCurrentBoxToNext(phone);
                                             break;
 
                                         case RackProcedure.Pick:
-                                            //Wifi pick phone comes from Rf pass phone.
-                                            MoveFromCurrentBoxToNext(phone);
+                                            ServeNewRfPhone(phone);
                                             break;
-
                                         default:
-                                            throw new Exception("Error 846164946151679"); ;
+                                            throw new Exception("Error 6417989416269");
                                     }
                                 }
                                 #endregion
                             }
-                        } 
+                        }
                         #endregion
                     }
-                                     
-                    //PrintStateOfBoxes();
+                    else
+                    {
+                        #region Rf and Wifi test.
+                        #region Work on Rf phones.
+                        if (luckyPhones.First().Step == RackTestStep.Rf)
+                        {
+                            if (luckyPhones.Count > 3)
+                            {
+                                throw new Exception("Error 16229461984");
+                            }
+
+                            if (luckyPhones.Count == 3)
+                            {
+                                #region Three rf phones in a time.
+                                if (luckyPhones.Count == 3)
+                                {
+                                    //If there is three phones, it has two combo move, 
+                                    // and the last phone must either be place or bin.
+                                    var firstPhone = luckyPhones.First();
+                                    var secondPhone = luckyPhones.ElementAt(1);
+                                    var thirdPhone = luckyPhones.ElementAt(2);
+                                    RackGripper gripper;
+                                    if (firstPhone.NextTargetPosition.TeachPos == secondPhone.CurrentTargetPosition.TeachPos &&
+                                        secondPhone.NextTargetPosition.TeachPos == thirdPhone.CurrentTargetPosition.TeachPos)
+                                    {
+                                        if (firstPhone.Procedure != RackProcedure.Pick)
+                                        {
+                                            throw new Exception("Error 4456688566857");
+                                        }
+                                        if (secondPhone.Procedure != RackProcedure.Retry)
+                                        {
+                                            throw new Exception("Error 456789127458861");
+                                        }
+                                        if (thirdPhone.Procedure != RackProcedure.Place &&
+                                            thirdPhone.Procedure != RackProcedure.Bin)
+                                        {
+                                            throw new Exception("Error 45691677586554");
+                                        }
+
+                                        luckyPhones.Remove(firstPhone);
+                                        InfoPhoneAboutToBeServed(firstPhone);
+                                        ComboUnload(firstPhone);
+
+                                        luckyPhones.Remove(secondPhone);
+                                        InfoPhoneAboutToBeServed(secondPhone);
+                                        ComboUnloadAndLoad(firstPhone, secondPhone, out gripper);
+
+                                        luckyPhones.Remove(thirdPhone);
+                                        InfoPhoneAboutToBeServed(thirdPhone);
+                                        ComboUnloadAndLoad(secondPhone, thirdPhone, out gripper);
+                                        switch (thirdPhone.Procedure)
+                                        {
+                                            case RackProcedure.Bin:
+                                                Bin(gripper);
+                                                break;
+                                            case RackProcedure.Place:
+                                                throw new Exception("Error 48961202164");
+                                            //Place(gripper);
+                                            //break;
+                                            default:
+                                                break;
+                                        }
+                                    }
+                                    else //Arrange error.
+                                    {
+                                        throw new Exception("Error 16229461984");
+                                    }
+                                }
+                                #endregion
+                            }
+                            else
+                            {
+                                #region Two Rf phones in a time.
+                                if (luckyPhones.Count == 2)
+                                {
+                                    var firstPhone = luckyPhones.First();
+                                    var secondPhone = luckyPhones.ElementAt(1);
+                                    RackGripper gripper;
+                                    if (firstPhone.NextTargetPosition.TeachPos ==
+                                        secondPhone.CurrentTargetPosition.TeachPos)
+                                    {
+                                        luckyPhones.Remove(firstPhone);
+                                        InfoPhoneAboutToBeServed(firstPhone);
+                                        switch (firstPhone.Procedure)
+                                        {
+                                            case RackProcedure.Pick:
+                                                Pick();
+                                                break;
+
+                                            case RackProcedure.Retry:
+                                                ComboUnload(firstPhone);
+                                                break;
+
+                                            default:
+                                                throw new Exception("Error 984616941611");
+                                        }
+
+                                        luckyPhones.Remove(secondPhone);
+                                        InfoPhoneAboutToBeServed(secondPhone);
+                                        switch (secondPhone.Procedure)
+                                        {
+                                            case RackProcedure.Bin:
+                                                ComboUnloadAndLoad(firstPhone, secondPhone, out gripper);
+                                                Bin(gripper);
+                                                break;
+
+                                            case RackProcedure.Retry:
+                                                ComboUnloadAndLoad(firstPhone, secondPhone, out gripper);
+
+                                                ShieldBox box = ConverterTeachPosToShieldBox(
+                                                       secondPhone.NextTargetPosition.TeachPos);
+                                                Load(gripper, box, CloseBoxAfterLoad);
+                                                Link(secondPhone, box);
+                                                break;
+
+                                            default:
+                                                throw new Exception("Error 989491878165");
+                                        }
+                                    }
+                                    else //Arrange error.
+                                    {
+                                        throw new Exception("Error 549860315484");
+                                    }
+                                }
+                                #endregion
+
+                                #region Only one Rf phone.
+                                else
+                                {
+                                    var phone = luckyPhones.First();
+                                    luckyPhones.Remove(phone);
+                                    InfoPhoneAboutToBeServed(phone);
+                                    switch (phone.Procedure)
+                                    {
+                                        case RackProcedure.Bin:
+                                            RackGripper gripper;
+                                            ComboUnload(phone, out gripper);
+                                            Bin(gripper);
+                                            break;
+
+                                        case RackProcedure.Place:
+                                            OnInfoOccured(20020, "Turning a Rf into Wifi.");
+                                            phone.Step = RackTestStep.Wifi;
+                                            //Set result will trigger add phone to server.
+                                            phone.TestResult = TestResult.None;
+                                            phone.FailCount = 0;
+                                            break;
+
+                                        case RackProcedure.Retry:
+                                            MoveFromCurrentBoxToNext(phone);
+                                            break;
+
+                                        case RackProcedure.Pick:
+                                            ServeNewRfPhone(phone);
+                                            break;
+                                        default:
+                                            throw new Exception("Error 6417989416269");
+                                    }
+                                }
+                                #endregion
+                            }
+                        }
+                        #endregion
+                        else
+                        {
+                            #region Work on wifi phones.
+                            if (luckyPhones.First().Step == RackTestStep.Wifi)
+                            {
+                                if (luckyPhones.Count > 3)
+                                {
+                                    throw new Exception("Error 4984639789151");
+                                }
+
+                                #region Three wifi phones in a time.
+                                if (luckyPhones.Count == 3)
+                                {
+                                    //If there is three phones, it has two combo move, 
+                                    // and the last phone must either be place or bin.
+                                    var firstPhone = luckyPhones.First();
+                                    var secondPhone = luckyPhones.ElementAt(1);
+                                    var thirdPhone = luckyPhones.ElementAt(2);
+                                    RackGripper gripper;
+                                    if (firstPhone.NextTargetPosition.TeachPos == secondPhone.CurrentTargetPosition.TeachPos &&
+                                        secondPhone.NextTargetPosition.TeachPos == thirdPhone.CurrentTargetPosition.TeachPos)
+                                    {
+                                        if (firstPhone.Procedure != RackProcedure.Pick)
+                                        {
+                                            throw new Exception("Error 445668138754");
+                                        }
+                                        if (secondPhone.Procedure != RackProcedure.Retry)
+                                        {
+                                            throw new Exception("Error 456789123584641");
+                                        }
+                                        if (thirdPhone.Procedure != RackProcedure.Place &&
+                                            thirdPhone.Procedure != RackProcedure.Bin)
+                                        {
+                                            throw new Exception("Error 456984616761654");
+                                        }
+
+                                        luckyPhones.Remove(firstPhone);
+                                        InfoPhoneAboutToBeServed(firstPhone);
+                                        ComboUnload(firstPhone);
+
+                                        luckyPhones.Remove(secondPhone);
+                                        InfoPhoneAboutToBeServed(secondPhone);
+                                        ComboUnloadAndLoad(firstPhone, secondPhone, out gripper);
+
+                                        luckyPhones.Remove(thirdPhone);
+                                        InfoPhoneAboutToBeServed(thirdPhone);
+                                        ComboUnloadAndLoad(secondPhone, thirdPhone, out gripper);
+                                        switch (thirdPhone.Procedure)
+                                        {
+                                            case RackProcedure.Bin:
+                                                Bin(gripper, thirdPhone);
+                                                break;
+                                            case RackProcedure.Place:
+                                                Place(gripper, thirdPhone);
+                                                break;
+                                            default:
+                                                break;
+                                        }
+                                    }
+                                    else //Arrange error.
+                                    {
+                                        throw new Exception("Error 16229461984");
+                                    }
+                                }
+                                #endregion
+
+                                else
+                                {
+                                    #region Two wifi phones in a time.
+                                    if (luckyPhones.Count == 2)
+                                    {
+                                        var firstPhone = luckyPhones.First();
+                                        var secondPhone = luckyPhones.ElementAt(1);
+                                        RackGripper gripper;
+                                        if (firstPhone.NextTargetPosition.TeachPos ==
+                                            secondPhone.CurrentTargetPosition.TeachPos)
+                                        {
+                                            luckyPhones.Remove(firstPhone);
+                                            InfoPhoneAboutToBeServed(firstPhone);
+                                            switch (firstPhone.Procedure)
+                                            {
+                                                case RackProcedure.Pick:
+                                                    ComboUnload(firstPhone);
+                                                    break;
+
+                                                case RackProcedure.Retry:
+                                                    ComboUnload(firstPhone);
+                                                    break;
+
+                                                default:
+                                                    throw new Exception("Error 984616941611");
+                                            }
+
+                                            luckyPhones.Remove(secondPhone);
+                                            InfoPhoneAboutToBeServed(secondPhone);
+                                            switch (secondPhone.Procedure)
+                                            {
+                                                case RackProcedure.Bin:
+                                                    ComboUnloadAndLoad(firstPhone, secondPhone, out gripper);
+                                                    Bin(gripper, secondPhone);
+                                                    break;
+
+                                                case RackProcedure.Place:
+                                                    ComboUnloadAndLoad(firstPhone, secondPhone, out gripper);
+                                                    Place(gripper, secondPhone);
+                                                    break;
+
+                                                case RackProcedure.Retry:
+                                                    ComboUnloadAndLoad(firstPhone, secondPhone, out gripper);
+
+                                                    ShieldBox box = ConverterTeachPosToShieldBox(
+                                                        secondPhone.NextTargetPosition.TeachPos);
+                                                    Load(gripper, box, CloseBoxAfterLoad);
+                                                    Link(secondPhone, box);
+                                                    //CloseBoxAsync(box);
+                                                    break;
+
+                                                default:
+                                                    throw new Exception("Error 989491878165");
+                                            }
+                                        }
+                                        else
+                                        {
+                                            throw new Exception("Error 549860315484");
+                                        }
+                                    }
+                                    #endregion
+
+                                    #region Only one wifi phone in a time.
+                                    else
+                                    {
+                                        var phone = luckyPhones.First();
+                                        luckyPhones.Remove(phone);
+                                        InfoPhoneAboutToBeServed(phone);
+                                        switch (phone.Procedure)
+                                        {
+                                            case RackProcedure.Bin:
+                                                BinOrPlace(phone);
+                                                break;
+
+                                            case RackProcedure.Place:
+                                                BinOrPlace(phone);
+                                                break;
+
+                                            case RackProcedure.Retry:
+                                                //Arrange algorithm already find a box for retry phone.
+                                                MoveFromCurrentBoxToNext(phone);
+                                                break;
+
+                                            case RackProcedure.Pick:
+                                                //Wifi pick phone comes from Rf pass phone.
+                                                MoveFromCurrentBoxToNext(phone);
+                                                break;
+
+                                            default:
+                                                throw new Exception("Error 846164946151679"); ;
+                                        }
+                                    }
+                                    #endregion
+                                }
+                            }
+                            #endregion
+                        }
+                        #endregion
+                    }
                 }
 
                 #region Exception
@@ -558,19 +730,27 @@ namespace Rack
             ClassifyPhones();
             List<Phone> phones = new List<Phone>();
 
-            //Load to Rf first, Rf pass is new phone to wifi.
-            if (RfPhones.Count > 0)
-            {
-                phones = ArrangeRfPhones();
-                if (phones.Count > 0)
-                    return phones;
-            }
-
             if (OneTestInRack == false)
             {
+                //Load to Rf first, Rf pass is new phone to wifi.
+                if (RfPhones.Count > 0)
+                {
+                    phones = ArrangeRfPhones();
+                    if (phones.Count > 0)
+                        return phones;
+                }
+
                 if (WifiPhones.Count > 0)
                 {
                     return ArrangeWifiPhones();
+                }
+            }
+            else
+            {
+                //Load to Rf first, Rf pass is new phone to wifi.
+                if (RfPhones.Count > 0)
+                {
+                    return ArrangeRfPhonesForSimpleRack();
                 }
             }
 
@@ -1256,6 +1436,349 @@ namespace Rack
             #endregion
         }
 
+        private List<Phone> ArrangeRfPhonesForSimpleRack()
+        {
+            #region Define
+            int maxFailCount = 1;
+            if (RfTestMode == RackTestMode.ABC)
+            {
+                maxFailCount = 3;
+            }
+
+            List<Phone> rfLuckyPhones = new List<Phone>();
+            List<Phone> rfBinOrPlacePhone = new List<Phone>();
+            List<Phone> rfRetryPhone = new List<Phone>();
+            List<Phone> rfPickPhone = new List<Phone>();
+            #endregion
+
+            #region Classify phones by test result.
+            foreach (var phone in RfPhones)
+            {
+                if (phone.FailCount >= maxFailCount)
+                {
+                    phone.NextTargetPosition = Motion.BinPosition;
+                    phone.Procedure = RackProcedure.Bin;
+                    rfBinOrPlacePhone.Add(phone);
+                }
+                else
+                {
+                    if (phone.TestResult == TestResult.Pass)
+                    {
+                        phone.NextTargetPosition = Motion.PickPosition;
+                        phone.Procedure = RackProcedure.Place;
+                        rfBinOrPlacePhone.Add(phone);
+                    }
+                    else
+                    {
+                        if (phone.TestResult == TestResult.Fail)
+                        {
+                            phone.Procedure = RackProcedure.Retry;
+                            rfRetryPhone.Add(phone);
+                        }
+                        else
+                        {
+                            //Phone to pick or it's gold.
+                            if (phone.TestResult == TestResult.None)
+                            {
+                                phone.Procedure = RackProcedure.Pick;
+                                rfPickPhone.Add(phone);
+                            }
+                            else
+                            {
+                                throw new Exception("Error 8496134989848");
+                            }
+                        }
+                    }
+                }
+            }
+            #endregion
+
+            #region Has retry, maybe bin, maybe pick.
+            if (rfRetryPhone.Count > 0)
+            {
+                #region Have bin retry and pick.
+                if (rfBinOrPlacePhone.Count > 0 && rfPickPhone.Count > 0)
+                {
+                    #region Try combining retry with place.
+                    List<ShieldBox> boxesForRetryPhone = new List<ShieldBox>();
+                    ShieldBox boxOfBin;
+                    for (int i = 0; i < rfBinOrPlacePhone.Count; i++)
+                    {
+                        boxOfBin = rfBinOrPlacePhone.ElementAt(i).ShieldBox;
+                        if (BoxCanReused(boxOfBin) == false)
+                        {
+                            continue;
+                        }
+
+                        for (int j = 0; j < rfRetryPhone.Count; j++)
+                        {
+                            try
+                            {
+                                boxesForRetryPhone = GetBoxesForRetryPhone(
+                                    rfRetryPhone.ElementAt(j), RfTestMode, ShieldBoxType.Rf);
+                            }
+                            catch (Exception)
+                            {
+                                continue;
+                            }
+
+                            foreach (var box in boxesForRetryPhone)
+                            {
+                                if (box.Position.TeachPos == boxOfBin.Position.TeachPos)
+                                {
+                                    var pPhone = rfPickPhone.First();
+                                    pPhone.NextTargetPosition = rfRetryPhone.ElementAt(j).CurrentTargetPosition;
+                                    rfRetryPhone.ElementAt(j).NextTargetPosition =
+                                        boxOfBin.Position;
+
+                                    rfLuckyPhones.Add(pPhone);
+                                    rfLuckyPhones.Add(rfRetryPhone.ElementAt(j));
+                                    rfLuckyPhones.Add(rfBinOrPlacePhone.ElementAt(i));
+                                    return rfLuckyPhones;
+                                }
+                            }
+                        }
+                    }
+
+                    //If retry and bin can't be combo, then bin first.
+                    rfLuckyPhones.Clear();
+                    rfLuckyPhones.Add(rfBinOrPlacePhone.First());
+                    return rfLuckyPhones;
+                    #endregion
+                }
+                #endregion
+
+                #region Has retry, maybe bin, maybe pick.
+                else
+                {
+                    #region Has retry, has bin, no pick.                   
+                    if (rfBinOrPlacePhone.Count > 0)
+                    {
+                        #region Try combining retry with bin.
+                        List<ShieldBox> boxesForRetryPhone = new List<ShieldBox>();
+                        ShieldBox boxOfBin;
+                        for (int i = 0; i < rfBinOrPlacePhone.Count; i++)
+                        {
+                            boxOfBin = rfBinOrPlacePhone.ElementAt(i).ShieldBox;
+                            if (BoxCanReused(boxOfBin) == false)
+                            {
+                                continue;
+                            }
+
+                            for (int j = 0; j < rfRetryPhone.Count; j++)
+                            {
+                                #region Try finding box for retry.
+                                try
+                                {
+                                    boxesForRetryPhone = GetBoxesForRetryPhone(
+                                        rfRetryPhone.ElementAt(j), RfTestMode, ShieldBoxType.Rf);
+                                }
+                                catch (Exception)
+                                {
+                                    continue;
+                                }
+                                #endregion
+
+                                foreach (var box in boxesForRetryPhone)
+                                {
+                                    if (box.Position.TeachPos == boxOfBin.Position.TeachPos)
+                                    {
+                                        rfRetryPhone.ElementAt(j).NextTargetPosition =
+                                            boxOfBin.Position;
+                                         
+                                        rfLuckyPhones.Add(rfRetryPhone.ElementAt(j));
+                                        rfLuckyPhones.Add(rfBinOrPlacePhone.ElementAt(i));
+                                        return rfLuckyPhones;
+                                    }
+                                }
+                            }
+                        }
+
+                        //If retry and bin can't be combo, then bin first.
+                        rfLuckyPhones.Clear();
+                        rfLuckyPhones.Add(rfBinOrPlacePhone.First());
+                        return rfLuckyPhones;
+                        #endregion
+                    }
+                    #endregion
+
+                    #region Have retry, has pick, no bin.
+                    else
+                    {
+                        #region More than one retry phones.
+                        if (rfRetryPhone.Count > 1)
+                        {
+                            List<ShieldBox> boxesForPhone1 = new List<ShieldBox>();
+                            List<ShieldBox> boxesForPhone2 = new List<ShieldBox>();
+
+                            for (int i = 0; i < rfRetryPhone.Count - 1; i++)
+                            {
+                                #region Try finding box for a retry phone.
+                                try
+                                {
+                                    boxesForPhone1 = GetBoxesForRetryPhone(
+                                        rfRetryPhone.ElementAt(i), RfTestMode, ShieldBoxType.Rf);
+                                }
+                                catch (Exception)
+                                {
+                                    continue;
+                                }
+                                #endregion
+
+                                for (int j = i + 1; j < rfRetryPhone.Count; j++)
+                                {
+                                    #region Try finding box for another retry phone.
+                                    try
+                                    {
+                                        boxesForPhone2 = GetBoxesForRetryPhone(
+                                            rfRetryPhone.ElementAt(j), RfTestMode, ShieldBoxType.Rf);
+                                    }
+                                    catch (Exception)
+                                    {
+                                        continue;
+                                    }
+                                    #endregion
+
+                                    #region See if they match.
+                                    foreach (var box1 in boxesForPhone1)
+                                    {
+                                        foreach (var box2 in boxesForPhone2)
+                                        {
+                                            if (box1.Position.TeachPos == rfRetryPhone.ElementAt(j)
+                                                    .ShieldBox
+                                                    .Position.TeachPos &&
+                                                box2.Position.TeachPos == rfRetryPhone.ElementAt(i)
+                                                    .ShieldBox
+                                                    .Position.TeachPos)
+                                            {
+                                                rfRetryPhone.ElementAt(i).NextTargetPosition =
+                                                    rfRetryPhone.ElementAt(j).CurrentTargetPosition;
+                                                rfRetryPhone.ElementAt(j).NextTargetPosition =
+                                                    rfRetryPhone.ElementAt(i).CurrentTargetPosition;
+
+                                                rfLuckyPhones.Add(rfRetryPhone.ElementAt(i));
+                                                rfLuckyPhones.Add(rfRetryPhone.ElementAt(j));
+                                                return rfLuckyPhones;
+                                            }
+                                        }
+                                    }
+                                    #endregion
+                                }
+                            }
+
+                            #region No combo for retry phone, go solo.
+                            foreach (var rPhone in rfRetryPhone)
+                            {
+                                try
+                                {
+                                    List<ShieldBox> box = GetBoxesForRetryPhone(
+                                        rPhone, RfTestMode, ShieldBoxType.Rf, true);
+
+                                    rPhone.NextTargetPosition = box.First().Position;
+
+                                    rfLuckyPhones.Add(rPhone);
+                                    return rfLuckyPhones;
+                                }
+                                catch (Exception)
+                                {
+                                    continue;
+                                }
+                            }
+                            #endregion
+
+                            //Return empty list.
+                            return rfLuckyPhones;
+                        }
+                        #endregion
+
+                        #region Just one retry, maybe pick, no bin.
+                        else
+                        {
+                            try
+                            {
+                                var rPhone = rfRetryPhone.First();
+                                List<ShieldBox> box = GetBoxesForRetryPhone(
+                                    rPhone, RfTestMode, ShieldBoxType.Rf, true);
+                                rPhone.NextTargetPosition = box.First().Position;
+
+                                if (rfPickPhone.Count > 0)
+                                {
+                                    Phone pPhone = rfPickPhone.First();
+                                    pPhone.NextTargetPosition = rPhone.CurrentTargetPosition;
+
+                                    rfLuckyPhones.Add(pPhone);
+                                }
+                                rfLuckyPhones.Add(rPhone);
+                                return rfLuckyPhones;
+                            }
+                            catch (Exception)
+                            {
+                                return rfLuckyPhones;
+                            }
+                        }
+                        #endregion
+                    }
+                    #endregion
+                }
+                #endregion
+            }
+            #endregion
+
+            #region No retry, maybe bin, maybe pick.
+            else
+            {
+                #region No retry, has bin, maybe pick.
+                if (rfBinOrPlacePhone.Count > 0)
+                {
+                    #region No retry, Have bin and pick.
+                    if (rfPickPhone.Count > 0)
+                    {
+                        var pPhone = rfPickPhone.First();
+                        var bPhone = rfBinOrPlacePhone.First();
+                        pPhone.NextTargetPosition = bPhone.CurrentTargetPosition;
+                        if (BoxCanReused(rfBinOrPlacePhone.First().ShieldBox))
+                        {
+                            rfLuckyPhones.Add(pPhone);
+                        }
+                        rfLuckyPhones.Add(bPhone);
+                        return rfLuckyPhones;
+                    }
+                    #endregion
+
+                    #region No retry, no pick, has bin.
+                    else
+                    {
+                        var phone = rfBinOrPlacePhone.First();
+                        rfLuckyPhones.Add(phone);
+                        return rfLuckyPhones;
+                    }
+                    #endregion
+                }
+                #endregion
+
+                #region No retry, no bin, has pick.
+                else
+                {
+                    #region Pick Regular phone.
+                    try
+                    {
+                        ShieldBox box = GetEmptyBox(ShieldBoxType.Rf);
+                        var phone = rfPickPhone.First();
+                        phone.NextTargetPosition = box.Position;
+                        rfLuckyPhones.Add(phone);
+                        return rfLuckyPhones;
+                    }
+                    catch (Exception)
+                    {
+                        return rfLuckyPhones;
+                    }
+                    #endregion
+                }
+                #endregion
+            }
+            #endregion
+        }
+
         private bool BoxCanReused(ShieldBox box)
         {
             return box.Enabled && box.GoldPhoneCheckRequest == false;
@@ -1291,16 +1814,17 @@ namespace Rack
         /// <param name="phone"></param>
         private void BinOrPlace(Phone phone)
         {
+            
             RackGripper gripper = GetAvailableGripper();
             Unload(gripper, phone);
             Unlink(phone);
             switch (phone.Procedure)
             {
                 case RackProcedure.Bin:
-                    Bin(gripper);
+                    Bin(gripper, phone);
                     break;
                 case RackProcedure.Place:
-                    Place(gripper);
+                    Place(gripper, phone);
                     break;
                 default:
                     break;
@@ -1317,7 +1841,6 @@ namespace Rack
             Unlink(phone);
             Load(gripper, nextBox, CloseBoxAfterLoad);
             Link(phone, nextBox);
-            //CloseBoxAsync(nextBox);
         }
 
         /// <summary>

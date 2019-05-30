@@ -122,6 +122,11 @@ namespace Rack
 
         public void StartPhoneServer()
         {
+            //if (RobotHomeComplete == false)
+            //{
+            //    throw new Exception("Robot has not been homed.");
+            //}
+
             if (_phoneServerThread == null)
             {
                 _phoneServerThread = new Thread(PhoneServer)
@@ -189,6 +194,9 @@ namespace Rack
             {
                 throw new Exception("Setup not Complete.");
             }
+
+            RobotHomeComplete = false;
+
             Motion.SetSpeed(homeSpeed);
 
             Motion.EnableAll();
@@ -310,10 +318,10 @@ namespace Rack
                 {
                     throw new Exception("Has phone on gripper, take it down first.");
                 }
-            }          
 
-            OpenGripper(RackGripper.One);
-            OpenGripper(RackGripper.Two);
+                OpenGripper(RackGripper.One);
+                OpenGripper(RackGripper.Two);
+            }                      
 
             RobotHomeComplete = true;
         }
@@ -372,9 +380,8 @@ namespace Rack
             if (okToReloadConveyor)
             {               
                 OkToReloadOnConveyor();
-            }
-
-            RobotReleaseControlOnConveyor();
+                RobotReleaseControlOnConveyor();
+            }           
 
             OnInfoOccured(20017, "Pick phone succeed.");
         }
@@ -396,6 +403,7 @@ namespace Rack
         private void OkToReloadOnConveyor()
         {
             LatestPhone = null;
+            _conveyorPickReadyManualResetEvent.Set();
         }
 
         /// <summary>
@@ -406,12 +414,22 @@ namespace Rack
         ///    phone before wifi phone(second priority), and new phone will only come in
         ///    when there is empty enough Rf box.
         /// <param name="gripper"></param>
-        public void Place(RackGripper gripper)
+        public void Place(RackGripper gripper, Phone phone = null)
         {
             OnInfoOccured(20026, "Try placing with " + gripper + ".");
             if (Conveyor.HasPlaceAPhone==true)
             {
                 throw new Exception("Last place movement has't finished.");
+            }
+
+            if (phone != null)
+            {
+                string footprint = string.Empty;
+                foreach (var foot in phone.TargetPositionFootprint)
+                {
+                    footprint += (int)foot.TeachPos + ",";
+                }
+                OnProductionComplete(true, phone.SerialNumber, footprint, "");
             }
 
             RobotTakeControlOnConveyor();
@@ -461,8 +479,9 @@ namespace Rack
             {
                 Motion.ToPointX(placePosition.XPos);
                 ToPointR(placePosition, gripper);
-                ToPointGripper(placePosition, gripper);
-                WaitTillEndGripper(placePosition, gripper);
+                //ToPointGripper(placePosition, gripper);
+                ToPointGripperOnConveyorTillEnd(placePosition, gripper);
+                //WaitTillEndGripper(placePosition, gripper);
                 Motion.WaitTillEndX();
                 Motion.WaitTillEnd(Motion.MotorR);
                 MotorYOutThenBreakMotorZDown(placePosition, gripper, false);
@@ -473,13 +492,19 @@ namespace Rack
             }           
 
             OpenGripper(gripper);
+
+            if (theOtherGripper != RackGripper.None)
+            {
+                Steppers.ToPoint(theOtherGripper, Motion.PickPosition.APos);
+            }
+
             MoveToPointTillEnd(Motion.MotorZ, Motion.PickPosition.ApproachHeight);
             MoveToPointTillEnd(Motion.MotorY, Motion.HomePosition.YPos);
             Conveyor.HasPlaceAPhone = true;
 
             if (theOtherGripper!= RackGripper.None)
             {
-                Steppers.ToPoint(theOtherGripper, Motion.PickPosition.APos);
+                //Steppers.ToPoint(theOtherGripper, Motion.PickPosition.APos);
                 Steppers.WaitTillEnd(theOtherGripper, Motion.PickPosition.APos);
             }
 
@@ -509,10 +534,20 @@ namespace Rack
             }
         }
 
-        public void Bin(RackGripper gripper)
+        public void Bin(RackGripper gripper, Phone phone = null)
         {
             OnInfoOccured(20019, "Try binning phone with " + gripper + ".");
 
+            if (phone!=null)
+            {
+                string footprint = string.Empty;
+                foreach (var foot in phone.TargetPositionFootprint)
+                {
+                    footprint += (int)foot.TeachPos + ",";
+                }
+                OnProductionComplete(false, phone.SerialNumber, footprint, phone.FailDetail);
+            }
+            
             Stopwatch stopwatch = new Stopwatch();
             stopwatch.Start();
             while (Conveyor.NgFullWarning)
@@ -605,14 +640,18 @@ namespace Rack
             bool gripperOneHasPhone = GripperIsAvailable(RackGripper.One);
             bool gripperTwoHasPhone = GripperIsAvailable(RackGripper.Two);
 
-            if (gripperOneHasPhone == false)
-            {
-                Steppers.ToPoint(RackGripper.One, Motion.PickPosition.APos);
-            }
-            if (gripperTwoHasPhone == false)
-            {
-                Steppers.ToPoint(RackGripper.Two, Motion.PickPosition.APos);
-            }
+            Steppers.ToPoint(RackGripper.One, Motion.PickPosition.APos);
+            Steppers.ToPoint(RackGripper.Two, Motion.PickPosition.APos);
+
+            //if (gripperOneHasPhone == false)
+            //{
+            //    Steppers.ToPoint(RackGripper.One, Motion.PickPosition.APos);
+            //}
+            //if (gripperTwoHasPhone == false)
+            //{
+            //    Steppers.ToPoint(RackGripper.Two, Motion.PickPosition.APos);
+            //}
+
             if (gripperOneHasPhone == false)
             {
                 Steppers.WaitTillEnd(RackGripper.One, Motion.PickPosition.APos);
@@ -620,8 +659,11 @@ namespace Rack
             if (gripperTwoHasPhone == false)
             {
                 Steppers.WaitTillEnd(RackGripper.Two, Motion.PickPosition.APos);
-            } 
-            
+            }
+
+            Steppers.ToPoint(RackGripper.One, Motion.PickPosition.APos);
+            Steppers.ToPoint(RackGripper.Two, Motion.PickPosition.APos);
+
             Motion.WaitTillEnd(Motion.MotorY);           
         }
 
@@ -862,6 +904,7 @@ namespace Rack
             RobotReleaseControlOnConveyor();
             ResetConveyor();
             Conveyor.HasBinAPhone = false;
+            Conveyor.StopBeltBin();
             Conveyor.HasPlaceAPhone = false;
         }
     }

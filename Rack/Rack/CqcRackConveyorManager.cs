@@ -19,12 +19,11 @@ namespace Rack
         {
             while (true)
             {
-                _conveyorWorkingManualResetEvent.WaitOne();
+                _conveyorWorkingManualResetEvent.WaitOne();               
 
                 try
                 {
                     ConveyorIsBusy = true;
-
                     if (LatestPhone == null && Conveyor.PickBufferHasPhone)
                     {
                         if (OkToLetInNewPhone())
@@ -36,7 +35,6 @@ namespace Rack
                             //        throw new Exception("Scan fail, please remove phone manually.");
                             //    }
                             //}         
-                            
                             Conveyor.InposForPicking();
 
                             //Conveyor is still stop, so no new SN would enter, wrong SN would not happen.
@@ -46,12 +44,17 @@ namespace Rack
 
                     if (LatestPhone == null || Conveyor.PickBufferHasPhone==false || Conveyor.HasPlaceAPhone)
                     {
-                        Conveyor.RunBeltPick();
+                        Conveyor.RunBeltPick();                     
                     }
 
                     if (LatestPhone != null && Conveyor.PickBufferHasPhone && Conveyor.HasPlaceAPhone == false)
                     {
                         Conveyor.StopBeltPick();
+                        Delay(100);
+                        Conveyor.ReadyForPicking();
+
+                        _conveyorPickReadyManualResetEvent.Set();
+                        _conveyorPickReadyManualResetEvent.WaitOne();
                     } 
                     
                 }

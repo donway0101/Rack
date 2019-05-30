@@ -248,7 +248,7 @@ namespace Rack
                 {
                     if (stopwatch.ElapsedMilliseconds > timeout)
                     {
-                        throw new TimeoutException();
+                        throw new Exception("Box SendCommand timeout");
                     }
 
                     //if (stopwatch.ElapsedMilliseconds > timeout*0.8 && retryCmd == false)
@@ -270,7 +270,7 @@ namespace Rack
                 {
                     if (stopwatch.ElapsedMilliseconds > timeout)
                     {
-                        throw new TimeoutException();
+                        throw new Exception("Box SendCommand timeout");
                     }
                     Delay(100);
                 }

@@ -41,10 +41,20 @@ namespace Rack
             Stopwatch sw = new Stopwatch();
             sw.Start();
             Input sensor = gripper == RackGripper.One ? Input.Gripper01Tight : Input.Gripper02Tight;
+            int failCount = 0;
             while (!EcatIo.GetInput(sensor))
             {
-                if (sw.ElapsedMilliseconds > timeout) throw new TimeoutException();
+                if (sw.ElapsedMilliseconds > timeout)
+                {
+                    throw new Exception("Close gripper " + gripper + " timeout");
+                }                   
                 Thread.Sleep(10);
+                failCount++;
+                if (failCount>20)
+                {
+                    EcatIo.SetOutput(gripper == RackGripper.One ? Output.GripperOne : Output.GripperTwo, false);
+                    failCount = 0;
+                }
             }
         }
 
@@ -56,7 +66,8 @@ namespace Rack
             Input sensor = gripper == RackGripper.One ? Input.Gripper01Loose : Input.Gripper02Loose;
             while (!EcatIo.GetInput(sensor))
             {
-                if (sw.ElapsedMilliseconds > timeout) throw new TimeoutException();
+                if (sw.ElapsedMilliseconds > timeout)
+                    throw new Exception("Open gripper timeout");
                 Thread.Sleep(10);
             }
         }
@@ -67,76 +78,67 @@ namespace Rack
             {
                 Motion.ToPoint(Motion.MotorR, target.RPos);
                 Steppers.ToPoint(RackGripper.One, target.APos);
-                Steppers.ToPoint(RackGripper.Two, 0);
-                Motion.WaitTillEnd(Motion.MotorR);
                 Steppers.WaitTillEnd(RackGripper.One, target.APos);
-                Steppers.WaitTillEnd(RackGripper.Two, 0);
+
+                //Steppers.ToPoint(RackGripper.Two, 0);                
+                //Steppers.WaitTillEnd(RackGripper.Two, 0);
+
+                Motion.WaitTillEnd(Motion.MotorR);               
             }
             else
             {
                 Motion.ToPoint(Motion.MotorR, target.RPos - 60);
                 Steppers.ToPoint(RackGripper.Two, target.APos);
-                Steppers.ToPoint(RackGripper.One, 0);
-                Motion.WaitTillEnd(Motion.MotorR);
-                Steppers.WaitTillEnd(RackGripper.One, 0);
                 Steppers.WaitTillEnd(RackGripper.Two, target.APos);
+
+                //Steppers.ToPoint(RackGripper.One, 0);
+                //Steppers.WaitTillEnd(RackGripper.One, 0);
+
+                Motion.WaitTillEnd(Motion.MotorR);                
             }
         }
 
-        private void WaitTillEndGripper(TargetPosition target, RackGripper gripper, bool phoneConveyorVertical = false)
+        private void WaitTillEndGripper(TargetPosition target, RackGripper gripper)
         {
             if (gripper == RackGripper.One)
             {
                 Steppers.WaitTillEnd(RackGripper.One, target.APos);
-                if (phoneConveyorVertical)
+                if (GripperIsAvailable(RackGripper.Two)==false)
                 {
                     Steppers.WaitTillEnd(RackGripper.Two, target.APos);
-                }
-                else
-                {
-                    Steppers.WaitTillEnd(RackGripper.Two, 0);
                 }
             }
             else
             {
-                if (phoneConveyorVertical)
+                if (GripperIsAvailable(RackGripper.One) == false)
                 {
                     Steppers.WaitTillEnd(RackGripper.One, target.APos);
-                }
-                else
-                {
-                    Steppers.WaitTillEnd(RackGripper.One, 0);
                 }
                 Steppers.WaitTillEnd(RackGripper.Two, target.APos);
             }
         }
 
-        private void ToPointGripper(TargetPosition target, RackGripper gripper, bool phoneConveyorVertical = false)
+        private void ToPointGripper(TargetPosition target, RackGripper gripper)
         {
-            if (gripper == RackGripper.One)
-            {
-                Steppers.ToPoint(RackGripper.One, target.APos);
-                if (phoneConveyorVertical)
-                {
-                    Steppers.ToPoint(RackGripper.Two, target.APos);
-                }
-                else
-                {
-                    Steppers.ToPoint(RackGripper.Two, 0);
-                }               
-            }
-            else
-            {
-                if (phoneConveyorVertical)
-                {
-                    Steppers.ToPoint(RackGripper.One, target.APos);
-                }
-                else
-                {
-                    Steppers.ToPoint(RackGripper.One, 0);
-                }
-                Steppers.ToPoint(RackGripper.Two, target.APos);
-            }
+            Steppers.ToPoint(RackGripper.One, target.APos);
+            Steppers.ToPoint(RackGripper.Two, target.APos);
+
+            //if (gripper == RackGripper.One)
+            //{
+            //    Steppers.ToPoint(RackGripper.One, target.APos);
+            //    if (GripperIsAvailable(RackGripper.Two) == false)
+            //    {
+            //        Steppers.ToPoint(RackGripper.Two, target.APos);
+            //    }            
+            //}
+            //else
+            //{
+            //    if (GripperIsAvailable(RackGripper.One) == false)
+            //    {
+            //        Steppers.ToPoint(RackGripper.One, target.APos);
+            //    }
+            //    Steppers.ToPoint(RackGripper.Two, target.APos);
+            //}
         }
 
         private void ToPointR(TargetPosition target, RackGripper gripper)

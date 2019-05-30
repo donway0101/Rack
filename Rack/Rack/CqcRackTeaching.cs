@@ -123,7 +123,7 @@ namespace Rack
             target.ZPos = target.ZPos + 30;
             MoveToTargetPosition(gripper, target, false);
             DisableMotorsForTeaching();
-            Motion.SetSpeedImm(3);
+            Motion.SetSpeed(3);
         }
 
         public void ReadyThePhone(int timeout = 3000)
@@ -144,7 +144,7 @@ namespace Rack
             sw.Start();
             while (!EcatIo.GetInput(Input.ClampTightPick))
             {
-                if (sw.ElapsedMilliseconds > timeout) throw new TimeoutException();
+                if (sw.ElapsedMilliseconds > timeout) throw new Exception("ReadyThePhone timeout");
                 Thread.Sleep(10);
             }
 
@@ -152,7 +152,7 @@ namespace Rack
             sw.Restart();
             while (EcatIo.GetInput(Input.SideBlockPick))
             {
-                if (sw.ElapsedMilliseconds > timeout) throw new TimeoutException();
+                if (sw.ElapsedMilliseconds > timeout) throw new Exception("ReadyThePhone timeout");
                 Thread.Sleep(10);
             }
 
@@ -162,7 +162,7 @@ namespace Rack
             sw.Restart();
             while (!EcatIo.GetInput(Input.SideBlockPick))
             {
-                if (sw.ElapsedMilliseconds > timeout) throw new TimeoutException();
+                if (sw.ElapsedMilliseconds > timeout) throw new Exception("ReadyThePhone timeout");
                 Thread.Sleep(10);
             }
 
@@ -171,7 +171,7 @@ namespace Rack
             sw.Restart();
             while (!EcatIo.GetInput(Input.ClampLoosePick))
             {
-                if (sw.ElapsedMilliseconds > timeout) throw new TimeoutException();
+                if (sw.ElapsedMilliseconds > timeout) throw new Exception("ReadyThePhone timeout");
                 Thread.Sleep(10);
             }
         }

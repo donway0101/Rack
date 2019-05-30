@@ -335,7 +335,7 @@ namespace Rack
             }
         }
 
-        public void SetSpeedImm(double velocity)
+        private void SetSpeedImm(double velocity)
         {
             foreach (var mtr in Motors)
             {
@@ -447,6 +447,11 @@ namespace Rack
         public void Break(Motor motor)
         {
             _ch.Break(motor.Id);
+        }
+
+        public void Reboot(int timeoutSec = 60)
+        {
+            _ch.ControllerReboot(timeoutSec*1000);
         }
 
         /// <summary>

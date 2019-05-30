@@ -13,6 +13,7 @@ namespace Rack
         public PhoneType Type { get; set; } = PhoneType.Normal;
         public bool GoldPhoneBusy { get; set; }
         public string SerialNumber { get; set; }
+        public string FailDetail { get; set; }
         public bool AutoOpenBox { get; set; } = true;
         public TargetPosition CurrentTargetPosition { get; set; } = new TargetPosition() { TeachPos = TeachPos.None };
         public TargetPosition NextTargetPosition { get; set; } = new TargetPosition() { TeachPos = TeachPos.None };
