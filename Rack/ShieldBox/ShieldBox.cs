@@ -72,6 +72,15 @@ namespace Rack
         //After test, shield box will send back result and put phone to serve list.
         public Phone Phone { get; set; }
 
+        public delegate void ErrorOccuredEventHandler(object sender, int code, string description);
+
+        public event ErrorOccuredEventHandler ErrorOccured;
+
+        protected void OnErrorOccured(int code, string description)
+        {
+            ErrorOccured?.Invoke(this, code, description);
+        }
+
         public ShieldBox(int id)
         {
             Id = id;
@@ -149,6 +158,7 @@ namespace Rack
                 Delay(100);
                 if (stopwatch.ElapsedMilliseconds > 120000)
                 {
+                    OnErrorOccured(40001, "Can't open box due to RobotBining.");
                     throw new Exception("OpenBox " + Id + " failed due to RobotBining.");
                 }
             }
@@ -168,9 +178,10 @@ namespace Rack
                     Available = true;
                 }
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                throw new BoxException("OpenBox " + Id + " timeout");
+                OnErrorOccured(40001, "Can't open box due to:" + e.Message);
+                throw new BoxException("OpenBox " + Id + " fail due to:" + e.Message);
             }
         }
 
@@ -194,9 +205,10 @@ namespace Rack
                     ReadyForTesting = true;                 
                 }
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                throw new BoxException("CloseBox " + Id + " timeout");
+                OnErrorOccured(40008, "Can't close box due to:" + e.Message);
+                throw new BoxException("CloseBox " + Id + " fail due to:" + e.Message);
             }            
         }
 
@@ -238,58 +250,67 @@ namespace Rack
 
         private void SendCommand(ShieldBoxCommand command, string response, int timeout = 5000)
         {
-            //bool retryCmd = false;
-            try
+            int failCount = 0;
+            do
             {
-                SendCmd(command);
-                Stopwatch stopwatch = new Stopwatch();
-                stopwatch.Start();
-                while (_response != response && _response != ShieldBoxResponse.ResponseEnding + response)
+                try
                 {
-                    if (stopwatch.ElapsedMilliseconds > timeout)
+                    SendCmd(command);
+                    Stopwatch stopwatch = new Stopwatch();
+                    stopwatch.Start();
+                    while (_response != response && _response != ShieldBoxResponse.ResponseEnding + response)
                     {
-                        throw new Exception("Box SendCommand timeout");
+                        if (stopwatch.ElapsedMilliseconds > timeout)
+                        {
+                            throw new Exception("Box SendCommand timeout");
+                        }
+                        Delay(100);
                     }
-
-                    //if (stopwatch.ElapsedMilliseconds > timeout*0.8 && retryCmd == false)
-                    //{
-                    //    SendCmd(command);
-                    //    stopwatch.Restart();
-                    //    retryCmd = true;
-                    //}
-                    Delay(100);
+                    break;
                 }
-            }
-            catch (Exception)
-            {
-
-                SendCmd(command);
-                Stopwatch stopwatch = new Stopwatch();
-                stopwatch.Start();
-                while (_response != response && _response != ShieldBoxResponse.ResponseEnding + response)
+                catch (Exception)
                 {
-                    if (stopwatch.ElapsedMilliseconds > timeout)
-                    {
-                        throw new Exception("Box SendCommand timeout");
-                    }
+                    failCount++;
                     Delay(100);
+                    if (failCount>2)
+                    {
+                        throw new Exception("Box SendCommand " + command + " timeout");
+                    }
                 }
-            }
+            } while (true);
         }
 
         public bool IsClosed(int timeout = 1000)
         {
-            SendCmd(ShieldBoxCommand.STATUS);
-            Stopwatch stopwatch = new Stopwatch();
-            stopwatch.Start();
-            while (_response != ShieldBoxResponse.BoxIsOpened && _response != ShieldBoxResponse.BoxIsClosed)
+            int failCount = 0;
+            do
             {
-                if (stopwatch.ElapsedMilliseconds > timeout)
+                try
                 {
-                    return false;
+                    SendCmd(ShieldBoxCommand.STATUS);
+                    Stopwatch stopwatch = new Stopwatch();
+                    stopwatch.Start();
+                    while (_response != ShieldBoxResponse.BoxIsOpened && _response != ShieldBoxResponse.BoxIsClosed)
+                    {
+                        if (stopwatch.ElapsedMilliseconds > timeout)
+                        {
+                            throw new TimeoutException();
+                        }
+                        Delay(100);
+                    }
+                    break;
                 }
-                Delay(100);
-            }
+                catch (Exception)
+                {
+                    failCount++;
+                    Delay(100);
+                    if (failCount > 2)
+                    {
+                        throw new Exception("Box SendCommand " + ShieldBoxCommand.STATUS + " timeout");
+                    }
+                }
+
+            } while (true);
 
             if (_response != ShieldBoxResponse.BoxIsClosed)
             {

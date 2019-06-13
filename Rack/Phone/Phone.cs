@@ -29,7 +29,7 @@ namespace Rack
         /// </summary>
         public TestResult TestResult
         {
-            get => _testResult;
+            get { return _testResult; }
             set
             {
                 _testResult = value;

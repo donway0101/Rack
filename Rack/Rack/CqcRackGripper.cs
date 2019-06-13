@@ -64,11 +64,17 @@ namespace Rack
             Stopwatch sw = new Stopwatch();
             sw.Start();
             Input sensor = gripper == RackGripper.One ? Input.Gripper01Loose : Input.Gripper02Loose;
+            int failCount = 0;
             while (!EcatIo.GetInput(sensor))
             {
                 if (sw.ElapsedMilliseconds > timeout)
                     throw new Exception("Open gripper timeout");
                 Thread.Sleep(10);
+                if (failCount > 20)
+                {
+                    EcatIo.SetOutput(gripper == RackGripper.One ? Output.GripperOne : Output.GripperTwo, true);
+                    failCount = 0;
+                }               
             }
         }
 

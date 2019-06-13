@@ -737,7 +737,32 @@ namespace Rack
                 {
                     phones = ArrangeRfPhones();
                     if (phones.Count > 0)
-                        return phones;
+                    {
+                        if (phones.Count == 2)
+                        {
+                            //两台手机都是重测的
+                            if (phones.ElementAt(0).Procedure == RackProcedure.Retry
+                                & phones.ElementAt(1).Procedure == RackProcedure.Retry)
+                            {
+                                //已经把新手机抓起来了
+                                if (LatestPhone != null)
+                                {
+                                    if (LatestPhone.OnGripper != RackGripper.None)
+                                    {
+                                        phones = GetBoxForNewRfPhone();
+                                        if (phones.Count > 0)
+                                        {
+                                            return phones;
+                                        }
+                                    }
+                                }                               
+                            }
+                        }
+                        else
+                        {
+                            return phones;
+                        }                       
+                    }                                             
                 }
 
                 if (WifiPhones.Count > 0)
@@ -755,6 +780,24 @@ namespace Rack
             }
 
             return phones;          
+        }
+
+        private List<Phone> GetBoxForNewRfPhone()
+        {
+            List<Phone> phones = new List<Phone>();
+            ShieldBox box;
+            try
+            {
+                box = GetEmptyBox(ShieldBoxType.Rf);
+                var phone = LatestPhone;
+                phone.NextTargetPosition = box.Position;
+                phones.Add(phone);
+                return phones;
+            }
+            catch (Exception)
+            {
+                return phones;
+            }
         }
 
         private List<Phone> ArrangeWifiPhones()

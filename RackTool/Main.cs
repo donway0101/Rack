@@ -3029,6 +3029,9 @@ namespace RackTool
             _rack.Tester2.SimulateMode = checkBox.Checked;
         }
 
+        public int RfCycleTime { get; set; } = 46;
+        public int WifiCycleTime { get; set; } = 35;
+
         private void checkBoxAutoPass_CheckedChanged(object sender, EventArgs e)
         {
             _autoPass = checkBoxAutoPass.Checked;
@@ -3039,7 +3042,8 @@ namespace RackTool
                     {
                         if (box.Phone!=null)
                         {
-                            if (box.Phone.TestCycleTimeStopWatch.ElapsedMilliseconds/1000 > 5)
+                            if (box.Type == ShieldBoxType.Rf && 
+                            box.Phone.TestCycleTimeStopWatch.ElapsedMilliseconds/1000 > RfCycleTime)
                             {                                
                                 try
                                 {
@@ -3052,11 +3056,30 @@ namespace RackTool
                                 }
                                 catch (Exception)
                                 {
-                                    OnErrorOccured(this, 40001, "Can't open box door.");
                                     Delay(3000);
                                 }                              
                                 box.Phone.TestResult = TestResult.Pass;
                             }
+
+                            if (box.Type == ShieldBoxType.Wifi && 
+                            box.Phone.TestCycleTimeStopWatch.ElapsedMilliseconds / 1000 > WifiCycleTime)
+                            {
+                                try
+                                {
+                                    if (box.IsClosed() == false)
+                                    {
+                                        continue;
+                                    }
+                                    box.OpenBox();
+                                    box.Phone.TestCycleTimeStopWatch.Reset();
+                                }
+                                catch (Exception)
+                                {
+                                    Delay(3000);
+                                }
+                                box.Phone.TestResult = TestResult.Pass;
+                            }
+
                         }
                     }
 
@@ -3329,6 +3352,19 @@ namespace RackTool
             catch (Exception ex)
             {
 
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private void buttonSetCycleTime_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                RfCycleTime = Convert.ToInt32(textBoxRfCycleTime.Text);
+                WifiCycleTime = Convert.ToInt32(textBoxWifiCycleTime.Text);
+            }
+            catch (Exception ex)
+            {
                 MessageBox.Show(ex.Message);
             }
         }

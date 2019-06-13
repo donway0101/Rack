@@ -45,6 +45,8 @@ namespace Rack
                     {
                         box.Start();
                         box.GreenLight();
+                        box.ErrorOccured -= Box_ErrorOccured;
+                        box.ErrorOccured += Box_ErrorOccured;
                     }
                     catch (Exception e)
                     {
@@ -53,7 +55,12 @@ namespace Rack
                 }
             }
         }
- 
+
+        private void Box_ErrorOccured(object sender, int code, string description)
+        {
+            OnErrorOccured(code, description);
+        }
+
         public void OpenAllBox()
         {
             foreach (var box in ShieldBoxs)
@@ -192,12 +199,11 @@ namespace Rack
             {
                 try
                 {
-                    OnInfoOccured(20027, "Try closing door of box:" + box.Id + ".");
                     box.CloseBox();
                 }
                 catch (Exception e)
                 {                    
-                    OnErrorOccured(40008, "Can't close box due to:" + e.Message);
+                    //OnErrorOccured(40008, "Can't close box due to:" + e.Message);
                 }               
             });
         }

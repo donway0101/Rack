@@ -154,8 +154,10 @@ namespace Rack
             return currentPosition;
         }
 
+        public double CurrentRobotSpeed { get; set; } = 20;
         public void SetRobotSpeed(double speed)
         {
+            CurrentRobotSpeed = speed;
             Motion.SetSpeed(speed);           
         }
 

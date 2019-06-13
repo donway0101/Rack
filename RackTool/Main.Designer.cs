@@ -387,6 +387,9 @@
             this.toolStripStatusLabelPower = new System.Windows.Forms.ToolStripStatusLabel();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.richTextBoxError = new System.Windows.Forms.RichTextBox();
+            this.textBoxRfCycleTime = new System.Windows.Forms.TextBox();
+            this.textBoxWifiCycleTime = new System.Windows.Forms.TextBox();
+            this.buttonSetCycleTime = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarSetSpeed2)).BeginInit();
@@ -1586,6 +1589,9 @@
             // 
             // panelTesters
             // 
+            this.panelTesters.Controls.Add(this.buttonSetCycleTime);
+            this.panelTesters.Controls.Add(this.textBoxWifiCycleTime);
+            this.panelTesters.Controls.Add(this.textBoxRfCycleTime);
             this.panelTesters.Controls.Add(this.checkBoxAutoPass);
             this.panelTesters.Controls.Add(this.groupBoxTester05);
             this.panelTesters.Controls.Add(this.groupBoxTester06);
@@ -2939,6 +2945,23 @@
             this.richTextBoxError.Name = "richTextBoxError";
             this.richTextBoxError.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.richTextBoxError_MouseDoubleClick);
             // 
+            // textBoxRfCycleTime
+            // 
+            resources.ApplyResources(this.textBoxRfCycleTime, "textBoxRfCycleTime");
+            this.textBoxRfCycleTime.Name = "textBoxRfCycleTime";
+            // 
+            // textBoxWifiCycleTime
+            // 
+            resources.ApplyResources(this.textBoxWifiCycleTime, "textBoxWifiCycleTime");
+            this.textBoxWifiCycleTime.Name = "textBoxWifiCycleTime";
+            // 
+            // buttonSetCycleTime
+            // 
+            resources.ApplyResources(this.buttonSetCycleTime, "buttonSetCycleTime");
+            this.buttonSetCycleTime.Name = "buttonSetCycleTime";
+            this.buttonSetCycleTime.UseVisualStyleBackColor = true;
+            this.buttonSetCycleTime.Click += new System.EventHandler(this.buttonSetCycleTime_Click);
+            // 
             // Main
             // 
             resources.ApplyResources(this, "$this");
@@ -3371,6 +3394,9 @@
         private System.Windows.Forms.CheckBox checkBoxOneTestInRack;
         private System.Windows.Forms.CheckBox checkBoxNoSoftwareNgWarning;
         private System.Windows.Forms.Button buttonEstopReset;
+        private System.Windows.Forms.Button buttonSetCycleTime;
+        private System.Windows.Forms.TextBox textBoxWifiCycleTime;
+        private System.Windows.Forms.TextBox textBoxRfCycleTime;
     }
 }
 

@@ -14,7 +14,7 @@ namespace Rack
 
             CheckSafety();
 
-            if (addOffset)
+            if (addOffset && gripper == RackGripper.Two)
             {
                 target = AddOffset(gripper, target);
             }            
@@ -253,12 +253,15 @@ namespace Rack
         }
 
         private void MotorYOutThenMotorZDown(TargetPosition target, RackGripper gripper, bool phoneSlipIn)
-        {
+        {//先把速度降下来
+            double originalSpeed = CurrentRobotSpeed;
+            originalSpeed *= 0.7;
+            SetRobotSpeed(originalSpeed);
+
             Motion.ToPoint(Motion.MotorY, target.YPos);
             ToPointGripper(target, gripper);
             WaitTillEndGripper(target, gripper);
-            Motion.WaitTillEnd(Motion.MotorY);   
-            
+            Motion.WaitTillEnd(Motion.MotorY);             
             if (phoneSlipIn)
             {
                 Task.Run(() => {
@@ -281,8 +284,9 @@ namespace Rack
                     }
                 });
             }
-
             MoveToPointTillEnd(Motion.MotorZ, target.ZPos);
+            //再把速度恢复回来
+            SetRobotSpeed(CurrentRobotSpeed);
         }
 
         private void MoveFromLeftToRightTop(RackGripper gripper, TargetPosition target, 
